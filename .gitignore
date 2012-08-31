@@ -4,5 +4,5 @@
 *.suo
 *.user
 packages
-samples/Northwind/Northwind.sl3
-samples/Northwind/Northwind.sdf
+*.sl3
+*.sdf
