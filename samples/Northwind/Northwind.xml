@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Database Name="Northwind" xmlns="http://schemas.microsoft.com/linqtosql/mapping/2007">
+   <Table Name="Categories">
+      <Type Name="Category">
+         <Column Member="CategoryID" IsPrimaryKey="true" IsDbGenerated="true"/>
+         <Column Member="CategoryName"/>
+         <Column Member="Description"/>
+         <Column Member="Picture"/>
+         <Association Member="Products" OtherKey="CategoryID"/>
+      </Type>
+   </Table>
+   <Table Name="Customers">
+      <Type Name="Customer">
+         <Column Member="CustomerID" IsPrimaryKey="true"/>
+         <Column Member="CompanyName"/>
+         <Column Member="ContactName"/>
+         <Column Member="ContactTitle"/>
+         <Column Member="Address"/>
+         <Column Member="City"/>
+         <Column Member="Region"/>
+         <Column Member="PostalCode"/>
+         <Column Member="Country"/>
+         <Column Member="Phone"/>
+         <Column Member="Fax"/>
+         <Association Member="CustomerCustomerDemos" OtherKey="CustomerID"/>
+         <Association Member="Orders" OtherKey="CustomerID"/>
+      </Type>
+   </Table>
+   <Table Name="CustomerCustomerDemo">
+      <Type Name="CustomerCustomerDemo">
+         <Column Member="CustomerID" IsPrimaryKey="true"/>
+         <Column Member="CustomerTypeID" IsPrimaryKey="true"/>
+         <Association Member="CustomerDemographic" ThisKey="CustomerTypeID" IsForeignKey="true" />
+         <Association Member="Customer" ThisKey="CustomerID" IsForeignKey="true" />
+      </Type>
+   </Table>
+   <Table Name="CustomerDemographics">
+      <Type Name="CustomerDemographic">
+         <Column Member="CustomerTypeID" IsPrimaryKey="true"/>
+         <Column Member="CustomerDesc" UpdateCheck="Never"/>
+         <Association Member="CustomerCustomerDemos" OtherKey="CustomerTypeID"/>
+      </Type>
+   </Table>
+   <Table Name="Employees">
+      <Type Name="Employee">
+         <Column Member="EmployeeID" IsPrimaryKey="true" IsDbGenerated="true"/>
+         <Column Member="LastName"/>
+         <Column Member="FirstName"/>
+         <Column Member="Title"/>
+         <Column Member="TitleOfCourtesy"/>
+         <Column Member="BirthDate"/>
+         <Column Member="HireDate"/>
+         <Column Member="Address"/>
+         <Column Member="City"/>
+         <Column Member="Region"/>
+         <Column Member="PostalCode"/>
+         <Column Member="Country"/>
+         <Column Member="HomePhone"/>
+         <Column Member="Extension"/>
+         <Column Member="Photo" UpdateCheck="Never"/>
+         <Column Member="Notes" UpdateCheck="Never"/>
+         <Column Member="ReportsTo"/>
+         <Column Member="PhotoPath"/>
+         <Association Member="ReportsToEmployee" ThisKey="ReportsTo" IsForeignKey="true"/>
+         <Association Member="Employees" OtherKey="ReportsTo"/>
+         <Association Member="EmployeeTerritories" OtherKey="EmployeeID"/>
+         <Association Member="Orders" OtherKey="EmployeeID"/>
+      </Type>
+   </Table>
+   <Table Name="EmployeeTerritories">
+      <Type Name="EmployeeTerritory">
+         <Column Member="EmployeeID" IsPrimaryKey="true"/>
+         <Column Member="TerritoryID" IsPrimaryKey="true" CanBeNull="false"/>
+         <Association Member="Employee" ThisKey="EmployeeID" IsForeignKey="true"/>
+         <Association Member="Territory" ThisKey="TerritoryID" IsForeignKey="true"/>
+      </Type>
+   </Table>
+   <Table Name="Orders">
+      <Type Name="Order">
+         <Column Member="OrderID" IsPrimaryKey="true" IsDbGenerated="true"/>
+         <Column Member="CustomerID" CanBeNull="false"/>
+         <Column Member="EmployeeID"/>
+         <Column Member="OrderDate"/>
+         <Column Member="RequiredDate"/>
+         <Column Member="ShippedDate"/>
+         <Column Member="ShipVia"/>
+         <Column Member="Freight"/>
+         <Column Member="ShipName"/>
+         <Column Member="ShipAddress"/>
+         <Column Member="ShipCity"/>
+         <Column Member="ShipRegion"/>
+         <Column Member="ShipPostalCode"/>
+         <Column Member="ShipCountry"/>
+         <Association Member="OrderDetails" OtherKey="OrderID"/>
+         <Association Member="Customer" ThisKey="CustomerID" IsForeignKey="true"/>
+         <Association Member="Employee" ThisKey="EmployeeID" IsForeignKey="true"/>
+         <Association Member="Shipper" ThisKey="ShipVia" IsForeignKey="true"/>
+      </Type>
+   </Table>
+   <Table Name="Order Details">
+      <Type Name="OrderDetail">
+         <Column Member="OrderID" IsPrimaryKey="true" />
+         <Column Member="ProductID" IsPrimaryKey="true"/>
+         <Column Member="UnitPrice"/>
+         <Column Member="Quantity"/>
+         <Column Member="Discount"/>
+         <Association Member="Order" ThisKey="OrderID" IsForeignKey="true"/>
+         <Association Member="Product" ThisKey="ProductID" IsForeignKey="true"/>
+      </Type>
+   </Table>
+   <Table Name="Products">
+      <Type Name="Product">
+         <Column Member="ProductID" IsPrimaryKey="true" IsDbGenerated="true"/>
+         <Column Member="ProductName" CanBeNull="false"/>
+         <Column Member="SupplierID"/>
+         <Column Member="CategoryID"/>
+         <Column Member="QuantityPerUnit"/>
+         <Column Member="UnitPrice"/>
+         <Column Member="UnitsInStock"/>
+         <Column Member="UnitsOnOrder"/>
+         <Column Member="ReorderLevel"/>
+         <Column Member="Discontinued"/>
+         <Association Member="Category" ThisKey="CategoryID" IsForeignKey="true"/>
+         <Association Member="Supplier" ThisKey="SupplierID" IsForeignKey="true"/>
+         <Association Member="OrderDetails" OtherKey="ProductID"/>
+      </Type>
+   </Table>
+   <Table Name="Region">
+      <Type Name="Region">
+         <Column Member="RegionID" IsPrimaryKey="true"/>
+         <Column Member="RegionDescription" CanBeNull="false"/>
+         <Association Member="Territories" OtherKey="RegionID"/>
+      </Type>
+   </Table>
+   <Table Name="Suppliers">
+      <Type Name="Supplier">
+         <Column Member="SupplierID" IsPrimaryKey="true" IsDbGenerated="true"/>
+         <Column Member="CompanyName" CanBeNull="false"/>
+         <Column Member="CompanyName"/>
+         <Column Member="ContactName"/>
+         <Column Member="ContactTitle"/>
+         <Column Member="Address"/>
+         <Column Member="City"/>
+         <Column Member="Region"/>
+         <Column Member="PostalCode"/>
+         <Column Member="Country"/>
+         <Column Member="Phone"/>
+         <Column Member="Fax"/>
+         <Column Member="HomePage" UpdateCheck="Never"/>
+         <Association Member="Products" OtherKey="SupplierID"/>
+      </Type>
+   </Table>
+   <Table Name="Territories">
+      <Type Name="Territory">
+         <Column Member="TerritoryID" CanBeNull="false" IsPrimaryKey="true"/>
+         <Column Member="TerritoryDescription" CanBeNull="false"/>
+         <Column Member="RegionID"/>
+         <Association Member="EmployeeTerritories" OtherKey="TerritoryID"/>
+         <Association Member="Region" ThisKey="RegionID" IsForeignKey="true"/>
+      </Type>
+   </Table>
+   <Table Name="Shippers">
+      <Type Name="Shipper">
+         <Column Member="ShipperID" IsPrimaryKey="true" IsDbGenerated="true"/>
+         <Column Member="CompanyName" CanBeNull="false"/>
+         <Column Member="Phone"/>
+         <Association Member="Orders" OtherKey="ShipVia"/>
+      </Type>
+   </Table>
+</Database>

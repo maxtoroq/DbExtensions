@@ -1,0 +1,8 @@
+[Bb]in
+[Oo]bj
+[Tt]est[Rr]esults
+*.suo
+*.user
+packages
+samples/Northwind/Northwind.sl3
+samples/Northwind/Northwind.sdf
