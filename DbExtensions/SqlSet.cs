@@ -26,7 +26,7 @@ using System.Linq;
 namespace DbExtensions {
 
    [DebuggerDisplay("{definingQuery}")]
-   public class SqlSet {
+   public class SqlSet : ISqlSet<SqlSet, object> {
 
       readonly DbConnection connection;
       readonly SqlBuilder definingQuery;
@@ -97,164 +97,6 @@ namespace DbExtensions {
             .FROM(this.definingQuery, "__set" + this.setIndex.ToString(CultureInfo.InvariantCulture));
       }
 
-      /// <summary>
-      /// Gets all objects in the set. The query is deferred-executed.
-      /// </summary>
-      /// <returns>All objects in the set.</returns>
-      public IEnumerable<object> Map() {
-
-         if (this.resultType == null)
-            throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
-
-         return CreateCommand().Map(resultType, this.Log);
-      }
-
-      public bool All(string predicate, params object[] parameters) {
-
-         using (this.connection.EnsureOpen()) 
-            return LongCount() == Where(predicate, parameters).LongCount(); 
-      }
-
-      /// <summary>
-      /// Checks if the set contains rows.
-      /// </summary>
-      /// <returns>true id the set contains rows; otherwise, false.</returns>
-      public bool Any() {
-         return this.connection.Exists(CreateCommand(SqlBuilderDbExtensions.ExistsQuery(this.definingQuery)), this.Log);
-      }
-
-      /// <summary>
-      /// Checks if <paramref name="predicate"/> matches any of the rows in the set.
-      /// </summary>
-      /// <param name="predicate">The SQL predicate.</param>
-      /// <param name="parameters">The parameters to use in the predicate.</param>
-      /// <returns>true if at least one row matches the <paramref name="predicate"/>; otherwise, false.</returns>
-      public bool Any(string predicate, params object[] parameters) {
-
-         var superQuery = CreateSuperQuery()
-            .WHERE()
-            ._If(!String.IsNullOrEmpty(predicate), predicate, parameters);
-
-         return this.connection.Exists(CreateCommand(SqlBuilderDbExtensions.ExistsQuery(superQuery)), this.Log);
-      }
-
-      public int Count() {
-         return this.connection.Count(CreateCommand(SqlBuilderDbExtensions.CountQuery(this.definingQuery)), this.Log);
-      }
-
-      /// <summary>
-      /// Gets the number of rows in the set that matches the <paramref name="predicate"/>.
-      /// </summary>
-      /// <param name="predicate">The SQL predicate.</param>
-      /// <param name="parameters">The parameters to use in the predicate.</param>
-      /// <returns>The number of rows that match the <paramref name="predicate"/>.</returns>
-      public int Count(string predicate, params object[] parameters) {
-
-         var superQuery = CreateSuperQuery()
-            .WHERE()
-            ._If(!String.IsNullOrEmpty(predicate), predicate, parameters);
-
-         return this.connection.Count(CreateCommand(SqlBuilderDbExtensions.CountQuery(superQuery)), this.Log);
-      }
-
-      [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
-      public long LongCount() {
-         return this.connection.LongCount(CreateCommand(SqlBuilderDbExtensions.CountQuery(this.definingQuery)), this.Log);
-      }
-
-      /// <summary>
-      /// Gets the number of rows in the set that matches the <paramref name="predicate"/>.
-      /// </summary>
-      /// <param name="predicate">The SQL predicate.</param>
-      /// <param name="parameters">The parameters to use in the predicate.</param>
-      /// <returns>The number of rows that match the <paramref name="predicate"/>.</returns>
-      [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
-      public long LongCount(string predicate, params object[] parameters) {
-
-         var superQuery = CreateSuperQuery()
-            .WHERE()
-            ._If(!String.IsNullOrEmpty(predicate), predicate, parameters);
-
-         return this.connection.LongCount(CreateCommand(SqlBuilderDbExtensions.CountQuery(superQuery)), this.Log);
-      }
-
-      public SqlSet Where(string format, params object[] args) {
-
-         var superQuery = CreateSuperQuery()
-            .WHERE(format, args);
-
-         return new SqlSet(this, superQuery);
-      }
-
-      public SqlSet OrderBy(string format, params object[] args) {
-
-         var superQuery = CreateSuperQuery()
-            .ORDER_BY(format, args);
-
-         return new SqlSet(this, superQuery);
-      }
-
-      public SqlSet Limit(string format, params object[] args) {
-
-         var superQuery = CreateSuperQuery()
-            .LIMIT(format, args);
-
-         return new SqlSet(this, superQuery);
-      }
-
-      public SqlSet Limit(int maxRecords) {
-
-         var superQuery = CreateSuperQuery()
-            .LIMIT(maxRecords);
-
-         return new SqlSet(this, superQuery);
-      }
-
-      public SqlSet Offset(string format, params object[] args) {
-
-         var superQuery = CreateSuperQuery()
-            .OFFSET(format, args);
-
-         return new SqlSet(this, superQuery);
-      }
-
-      public SqlSet Offset(int startIndex) {
-
-         var superQuery = CreateSuperQuery()
-            .OFFSET(startIndex);
-
-         return new SqlSet(this, superQuery);
-      }
-
-      public SqlSet<TResult> Select<TResult>(string format, params object[] args) { 
-         
-         var superQuery = CreateSuperQuery(format, args);
-         
-         return new SqlSet<TResult>(this, superQuery);
-      }
-
-      public SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string format, params object[] args) {
-
-         var superQuery = CreateSuperQuery(format, args);
-
-         return new SqlSet<TResult>(this, superQuery, mapper);
-      }
-
-      public SqlSet Select(Type resultType, string format, params object[] args) {
-
-         var superQuery = CreateSuperQuery(format, args);
-
-         return new SqlSet(this, superQuery, resultType);
-      }
-
-      public SqlSet<TResult> Cast<TResult>() {
-         return new SqlSet<TResult>(this, GetDefiningQuery());
-      }
-
-      public SqlSet Cast(Type resultType) {
-         return new SqlSet(this, GetDefiningQuery(), resultType);
-      }
-
       protected DbCommand CreateCommand() {
          return CreateCommand(this.definingQuery);
       }
@@ -275,7 +117,7 @@ namespace DbExtensions {
       }
 
       public IEnumerator<object> GetEnumerator() {
-         return Map().GetEnumerator();
+         return AsEnumerable().GetEnumerator();
       }
 
       [EditorBrowsable(EditorBrowsableState.Never)]
@@ -297,9 +139,264 @@ namespace DbExtensions {
       public override string ToString() {
          return this.definingQuery.ToString();
       }
+
+      #region ISqlSet<SqlSet,object> Members
+
+      public bool All(string predicate) {
+         return All(predicate, null);
+      }
+
+      public bool All(string predicate, params object[] parameters) {
+
+         using (this.connection.EnsureOpen())
+            return LongCount() == Where(predicate, parameters).LongCount();
+      }
+
+      /// <summary>
+      /// Checks if the set contains rows.
+      /// </summary>
+      /// <returns>true id the set contains rows; otherwise, false.</returns>
+      public bool Any() {
+         return this.connection.Exists(CreateCommand(SqlBuilderDbExtensions.ExistsQuery(this.definingQuery)), this.Log);
+      }
+
+      public bool Any(string predicate) {
+         return Any(predicate, null);
+      }
+
+      /// <summary>
+      /// Checks if <paramref name="predicate"/> matches any of the rows in the set.
+      /// </summary>
+      /// <param name="predicate">The SQL predicate.</param>
+      /// <param name="parameters">The parameters to use in the predicate.</param>
+      /// <returns>true if at least one row matches the <paramref name="predicate"/>; otherwise, false.</returns>
+      public bool Any(string predicate, params object[] parameters) {
+
+         var superQuery = CreateSuperQuery()
+            .WHERE()
+            ._If(!String.IsNullOrEmpty(predicate), predicate, parameters);
+
+         return this.connection.Exists(CreateCommand(SqlBuilderDbExtensions.ExistsQuery(superQuery)), this.Log);
+      }
+
+      /// <summary>
+      /// Gets all objects in the set. The query is deferred-executed.
+      /// </summary>
+      /// <returns>All objects in the set.</returns>
+      public IEnumerable<object> AsEnumerable() {
+
+         if (this.resultType == null)
+            throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
+
+         return CreateCommand().Map(resultType, this.Log);
+      }
+
+      public SqlSet<TResult> Cast<TResult>() {
+         return new SqlSet<TResult>(this, GetDefiningQuery());
+      }
+
+      public SqlSet Cast(Type resultType) {
+         return new SqlSet(this, GetDefiningQuery(), resultType);
+      }
+
+      public int Count() {
+         return this.connection.Count(CreateCommand(SqlBuilderDbExtensions.CountQuery(this.definingQuery)), this.Log);
+      }
+
+      public int Count(string predicate) {
+         return Count(predicate, null);
+      }
+
+      /// <summary>
+      /// Gets the number of rows in the set that matches the <paramref name="predicate"/>.
+      /// </summary>
+      /// <param name="predicate">The SQL predicate.</param>
+      /// <param name="parameters">The parameters to use in the predicate.</param>
+      /// <returns>The number of rows that match the <paramref name="predicate"/>.</returns>
+      public int Count(string predicate, params object[] parameters) {
+
+         var superQuery = CreateSuperQuery()
+            .WHERE()
+            ._If(!String.IsNullOrEmpty(predicate), predicate, parameters);
+
+         return this.connection.Count(CreateCommand(SqlBuilderDbExtensions.CountQuery(superQuery)), this.Log);
+      }
+
+      public object First() {
+         return Take(1).AsEnumerable().First();
+      }
+
+      public object First(string predicate) {
+         return First(predicate, null);
+      }
+
+      public object First(string predicate, params object[] parameters) {
+         return Where(predicate, parameters).First();
+      }
+
+      public object FirstOrDefault() {
+         return Take(1).AsEnumerable().FirstOrDefault();
+      }
+
+      public object FirstOrDefault(string predicate) {
+         return FirstOrDefault(predicate, null);
+      }
+
+      public object FirstOrDefault(string predicate, params object[] parameters) {
+         return Where(predicate, parameters).FirstOrDefault();
+      }
+
+      [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
+      public long LongCount() {
+         return this.connection.LongCount(CreateCommand(SqlBuilderDbExtensions.CountQuery(this.definingQuery)), this.Log);
+      }
+
+      public long LongCount(string predicate) {
+         return LongCount(predicate, null);
+      }
+
+      /// <summary>
+      /// Gets the number of rows in the set that matches the <paramref name="predicate"/>.
+      /// </summary>
+      /// <param name="predicate">The SQL predicate.</param>
+      /// <param name="parameters">The parameters to use in the predicate.</param>
+      /// <returns>The number of rows that match the <paramref name="predicate"/>.</returns>
+      [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
+      public long LongCount(string predicate, params object[] parameters) {
+
+         var superQuery = CreateSuperQuery()
+            .WHERE()
+            ._If(!String.IsNullOrEmpty(predicate), predicate, parameters);
+
+         return this.connection.LongCount(CreateCommand(SqlBuilderDbExtensions.CountQuery(superQuery)), this.Log);
+      }
+
+      public SqlSet OrderBy(string format) {
+         return OrderBy(format, null);
+      }
+
+      public SqlSet OrderBy(string format, params object[] args) {
+
+         var superQuery = CreateSuperQuery()
+            .ORDER_BY(format, args);
+
+         return new SqlSet(this, superQuery);
+      }
+
+      public SqlSet<TResult> Select<TResult>(string format) {
+         return Select<TResult>(format, null);
+      }
+
+      public SqlSet<TResult> Select<TResult>(string format, params object[] args) {
+
+         var superQuery = CreateSuperQuery(format, args);
+
+         return new SqlSet<TResult>(this, superQuery);
+      }
+
+      public SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string format) {
+         return Select<TResult>(mapper, format, null);
+      }
+
+      public SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string format, params object[] args) {
+
+         var superQuery = CreateSuperQuery(format, args);
+
+         return new SqlSet<TResult>(this, superQuery, mapper);
+      }
+
+      public SqlSet Select(Type resultType, string format) {
+         return Select(resultType, format, null);
+      }
+
+      public SqlSet Select(Type resultType, string format, params object[] args) {
+
+         var superQuery = CreateSuperQuery(format, args);
+
+         return new SqlSet(this, superQuery, resultType);
+      }
+
+      public object Single() {
+         
+         // Query could return millions of records
+         // just select 2 then call Single
+         return Take(2).AsEnumerable().Single();
+      }
+
+      public object Single(string predicate) {
+         return Single(predicate, null);
+      }
+
+      public object Single(string predicate, params object[] parameters) {
+         return Where(predicate, parameters).Single();
+      }
+
+      public object SingleOrDefault() {
+
+         // Query could return millions of records
+         // just select 2 then call SingleOrDefault
+         return Take(2).AsEnumerable().SingleOrDefault();
+      }
+
+      public object SingleOrDefault(string predicate) {
+         return SingleOrDefault(predicate, null);
+      }
+
+      public object SingleOrDefault(string predicate, params object[] parameters) {
+         return Where(predicate, parameters).SingleOrDefault();
+      }
+
+      public SqlSet Skip(int count) {
+
+         var superQuery = CreateSuperQuery()
+            .OFFSET(count);
+
+         return new SqlSet(this, superQuery);
+      }
+
+      public SqlSet Take(int count) {
+
+         var superQuery = CreateSuperQuery()
+            .LIMIT(count);
+
+         return new SqlSet(this, superQuery);
+      }
+
+      public object[] ToArray() {
+         return AsEnumerable().ToArray();
+      }
+
+      public List<object> ToList() {
+         return AsEnumerable().ToList();
+      }
+
+      public SqlSet Where(string predicate) {
+         return Where(predicate, null);
+      }
+
+      public SqlSet Where(string predicate, params object[] parameters) {
+
+         var superQuery = CreateSuperQuery()
+            .WHERE(predicate, parameters);
+
+         return new SqlSet(this, superQuery);
+      }
+
+      public SqlSet Union(SqlSet otherSet) {
+
+         if (otherSet == null) throw new ArgumentNullException("otherSet");
+
+         var superQuery = CreateSuperQuery()
+            .UNION()
+            .Append(otherSet.CreateSuperQuery());
+
+         return new SqlSet(this, superQuery);
+      }
+
+      #endregion
    }
 
-   public class SqlSet<TResult> : SqlSet {
+   public class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult> {
 
       readonly Func<IDataRecord, TResult> mapper;
 
@@ -338,11 +435,17 @@ namespace DbExtensions {
          this.mapper = mapper;
       }
 
+      public new IEnumerator<TResult> GetEnumerator() {
+         return AsEnumerable().GetEnumerator();
+      }
+
+      #region ISqlSet<SqlSet<TResult>,TResult> Members
+
       /// <summary>
       /// Gets all <typeparamref name="TResult"/> objects in the set. The query is deferred-executed.
       /// </summary>
       /// <returns>All <typeparamref name="TResult"/> objects in the set.</returns>
-      public new IEnumerable<TResult> Map() {
+      public new IEnumerable<TResult> AsEnumerable() {
 
          DbCommand command = CreateCommand();
 
@@ -352,12 +455,32 @@ namespace DbExtensions {
          return command.Map<TResult>(this.Log);
       }
 
-      public new SqlSet<TResult> Where(string format, params object[] args) {
+      public new TResult First() {
+         return Take(1).AsEnumerable().First();
+      }
 
-         var superQuery = CreateSuperQuery()
-            .WHERE(format, args);
+      public new TResult First(string predicate) {
+         return First(predicate, null);
+      }
 
-         return new SqlSet<TResult>(this, superQuery);
+      public new TResult First(string predicate, params object[] parameters) {
+         return Where(predicate, parameters).First();
+      }
+
+      public new TResult FirstOrDefault() {
+         return Take(1).AsEnumerable().FirstOrDefault();
+      }
+
+      public new TResult FirstOrDefault(string predicate) {
+         return FirstOrDefault(predicate, null);
+      }
+
+      public new TResult FirstOrDefault(string predicate, params object[] parameters) {
+         return Where(predicate, parameters).FirstOrDefault();
+      }
+
+      public new SqlSet<TResult> OrderBy(string format) {
+         return OrderBy(format, null);
       }
 
       public new SqlSet<TResult> OrderBy(string format, params object[] args) {
@@ -368,40 +491,131 @@ namespace DbExtensions {
          return new SqlSet<TResult>(this, superQuery);
       }
 
-      public new SqlSet<TResult> Limit(string format, params object[] args) {
+      public new TResult Single() {
+
+         // Query could return millions of records
+         // just select 2 then call Single
+         return Take(2).AsEnumerable().Single();
+      }
+
+      public new TResult Single(string predicate) {
+         return Single(predicate, null);
+      }
+
+      public new TResult Single(string predicate, params object[] parameters) {
+         return Where(predicate, parameters).Single();
+      }
+
+      public new TResult SingleOrDefault() {
+
+         // Query could return millions of records
+         // just select 2 then call SingleOrDefault
+         return Take(2).AsEnumerable().SingleOrDefault();
+      }
+
+      public new TResult SingleOrDefault(string predicate) {
+         return SingleOrDefault(predicate, null);
+      }
+
+      public new TResult SingleOrDefault(string predicate, params object[] parameters) {
+         return Where(predicate, parameters).SingleOrDefault();
+      }
+
+      public new SqlSet<TResult> Skip(int count) {
 
          var superQuery = CreateSuperQuery()
-            .LIMIT(format, args);
+            .OFFSET(count);
 
          return new SqlSet<TResult>(this, superQuery);
       }
 
-      public new SqlSet<TResult> Limit(int maxRecords) {
+      public new SqlSet<TResult> Take(int count) {
 
          var superQuery = CreateSuperQuery()
-            .LIMIT(maxRecords);
+            .LIMIT(count);
 
          return new SqlSet<TResult>(this, superQuery);
       }
 
-      public new SqlSet<TResult> Offset(string format, params object[] args) {
+      public new TResult[] ToArray() {
+         return AsEnumerable().ToArray();
+      }
+
+      public new List<TResult> ToList() {
+         return AsEnumerable().ToList();
+      }
+
+      public new SqlSet<TResult> Where(string predicate) {
+         return Where(predicate, null);
+      }
+
+      public new SqlSet<TResult> Where(string predicate, params object[] parameters) {
 
          var superQuery = CreateSuperQuery()
-            .OFFSET(format, args);
+            .WHERE(predicate, parameters);
 
          return new SqlSet<TResult>(this, superQuery);
       }
 
-      public new SqlSet<TResult> Offset(int startIndex) {
+      public SqlSet<TResult> Union(SqlSet<TResult> otherSet) {
+
+         if (otherSet == null) throw new ArgumentNullException("otherSet");
 
          var superQuery = CreateSuperQuery()
-            .OFFSET(startIndex);
+            .UNION()
+            .Append(otherSet.CreateSuperQuery());
 
          return new SqlSet<TResult>(this, superQuery);
       }
 
-      public new IEnumerator<TResult> GetEnumerator() {
-         return Map().GetEnumerator();
-      }
+      #endregion
+   }
+   
+   interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
+
+      // Standard SqlSet API
+      // aka LINQ to SqlBuilder
+
+      bool All(string predicate);
+      bool All(string predicate, params object[] parameters);
+      bool Any();
+      bool Any(string predicate);
+      bool Any(string predicate, params object[] parameters);
+      IEnumerable<TSource> AsEnumerable();
+      SqlSet<TResult> Cast<TResult>();
+      SqlSet Cast(Type resultType);
+      int Count();
+      int Count(string predicate);
+      int Count(string predicate, params object[] parameters);
+      TSource First();
+      TSource First(string predicate);
+      TSource First(string predicate, params object[] parameters);
+      TSource FirstOrDefault();
+      TSource FirstOrDefault(string predicate);
+      TSource FirstOrDefault(string predicate, params object[] parameters);
+      long LongCount();
+      long LongCount(string predicate);
+      long LongCount(string predicate, params object[] parameters);
+      TSqlSet OrderBy(string format);
+      TSqlSet OrderBy(string format, params object[] args);
+      SqlSet<TResult> Select<TResult>(string format);
+      SqlSet<TResult> Select<TResult>(string format, params object[] args);
+      SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string format);
+      SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string format, params object[] args);
+      SqlSet Select(Type resultType, string format);
+      SqlSet Select(Type resultType, string format, params object[] args);
+      TSource Single();
+      TSource Single(string predicate);
+      TSource Single(string predicate, params object[] parameters);
+      TSource SingleOrDefault();
+      TSource SingleOrDefault(string predicate);
+      TSource SingleOrDefault(string predicate, params object[] parameters);
+      TSqlSet Skip(int count);
+      TSqlSet Take(int count);
+      TSource[] ToArray();
+      List<TSource> ToList();
+      TSqlSet Where(string predicate);
+      TSqlSet Where(string predicate, params object[] parameters);
+      TSqlSet Union(TSqlSet otherSet);
    }
 }
