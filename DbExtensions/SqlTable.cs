@@ -30,6 +30,8 @@ namespace DbExtensions {
 
       // TODO: optimize Count using key or first column
 
+      // table is the SqlTable<TEntity> instance for metaType
+      // SqlTable is only a wrapper on SqlTable<TEntity>
       readonly ISqlTable table;
       readonly MetaType metaType;
 
@@ -44,6 +46,10 @@ namespace DbExtensions {
       public new SqlTable<TEntity> Cast<TEntity>() where TEntity : class {
          return (SqlTable<TEntity>)table;
       }
+
+      #region ISqlTable Members
+
+      // These methods just call the same method on table
 
       public object Find(object id) {
          return table.Find(id);
@@ -148,6 +154,8 @@ namespace DbExtensions {
       public SqlBuilder DELETE_FROM_WHERE_id(object id) {
          return table.DELETE_FROM_WHERE_id(id);
       }
+
+      #endregion
    }
 
    [DebuggerDisplay("{metaType.Name}")]
@@ -961,21 +969,22 @@ namespace DbExtensions {
 
    interface ISqlTable {
 
+      bool Contains(object entity);
+      bool Contains(object entity, bool version);
+      void Delete(object entity);
+      void Delete(object entity, ConcurrencyConflictPolicy conflictPolicy);
+      void DeleteById(object id);
+      void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy);
+      void FillDefaults(object entity);
       object Find(object id);
       void Insert(object entity);
       void InsertDeep(object entity);
       void InsertRange(IEnumerable<object> entities);
       void InsertRange(params object[] entities);
+      void Refresh(object entity);
       void Update(object entity);
       void Update(object entity, ConcurrencyConflictPolicy conflictPolicy);
-      void Delete(object entity);
-      void Delete(object entity, ConcurrencyConflictPolicy conflictPolicy);
-      void DeleteById(object id);
-      void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy);
-      bool Contains(object entity);
-      bool Contains(object entity, bool version);
-      void FillDefaults(object entity);
-      void Refresh(object entity);
+      
       SqlBuilder SELECT_();
       SqlBuilder SELECT_(string tableAlias);
       SqlBuilder SELECT_FROM();
