@@ -15,10 +15,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Data.Linq.Mapping;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -34,12 +36,18 @@ namespace DbExtensions {
       // SqlTable is only a wrapper on SqlTable<TEntity>
       readonly ISqlTable table;
       readonly MetaType metaType;
+      readonly SqlCommandBuilder<object> sqlCommands;
+
+      public SqlCommandBuilder<object> SQL {
+         get { return sqlCommands; }
+      }
 
       internal SqlTable(DataAccessObject dao, MetaType metaType, ISqlTable table)
          : base(dao.Connection, dao.SELECT_FROM(metaType, null, null), adoptQuery: true) {
 
          this.table = table;
          this.metaType = metaType;
+         this.sqlCommands = new SqlCommandBuilder<object>(dao, metaType);
          this.Log = dao.Configuration.Log;
       }
 
@@ -111,50 +119,6 @@ namespace DbExtensions {
          table.Refresh(entity);
       }
 
-      public SqlBuilder SELECT_() {
-         return table.SELECT_();
-      }
-
-      public SqlBuilder SELECT_(string tableAlias) {
-         return table.SELECT_(tableAlias);
-      }
-
-      public SqlBuilder SELECT_FROM() {
-         return table.SELECT_FROM();
-      }
-
-      public SqlBuilder SELECT_FROM(string tableAlias) {
-         return table.SELECT_FROM(tableAlias);
-      }
-
-      public SqlBuilder INSERT_INTO_VALUES(object entity) {
-         return table.INSERT_INTO_VALUES(entity);
-      }
-
-      public SqlBuilder UPDATE_SET_WHERE(object entity) {
-         return table.UPDATE_SET_WHERE(entity);
-      }
-
-      public SqlBuilder UPDATE_SET_WHERE(object entity, ConcurrencyConflictPolicy conflictPolicy) {
-         return table.UPDATE_SET_WHERE(entity, conflictPolicy);
-      }
-
-      public SqlBuilder DELETE_FROM() {
-         return table.DELETE_FROM();
-      }
-
-      public SqlBuilder DELETE_FROM_WHERE(object entity) {
-         return table.DELETE_FROM_WHERE(entity);
-      }
-
-      public SqlBuilder DELETE_FROM_WHERE(object entity, ConcurrencyConflictPolicy conflictPolicy) {
-         return table.DELETE_FROM_WHERE(entity, conflictPolicy);
-      }
-
-      public SqlBuilder DELETE_FROM_WHERE_id(object id) {
-         return table.DELETE_FROM_WHERE_id(id);
-      }
-
       #endregion
    }
 
@@ -166,12 +130,18 @@ namespace DbExtensions {
 
       readonly DataAccessObject dao;
       readonly MetaType metaType;
+      readonly SqlCommandBuilder<TEntity> sqlCommands;
+
+      public SqlCommandBuilder<TEntity> SQL {
+         get { return sqlCommands; }
+      }
 
       internal SqlTable(DataAccessObject dao, MetaType metaType)
          : base(dao.Connection, dao.SELECT_FROM(metaType, null, null), adoptQuery: true) {
 
          this.dao = dao;
          this.metaType = metaType;
+         this.sqlCommands = new SqlCommandBuilder<TEntity>(dao, metaType);
          this.Log = dao.Configuration.Log;
       }
 
@@ -188,39 +158,11 @@ namespace DbExtensions {
       }
 
       string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
-
-         if (predicateValues == null || predicateValues.Count == 0) throw new ArgumentException("predicateValues cannot be empty", "predicateValues");
-         if (parametersBuffer == null) throw new ArgumentNullException("parametersBuffer");
-
-         StringBuilder sb = new StringBuilder();
-
-         foreach (var item in predicateValues) {
-            if (sb.Length > 0) sb.Append(" AND ");
-
-            sb.Append(QuoteIdentifier(item.Key));
-
-            if (item.Value == null) {
-               sb.Append(" IS NULL");
-            } else {
-               sb.Append(" = {")
-                  .Append(parametersBuffer.Count)
-                  .Append("}");
-
-               parametersBuffer.Add(item.Value);
-            }
-         }
-
-         return sb.ToString();
+         return this.dao.BuildPredicateFragment(predicateValues, parametersBuffer);
       }
 
       void EnsureEntityType() {
-
-         if (!metaType.IsEntity) {
-            throw new InvalidOperationException(
-               String.Format(CultureInfo.InvariantCulture,
-                  "The operation is not available for non-entity types ('{0}').", metaType.Type.FullName)
-            );
-         }
+         this.dao.EnsureEntityType(metaType);
       }
 
       // CRUD
@@ -248,7 +190,7 @@ namespace DbExtensions {
             { metaType.IdentityMembers[0].MappedName, id }
          };
 
-         SqlBuilder query = SELECT_FROM();
+         SqlBuilder query = this.SQL.SELECT_FROM();
          query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
 
          TEntity entity = Map(query).SingleOrDefault();
@@ -268,7 +210,7 @@ namespace DbExtensions {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
-         SqlBuilder insertSql = INSERT_INTO_VALUES(entity);
+         SqlBuilder insertSql = this.SQL.INSERT_INTO_VALUES(entity);
 
          MetaDataMember idMember = metaType.DBGeneratedIdentityMember;
 
@@ -372,7 +314,7 @@ namespace DbExtensions {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
-         DbCommand cmd = CreateCommand(UPDATE_SET_WHERE(entity, conflictPolicy));
+         DbCommand cmd = CreateCommand(this.SQL.UPDATE_SET_WHERE(entity, conflictPolicy));
 
          AffectedRecordsPolicy affRec = GetAffectedRecordsPolicy(conflictPolicy);
 
@@ -414,7 +356,7 @@ namespace DbExtensions {
 
          AffectedRecordsPolicy affRec = GetAffectedRecordsPolicy(conflictPolicy);
 
-         this.dao.Affect(DELETE_FROM_WHERE(entity, conflictPolicy), 1, affRec);
+         this.dao.Affect(this.SQL.DELETE_FROM_WHERE(entity, conflictPolicy), 1, affRec);
       }
 
       /// <summary>
@@ -439,7 +381,7 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
       /// </param>
       public void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
-         this.dao.Affect(DELETE_FROM_WHERE_id(id), 1, GetAffectedRecordsPolicy(conflictPolicy));
+         this.dao.Affect(this.SQL.DELETE_FROM_WHERE_id(id), 1, GetAffectedRecordsPolicy(conflictPolicy));
       }
 
       static AffectedRecordsPolicy GetAffectedRecordsPolicy(ConcurrencyConflictPolicy conflictPolicy) {
@@ -492,7 +434,7 @@ namespace DbExtensions {
             m => m.MemberAccessor.GetBoxedValue(entity)
          );
 
-         SqlBuilder query = SELECT_FROM(new[] { predicateMembers[0] });
+         SqlBuilder query = this.SQL.SELECT_FROM(new[] { predicateMembers[0] });
          query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
 
          return this.dao.Exists(query);
@@ -576,7 +518,7 @@ namespace DbExtensions {
             m => m.MemberAccessor.GetBoxedValue(entity)
          );
 
-         SqlBuilder query = SELECT_FROM(refreshMembers);
+         SqlBuilder query = this.SQL.SELECT_FROM(refreshMembers);
          query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
 
          PocoMapper mapper = new PocoMapper(metaType.Type, this.Log);
@@ -588,7 +530,92 @@ namespace DbExtensions {
          }).SingleOrDefault();
       }
 
-      // SQL
+      #region ISqlTable Members
+
+      object ISqlTable.Find(object id) {
+         return Find(id);
+      }
+
+      void ISqlTable.Insert(object entity) {
+         Insert((TEntity)entity);
+      }
+
+      void ISqlTable.InsertDeep(object entity) {
+         InsertDeep((TEntity)entity);
+      }
+
+      void ISqlTable.InsertRange(IEnumerable<object> entities) {
+         InsertRange((IEnumerable<TEntity>)entities);
+      }
+
+      void ISqlTable.InsertRange(params object[] entities) {
+         InsertRange((TEntity[])entities);
+      }
+
+      void ISqlTable.Update(object entity) {
+         Update((TEntity)entity);
+      }
+
+      void ISqlTable.Update(object entity, ConcurrencyConflictPolicy conflictPolicy) {
+         Update((TEntity)entity, conflictPolicy);
+      }
+
+      void ISqlTable.Delete(object entity) {
+         Delete((TEntity)entity);
+      }
+
+      void ISqlTable.Delete(object entity, ConcurrencyConflictPolicy conflictPolicy) {
+         Delete((TEntity)entity, conflictPolicy);
+      }
+
+      void ISqlTable.DeleteById(object id) {
+         DeleteById(id);
+      }
+
+      void ISqlTable.DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
+         DeleteById(id, conflictPolicy);
+      }
+
+      bool ISqlTable.Contains(object entity) {
+         return Contains((TEntity)entity);
+      }
+
+      bool ISqlTable.Contains(object entity, bool version) {
+         return Contains((TEntity)entity, version);
+      }
+
+      void ISqlTable.FillDefaults(object entity) {
+         FillDefaults((TEntity)entity);
+      }
+
+      void ISqlTable.Refresh(object entity) {
+         Refresh((TEntity)entity);
+      }
+
+      #endregion
+   }
+
+   public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
+
+      readonly DataAccessObject dao;
+      readonly MetaType metaType;
+
+      internal SqlCommandBuilder(DataAccessObject dao, MetaType metaType) {
+         this.dao = dao;
+         this.metaType = metaType;
+      }
+
+      string QuoteIdentifier(string unquotedIdentifier) {
+         return this.dao.QuoteIdentifier(unquotedIdentifier);
+      }
+
+      string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
+         return this.dao.BuildPredicateFragment(predicateValues, parametersBuffer);
+      }
+
+      void EnsureEntityType() {
+         this.dao.EnsureEntityType(metaType);
+      }
 
       /// <summary>
       /// Creates and returns a SELECT query for the current table
@@ -618,7 +645,7 @@ namespace DbExtensions {
       /// <param name="selectMembers">The members to use in the SELECT clause.</param>
       /// <param name="tableAlias">The table alias.</param>
       /// <returns>The SELECT query.</returns>
-      protected SqlBuilder SELECT_(IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
+      internal SqlBuilder SELECT_(IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
          return this.dao.SELECT_(metaType, selectMembers, tableAlias);
       }
 
@@ -648,7 +675,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="selectMembers">The members to use in the SELECT clause.</param>
       /// <returns>The SELECT query.</returns>
-      protected SqlBuilder SELECT_FROM(IEnumerable<MetaDataMember> selectMembers) {
+      internal SqlBuilder SELECT_FROM(IEnumerable<MetaDataMember> selectMembers) {
          return SELECT_FROM(selectMembers, null);
       }
 
@@ -660,7 +687,7 @@ namespace DbExtensions {
       /// <param name="selectMembers">The members to use in the SELECT clause.</param>
       /// <param name="tableAlias">The table alias.</param>
       /// <returns>The SELECT query.</returns>
-      protected SqlBuilder SELECT_FROM(IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
+      internal SqlBuilder SELECT_FROM(IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
          return this.dao.SELECT_FROM(metaType, selectMembers, tableAlias);
       }
 
@@ -858,113 +885,26 @@ namespace DbExtensions {
             .WHERE(QuoteIdentifier(metaType.IdentityMembers[0].MappedName) + " = {0}", id);
       }
 
-      #region ISqlTable Members
-
-      object ISqlTable.Find(object id) {
-         return Find(id);
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public override bool Equals(object obj) {
+         return base.Equals(obj);
       }
 
-      void ISqlTable.Insert(object entity) {
-         Insert((TEntity)entity);
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public override int GetHashCode() {
+         return base.GetHashCode();
       }
 
-      void ISqlTable.InsertDeep(object entity) {
-         InsertDeep((TEntity)entity);
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Must match base signature.")]
+      public new Type GetType() {
+         return base.GetType();
       }
 
-      void ISqlTable.InsertRange(IEnumerable<object> entities) {
-         InsertRange((IEnumerable<TEntity>)entities);
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public override string ToString() {
+         return base.ToString();
       }
-
-      void ISqlTable.InsertRange(params object[] entities) {
-         InsertRange((TEntity[])entities);
-      }
-
-      void ISqlTable.Update(object entity) {
-         Update((TEntity)entity);
-      }
-
-      void ISqlTable.Update(object entity, ConcurrencyConflictPolicy conflictPolicy) {
-         Update((TEntity)entity, conflictPolicy);
-      }
-
-      void ISqlTable.Delete(object entity) {
-         Delete((TEntity)entity);
-      }
-
-      void ISqlTable.Delete(object entity, ConcurrencyConflictPolicy conflictPolicy) {
-         Delete((TEntity)entity, conflictPolicy);
-      }
-
-      void ISqlTable.DeleteById(object id) {
-         DeleteById(id);
-      }
-
-      void ISqlTable.DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
-         DeleteById(id, conflictPolicy);
-      }
-
-      bool ISqlTable.Contains(object entity) {
-         return Contains((TEntity)entity);
-      }
-
-      bool ISqlTable.Contains(object entity, bool version) {
-         return Contains((TEntity)entity, version);
-      }
-
-      void ISqlTable.FillDefaults(object entity) {
-         FillDefaults((TEntity)entity);
-      }
-
-      void ISqlTable.Refresh(object entity) {
-         Refresh((TEntity)entity);
-      }
-
-      SqlBuilder ISqlTable.SELECT_() {
-         return SELECT_();
-      }
-
-      SqlBuilder ISqlTable.SELECT_(string tableAlias) {
-         return SELECT_(tableAlias);
-      }
-
-      SqlBuilder ISqlTable.SELECT_FROM() {
-         return SELECT_FROM();
-      }
-
-      SqlBuilder ISqlTable.SELECT_FROM(string tableAlias) {
-         return SELECT_FROM(tableAlias);
-      }
-
-      SqlBuilder ISqlTable.INSERT_INTO_VALUES(object entity) {
-         return INSERT_INTO_VALUES((TEntity)entity);
-      }
-
-      SqlBuilder ISqlTable.UPDATE_SET_WHERE(object entity) {
-         return UPDATE_SET_WHERE((TEntity)entity);
-      }
-
-      SqlBuilder ISqlTable.UPDATE_SET_WHERE(object entity, ConcurrencyConflictPolicy conflictPolicy) {
-         return UPDATE_SET_WHERE((TEntity)entity, conflictPolicy);
-      }
-
-      SqlBuilder ISqlTable.DELETE_FROM() {
-         return DELETE_FROM();
-      }
-
-      SqlBuilder ISqlTable.DELETE_FROM_WHERE(object entity) {
-         return DELETE_FROM_WHERE((TEntity)entity);
-      }
-
-      SqlBuilder ISqlTable.DELETE_FROM_WHERE(object entity, ConcurrencyConflictPolicy conflictPolicy) {
-         return DELETE_FROM_WHERE((TEntity)entity, conflictPolicy);
-      }
-
-      SqlBuilder ISqlTable.DELETE_FROM_WHERE_id(object id) {
-         return DELETE_FROM_WHERE_id(id);
-      }
-
-      #endregion
    }
 
    interface ISqlTable {
@@ -984,17 +924,5 @@ namespace DbExtensions {
       void Refresh(object entity);
       void Update(object entity);
       void Update(object entity, ConcurrencyConflictPolicy conflictPolicy);
-      
-      SqlBuilder SELECT_();
-      SqlBuilder SELECT_(string tableAlias);
-      SqlBuilder SELECT_FROM();
-      SqlBuilder SELECT_FROM(string tableAlias);
-      SqlBuilder INSERT_INTO_VALUES(object entity);
-      SqlBuilder UPDATE_SET_WHERE(object entity);
-      SqlBuilder UPDATE_SET_WHERE(object entity, ConcurrencyConflictPolicy conflictPolicy);
-      SqlBuilder DELETE_FROM();
-      SqlBuilder DELETE_FROM_WHERE(object entity);
-      SqlBuilder DELETE_FROM_WHERE(object entity, ConcurrencyConflictPolicy conflictPolicy);
-      SqlBuilder DELETE_FROM_WHERE_id(object id);
    }
 }

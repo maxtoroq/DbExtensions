@@ -25,6 +25,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace DbExtensions {
 
@@ -652,7 +653,7 @@ namespace DbExtensions {
 
          if (batch) {
 
-            SqlBuilder batchInsert = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => table.INSERT_INTO_VALUES(e)));
+            SqlBuilder batchInsert = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => table.SQL.INSERT_INTO_VALUES(e)));
 
             Affect(batchInsert, entities.Length, AffectedRecordsPolicy.MustMatchAffecting);
 
@@ -774,10 +775,46 @@ namespace DbExtensions {
          return this.cb.QuoteIdentifier(unquotedIdentifier);
       }
 
+      internal string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
+
+         if (predicateValues == null || predicateValues.Count == 0) throw new ArgumentException("predicateValues cannot be empty", "predicateValues");
+         if (parametersBuffer == null) throw new ArgumentNullException("parametersBuffer");
+
+         var sb = new StringBuilder();
+
+         foreach (var item in predicateValues) {
+            if (sb.Length > 0) sb.Append(" AND ");
+
+            sb.Append(QuoteIdentifier(item.Key));
+
+            if (item.Value == null) {
+               sb.Append(" IS NULL");
+            } else {
+               sb.Append(" = {")
+                  .Append(parametersBuffer.Count)
+                  .Append("}");
+
+               parametersBuffer.Add(item.Value);
+            }
+         }
+
+         return sb.ToString();
+      }
+
       internal void LogLine(string message) {
 
          if (this.Log != null)
             this.Log.WriteLine(message);
+      }
+
+      internal void EnsureEntityType(MetaType metaType) {
+
+         if (!metaType.IsEntity) {
+            throw new InvalidOperationException(
+               String.Format(CultureInfo.InvariantCulture,
+                  "The operation is not available for non-entity types ('{0}').", metaType.Type.FullName)
+            );
+         }
       }
 
       MetaType GetMetaType(Type entityType) {

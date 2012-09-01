@@ -93,7 +93,7 @@ namespace Samples.CSharp {
 
          db.Orders.Update(order);
 
-         db.Affect(this.db.Set<OrderDetail>()
+         db.Affect(this.db.Set<OrderDetail>().SQL
             .DELETE_FROM()
             .WHERE("OrderID = {0}", order.OrderID)
             , order.OrderDetails.Count);
