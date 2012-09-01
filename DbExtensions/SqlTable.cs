@@ -93,8 +93,8 @@ namespace DbExtensions {
          return table.Contains(entity);
       }
 
-      public bool ContainsVersion(object entity) {
-         return table.ContainsVersion(entity);
+      public bool Contains(object entity, bool version) {
+         return table.Contains(entity, version);
       }
 
       public void FillDefaults(object entity) {
@@ -463,15 +463,12 @@ namespace DbExtensions {
 
       /// <summary>
       /// Checks the existance of the <paramref name="entity"/>,
-      /// using the primary key and version values.
+      /// using the primary key and optionally version column.
       /// </summary>
       /// <param name="entity">The entity whose existance is to be checked.</param>
-      /// <returns>true if the primary key and version combination exists in the database; otherwise false.</returns>
-      public bool ContainsVersion(TEntity entity) {
-         return Contains(entity, version: true);
-      }
-
-      bool Contains(TEntity entity, bool version) {
+      /// <param name="version">true to check the version column; otherwise, false.</param>
+      /// <returns>true if the primary key and version combination exists in the database; otherwise, false.</returns>
+      public bool Contains(TEntity entity, bool version) {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
@@ -903,8 +900,8 @@ namespace DbExtensions {
          return Contains((TEntity)entity);
       }
 
-      bool ISqlTable.ContainsVersion(object entity) {
-         return ContainsVersion((TEntity)entity);
+      bool ISqlTable.Contains(object entity, bool version) {
+         return Contains((TEntity)entity, version);
       }
 
       void ISqlTable.FillDefaults(object entity) {
@@ -976,7 +973,7 @@ namespace DbExtensions {
       void DeleteById(object id);
       void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy);
       bool Contains(object entity);
-      bool ContainsVersion(object entity);
+      bool Contains(object entity, bool version);
       void FillDefaults(object entity);
       void Refresh(object entity);
       SqlBuilder SELECT_();
