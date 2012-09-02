@@ -21,5 +21,8 @@ Also available via NuGet
 
   http://www.nuget.org/packages/DbExtensions
 
-To run the samples against SQL Server Compact and SQLite download the
-Northwind_embedded.zip file and unzip in samples/Northwind
+To run the samples against SQL Server Compact and SQLite download 
+  
+  https://github.com/downloads/maxtoroq/DbExtensions/Northwind_embedded.zip 
+
+and unzip in samples/Northwind
