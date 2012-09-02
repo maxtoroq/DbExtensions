@@ -60,8 +60,8 @@
     <Import Include="System.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataAccessObjectSamples.vb" />
-    <Compile Include="ExtensionMethodsSamples.vb" />
+    <Compile Include="DataAccessObject.vb" />
+    <Compile Include="ExtensionMethods.vb" />
     <Compile Include="Northwind\Category.vb" />
     <Compile Include="Northwind\Customer.vb" />
     <Compile Include="Northwind\CustomerCustomerDemo.vb" />
@@ -77,7 +77,7 @@
     <Compile Include="Northwind\Shipper.vb" />
     <Compile Include="Northwind\Supplier.vb" />
     <Compile Include="Northwind\Territory.vb" />
-    <Compile Include="SqlBuilderSamples.vb" />
+    <Compile Include="SqlBuilder.vb" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DbExtensions\DbExtensions.csproj">

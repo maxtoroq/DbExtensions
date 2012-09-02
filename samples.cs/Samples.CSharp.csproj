@@ -39,8 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataAccessObjectSamples.cs" />
-    <Compile Include="ExtensionMethodsSamples.cs" />
+    <Compile Include="DataAccessObject.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Northwind\Category.cs" />
     <Compile Include="Northwind\Customer.cs" />
     <Compile Include="Northwind\CustomerCustomerDemo.cs" />
@@ -56,7 +56,7 @@
     <Compile Include="Northwind\Shipper.cs" />
     <Compile Include="Northwind\Supplier.cs" />
     <Compile Include="Northwind\Territory.cs" />
-    <Compile Include="SqlBuilderSamples.cs" />
+    <Compile Include="SqlBuilder.cs" />
     <Compile Include="SqlSet.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -47,7 +47,7 @@ namespace Samples.CSharp {
          return productSet.First("UnitsInStock = 0");
       }
 
-      public object ProductNamesOfOutOfStockProducts() {
+      public object NamesOfOutOfStockProducts() {
          
          return productSet.Where("UnitsInStock = 0")
             .Select(r => r.GetString(0), "ProductName")
