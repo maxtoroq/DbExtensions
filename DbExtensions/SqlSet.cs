@@ -366,6 +366,7 @@ namespace DbExtensions {
          return AsEnumerable().ToArray();
       }
 
+      [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Consistent with LINQ.")]
       public List<object> ToList() {
          return AsEnumerable().ToList();
       }
@@ -541,6 +542,7 @@ namespace DbExtensions {
          return AsEnumerable().ToArray();
       }
 
+      [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Consistent with LINQ.")]
       public new List<TResult> ToList() {
          return AsEnumerable().ToList();
       }
@@ -572,9 +574,6 @@ namespace DbExtensions {
    }
    
    interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
-
-      // Standard SqlSet API
-      // aka LINQ to SqlBuilder
 
       bool All(string predicate);
       bool All(string predicate, params object[] parameters);

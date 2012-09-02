@@ -38,7 +38,9 @@
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Xml\" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccessObject.cs" />
     <Compile Include="DbExtensions.cs" />

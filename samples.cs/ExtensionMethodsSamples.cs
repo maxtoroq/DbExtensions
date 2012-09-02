@@ -7,6 +7,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.XPath;
 using DbExtensions;
+using DbExtensions.Xml;
 using Samples.CSharp.Northwind;
 
 namespace Samples.CSharp {

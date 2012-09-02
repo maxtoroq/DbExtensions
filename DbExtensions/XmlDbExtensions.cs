@@ -23,7 +23,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
 
-namespace DbExtensions {
+namespace DbExtensions.Xml {
 
    /// <summary>
    /// Provides extension methods for common ADO.NET objects, for mapping the
