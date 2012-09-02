@@ -4,6 +4,7 @@ Imports System.Diagnostics
 Imports System.IO
 Imports System.Reflection
 Imports System.Transactions
+Imports System.Data.Linq.Mapping
 Imports DbExtensions
 Imports Samples.VisualBasic.Northwind
 
@@ -11,8 +12,9 @@ Public Class DataAccessObjectSamples
 
    ReadOnly db As NorthwindContext
 
-   Public Sub New(ByVal db As NorthwindContext)
-      Me.db = db
+   Public Sub New(ByVal connectionString As String, ByVal mapping As MetaModel, ByVal log As TextWriter)
+      Me.db = New NorthwindContext(connectionString, mapping)
+      Me.db.Configuration.Log = log
    End Sub
 
    Public Function Find() As Product
@@ -61,7 +63,6 @@ Public Class DataAccessObjectSamples
       '' Connection is closed if wasn't open
 
    End Sub
-
 
    Public Sub Transactions_TransactionScope()
 

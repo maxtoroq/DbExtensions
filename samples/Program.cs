@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Linq.Mapping;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using DbExtensions;
@@ -56,18 +57,18 @@ namespace SamplesApp {
          string[] continueOnErrorOptions = { "Yes", "No" };
          bool continueOnError = GetArrayOption(continueOnErrorOptions, "Continue on Error:") == 0;
 
-         DataAccessObject context;
+         MetaModel mapping;
          Type extensionMethodSamples, sqlBuilderSamples, dataAccessObjectSamples, sqlSetSamples;
 
-         GetSamples(samplesLanguage, connString, mappingSource, out context, out extensionMethodSamples, out sqlBuilderSamples, out dataAccessObjectSamples, out sqlSetSamples);
+         GetSamples(samplesLanguage, connString, mappingSource, out mapping, out extensionMethodSamples, out sqlBuilderSamples, out dataAccessObjectSamples, out sqlSetSamples);
 
-         context.Configuration.Log = Console.Out;
+         TextWriter log = Console.Out;
 
          Console.WriteLine();
          Console.WriteLine("Press key to begin...");
          Console.ReadKey();
 
-         RunSamples(Activator.CreateInstance(extensionMethodSamples, connString, Console.Out), continueOnError);
+         RunSamples(Activator.CreateInstance(extensionMethodSamples, connString, log), continueOnError);
          Console.WriteLine();
          Console.WriteLine("Press key to continue...");
          Console.ReadKey();
@@ -78,26 +79,25 @@ namespace SamplesApp {
          Console.ReadKey();
 
          if (sqlSetSamples != null) {
-            RunSamples(Activator.CreateInstance(sqlSetSamples, connString, Console.Out), continueOnError);
+            RunSamples(Activator.CreateInstance(sqlSetSamples, connString, log), continueOnError);
             Console.WriteLine();
             Console.WriteLine("Press key to continue...");
             Console.ReadKey(); 
          }
 
-         RunSamples(Activator.CreateInstance(dataAccessObjectSamples, context), continueOnError);
+         RunSamples(Activator.CreateInstance(dataAccessObjectSamples, connString, mapping, log), continueOnError);
          Console.WriteLine();
          Console.WriteLine("Press key to exit...");
          Console.ReadKey();
       }
 
-      void GetSamples(string language, string connString, MappingSource mappingSource, out DataAccessObject context, out Type extensionMethodSamples, out Type sqlBuilderSamples, out Type dataAccessObjectSamples, out Type sqlSetSamples) {
+      void GetSamples(string language, string connString, MappingSource mappingSource, out MetaModel mapping, out Type extensionMethodSamples, out Type sqlBuilderSamples, out Type dataAccessObjectSamples, out Type sqlSetSamples) {
 
-         MetaModel mapping;
-         
          switch (language) {
             case "C#":
-               mapping = (mappingSource is AttributeMappingSource) ? mappingSource.GetModel(typeof(Samples.CSharp.Northwind.NorthwindContext)) : mappingSource.GetModel(typeof(Samples.CSharp.Northwind.ForXmlMappingSourceOnlyDataContext));
-               context = new Samples.CSharp.Northwind.NorthwindContext(connString, mapping);
+               mapping = (mappingSource is AttributeMappingSource) ? 
+                  mappingSource.GetModel(typeof(Samples.CSharp.Northwind.NorthwindContext)) 
+                  : mappingSource.GetModel(typeof(Samples.CSharp.Northwind.ForXmlMappingSourceOnlyDataContext));
                
                extensionMethodSamples = typeof(Samples.CSharp.ExtensionMethodsSamples);
                sqlBuilderSamples = typeof(Samples.CSharp.SqlBuilderSamples);
@@ -106,8 +106,9 @@ namespace SamplesApp {
                break;
 
             case "VB":
-               mapping = (mappingSource is AttributeMappingSource) ? mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.Product)) : mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.ForXmlMappingSourceOnlyDataContext));
-               context = new Samples.VisualBasic.Northwind.NorthwindContext(connString, mapping);
+               mapping = (mappingSource is AttributeMappingSource) ? 
+                  mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.NorthwindContext)) 
+                  : mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.ForXmlMappingSourceOnlyDataContext));
 
                extensionMethodSamples = typeof(Samples.VisualBasic.ExtensionMethodsSamples);
                sqlBuilderSamples = typeof(Samples.VisualBasic.SqlBuilderSamples);

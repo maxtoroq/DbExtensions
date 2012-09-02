@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Linq.Mapping;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -13,8 +14,13 @@ namespace Samples.CSharp {
 
       readonly NorthwindContext db;
 
-      public DataAccessObjectSamples(NorthwindContext db) {
-         this.db = db;
+      public DataAccessObjectSamples(string connString, MetaModel mapping, TextWriter log) {
+         
+         this.db = new NorthwindContext(connString, mapping) {
+            Configuration = { 
+               Log = log
+            }
+         };
       }
 
       public IEnumerable<Product> PredicateOnly() {
