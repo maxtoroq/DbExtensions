@@ -35,8 +35,8 @@ namespace DbExtensions {
    /// </summary>
    public class DataAccessObject {
 
-      static readonly MethodInfo setMethod = typeof(DataAccessObject).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-         .Single(m => m.Name == "Set" && m.ContainsGenericParameters && m.GetParameters().Length == 0);
+      static readonly MethodInfo tableMethod = typeof(DataAccessObject).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+         .Single(m => m.Name == "Table" && m.ContainsGenericParameters && m.GetParameters().Length == 0);
 
       readonly IDictionary<MetaType, SqlTable> tables = new Dictionary<MetaType, SqlTable>();
       readonly IDictionary<MetaType, ISqlTable> genericTables = new Dictionary<MetaType, ISqlTable>();
@@ -446,7 +446,7 @@ namespace DbExtensions {
 
       // Sets
 
-      public SqlTable<TEntity> Set<TEntity>() where TEntity : class {
+      public SqlTable<TEntity> Table<TEntity>() where TEntity : class {
 
          MetaType metaType = GetMetaType(typeof(TEntity));
          ISqlTable set;
@@ -463,18 +463,18 @@ namespace DbExtensions {
          return table;
       }
 
-      public SqlTable Set(Type entityType) {
-         return Set(GetMetaType(entityType));
+      public SqlTable Table(Type entityType) {
+         return Table(GetMetaType(entityType));
       }
 
-      protected internal SqlTable Set(MetaType metaType) {
+      protected internal SqlTable Table(MetaType metaType) {
 
          SqlTable table;
 
          if (!this.tables.TryGetValue(metaType, out table)) {
             
             ISqlTable genericTable = (ISqlTable)
-               setMethod.MakeGenericMethod(metaType.Type).Invoke(this, null);
+               tableMethod.MakeGenericMethod(metaType.Type).Invoke(this, null);
 
             table = new SqlTable(this, metaType, genericTable);
             this.tables.Add(metaType, table);
@@ -637,7 +637,7 @@ namespace DbExtensions {
          if (metaType == null)
             metaType = GetMetaType(entities[0].GetType());
 
-         SqlTable table = Set(metaType);
+         SqlTable table = Table(metaType);
 
          if (entities.Length == 1) {
             table.Insert(entities[0]);

@@ -10,11 +10,11 @@ namespace Samples.CSharp.Northwind {
    public class NorthwindContext : DataAccessObject {
 
       public SqlTable<Product> Products {
-         get { return Set<Product>(); }
+         get { return Table<Product>(); }
       }
 
       public SqlTable<Order> Orders {
-         get { return Set<Order>(); }
+         get { return Table<Order>(); }
       }
 
       public NorthwindContext(string connString, MetaModel mapping) 

@@ -93,7 +93,7 @@ Public Class DataAccessObjectSamples
 
       db.Orders.Update(order)
 
-      db.Affect(db.Set(Of OrderDetail).SQL _
+      db.Affect(db.Table(Of OrderDetail).SQL _
          .DELETE_FROM() _
          .WHERE("OrderID = {0}", order.OrderID) _
          , order.OrderDetails.Count)

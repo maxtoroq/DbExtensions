@@ -8,7 +8,7 @@ Namespace Northwind
 
       Public Property Products As SqlTable(Of Product)
          Get
-            Return [Set](Of Product)()
+            Return Table(Of Product)()
          End Get
          Set(value As SqlTable(Of Product))
          End Set
@@ -16,7 +16,7 @@ Namespace Northwind
 
       Public Property Orders As SqlTable(Of Order)
          Get
-            Return [Set](Of Order)()
+            Return Table(Of Order)()
          End Get
          Set(value As SqlTable(Of Order))
          End Set
