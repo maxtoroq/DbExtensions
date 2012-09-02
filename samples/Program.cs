@@ -57,9 +57,9 @@ namespace SamplesApp {
          bool continueOnError = GetArrayOption(continueOnErrorOptions, "Continue on Error:") == 0;
 
          DataAccessObject context;
-         Type extensionMethodSamples, sqlBuilderSamples, dataAccessObjectSamples;
+         Type extensionMethodSamples, sqlBuilderSamples, dataAccessObjectSamples, sqlSetSamples;
 
-         GetSamples(samplesLanguage, connString, mappingSource, out context, out extensionMethodSamples, out sqlBuilderSamples, out dataAccessObjectSamples);
+         GetSamples(samplesLanguage, connString, mappingSource, out context, out extensionMethodSamples, out sqlBuilderSamples, out dataAccessObjectSamples, out sqlSetSamples);
 
          context.Configuration.Log = Console.Out;
 
@@ -77,13 +77,20 @@ namespace SamplesApp {
          Console.WriteLine("Press key to continue...");
          Console.ReadKey();
 
+         if (sqlSetSamples != null) {
+            RunSamples(Activator.CreateInstance(sqlSetSamples, connString, Console.Out), continueOnError);
+            Console.WriteLine();
+            Console.WriteLine("Press key to continue...");
+            Console.ReadKey(); 
+         }
+
          RunSamples(Activator.CreateInstance(dataAccessObjectSamples, context), continueOnError);
          Console.WriteLine();
          Console.WriteLine("Press key to exit...");
          Console.ReadKey();
       }
 
-      void GetSamples(string language, string connString, MappingSource mappingSource, out DataAccessObject context, out Type extensionMethodSamples, out Type sqlBuilderSamples, out Type dataAccessObjectSamples) {
+      void GetSamples(string language, string connString, MappingSource mappingSource, out DataAccessObject context, out Type extensionMethodSamples, out Type sqlBuilderSamples, out Type dataAccessObjectSamples, out Type sqlSetSamples) {
 
          MetaModel mapping;
          
@@ -95,6 +102,7 @@ namespace SamplesApp {
                extensionMethodSamples = typeof(Samples.CSharp.ExtensionMethodsSamples);
                sqlBuilderSamples = typeof(Samples.CSharp.SqlBuilderSamples);
                dataAccessObjectSamples = typeof(Samples.CSharp.DataAccessObjectSamples);
+               sqlSetSamples = typeof(Samples.CSharp.SqlSetSamples);
                break;
 
             case "VB":
@@ -104,6 +112,7 @@ namespace SamplesApp {
                extensionMethodSamples = typeof(Samples.VisualBasic.ExtensionMethodsSamples);
                sqlBuilderSamples = typeof(Samples.VisualBasic.SqlBuilderSamples);
                dataAccessObjectSamples = typeof(Samples.VisualBasic.DataAccessObjectSamples);
+               sqlSetSamples = null;
                break;
 
             default:

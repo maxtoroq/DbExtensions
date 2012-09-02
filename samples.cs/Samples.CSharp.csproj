@@ -57,6 +57,7 @@
     <Compile Include="Northwind\Supplier.cs" />
     <Compile Include="Northwind\Territory.cs" />
     <Compile Include="SqlBuilderSamples.cs" />
+    <Compile Include="SqlSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DbExtensions\DbExtensions.csproj">
