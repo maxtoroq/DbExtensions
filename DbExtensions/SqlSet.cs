@@ -34,7 +34,7 @@ namespace DbExtensions {
       readonly int setIndex = 1;
 
       public DbConnection Connection { get { return connection; } }
-      protected internal TextWriter Log { get; set; }
+      public TextWriter Log { get; set; }
 
       public SqlSet(DbConnection connection, SqlBuilder definingQuery) 
          : this(connection, definingQuery, adoptQuery: false) { }
