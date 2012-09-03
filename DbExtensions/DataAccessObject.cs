@@ -967,7 +967,7 @@ namespace DbExtensions {
       #endregion
    }
 
-   public class DataAccessObjectConfiguration {
+   public sealed class DataAccessObjectConfiguration {
 
       readonly MetaModel mapping;
 
