@@ -157,7 +157,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>true id the set contains rows; otherwise, false.</returns>
       public bool Any() {
-         return this.connection.Exists(CreateCommand(SqlBuilderDbExtensions.ExistsQuery(this.definingQuery)), this.Log);
+         return this.connection.Exists(CreateCommand(DbExtensionMethods.ExistsQuery(this.definingQuery)), this.Log);
       }
 
       public bool Any(string predicate) {
@@ -176,7 +176,7 @@ namespace DbExtensions {
             .WHERE()
             ._If(!String.IsNullOrEmpty(predicate), predicate, parameters);
 
-         return this.connection.Exists(CreateCommand(SqlBuilderDbExtensions.ExistsQuery(superQuery)), this.Log);
+         return this.connection.Exists(CreateCommand(DbExtensionMethods.ExistsQuery(superQuery)), this.Log);
       }
 
       /// <summary>
@@ -200,7 +200,7 @@ namespace DbExtensions {
       }
 
       public int Count() {
-         return this.connection.Count(CreateCommand(SqlBuilderDbExtensions.CountQuery(this.definingQuery)), this.Log);
+         return this.connection.Count(CreateCommand(DbExtensionMethods.CountQuery(this.definingQuery)), this.Log);
       }
 
       public int Count(string predicate) {
@@ -219,7 +219,7 @@ namespace DbExtensions {
             .WHERE()
             ._If(!String.IsNullOrEmpty(predicate), predicate, parameters);
 
-         return this.connection.Count(CreateCommand(SqlBuilderDbExtensions.CountQuery(superQuery)), this.Log);
+         return this.connection.Count(CreateCommand(DbExtensionMethods.CountQuery(superQuery)), this.Log);
       }
 
       public object First() {
@@ -248,7 +248,7 @@ namespace DbExtensions {
 
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount() {
-         return this.connection.LongCount(CreateCommand(SqlBuilderDbExtensions.CountQuery(this.definingQuery)), this.Log);
+         return this.connection.LongCount(CreateCommand(DbExtensionMethods.CountQuery(this.definingQuery)), this.Log);
       }
 
       public long LongCount(string predicate) {
@@ -268,7 +268,7 @@ namespace DbExtensions {
             .WHERE()
             ._If(!String.IsNullOrEmpty(predicate), predicate, parameters);
 
-         return this.connection.LongCount(CreateCommand(SqlBuilderDbExtensions.CountQuery(superQuery)), this.Log);
+         return this.connection.LongCount(CreateCommand(DbExtensionMethods.CountQuery(superQuery)), this.Log);
       }
 
       public SqlSet OrderBy(string format) {

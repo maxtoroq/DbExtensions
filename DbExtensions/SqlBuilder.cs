@@ -1251,7 +1251,7 @@ namespace DbExtensions {
    /// <summary>
    /// Provides extension methods for common ADO.NET objects, for integration with <see cref="SqlBuilder"/>.
    /// </summary>
-   public static class SqlBuilderDbExtensions {
+   public static partial class DbExtensionMethods {
 
       /// <summary>
       /// Executes the <paramref name="nonQuery"/> command.

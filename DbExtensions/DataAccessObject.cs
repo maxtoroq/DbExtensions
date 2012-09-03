@@ -420,7 +420,7 @@ namespace DbExtensions {
       /// <param name="query">The query whose existance is to be checked.</param>
       /// <returns>true if <paramref name="query"/> contains any rows; otherwise, false.</returns>
       public bool Exists(SqlBuilder query) {
-         return this.Connection.Exists(CreateCommand(SqlBuilderDbExtensions.ExistsQuery(query)), this.Log);
+         return this.Connection.Exists(CreateCommand(DbExtensionMethods.ExistsQuery(query)), this.Log);
       }
 
       /// <summary>
@@ -428,9 +428,9 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="query">The query whose count is to be computed.</param>
       /// <returns>The number of results the <paramref name="query"/> would return.</returns>
-      /// <seealso cref="SqlBuilderDbExtensions.Count(DbConnection, SqlBuilder)"/>
+      /// <seealso cref="DbExtensionMethods.Count(DbConnection, SqlBuilder)"/>
       public int Count(SqlBuilder query) {
-         return this.Connection.Count(CreateCommand(SqlBuilderDbExtensions.CountQuery(query)), this.Log);
+         return this.Connection.Count(CreateCommand(DbExtensionMethods.CountQuery(query)), this.Log);
       }
 
       /// <summary>
@@ -438,10 +438,10 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="query">The query whose count is to be computed.</param>
       /// <returns>The number of results the <paramref name="query"/> would return.</returns>
-      /// <seealso cref="SqlBuilderDbExtensions.LongCount(DbConnection, SqlBuilder)"/>
+      /// <seealso cref="DbExtensionMethods.LongCount(DbConnection, SqlBuilder)"/>
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount(SqlBuilder query) {
-         return this.Connection.LongCount(CreateCommand(SqlBuilderDbExtensions.CountQuery(query)), this.Log);
+         return this.Connection.LongCount(CreateCommand(DbExtensionMethods.CountQuery(query)), this.Log);
       }
 
       // Sets
