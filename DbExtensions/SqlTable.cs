@@ -28,7 +28,7 @@ using System.Text;
 namespace DbExtensions {
 
    [DebuggerDisplay("{metaType.Name}")]
-   public class SqlTable : SqlSet, ISqlTable {
+   public sealed class SqlTable : SqlSet, ISqlTable {
 
       // table is the SqlTable<TEntity> instance for metaType
       // SqlTable is only a wrapper on SqlTable<TEntity>
@@ -122,7 +122,7 @@ namespace DbExtensions {
    }
 
    [DebuggerDisplay("{metaType.Name}")]
-   public class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable
+   public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable
       where TEntity : class {
 
       readonly DataAccessObject dao;
@@ -504,7 +504,7 @@ namespace DbExtensions {
          Refresh(entity, null);
       }
 
-      protected void Refresh(TEntity entity, IEnumerable<MetaDataMember> refreshMembers) {
+      void Refresh(TEntity entity, IEnumerable<MetaDataMember> refreshMembers) {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
