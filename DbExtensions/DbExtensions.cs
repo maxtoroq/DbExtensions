@@ -1031,9 +1031,18 @@ namespace DbExtensions {
                      logger.WriteLine(command.ToTraceString(reader.RecordsAffected));
                
                } catch {
-                  if (prevStateWasClosed) 
-                     EnsureConnectionClosed();
-                  
+
+                  try {
+                     if (logger != null) {
+                        logger.WriteLine("-- ERROR: The following command produced an error");
+                        logger.WriteLine(command.ToTraceString());
+                     }
+
+                  } finally {
+                     if (prevStateWasClosed) 
+                        EnsureConnectionClosed();
+                  }
+
                   throw;
                }
             }
