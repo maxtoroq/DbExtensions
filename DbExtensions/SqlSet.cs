@@ -317,10 +317,7 @@ namespace DbExtensions {
       }
 
       public object Single() {
-         
-         // Query could return millions of records
-         // just select 2 then call Single
-         return Take(2).AsEnumerable().Single();
+         return AsEnumerable().Single();
       }
 
       public object Single(string predicate) {
@@ -332,10 +329,7 @@ namespace DbExtensions {
       }
 
       public object SingleOrDefault() {
-
-         // Query could return millions of records
-         // just select 2 then call SingleOrDefault
-         return Take(2).AsEnumerable().SingleOrDefault();
+         return AsEnumerable().SingleOrDefault();
       }
 
       public object SingleOrDefault(string predicate) {
@@ -493,10 +487,7 @@ namespace DbExtensions {
       }
 
       public new TResult Single() {
-
-         // Query could return millions of records
-         // just select 2 then call Single
-         return Take(2).AsEnumerable().Single();
+         return AsEnumerable().Single();
       }
 
       public new TResult Single(string predicate) {
@@ -508,10 +499,7 @@ namespace DbExtensions {
       }
 
       public new TResult SingleOrDefault() {
-
-         // Query could return millions of records
-         // just select 2 then call SingleOrDefault
-         return Take(2).AsEnumerable().SingleOrDefault();
+         return AsEnumerable().SingleOrDefault();
       }
 
       public new TResult SingleOrDefault(string predicate) {
