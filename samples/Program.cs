@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using DbExtensions;
 
-namespace SamplesApp {
+namespace Samples {
 
    class Program {
 
@@ -53,56 +53,46 @@ namespace SamplesApp {
          MappingSource[] mappingSources = { new AttributeMappingSource(), XmlMappingSource.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("Samples.Northwind.Northwind.xml")) };
          int mappingSourceIndex = GetArrayOption(mappingSources, "Select the mapping source (or Enter):");
          MappingSource mappingSource = mappingSources[mappingSourceIndex];
+         
+         object[] samples = GetSamples(samplesLanguage, connString, mappingSource, Console.Out).ToArray();
+         string[] samplesOptions = samples.Select(o => o.GetType().Name).Concat(new[] { "All" }).ToArray();
+
+         int samplesIndex = GetArrayOption(samplesOptions, "Select the samples category (or Enter to run all):", samplesOptions.Length - 1);
+
+         object[] selectedSamples = (samplesIndex == samplesOptions.Length - 1) ?
+            samples
+            : new[] { samples[samplesIndex] };
 
          string[] continueOnErrorOptions = { "Yes", "No" };
          bool continueOnError = GetArrayOption(continueOnErrorOptions, "Continue on Error:") == 0;
-
-         MetaModel mapping;
-         Type extensionMethodSamples, sqlBuilderSamples, dataAccessObjectSamples, sqlSetSamples;
-
-         GetSamples(samplesLanguage, connString, mappingSource, out mapping, out extensionMethodSamples, out sqlBuilderSamples, out dataAccessObjectSamples, out sqlSetSamples);
-
-         TextWriter log = Console.Out;
 
          Console.WriteLine();
          Console.WriteLine("Press key to begin...");
          Console.ReadKey();
 
-         RunSamples(Activator.CreateInstance(extensionMethodSamples, connString, log), continueOnError);
-         Console.WriteLine();
-         Console.WriteLine("Press key to continue...");
-         Console.ReadKey();
+         for (int i = 0; i < selectedSamples.Length; i++) {
 
-         RunSamples(Activator.CreateInstance(sqlBuilderSamples), continueOnError);
-         Console.WriteLine();
-         Console.WriteLine("Press key to continue...");
-         Console.ReadKey();
-
-         if (sqlSetSamples != null) {
-            RunSamples(Activator.CreateInstance(sqlSetSamples, connString, log), continueOnError);
+            RunSamples(selectedSamples[i], continueOnError);
             Console.WriteLine();
-            Console.WriteLine("Press key to continue...");
-            Console.ReadKey(); 
+            Console.WriteLine((i == selectedSamples.Length - 1) ? "Press key to continue..." : "Press key to exit...");
+            Console.ReadKey();
          }
-
-         RunSamples(Activator.CreateInstance(dataAccessObjectSamples, connString, mapping, log), continueOnError);
-         Console.WriteLine();
-         Console.WriteLine("Press key to exit...");
-         Console.ReadKey();
       }
 
-      void GetSamples(string language, string connString, MappingSource mappingSource, out MetaModel mapping, out Type extensionMethodSamples, out Type sqlBuilderSamples, out Type dataAccessObjectSamples, out Type sqlSetSamples) {
+      IEnumerable<object> GetSamples(string language, string connString, MappingSource mappingSource, TextWriter log) {
+
+         MetaModel mapping;
 
          switch (language) {
             case "C#":
                mapping = (mappingSource is AttributeMappingSource) ? 
                   mappingSource.GetModel(typeof(Samples.CSharp.Northwind.NorthwindContext)) 
                   : mappingSource.GetModel(typeof(Samples.CSharp.Northwind.ForXmlMappingSourceOnlyDataContext));
-               
-               extensionMethodSamples = typeof(Samples.CSharp.ExtensionMethodsSamples);
-               sqlBuilderSamples = typeof(Samples.CSharp.SqlBuilderSamples);
-               dataAccessObjectSamples = typeof(Samples.CSharp.DataAccessObjectSamples);
-               sqlSetSamples = typeof(Samples.CSharp.SqlSetSamples);
+
+               yield return new Samples.CSharp.ExtensionMethodsSamples(connString, log);
+               yield return new Samples.CSharp.SqlBuilderSamples();
+               yield return new Samples.CSharp.SqlSetSamples(connString, log);
+               yield return new Samples.CSharp.DataAccessObjectSamples(connString, mapping, log);
                break;
 
             case "VB":
@@ -110,10 +100,9 @@ namespace SamplesApp {
                   mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.NorthwindContext)) 
                   : mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.ForXmlMappingSourceOnlyDataContext));
 
-               extensionMethodSamples = typeof(Samples.VisualBasic.ExtensionMethodsSamples);
-               sqlBuilderSamples = typeof(Samples.VisualBasic.SqlBuilderSamples);
-               dataAccessObjectSamples = typeof(Samples.VisualBasic.DataAccessObjectSamples);
-               sqlSetSamples = null;
+               yield return new Samples.VisualBasic.ExtensionMethodsSamples(connString, log);
+               yield return new Samples.VisualBasic.SqlBuilderSamples();
+               yield return new Samples.VisualBasic.DataAccessObjectSamples(connString, mapping, log);
                break;
 
             default:
@@ -190,7 +179,7 @@ namespace SamplesApp {
          }
       }
 
-      int GetArrayOption<T>(T[] options, string title) {
+      int GetArrayOption<T>(T[] options, string title, int defaultOption = 0) {
 
          bool firstTry = true;
          int index = -1;
@@ -221,7 +210,7 @@ namespace SamplesApp {
 
             if (key.Key == ConsoleKey.Enter) {
 
-               index = 0;
+               index = defaultOption;
 
             } else {
 
