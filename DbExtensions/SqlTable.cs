@@ -30,10 +30,9 @@ namespace DbExtensions {
    [DebuggerDisplay("{metaType.Name}")]
    public class SqlTable : SqlSet, ISqlTable {
 
-      // TODO: optimize Count using key or first column
-
       // table is the SqlTable<TEntity> instance for metaType
       // SqlTable is only a wrapper on SqlTable<TEntity>
+
       readonly ISqlTable table;
       readonly MetaType metaType;
       readonly SqlCommandBuilder<object> sqlCommands;
@@ -125,8 +124,6 @@ namespace DbExtensions {
    [DebuggerDisplay("{metaType.Name}")]
    public class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable
       where TEntity : class {
-
-      // TODO: optimize Count using key or first column
 
       readonly DataAccessObject dao;
       readonly MetaType metaType;
@@ -225,7 +222,7 @@ namespace DbExtensions {
             // Transaction is required by SQLCE 4.0
             // https://connect.microsoft.com/SQLServer/feedback/details/653675/sql-ce-4-0-select-identity-returns-null
 
-            this.dao.Affect(insertSql, 1, AffectedRecordsPolicy.MustMatchAffecting);
+            this.dao.AffectOne(insertSql);
 
             if (idMember != null) {
 
