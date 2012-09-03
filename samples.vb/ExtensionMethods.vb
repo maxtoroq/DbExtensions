@@ -20,41 +20,13 @@ Public Class ExtensionMethodsSamples
       Me.log = log
    End Sub
 
-   Public Sub Before()
+   Public Function StaticQuery() As IEnumerable(Of Product)
 
-      Dim command = connection.CreateCommand()
-      command.CommandText = "SELECT @param"
+      Return connection _
+         .CreateCommand("SELECT * FROM Products WHERE ProductID = {0}", 1) _
+         .Map(Of Product)(log)
 
-      Dim param = command.CreateParameter()
-      param.ParameterName = "@param"
-      param.Value = "Hello World"
-      command.Parameters.Add(param)
-
-      Me.connection.Open()
-
-      Try
-         Dim reader = command.ExecuteReader()
-
-         Do While reader.Read()
-            log.WriteLine(reader.GetString(0))
-         Loop
-      Finally
-         connection.Close()
-      End Try
-
-   End Sub
-
-   Public Sub After()
-
-      Dim results = connection _
-         .CreateCommand("SELECT {0}", "Hello World") _
-         .Map(Function(r) r.GetString(0))
-
-      For Each item In results
-         log.WriteLine(item)
-      Next
-
-   End Sub
+   End Function
 
    Public Function SelectWithManyToOne() As IEnumerable(Of Product)
 
@@ -65,7 +37,7 @@ Public Class ExtensionMethodsSamples
          .FROM("Products p") _
          .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID") _
          .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID") _
-         .WHERE("p.ProductID < {0}", 7)
+         .WHERE("p.ProductID < {0}", 3)
 
       Dim results = connection.Map(Of Product)(query, log).ToList()
 
@@ -82,7 +54,7 @@ Public Class ExtensionMethodsSamples
          .FROM("EmployeeTerritories et") _
          .LEFT_JOIN("Territories t ON et.TerritoryID = t.TerritoryID") _
          .LEFT_JOIN("Region r ON t.RegionID = r.RegionID") _
-         .WHERE("et.EmployeeID < {0}", 7)
+         .WHERE("et.EmployeeID < {0}", 3)
 
       Dim results = connection.Map(Of EmployeeTerritory)(query, log).ToList()
 
@@ -95,7 +67,7 @@ Public Class ExtensionMethodsSamples
       Dim query = SQL _
          .SELECT("p.ProductID, p.ProductName") _
          .FROM("Products p") _
-         .WHERE("p.ProductID < {0}", 7)
+         .WHERE("p.ProductID < {0}", 3)
 
       Dim results = connection.Map(query, Function(r) _
           New With {
@@ -113,7 +85,7 @@ Public Class ExtensionMethodsSamples
       Dim query = SQL _
          .SELECT("p.ProductID, (p.UnitPrice * p.UnitsInStock) AS ValueInStock") _
          .FROM("Products p") _
-         .WHERE("p.ProductID < {0}", 7) _
+         .WHERE("p.ProductID < {0}", 3) _
          .ORDER_BY("ValueInStock")
 
       Dim results = connection.Map(Of Product)(query, log).ToList()
@@ -142,7 +114,7 @@ Public Class ExtensionMethodsSamples
          .SELECT("p.UnitPrice") _
          .FROM("Products p") _
          .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID") _
-         .WHERE("ProductID < {0}", 5)
+         .WHERE("ProductID < {0}", 3)
 
       Dim xmlmap = connection.MapXml(query, log)
       xmlmap.CollectionName = New XmlQualifiedName("Products", "http://example.com/ns/Store")

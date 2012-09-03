@@ -43,6 +43,10 @@ namespace Samples.CSharp {
          return productSet.First();
       }
 
+      public Product SecondProduct() {
+         return productSet.Skip(1).First();
+      }
+
       public Product FirstOutOfStockProduct() {
          return productSet.First("UnitsInStock = 0");
       }

@@ -22,40 +22,11 @@ namespace Samples.CSharp {
          this.log = log;
       }
 
-      public void Before() {
-         
-         DbCommand command = connection.CreateCommand();
-         command.CommandText = "SELECT @param";
-
-         DbParameter param = command.CreateParameter();
-         param.ParameterName = "@param";
-         param.Value = "Hello World";
-
-         command.Parameters.Add(param);
-
-         connection.Open();
-
-         try {
-            DbDataReader reader = command.ExecuteReader();
-
-            while (reader.Read()) {
-               log.WriteLine(reader.GetString(0));
-            }
-
-         } finally {
-            connection.Close();
-         }
-      }
-
-      public void After() { 
+      public IEnumerable<Product> StaticQuery() { 
       
-         IEnumerable<string> results = connection
-            .CreateCommand("SELECT {0}", "Hello World")
-            .Map(r => r.GetString(0));
-
-         foreach (string item in results) {
-            log.WriteLine(item);
-         }
+         return connection
+            .CreateCommand("SELECT * FROM Products WHERE ProductID = {0}", 1)
+            .Map<Product>(log);
       }
 
       public IEnumerable<Product> SelectWithManyToOne() {
@@ -67,7 +38,7 @@ namespace Samples.CSharp {
             .FROM("Products p")
             .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID")
             .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID")
-            .WHERE("p.ProductID < {0}", 7);
+            .WHERE("p.ProductID < {0}", 3);
 
          var results = connection.Map<Product>(query, log).ToList();
 
@@ -83,7 +54,7 @@ namespace Samples.CSharp {
             .FROM("EmployeeTerritories et")
             .LEFT_JOIN("Territories t ON et.TerritoryID = t.TerritoryID")
             .LEFT_JOIN("Region r ON t.RegionID = r.RegionID")
-            .WHERE("et.EmployeeID < {0}", 7);
+            .WHERE("et.EmployeeID < {0}", 3);
 
          var results = connection.Map<EmployeeTerritory>(query, log).ToList();
 
@@ -95,7 +66,7 @@ namespace Samples.CSharp {
          var query = SQL
             .SELECT("p.ProductID, p.ProductName")
             .FROM("Products p")
-            .WHERE("p.ProductID < {0}", 7);
+            .WHERE("p.ProductID < {0}", 3);
 
          var summary = connection.Map(query, r => new {
                ProductID = r.GetNullableInt32(0).GetValueOrDefault(),
@@ -111,7 +82,7 @@ namespace Samples.CSharp {
          var query = SQL
             .SELECT("p.ProductID, (p.UnitPrice * p.UnitsInStock) AS ValueInStock")
             .FROM("Products p")
-            .WHERE("p.ProductID < {0}", 7)
+            .WHERE("p.ProductID < {0}", 3)
             .ORDER_BY("ValueInStock");
 
          var results = connection.Map<Product>(query, log).ToList();
@@ -138,7 +109,7 @@ namespace Samples.CSharp {
             ._("p.UnitPrice")
             .FROM("Products p")
             .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID")
-            .WHERE("ProductID < {0}", 5);
+            .WHERE("ProductID < {0}", 3);
 
          XmlMapper xmlmap = connection.MapXml(query, log);
          xmlmap.CollectionName = new XmlQualifiedName("Products", "http://example.com/ns/Store");
