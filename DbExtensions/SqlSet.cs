@@ -161,7 +161,7 @@ namespace DbExtensions {
       }
 
       public bool Any(string predicate) {
-         return Any(predicate, null);
+         return Where(predicate).Any();
       }
 
       /// <summary>
@@ -171,12 +171,7 @@ namespace DbExtensions {
       /// <param name="parameters">The parameters to use in the predicate.</param>
       /// <returns>true if at least one row matches the <paramref name="predicate"/>; otherwise, false.</returns>
       public bool Any(string predicate, params object[] parameters) {
-
-         var superQuery = CreateSuperQuery()
-            .WHERE()
-            ._If(!String.IsNullOrEmpty(predicate), predicate, parameters);
-
-         return this.connection.Exists(CreateCommand(DbExtensionMethods.ExistsQuery(superQuery)), this.Log);
+         return Where(predicate, parameters).Any();
       }
 
       /// <summary>
@@ -204,7 +199,7 @@ namespace DbExtensions {
       }
 
       public int Count(string predicate) {
-         return Count(predicate, null);
+         return Where(predicate).Count();
       }
 
       /// <summary>
@@ -214,12 +209,7 @@ namespace DbExtensions {
       /// <param name="parameters">The parameters to use in the predicate.</param>
       /// <returns>The number of rows that match the <paramref name="predicate"/>.</returns>
       public int Count(string predicate, params object[] parameters) {
-
-         var superQuery = CreateSuperQuery()
-            .WHERE()
-            ._If(!String.IsNullOrEmpty(predicate), predicate, parameters);
-
-         return this.connection.Count(CreateCommand(DbExtensionMethods.CountQuery(superQuery)), this.Log);
+         return Where(predicate, parameters).Count();
       }
 
       public object First() {
@@ -227,7 +217,7 @@ namespace DbExtensions {
       }
 
       public object First(string predicate) {
-         return First(predicate, null);
+         return Where(predicate).First();
       }
 
       public object First(string predicate, params object[] parameters) {
@@ -239,7 +229,7 @@ namespace DbExtensions {
       }
 
       public object FirstOrDefault(string predicate) {
-         return FirstOrDefault(predicate, null);
+         return Where(predicate).FirstOrDefault();
       }
 
       public object FirstOrDefault(string predicate, params object[] parameters) {
@@ -252,7 +242,7 @@ namespace DbExtensions {
       }
 
       public long LongCount(string predicate) {
-         return LongCount(predicate, null);
+         return Where(predicate).LongCount();
       }
 
       /// <summary>
@@ -263,12 +253,7 @@ namespace DbExtensions {
       /// <returns>The number of rows that match the <paramref name="predicate"/>.</returns>
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount(string predicate, params object[] parameters) {
-
-         var superQuery = CreateSuperQuery()
-            .WHERE()
-            ._If(!String.IsNullOrEmpty(predicate), predicate, parameters);
-
-         return this.connection.LongCount(CreateCommand(DbExtensionMethods.CountQuery(superQuery)), this.Log);
+         return Where(predicate, parameters).LongCount();
       }
 
       public SqlSet OrderBy(string format) {
@@ -321,7 +306,7 @@ namespace DbExtensions {
       }
 
       public object Single(string predicate) {
-         return Single(predicate, null);
+         return Where(predicate).Single();
       }
 
       public object Single(string predicate, params object[] parameters) {
@@ -333,7 +318,7 @@ namespace DbExtensions {
       }
 
       public object SingleOrDefault(string predicate) {
-         return SingleOrDefault(predicate, null);
+         return Where(predicate).SingleOrDefault();
       }
 
       public object SingleOrDefault(string predicate, params object[] parameters) {
@@ -455,7 +440,7 @@ namespace DbExtensions {
       }
 
       public new TResult First(string predicate) {
-         return First(predicate, null);
+         return Where(predicate).First();
       }
 
       public new TResult First(string predicate, params object[] parameters) {
@@ -467,7 +452,7 @@ namespace DbExtensions {
       }
 
       public new TResult FirstOrDefault(string predicate) {
-         return FirstOrDefault(predicate, null);
+         return Where(predicate).FirstOrDefault();
       }
 
       public new TResult FirstOrDefault(string predicate, params object[] parameters) {
@@ -491,7 +476,7 @@ namespace DbExtensions {
       }
 
       public new TResult Single(string predicate) {
-         return Single(predicate, null);
+         return Where(predicate).Single();
       }
 
       public new TResult Single(string predicate, params object[] parameters) {
@@ -503,7 +488,7 @@ namespace DbExtensions {
       }
 
       public new TResult SingleOrDefault(string predicate) {
-         return SingleOrDefault(predicate, null);
+         return Where(predicate).SingleOrDefault();
       }
 
       public new TResult SingleOrDefault(string predicate, params object[] parameters) {
