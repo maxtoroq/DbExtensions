@@ -77,7 +77,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="set">The set.</param>
       /// <returns>An <see cref="XmlDataResult"/> object.</returns>
-      public static XmlDataResult MapXml(this SqlSet set) { 
+      public static XmlDataResult AsXml(this SqlSet set) { 
          return new XmlDataResult(set.Connection.Map(set.GetDefiningQuery(), r => r, set.Log));
       }
 
