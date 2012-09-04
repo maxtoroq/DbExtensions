@@ -36,8 +36,8 @@ namespace DbExtensions {
       /// The query is deferred-executed.
       /// </summary>
       /// <param name="command">The query command.</param>
-      /// <returns>An <see cref="XmlMapper"/> object.</returns>
-      public static XmlMapper MapXml(this IDbCommand command) {
+      /// <returns>An <see cref="XmlDataResult"/> object.</returns>
+      public static XmlDataResult MapXml(this IDbCommand command) {
          return MapXml(command, null);
       }
 
@@ -47,9 +47,9 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="command">The query command.</param>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>An <see cref="XmlMapper"/> object.</returns>
-      public static XmlMapper MapXml(this IDbCommand command, TextWriter logger) {
-         return new XmlMapper(command.Map(r => r, logger));
+      /// <returns>An <see cref="XmlDataResult"/> object.</returns>
+      public static XmlDataResult MapXml(this IDbCommand command, TextWriter logger) {
+         return new XmlDataResult(command.Map(r => r, logger));
       }
 
       /// <summary>
@@ -58,8 +58,8 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="connection">The connection.</param>
       /// <param name="query">The query.</param>
-      /// <returns>An <see cref="XmlMapper"/> object.</returns>
-      public static XmlMapper MapXml(this DbConnection connection, SqlBuilder query) {
+      /// <returns>An <see cref="XmlDataResult"/> object.</returns>
+      public static XmlDataResult MapXml(this DbConnection connection, SqlBuilder query) {
          return MapXml(connection, query, null);
       }
 
@@ -70,9 +70,9 @@ namespace DbExtensions {
       /// <param name="connection">The connection.</param>
       /// <param name="query">The query.</param>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>An <see cref="XmlMapper"/> object.</returns>
-      public static XmlMapper MapXml(this DbConnection connection, SqlBuilder query, TextWriter logger) {
-         return new XmlMapper(connection.Map(query, r => r, logger));
+      /// <returns>An <see cref="XmlDataResult"/> object.</returns>
+      public static XmlDataResult MapXml(this DbConnection connection, SqlBuilder query, TextWriter logger) {
+         return new XmlDataResult(connection.Map(query, r => r, logger));
       }
 
       /// <summary>
@@ -80,9 +80,9 @@ namespace DbExtensions {
       /// The query is deferred-executed.
       /// </summary>
       /// <param name="set">The set.</param>
-      /// <returns>An <see cref="XmlMapper"/> object.</returns>
-      public static XmlMapper MapXml(this SqlSet set) { 
-         return new XmlMapper(set.Connection.Map(set.GetDefiningQuery(), r => r, set.Log));
+      /// <returns>An <see cref="XmlDataResult"/> object.</returns>
+      public static XmlDataResult MapXml(this SqlSet set) { 
+         return new XmlDataResult(set.Connection.Map(set.GetDefiningQuery(), r => r, set.Log));
       }
 
       /// <summary>
@@ -91,9 +91,9 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="dao">The <see cref="DataAccessObject"/> instance.</param>
       /// <param name="query">The query.</param>
-      /// <returns>An <see cref="XmlMapper"/> object.</returns>
-      public static XmlMapper MapXml(this DataAccessObject dao, SqlBuilder query) {
-         return new XmlMapper(dao.Map(query, r => r));
+      /// <returns>An <see cref="XmlDataResult"/> object.</returns>
+      public static XmlDataResult MapXml(this DataAccessObject dao, SqlBuilder query) {
+         return new XmlDataResult(dao.Map(query, r => r));
       }
    }
 
@@ -102,7 +102,7 @@ namespace DbExtensions {
    /// the various MapXml extensions methods to create an instance of this class.
    /// </summary>
    /// <seealso cref="DbExtensionMethods"/>
-   public sealed class XmlMapper : IXmlSerializable {
+   public sealed class XmlDataResult : IXmlSerializable {
 
       static readonly XmlReaderSettings closeInputSettings = new XmlReaderSettings { CloseInput = true };
 
@@ -130,7 +130,7 @@ namespace DbExtensions {
       /// </summary>
       public XmlTypeAnnotation TypeAnnotation { get; set; }
 
-      internal XmlMapper(IEnumerable<IDataRecord> records) {
+      internal XmlDataResult(IEnumerable<IDataRecord> records) {
          this.records = records;
       }
 
@@ -197,7 +197,7 @@ namespace DbExtensions {
    }
 
    /// <summary>
-   /// Specifies how <see cref="XmlMapper"/> should handle null fields.
+   /// Specifies how <see cref="XmlDataResult"/> should handle null fields.
    /// </summary>
    public enum XmlNullHandling {
       
@@ -213,7 +213,7 @@ namespace DbExtensions {
    }
 
    /// <summary>
-   /// Specifies what kind of type information should <see cref="XmlMapper"/> include.
+   /// Specifies what kind of type information should <see cref="XmlDataResult"/> include.
    /// </summary>
    public enum XmlTypeAnnotation {
 
