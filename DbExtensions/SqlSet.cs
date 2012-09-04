@@ -46,11 +46,7 @@ namespace DbExtensions {
       protected SqlSet(SqlSet set, SqlBuilder superQuery) {
 
          if (set == null) throw new ArgumentNullException("set");
-
-         if (superQuery == null
-            || Object.ReferenceEquals(superQuery, set.definingQuery)) {
-            superQuery = set.GetDefiningQuery();
-         }
+         if (superQuery == null) throw new ArgumentNullException("superQuery");
 
          this.connection = set.connection;
          this.definingQuery = superQuery;
@@ -126,7 +122,7 @@ namespace DbExtensions {
       }
 
       protected DbCommand CreateCommand() {
-         return CreateCommand(this.definingQuery);
+         return CreateCommand(GetDefiningQuery(clone: false));
       }
 
       protected DbCommand CreateCommand(SqlBuilder sqlBuilder) {
@@ -165,7 +161,7 @@ namespace DbExtensions {
       }
 
       public override string ToString() {
-         return this.definingQuery.ToString();
+         return GetDefiningQuery(clone: false).ToString();
       }
 
       #region ISqlSet<SqlSet,object> Members
@@ -185,7 +181,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>true id the set contains rows; otherwise, false.</returns>
       public bool Any() {
-         return this.connection.Exists(CreateCommand(DbExtensionMethods.ExistsQuery(this.definingQuery)), this.Log);
+         return this.connection.Exists(CreateCommand(DbExtensionMethods.ExistsQuery(GetDefiningQuery(clone: false))), this.Log);
       }
 
       public bool Any(string predicate) {
@@ -223,7 +219,7 @@ namespace DbExtensions {
       }
 
       public int Count() {
-         return this.connection.Count(CreateCommand(DbExtensionMethods.CountQuery(this.definingQuery)), this.Log);
+         return this.connection.Count(CreateCommand(DbExtensionMethods.CountQuery(GetDefiningQuery(clone: false))), this.Log);
       }
 
       public int Count(string predicate) {
@@ -266,7 +262,7 @@ namespace DbExtensions {
 
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount() {
-         return this.connection.LongCount(CreateCommand(DbExtensionMethods.CountQuery(this.definingQuery)), this.Log);
+         return this.connection.LongCount(CreateCommand(DbExtensionMethods.CountQuery(GetDefiningQuery(clone: false))), this.Log);
       }
 
       public long LongCount(string predicate) {
