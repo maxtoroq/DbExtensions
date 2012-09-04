@@ -1390,87 +1390,87 @@ namespace DbExtensions {
 
       /// <summary>
       /// Maps the results of the <paramref name="query"/> to objects of type
-      /// specified by the <paramref name="objectType"/> parameter.
+      /// specified by the <paramref name="resultType"/> parameter.
       /// The query is deferred-executed.
       /// </summary>
       /// <param name="connection">The connection.</param>
-      /// <param name="objectType">The type of objects to map the results to.</param>
+      /// <param name="resultType">The type of objects to map the results to.</param>
       /// <param name="query">The query.</param>
-      /// <returns>The results of the query as objects of type specified by the <paramref name="objectType"/> parameter.</returns>
+      /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
       /// <seealso cref="DbExtensionMethods.Map(IDbCommand, Type)"/>
-      public static IEnumerable<object> Map(this DbConnection connection, Type objectType, SqlBuilder query) {
-         return query.ToCommand(connection).Map(objectType);
+      public static IEnumerable<object> Map(this DbConnection connection, Type resultType, SqlBuilder query) {
+         return query.ToCommand(connection).Map(resultType);
       }
 
       /// <summary>
       /// Maps the results of the <paramref name="query"/> to objects of type
-      /// specified by the <paramref name="objectType"/> parameter.
+      /// specified by the <paramref name="resultType"/> parameter.
       /// The query is deferred-executed.
       /// </summary>
       /// <param name="connection">The connection.</param>
-      /// <param name="objectType">The type of objects to map the results to.</param>
+      /// <param name="resultType">The type of objects to map the results to.</param>
       /// <param name="query">The query.</param>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as objects of type specified by the <paramref name="objectType"/> parameter.</returns>
+      /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
       /// <seealso cref="DbExtensionMethods.Map(IDbCommand, Type, TextWriter)"/>
-      public static IEnumerable<object> Map(this DbConnection connection, Type objectType, SqlBuilder query, TextWriter logger) {
-         return query.ToCommand(connection).Map(objectType, logger);
+      public static IEnumerable<object> Map(this DbConnection connection, Type resultType, SqlBuilder query, TextWriter logger) {
+         return query.ToCommand(connection).Map(resultType, logger);
       }
 
       /// <summary>
-      /// Maps the results of the <paramref name="query"/> to <typeparamref name="T"/> objects.
+      /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects.
       /// The query is deferred-executed.
       /// </summary>
-      /// <typeparam name="T">The type of objects to map the results to.</typeparam>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="connection">The connection.</param>
       /// <param name="query">The query.</param>
-      /// <returns>The results of the query as <typeparamref name="T"/> objects.</returns>
+      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       /// <seealso cref="DbExtensionMethods.Map&lt;T>(IDbCommand)"/>
-      public static IEnumerable<T> Map<T>(this DbConnection connection, SqlBuilder query) {
-         return query.ToCommand(connection).Map<T>();
+      public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query) {
+         return query.ToCommand(connection).Map<TResult>();
       }
 
       /// <summary>
-      /// Maps the results of the <paramref name="query"/> to <typeparamref name="T"/> objects.
+      /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects.
       /// The query is deferred-executed.
       /// </summary>
-      /// <typeparam name="T">The type of objects to map the results to.</typeparam>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="connection">The connection.</param>
       /// <param name="query">The query.</param>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as <typeparamref name="T"/> objects.</returns>
+      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       /// <seealso cref="DbExtensionMethods.Map&lt;T>(IDbCommand, TextWriter)"/>
-      public static IEnumerable<T> Map<T>(this DbConnection connection, SqlBuilder query, TextWriter logger) {
-         return query.ToCommand(connection).Map<T>(logger);
+      public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query, TextWriter logger) {
+         return query.ToCommand(connection).Map<TResult>(logger);
       }
 
       /// <summary>
-      /// Maps the results of the <paramref name="query"/> to <typeparamref name="T"/> objects,
+      /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects,
       /// using the provided <paramref name="mapper"/> delegate.
       /// </summary>
-      /// <typeparam name="T">The type of objects to map the results to.</typeparam>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="connection">The connection.</param>
       /// <param name="query">The query.</param>
-      /// <param name="mapper">The delegate for creating <typeparamref name="T"/> objects from an <see cref="IDataRecord"/> object.</param>
-      /// <returns>The results of the query as <typeparamref name="T"/> objects.</returns>
+      /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
+      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       /// <seealso cref="DbExtensionMethods.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>)"/>
-      public static IEnumerable<T> Map<T>(this DbConnection connection, SqlBuilder query, Func<IDataRecord, T> mapper) {
-         return query.ToCommand(connection).Map<T>(mapper);
+      public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query, Func<IDataRecord, TResult> mapper) {
+         return query.ToCommand(connection).Map<TResult>(mapper);
       }
 
       /// <summary>
-      /// Maps the results of the <paramref name="query"/> to <typeparamref name="T"/> objects,
+      /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects,
       /// using the provided <paramref name="mapper"/> delegate.
       /// </summary>
-      /// <typeparam name="T">The type of objects to map the results to.</typeparam>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="connection">The connection.</param>
       /// <param name="query">The query.</param>
-      /// <param name="mapper">The delegate for creating <typeparamref name="T"/> objects from an <see cref="IDataRecord"/> object.</param>
+      /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as <typeparamref name="T"/> objects.</returns>
+      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       /// <seealso cref="DbExtensionMethods.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>, TextWriter)"/>
-      public static IEnumerable<T> Map<T>(this DbConnection connection, SqlBuilder query, Func<IDataRecord, T> mapper, TextWriter logger) {
-         return query.ToCommand(connection).Map<T>(mapper, logger);
+      public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query, Func<IDataRecord, TResult> mapper, TextWriter logger) {
+         return query.ToCommand(connection).Map<TResult>(mapper, logger);
       }
 
       /// <summary>

@@ -377,41 +377,41 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Maps the results of the <paramref name="query"/> to <typeparamref name="T"/> objects.
+      /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects.
       /// The query is deferred-executed.
       /// </summary>
-      /// <typeparam name="T">The type of objects to map the results to.</typeparam>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="query">The query.</param>
-      /// <returns>The results of the query as <typeparamref name="T"/> objects.</returns>
+      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       /// <seealso cref="DbExtensionMethods.Map&lt;T>(IDbCommand, TextWriter)"/>
-      public IEnumerable<T> Map<T>(SqlBuilder query) {
-         return CreateCommand(query).Map<T>(this.Log);
+      public IEnumerable<TResult> Map<TResult>(SqlBuilder query) {
+         return CreateCommand(query).Map<TResult>(this.Log);
       }
 
       /// <summary>
-      /// Maps the results of the <paramref name="query"/> to <typeparamref name="T"/> objects,
+      /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects,
       /// using the provided <paramref name="mapper"/> delegate.
       /// </summary>
-      /// <typeparam name="T">The type of objects to map the results to.</typeparam>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="query">The query.</param>
-      /// <param name="mapper">The delegate for creating <typeparamref name="T"/> objects from an <see cref="IDataRecord"/> object.</param>
-      /// <returns>The results of the query as <typeparamref name="T"/> objects.</returns>
+      /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
+      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       /// <seealso cref="DbExtensionMethods.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>, TextWriter)"/>
-      public IEnumerable<T> Map<T>(SqlBuilder query, Func<IDataRecord, T> mapper) {
-         return CreateCommand(query).Map<T>(mapper, this.Log);
+      public IEnumerable<TResult> Map<TResult>(SqlBuilder query, Func<IDataRecord, TResult> mapper) {
+         return CreateCommand(query).Map<TResult>(mapper, this.Log);
       }
 
       /// <summary>
       /// Maps the results of the <paramref name="query"/> to objects of type
-      /// specified by the <paramref name="objectType"/> parameter.
+      /// specified by the <paramref name="resultType"/> parameter.
       /// The query is deferred-executed.
       /// </summary>
-      /// <param name="objectType">The type of objects to map the results to.</param>
+      /// <param name="resultType">The type of objects to map the results to.</param>
       /// <param name="query">The query.</param>
-      /// <returns>The results of the query as objects of type specified by the <paramref name="objectType"/> parameter.</returns>
+      /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
       /// <seealso cref="DbExtensionMethods.Map(IDbCommand, Type, TextWriter)"/>
-      public IEnumerable<object> Map(Type objectType, SqlBuilder query) {
-         return CreateCommand(query).Map(objectType, this.Log);
+      public IEnumerable<object> Map(Type resultType, SqlBuilder query) {
+         return CreateCommand(query).Map(resultType, this.Log);
       }
 
       /// <summary>
@@ -483,16 +483,16 @@ namespace DbExtensions {
          return table;
       }
 
-      public SqlSet<T> Set<T>(SqlBuilder definingQuery) {
+      public SqlSet<TResult> Set<TResult>(SqlBuilder definingQuery) {
          
-         return new SqlSet<T>(this.Connection, definingQuery) { 
+         return new SqlSet<TResult>(this.Connection, definingQuery) { 
             Log = this.Log
          };
       }
 
-      public SqlSet<T> Set<T>(SqlBuilder definingQuery, Func<IDataRecord, T> mapper) {
+      public SqlSet<TResult> Set<TResult>(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
          
-         return new SqlSet<T>(this.Connection, definingQuery, mapper) {
+         return new SqlSet<TResult>(this.Connection, definingQuery, mapper) {
             Log = this.Log
          };
       }

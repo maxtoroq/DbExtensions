@@ -522,81 +522,81 @@ namespace DbExtensions {
 
       /// <summary>
       /// Maps the results of the <paramref name="command"/> to objects of type
-      /// specified by the <paramref name="objectType"/> parameter.
+      /// specified by the <paramref name="resultType"/> parameter.
       /// The query is deferred-executed.
       /// </summary>
       /// <param name="command">The query command.</param>
-      /// <param name="objectType">The type of objects to map the results to.</param>
-      /// <returns>The results of the query as objects of type specified by the <paramref name="objectType"/> parameter.</returns>
-      public static IEnumerable<object> Map(this IDbCommand command, Type objectType) {
-         return Map(command, objectType, (TextWriter)null);
+      /// <param name="resultType">The type of objects to map the results to.</param>
+      /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
+      public static IEnumerable<object> Map(this IDbCommand command, Type resultType) {
+         return Map(command, resultType, (TextWriter)null);
       }
 
       /// <summary>
       /// Maps the results of the <paramref name="command"/> to objects of type
-      /// specified by the <paramref name="objectType"/> parameter.
+      /// specified by the <paramref name="resultType"/> parameter.
       /// The query is deferred-executed.
       /// </summary>
       /// <param name="command">The query command.</param>
-      /// <param name="objectType">The type of objects to map the results to.</param>
+      /// <param name="resultType">The type of objects to map the results to.</param>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as objects of type specified by the <paramref name="objectType"/> parameter.</returns>
-      public static IEnumerable<object> Map(this IDbCommand command, Type objectType, TextWriter logger) {
+      /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
+      public static IEnumerable<object> Map(this IDbCommand command, Type resultType, TextWriter logger) {
 
-         PocoMapper mapper = new PocoMapper(objectType, logger);
+         PocoMapper mapper = new PocoMapper(resultType, logger);
 
          return Map(command, r => mapper.Map(r), logger);
       }
 
       /// <summary>
-      /// Maps the results of the <paramref name="command"/> to <typeparamref name="T"/> objects.
+      /// Maps the results of the <paramref name="command"/> to <typeparamref name="TResult"/> objects.
       /// The query is deferred-executed.
       /// </summary>
-      /// <typeparam name="T">The type of objects to map the results to.</typeparam>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="command">The query command.</param>
-      /// <returns>The results of the query as <typeparamref name="T"/> objects.</returns>
-      public static IEnumerable<T> Map<T>(this IDbCommand command) {
-         return Map<T>(command, (TextWriter)null);
+      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
+      public static IEnumerable<TResult> Map<TResult>(this IDbCommand command) {
+         return Map<TResult>(command, (TextWriter)null);
       }
 
       /// <summary>
-      /// Maps the results of the <paramref name="command"/> to <typeparamref name="T"/> objects.
+      /// Maps the results of the <paramref name="command"/> to <typeparamref name="TResult"/> objects.
       /// The query is deferred-executed.
       /// </summary>
-      /// <typeparam name="T">The type of objects to map the results to.</typeparam>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="command">The query command.</param>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as <typeparamref name="T"/> objects.</returns>
-      public static IEnumerable<T> Map<T>(this IDbCommand command, TextWriter logger) {
+      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
+      public static IEnumerable<TResult> Map<TResult>(this IDbCommand command, TextWriter logger) {
          
-         PocoMapper mapper = new PocoMapper(typeof(T), logger);
+         PocoMapper mapper = new PocoMapper(typeof(TResult), logger);
 
-         return Map(command, r => mapper.Map(r), logger).Cast<T>();
+         return Map(command, r => mapper.Map(r), logger).Cast<TResult>();
       }
 
       /// <summary>
-      /// Maps the results of the <paramref name="command"/> to <typeparamref name="T"/> objects,
+      /// Maps the results of the <paramref name="command"/> to <typeparamref name="TResult"/> objects,
       /// using the provided <paramref name="mapper"/> delegate.
       /// </summary>
-      /// <typeparam name="T">The type of objects to map the results to.</typeparam>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="command">The query command.</param>
-      /// <param name="mapper">The delegate for creating <typeparamref name="T"/> objects from an <see cref="IDataRecord"/> object.</param>
-      /// <returns>The results of the query as <typeparamref name="T"/> objects.</returns>
-      public static IEnumerable<T> Map<T>(this IDbCommand command, Func<IDataRecord, T> mapper) {
-         return Map<T>(command, mapper, (TextWriter)null);
+      /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
+      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
+      public static IEnumerable<TResult> Map<TResult>(this IDbCommand command, Func<IDataRecord, TResult> mapper) {
+         return Map<TResult>(command, mapper, (TextWriter)null);
       }
 
       /// <summary>
-      /// Maps the results of the <paramref name="command"/> to <typeparamref name="T"/> objects,
+      /// Maps the results of the <paramref name="command"/> to <typeparamref name="TResult"/> objects,
       /// using the provided <paramref name="mapper"/> delegate.
       /// </summary>
-      /// <typeparam name="T">The type of objects to map the results to.</typeparam>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="command">The query command.</param>
-      /// <param name="mapper">The delegate for creating <typeparamref name="T"/> objects from an <see cref="IDataRecord"/> object.</param>
+      /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as <typeparamref name="T"/> objects.</returns>
-      public static IEnumerable<T> Map<T>(this IDbCommand command, Func<IDataRecord, T> mapper, TextWriter logger) {
-         return new MappingEnumerable<T>(command, mapper, logger);
+      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
+      public static IEnumerable<TResult> Map<TResult>(this IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter logger) {
+         return new MappingEnumerable<TResult>(command, mapper, logger);
       }
 
       /// <summary>
@@ -953,20 +953,20 @@ namespace DbExtensions {
    using System.Data;
    using System.IO;
 
-   internal class MappingEnumerable<T> : IEnumerable<T>, IEnumerable, IDisposable {
+   internal class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposable {
 
-      MappingEnumerable<T>.Enumerator enumerator;
+      MappingEnumerable<TResult>.Enumerator enumerator;
 
-      public MappingEnumerable(IDbCommand command, Func<IDataRecord, T> mapper)
+      public MappingEnumerable(IDbCommand command, Func<IDataRecord, TResult> mapper)
          : this(command, mapper, null) { }
 
-      public MappingEnumerable(IDbCommand command, Func<IDataRecord, T> mapper, TextWriter logger) {
-         this.enumerator = new MappingEnumerable<T>.Enumerator(command, mapper, logger);
+      public MappingEnumerable(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter logger) {
+         this.enumerator = new MappingEnumerable<TResult>.Enumerator(command, mapper, logger);
       }
 
-      public IEnumerator<T> GetEnumerator() {
+      public IEnumerator<TResult> GetEnumerator() {
 
-         MappingEnumerable<T>.Enumerator e = enumerator;
+         MappingEnumerable<TResult>.Enumerator e = enumerator;
 
          if (e == null)
             throw new InvalidOperationException("Cannot enumerate more than once.");
@@ -988,17 +988,17 @@ namespace DbExtensions {
 
       #region Nested Types
 
-      class Enumerator : IEnumerator<T>, IEnumerator, IDisposable {
+      class Enumerator : IEnumerator<TResult>, IEnumerator, IDisposable {
 
          readonly IDbCommand command;
-         readonly Func<IDataRecord, T> mapper;
+         readonly Func<IDataRecord, TResult> mapper;
          readonly TextWriter logger;
          readonly bool prevStateWasClosed;
          
          IDataReader reader;
-         T current;
+         TResult current;
 
-         public Enumerator(IDbCommand command, Func<IDataRecord, T> mapper, TextWriter logger) {
+         public Enumerator(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter logger) {
 
             if (command == null) throw new ArgumentNullException("command");
             if (mapper == null) throw new ArgumentNullException("mapper");
@@ -1013,7 +1013,7 @@ namespace DbExtensions {
             this.logger = logger;
          }
 
-         public T Current { get { return current; } }
+         public TResult Current { get { return current; } }
 
          object IEnumerator.Current { get { return current; } }
 
