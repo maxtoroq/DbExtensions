@@ -22,7 +22,7 @@ Public Class DataAccessObjectSamples
    End Function
 
    Public Function PredicateOnly() As IEnumerable(Of Product)
-      Return db.Products.Where("ProductID <= {0}", 7).AsEnumerable()
+      Return db.Products.Where("ProductID <= {0}", 7).ToList()
    End Function
 
    Public Sub Refresh()

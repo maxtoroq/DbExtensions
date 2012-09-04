@@ -160,6 +160,7 @@ namespace Samples {
             }
 
             if (returnValue != null) {
+               Console.WriteLine();
 
                SqlBuilder sqlbuilder = returnValue as SqlBuilder;
 
@@ -173,7 +174,12 @@ namespace Samples {
                      Console.WriteLine("-- {0}: {1} [{2}]", j, type, value);
                   }
                } else {
+                  ConsoleColor color = Console.ForegroundColor;
+                  Console.ForegroundColor = ConsoleColor.DarkGray;
+                  
                   ObjectDumper.Write(returnValue, 1, Console.Out);
+
+                  Console.ForegroundColor = color;
                } 
             }
          }

@@ -24,7 +24,8 @@ Public Class ExtensionMethodsSamples
 
       Return connection _
          .CreateCommand("SELECT * FROM Products WHERE ProductID = {0}", 1) _
-         .Map(Of Product)(log)
+         .Map(Of Product)(log) _
+         .ToList()
 
    End Function
 

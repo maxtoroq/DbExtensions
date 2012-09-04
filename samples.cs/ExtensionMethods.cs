@@ -26,7 +26,8 @@ namespace Samples.CSharp {
       
          return connection
             .CreateCommand("SELECT * FROM Products WHERE ProductID = {0}", 1)
-            .Map<Product>(log);
+            .Map<Product>(log)
+            .ToList();
       }
 
       public IEnumerable<Product> SelectWithManyToOne() {
