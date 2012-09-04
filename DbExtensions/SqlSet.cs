@@ -32,6 +32,7 @@ namespace DbExtensions {
       readonly SqlBuilder definingQuery;
       readonly Type resultType;
       readonly int setIndex = 1;
+      internal readonly int? sqlOffset;
 
       public DbConnection Connection { get { return connection; } }
       public TextWriter Log { get; set; }
@@ -41,23 +42,6 @@ namespace DbExtensions {
 
       public SqlSet(DbConnection connection, SqlBuilder definingQuery, Type resultType) 
          : this(connection, definingQuery, resultType, adoptQuery: false) { }
-
-      protected SqlSet(DbConnection connection, SqlBuilder definingQuery, bool adoptQuery) {
-
-         if (connection == null) throw new ArgumentNullException("connection");
-         if (definingQuery == null) throw new ArgumentNullException("definingQuery");
-
-         this.connection = connection;
-         this.definingQuery = (adoptQuery) ?
-            definingQuery
-            : definingQuery.Clone();
-      }
-
-      protected SqlSet(DbConnection connection, SqlBuilder definingQuery, Type resultType, bool adoptQuery) 
-         : this(connection, definingQuery, adoptQuery) {
-         
-         this.resultType = resultType;
-      }
 
       protected SqlSet(SqlSet set, SqlBuilder superQuery) {
 
@@ -75,26 +59,70 @@ namespace DbExtensions {
          this.setIndex += set.setIndex;
       }
 
-      protected SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType) 
+      protected SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType)
          : this(set, superQuery) {
 
          this.resultType = resultType;
       }
 
+      private SqlSet(DbConnection connection, SqlBuilder definingQuery, bool adoptQuery) {
+
+         if (connection == null) throw new ArgumentNullException("connection");
+         if (definingQuery == null) throw new ArgumentNullException("definingQuery");
+
+         this.connection = connection;
+         this.definingQuery = (adoptQuery) ?
+            definingQuery
+            : definingQuery.Clone();
+      }
+
+      // This constructor is used by SqlTable
+      internal SqlSet(DbConnection connection, SqlBuilder definingQuery, Type resultType, bool adoptQuery) 
+         : this(connection, definingQuery, adoptQuery) {
+         
+         this.resultType = resultType;
+      }
+
+      internal SqlSet(SqlSet set, SqlBuilder superQuery, int? offset) 
+         : this(set, superQuery) {
+
+         this.sqlOffset = offset;
+      }
+
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Calling the member twice in succession creates different results.")]
       public SqlBuilder GetDefiningQuery() {
-         return this.definingQuery.Clone();
+         return GetDefiningQuery(clone: true);
+      }
+
+      internal SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedOffset = false) {
+
+         SqlBuilder query = (clone) ? 
+            this.definingQuery.Clone()
+            : this.definingQuery;
+
+         if (this.sqlOffset.HasValue 
+            && !omitBufferedOffset) {
+            
+            if (!clone)
+               query = query.Clone();
+
+            query.OFFSET(this.sqlOffset.Value);
+         }
+
+         return query;
       }
 
       protected SqlBuilder CreateSuperQuery() {
          return CreateSuperQuery(null, null);
       }
 
-      protected SqlBuilder CreateSuperQuery(string selectFormat, params object[] args) { 
-         
-         return new SqlBuilder()
+      protected SqlBuilder CreateSuperQuery(string selectFormat, params object[] args) {
+
+         var query = new SqlBuilder()
             .SELECT(selectFormat ?? "*", args)
-            .FROM(this.definingQuery, "__set" + this.setIndex.ToString(CultureInfo.InvariantCulture));
+            .FROM(GetDefiningQuery(clone: false), "__set" + this.setIndex.ToString(CultureInfo.InvariantCulture));
+
+         return query;
       }
 
       protected DbCommand CreateCommand() {
@@ -326,19 +354,23 @@ namespace DbExtensions {
       }
 
       public SqlSet Skip(int count) {
-
-         var superQuery = CreateSuperQuery()
-            .OFFSET(count);
-
-         return new SqlSet(this, superQuery);
+         return new SqlSet(this, GetDefiningQuery(), offset: count);
       }
 
       public SqlSet Take(int count) {
 
-         var superQuery = CreateSuperQuery()
-            .LIMIT(count);
+         bool hasBufferedOffset = this.sqlOffset.HasValue;
 
-         return new SqlSet(this, superQuery);
+         SqlBuilder query = (hasBufferedOffset) ?
+            GetDefiningQuery(omitBufferedOffset: true)
+            : CreateSuperQuery();
+
+         query.LIMIT(count);
+
+         if (hasBufferedOffset) 
+            query.OFFSET(this.sqlOffset.Value);
+
+         return new SqlSet(this, query);
       }
 
       public object[] ToArray() {
@@ -384,33 +416,41 @@ namespace DbExtensions {
          : base(connection, definingQuery, typeof(TResult)) { }
 
       public SqlSet(DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper)
-         : this(connection, definingQuery) {
+         : base(connection, definingQuery, null) {
 
-         this.mapper = mapper;
-      }
+         // Passing null resultType to base, must use mapper
 
-      protected SqlSet(DbConnection connection, SqlBuilder definingQuery, bool adoptQuery)
-         : base(connection, definingQuery, typeof(TResult), adoptQuery) { }
-
-      protected SqlSet(DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, bool adoptQuery) 
-         : base(connection, definingQuery, adoptQuery) {
+         if (mapper == null) throw new ArgumentNullException("mapper");
 
          this.mapper = mapper;
       }
 
       protected SqlSet(SqlSet<TResult> set, SqlBuilder superQuery) 
-         : this((SqlSet)set, superQuery) {
+         : this(set, superQuery, offset: null) { }
+
+      // This constructor is used by SqlTable<TEntity>
+      internal SqlSet(DbConnection connection, SqlBuilder definingQuery, bool adoptQuery)
+         : base(connection, definingQuery, typeof(TResult), adoptQuery) { }
+
+      private SqlSet(SqlSet<TResult> set, SqlBuilder superQuery, int? offset)
+         : base((SqlSet)set, superQuery, offset) {
 
          if (set == null) throw new ArgumentNullException("set");
 
          this.mapper = set.mapper;
       }
 
-      protected internal SqlSet(SqlSet set, SqlBuilder superQuery)
-         : base(set, superQuery) { }
+      // These constructors are used by SqlSet
 
-      protected internal SqlSet(SqlSet set, SqlBuilder superQuery, Func<IDataRecord, TResult> mapper)
-         : this(set, superQuery) {
+      internal SqlSet(SqlSet set, SqlBuilder superQuery)
+         : base(set, superQuery, typeof(TResult)) { }
+
+      internal SqlSet(SqlSet set, SqlBuilder superQuery, Func<IDataRecord, TResult> mapper)
+         : base(set, superQuery, (Type)null) {
+
+         // Passing null resultType to base, must use mapper
+
+         if (mapper == null) throw new ArgumentNullException("mapper");
 
          this.mapper = mapper;
       }
@@ -496,19 +536,23 @@ namespace DbExtensions {
       }
 
       public new SqlSet<TResult> Skip(int count) {
-
-         var superQuery = CreateSuperQuery()
-            .OFFSET(count);
-
-         return new SqlSet<TResult>(this, superQuery);
+         return new SqlSet<TResult>(this, GetDefiningQuery(), offset: count);
       }
 
       public new SqlSet<TResult> Take(int count) {
 
-         var superQuery = CreateSuperQuery()
-            .LIMIT(count);
+         bool hasBufferedOffset = this.sqlOffset.HasValue;
 
-         return new SqlSet<TResult>(this, superQuery);
+         SqlBuilder query = (hasBufferedOffset) ?
+            GetDefiningQuery(omitBufferedOffset: true)
+            : CreateSuperQuery();
+
+         query.LIMIT(count);
+
+         if (hasBufferedOffset)
+            query.OFFSET(this.sqlOffset.Value);
+
+         return new SqlSet<TResult>(this, query);
       }
 
       public new TResult[] ToArray() {
