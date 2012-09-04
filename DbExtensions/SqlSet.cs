@@ -32,7 +32,7 @@ namespace DbExtensions {
       readonly SqlBuilder definingQuery;
       readonly Type resultType;
       readonly int setIndex = 1;
-      internal readonly int? sqlOffset;
+      int? sqlOffset;
 
       public DbConnection Connection { get { return connection; } }
       public TextWriter Log { get; set; }
@@ -79,18 +79,12 @@ namespace DbExtensions {
          this.resultType = resultType;
       }
 
-      internal SqlSet(SqlSet set, SqlBuilder superQuery, int? offset) 
-         : this(set, superQuery) {
-
-         this.sqlOffset = offset;
-      }
-
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Calling the member twice in succession creates different results.")]
       public SqlBuilder GetDefiningQuery() {
          return GetDefiningQuery(clone: true);
       }
 
-      internal SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedOffset = false) {
+      SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedOffset = false) {
 
          SqlBuilder query = (clone) ? 
             this.definingQuery.Clone()
@@ -119,6 +113,22 @@ namespace DbExtensions {
             .FROM(GetDefiningQuery(clone: false), "__set" + this.setIndex.ToString(CultureInfo.InvariantCulture));
 
          return query;
+      }
+
+      protected virtual SqlSet CreateSet(SqlBuilder superQuery) {
+         return new SqlSet(this, superQuery);
+      }
+
+      protected virtual SqlSet CreateSet(SqlBuilder superQuery, Type resultType) {
+         return new SqlSet(this, superQuery, resultType);
+      }
+
+      protected virtual SqlSet<TResult> CreateSet<TResult>(SqlBuilder superQuery) {
+         return new SqlSet<TResult>(this, superQuery);
+      }
+
+      protected virtual SqlSet<TResult> CreateSet<TResult>(SqlBuilder superQuery, Func<IDataRecord, TResult> mapper) {
+         return new SqlSet<TResult>(this, superQuery, mapper);
       }
 
       protected DbCommand CreateCommand() {
@@ -211,11 +221,11 @@ namespace DbExtensions {
       }
 
       public SqlSet<TResult> Cast<TResult>() {
-         return new SqlSet<TResult>(this, GetDefiningQuery());
+         return CreateSet<TResult>(GetDefiningQuery());
       }
 
       public SqlSet Cast(Type resultType) {
-         return new SqlSet(this, GetDefiningQuery(), resultType);
+         return CreateSet(GetDefiningQuery(), resultType);
       }
 
       public int Count() {
@@ -289,7 +299,7 @@ namespace DbExtensions {
          var superQuery = CreateSuperQuery()
             .ORDER_BY(format, args);
 
-         return new SqlSet(this, superQuery);
+         return CreateSet(superQuery);
       }
 
       public SqlSet<TResult> Select<TResult>(string format) {
@@ -300,7 +310,7 @@ namespace DbExtensions {
 
          var superQuery = CreateSuperQuery(format, args);
 
-         return new SqlSet<TResult>(this, superQuery);
+         return CreateSet<TResult>(superQuery);
       }
 
       public SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string format) {
@@ -311,7 +321,7 @@ namespace DbExtensions {
 
          var superQuery = CreateSuperQuery(format, args);
 
-         return new SqlSet<TResult>(this, superQuery, mapper);
+         return CreateSet<TResult>(superQuery, mapper);
       }
 
       public SqlSet Select(Type resultType, string format) {
@@ -322,7 +332,7 @@ namespace DbExtensions {
 
          var superQuery = CreateSuperQuery(format, args);
 
-         return new SqlSet(this, superQuery, resultType);
+         return CreateSet(superQuery, resultType);
       }
 
       public object Single() {
@@ -350,7 +360,11 @@ namespace DbExtensions {
       }
 
       public SqlSet Skip(int count) {
-         return new SqlSet(this, GetDefiningQuery(), offset: count);
+
+         SqlSet set = CreateSet(GetDefiningQuery());
+         set.sqlOffset = count;
+
+         return set;
       }
 
       public SqlSet Take(int count) {
@@ -366,7 +380,7 @@ namespace DbExtensions {
          if (hasBufferedOffset) 
             query.OFFSET(this.sqlOffset.Value);
 
-         return new SqlSet(this, query);
+         return CreateSet(query);
       }
 
       public object[] ToArray() {
@@ -387,7 +401,7 @@ namespace DbExtensions {
          var superQuery = CreateSuperQuery()
             .WHERE(predicate, parameters);
 
-         return new SqlSet(this, superQuery);
+         return CreateSet(superQuery);
       }
 
       public SqlSet Union(SqlSet otherSet) {
@@ -398,7 +412,7 @@ namespace DbExtensions {
             .UNION()
             .Append(otherSet.CreateSuperQuery());
 
-         return new SqlSet(this, superQuery);
+         return CreateSet(superQuery);
       }
 
       #endregion
@@ -422,19 +436,16 @@ namespace DbExtensions {
       }
 
       protected SqlSet(SqlSet<TResult> set, SqlBuilder superQuery) 
-         : this(set, superQuery, offset: null) { }
-
-      // This constructor is used by SqlTable<TEntity>
-      internal SqlSet(DbConnection connection, SqlBuilder definingQuery, bool adoptQuery)
-         : base(connection, definingQuery, typeof(TResult), adoptQuery) { }
-
-      private SqlSet(SqlSet<TResult> set, SqlBuilder superQuery, int? offset)
-         : base((SqlSet)set, superQuery, offset) {
+         : base((SqlSet)set, superQuery) {
 
          if (set == null) throw new ArgumentNullException("set");
 
          this.mapper = set.mapper;
       }
+
+      // This constructor is used by SqlTable<TEntity>
+      internal SqlSet(DbConnection connection, SqlBuilder definingQuery, bool adoptQuery)
+         : base(connection, definingQuery, typeof(TResult), adoptQuery) { }
 
       // These constructors are used by SqlSet
 
@@ -449,6 +460,10 @@ namespace DbExtensions {
          if (mapper == null) throw new ArgumentNullException("mapper");
 
          this.mapper = mapper;
+      }
+
+      protected override SqlSet CreateSet(SqlBuilder superQuery) {
+         return new SqlSet<TResult>(this, superQuery);
       }
 
       public new IEnumerator<TResult> GetEnumerator() {
@@ -496,15 +511,11 @@ namespace DbExtensions {
       }
 
       public new SqlSet<TResult> OrderBy(string format) {
-         return OrderBy(format, null);
+         return (SqlSet<TResult>)base.OrderBy(format);
       }
 
       public new SqlSet<TResult> OrderBy(string format, params object[] args) {
-
-         var superQuery = CreateSuperQuery()
-            .ORDER_BY(format, args);
-
-         return new SqlSet<TResult>(this, superQuery);
+         return (SqlSet<TResult>)base.OrderBy(format, args);
       }
 
       public new TResult Single() {
@@ -532,23 +543,11 @@ namespace DbExtensions {
       }
 
       public new SqlSet<TResult> Skip(int count) {
-         return new SqlSet<TResult>(this, GetDefiningQuery(), offset: count);
+         return (SqlSet<TResult>)base.Skip(count);
       }
 
       public new SqlSet<TResult> Take(int count) {
-
-         bool hasBufferedOffset = this.sqlOffset.HasValue;
-
-         SqlBuilder query = (hasBufferedOffset) ?
-            GetDefiningQuery(omitBufferedOffset: true)
-            : CreateSuperQuery();
-
-         query.LIMIT(count);
-
-         if (hasBufferedOffset)
-            query.OFFSET(this.sqlOffset.Value);
-
-         return new SqlSet<TResult>(this, query);
+         return (SqlSet<TResult>)base.Take(count);
       }
 
       public new TResult[] ToArray() {
@@ -561,26 +560,15 @@ namespace DbExtensions {
       }
 
       public new SqlSet<TResult> Where(string predicate) {
-         return Where(predicate, null);
+         return (SqlSet<TResult>)base.Where(predicate);
       }
 
       public new SqlSet<TResult> Where(string predicate, params object[] parameters) {
-
-         var superQuery = CreateSuperQuery()
-            .WHERE(predicate, parameters);
-
-         return new SqlSet<TResult>(this, superQuery);
+         return (SqlSet<TResult>)base.Where(predicate, parameters);
       }
 
       public SqlSet<TResult> Union(SqlSet<TResult> otherSet) {
-
-         if (otherSet == null) throw new ArgumentNullException("otherSet");
-
-         var superQuery = CreateSuperQuery()
-            .UNION()
-            .Append(otherSet.CreateSuperQuery());
-
-         return new SqlSet<TResult>(this, superQuery);
+         return (SqlSet<TResult>)base.Union(otherSet);
       }
 
       #endregion
