@@ -399,7 +399,7 @@ namespace DbExtensions {
       /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
       /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
       /// </returns>
-      /// <seealso cref="DbExtensionMethods.CreateCommand(DbProviderFactory, string, object[])"/>
+      /// <seealso cref="Extensions.CreateCommand(DbProviderFactory, string, object[])"/>
       public DbCommand ToCommand(DbProviderFactory providerFactory) {
          
          if (providerFactory == null) throw new ArgumentNullException("providerFactory");
@@ -418,7 +418,7 @@ namespace DbExtensions {
       /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
       /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
       /// </returns>
-      /// <seealso cref="DbExtensionMethods.CreateCommand(DbConnection, string, object[])"/>
+      /// <seealso cref="Extensions.CreateCommand(DbConnection, string, object[])"/>
       public DbCommand ToCommand(DbConnection connection) {
          
          if (connection == null) throw new ArgumentNullException("connection");
@@ -1248,10 +1248,7 @@ namespace DbExtensions {
       }
    }
 
-   /// <summary>
-   /// Provides extension methods for common ADO.NET objects, for integration with <see cref="SqlBuilder"/>.
-   /// </summary>
-   public static partial class DbExtensionMethods {
+   public static partial class Extensions {
 
       /// <summary>
       /// Executes the <paramref name="nonQuery"/> command.
@@ -1282,7 +1279,7 @@ namespace DbExtensions {
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <param name="affectingRecords">The number of records that the command must affect, otherwise the transaction is rolledback.</param>
       /// <returns>The number of affected records.</returns>
-      /// <seealso cref="DbExtensionMethods.Affect(IDbCommand, int)"/>
+      /// <seealso cref="Extensions.Affect(IDbCommand, int)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is not equal to <paramref name="affectingRecords"/>.</exception>
       public static int Affect(this DbConnection connection, SqlBuilder nonQuery, int affectingRecords) {
          return nonQuery.ToCommand(connection).Affect(affectingRecords);
@@ -1297,7 +1294,7 @@ namespace DbExtensions {
       /// <param name="affectingRecords">The number of records that the command must affect, otherwise the transaction is rolledback.</param>
       /// <param name="affectedMode">The criteria for validating the affected records value.</param>
       /// <returns>The number of affected records.</returns>
-      /// <seealso cref="DbExtensionMethods.Affect(IDbCommand, int, AffectedRecordsPolicy)"/>
+      /// <seealso cref="Extensions.Affect(IDbCommand, int, AffectedRecordsPolicy)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is not valid according to the <paramref name="affectingRecords"/> and <paramref name="affectedMode"/> parameters.</exception>
       public static int Affect(this DbConnection connection, SqlBuilder nonQuery, int affectingRecords, AffectedRecordsPolicy affectedMode) {
          return nonQuery.ToCommand(connection).Affect(affectingRecords, affectedMode);
@@ -1312,7 +1309,7 @@ namespace DbExtensions {
       /// <param name="affectingRecords">The number of records that the command must affect, otherwise the transaction is rolledback.</param>
       /// <param name="logger">A <see cref="TextWriter"/> for logging the whole process.</param>
       /// <returns>The number of affected records.</returns>
-      /// <seealso cref="DbExtensionMethods.Affect(IDbCommand, int, TextWriter)"/>
+      /// <seealso cref="Extensions.Affect(IDbCommand, int, TextWriter)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is not equal to <paramref name="affectingRecords"/>.</exception>      
       public static int Affect(this DbConnection connection, SqlBuilder nonQuery, int affectingRecords, TextWriter logger) {
          return nonQuery.ToCommand(connection).Affect(affectingRecords, logger);
@@ -1328,7 +1325,7 @@ namespace DbExtensions {
       /// <param name="affectedMode">The criteria for validating the affected records value.</param>
       /// <param name="logger">A <see cref="TextWriter"/> for logging the whole process.</param>
       /// <returns>The number of affected records.</returns>
-      /// <seealso cref="DbExtensionMethods.Affect(IDbCommand, int, AffectedRecordsPolicy, TextWriter)"/>
+      /// <seealso cref="Extensions.Affect(IDbCommand, int, AffectedRecordsPolicy, TextWriter)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is not valid according to the <paramref name="affectingRecords"/> and <paramref name="affectedMode"/> parameters.</exception>
       public static int Affect(this DbConnection connection, SqlBuilder nonQuery, int affectingRecords, AffectedRecordsPolicy affectedMode, TextWriter logger) {
          return nonQuery.ToCommand(connection).Affect(affectingRecords, affectedMode, logger);
@@ -1341,7 +1338,7 @@ namespace DbExtensions {
       /// <param name="connection">The connection.</param>
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <returns>The number of affected records.</returns>
-      /// <seealso cref="DbExtensionMethods.AffectOne(IDbCommand)"/>
+      /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public static int AffectOne(this DbConnection connection, SqlBuilder nonQuery) {
          return Affect(connection, nonQuery, 1);
@@ -1355,7 +1352,7 @@ namespace DbExtensions {
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <param name="logger">A <see cref="TextWriter"/> for logging the whole process.</param>
       /// <returns>The number of affected records.</returns>
-      /// <seealso cref="DbExtensionMethods.AffectOne(IDbCommand, TextWriter)"/>
+      /// <seealso cref="Extensions.AffectOne(IDbCommand, TextWriter)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public static int AffectOne(this DbConnection connection, SqlBuilder nonQuery, TextWriter logger) {
          return Affect(connection, nonQuery, 1, logger);
@@ -1368,7 +1365,7 @@ namespace DbExtensions {
       /// <param name="connection">The connection.</param>
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <returns>The number of affected records.</returns>
-      /// <seealso cref="DbExtensionMethods.AffectOneOrNone(IDbCommand)"/>
+      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>      
       public static int AffectOneOrNone(this DbConnection connection, SqlBuilder nonQuery) {
          return Affect(connection, nonQuery, 1, AffectedRecordsPolicy.AllowLower);
@@ -1382,7 +1379,7 @@ namespace DbExtensions {
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <param name="logger">A <see cref="TextWriter"/> for logging the whole process.</param>
       /// <returns>The number of affected records.</returns>
-      /// <seealso cref="DbExtensionMethods.AffectOneOrNone(IDbCommand, TextWriter)"/>
+      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand, TextWriter)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>      
       public static int AffectOneOrNone(this DbConnection connection, SqlBuilder nonQuery, TextWriter logger) {
          return Affect(connection, nonQuery, 1, AffectedRecordsPolicy.AllowLower, logger);
@@ -1397,7 +1394,7 @@ namespace DbExtensions {
       /// <param name="resultType">The type of objects to map the results to.</param>
       /// <param name="query">The query.</param>
       /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
-      /// <seealso cref="DbExtensionMethods.Map(IDbCommand, Type)"/>
+      /// <seealso cref="Extensions.Map(IDbCommand, Type)"/>
       public static IEnumerable<object> Map(this DbConnection connection, Type resultType, SqlBuilder query) {
          return query.ToCommand(connection).Map(resultType);
       }
@@ -1412,7 +1409,7 @@ namespace DbExtensions {
       /// <param name="query">The query.</param>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
       /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
-      /// <seealso cref="DbExtensionMethods.Map(IDbCommand, Type, TextWriter)"/>
+      /// <seealso cref="Extensions.Map(IDbCommand, Type, TextWriter)"/>
       public static IEnumerable<object> Map(this DbConnection connection, Type resultType, SqlBuilder query, TextWriter logger) {
          return query.ToCommand(connection).Map(resultType, logger);
       }
@@ -1425,7 +1422,7 @@ namespace DbExtensions {
       /// <param name="connection">The connection.</param>
       /// <param name="query">The query.</param>
       /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
-      /// <seealso cref="DbExtensionMethods.Map&lt;T>(IDbCommand)"/>
+      /// <seealso cref="Extensions.Map&lt;T>(IDbCommand)"/>
       public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query) {
          return query.ToCommand(connection).Map<TResult>();
       }
@@ -1439,7 +1436,7 @@ namespace DbExtensions {
       /// <param name="query">The query.</param>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
       /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
-      /// <seealso cref="DbExtensionMethods.Map&lt;T>(IDbCommand, TextWriter)"/>
+      /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, TextWriter)"/>
       public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query, TextWriter logger) {
          return query.ToCommand(connection).Map<TResult>(logger);
       }
@@ -1453,7 +1450,7 @@ namespace DbExtensions {
       /// <param name="query">The query.</param>
       /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
       /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
-      /// <seealso cref="DbExtensionMethods.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>)"/>
+      /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>)"/>
       public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query, Func<IDataRecord, TResult> mapper) {
          return query.ToCommand(connection).Map<TResult>(mapper);
       }
@@ -1468,7 +1465,7 @@ namespace DbExtensions {
       /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
       /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
-      /// <seealso cref="DbExtensionMethods.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>, TextWriter)"/>
+      /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>, TextWriter)"/>
       public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query, Func<IDataRecord, TResult> mapper, TextWriter logger) {
          return query.ToCommand(connection).Map<TResult>(mapper, logger);
       }
@@ -1582,7 +1579,7 @@ namespace DbExtensions {
       /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
       /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
       /// </returns>
-      /// <seealso cref="DbExtensionMethods.CreateCommand(DbProviderFactory, string, object[])"/>
+      /// <seealso cref="Extensions.CreateCommand(DbProviderFactory, string, object[])"/>
       public static DbCommand CreateCommand(this DbProviderFactory providerFactory, SqlBuilder sqlBuilder) {
          return sqlBuilder.ToCommand(providerFactory);
       }
@@ -1597,7 +1594,7 @@ namespace DbExtensions {
       /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
       /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
       /// </returns>
-      /// <seealso cref="DbExtensionMethods.CreateCommand(DbConnection, string, object[])"/>
+      /// <seealso cref="Extensions.CreateCommand(DbConnection, string, object[])"/>
       public static DbCommand CreateCommand(this DbConnection connection, SqlBuilder sqlBuilder) {
          return sqlBuilder.ToCommand(connection);
       }

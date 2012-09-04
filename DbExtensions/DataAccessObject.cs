@@ -316,7 +316,7 @@ namespace DbExtensions {
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <param name="affectingRecords">The number of records that the command must affect, otherwise the transaction is rolledback.</param>
       /// <returns>The number of affected records.</returns>
-      /// <seealso cref="DbExtensionMethods.Affect(IDbCommand, int)"/>
+      /// <seealso cref="Extensions.Affect(IDbCommand, int)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is not equal to <paramref name="affectingRecords"/>.</exception>      
       public int Affect(SqlBuilder nonQuery, int affectingRecords) {
          return CreateCommand(nonQuery).Affect(affectingRecords, this.Log);
@@ -330,7 +330,7 @@ namespace DbExtensions {
       /// <param name="affectingRecords">The number of records that the command should affect.</param>
       /// <param name="affectedMode">The criteria for validating the affected records value.</param>
       /// <returns>The number of affected records.</returns>
-      /// <seealso cref="DbExtensionMethods.Affect(IDbCommand, int, AffectedRecordsPolicy)"/>
+      /// <seealso cref="Extensions.Affect(IDbCommand, int, AffectedRecordsPolicy)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is not valid according to the <paramref name="affectingRecords"/> and <paramref name="affectedMode"/> parameters.</exception>
       public int Affect(SqlBuilder nonQuery, int affectingRecords, AffectedRecordsPolicy affectedMode) {
          return CreateCommand(nonQuery).Affect(affectingRecords, affectedMode, this.Log);
@@ -342,7 +342,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <returns>The number of affected records.</returns>
-      /// <seealso cref="DbExtensionMethods.AffectOne(IDbCommand)"/>
+      /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public int AffectOne(SqlBuilder nonQuery) {
          return CreateCommand(nonQuery).AffectOne(this.Log);
@@ -362,7 +362,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <returns>The number of affected records.</returns>
-      /// <seealso cref="DbExtensionMethods.AffectOneOrNone(IDbCommand)"/>
+      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>      
       public int AffectOneOrNone(SqlBuilder nonQuery) {
          return CreateCommand(nonQuery).AffectOneOrNone(this.Log);
@@ -383,7 +383,7 @@ namespace DbExtensions {
       /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="query">The query.</param>
       /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
-      /// <seealso cref="DbExtensionMethods.Map&lt;T>(IDbCommand, TextWriter)"/>
+      /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, TextWriter)"/>
       public IEnumerable<TResult> Map<TResult>(SqlBuilder query) {
          return CreateCommand(query).Map<TResult>(this.Log);
       }
@@ -396,7 +396,7 @@ namespace DbExtensions {
       /// <param name="query">The query.</param>
       /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
       /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
-      /// <seealso cref="DbExtensionMethods.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>, TextWriter)"/>
+      /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>, TextWriter)"/>
       public IEnumerable<TResult> Map<TResult>(SqlBuilder query, Func<IDataRecord, TResult> mapper) {
          return CreateCommand(query).Map<TResult>(mapper, this.Log);
       }
@@ -409,7 +409,7 @@ namespace DbExtensions {
       /// <param name="resultType">The type of objects to map the results to.</param>
       /// <param name="query">The query.</param>
       /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
-      /// <seealso cref="DbExtensionMethods.Map(IDbCommand, Type, TextWriter)"/>
+      /// <seealso cref="Extensions.Map(IDbCommand, Type, TextWriter)"/>
       public IEnumerable<object> Map(Type resultType, SqlBuilder query) {
          return CreateCommand(query).Map(resultType, this.Log);
       }
@@ -420,7 +420,7 @@ namespace DbExtensions {
       /// <param name="query">The query whose existance is to be checked.</param>
       /// <returns>true if <paramref name="query"/> contains any rows; otherwise, false.</returns>
       public bool Exists(SqlBuilder query) {
-         return this.Connection.Exists(CreateCommand(DbExtensionMethods.ExistsQuery(query)), this.Log);
+         return this.Connection.Exists(CreateCommand(Extensions.ExistsQuery(query)), this.Log);
       }
 
       /// <summary>
@@ -428,9 +428,9 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="query">The query whose count is to be computed.</param>
       /// <returns>The number of results the <paramref name="query"/> would return.</returns>
-      /// <seealso cref="DbExtensionMethods.Count(DbConnection, SqlBuilder)"/>
+      /// <seealso cref="Extensions.Count(DbConnection, SqlBuilder)"/>
       public int Count(SqlBuilder query) {
-         return this.Connection.Count(CreateCommand(DbExtensionMethods.CountQuery(query)), this.Log);
+         return this.Connection.Count(CreateCommand(Extensions.CountQuery(query)), this.Log);
       }
 
       /// <summary>
@@ -438,10 +438,10 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="query">The query whose count is to be computed.</param>
       /// <returns>The number of results the <paramref name="query"/> would return.</returns>
-      /// <seealso cref="DbExtensionMethods.LongCount(DbConnection, SqlBuilder)"/>
+      /// <seealso cref="Extensions.LongCount(DbConnection, SqlBuilder)"/>
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount(SqlBuilder query) {
-         return this.Connection.LongCount(CreateCommand(DbExtensionMethods.CountQuery(query)), this.Log);
+         return this.Connection.LongCount(CreateCommand(Extensions.CountQuery(query)), this.Log);
       }
 
       // Sets
@@ -751,7 +751,7 @@ namespace DbExtensions {
       /// <remarks>
       /// <see cref="Transaction"/> is associated with all new commands created using this method.
       /// </remarks>
-      /// <seealso cref="DbExtensionMethods.CreateCommand(DbConnection, string, object[])"/>
+      /// <seealso cref="Extensions.CreateCommand(DbConnection, string, object[])"/>
       public DbCommand CreateCommand(string commandText, params object[] parameters) {
 
          DbCommand command = this.cb.CreateCommand(this.Connection, commandText, parameters);

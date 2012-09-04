@@ -191,7 +191,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>true id the set contains rows; otherwise, false.</returns>
       public bool Any() {
-         return this.connection.Exists(CreateCommand(DbExtensionMethods.ExistsQuery(GetDefiningQuery(clone: false))), this.Log);
+         return this.connection.Exists(CreateCommand(Extensions.ExistsQuery(GetDefiningQuery(clone: false))), this.Log);
       }
 
       public bool Any(string predicate) {
@@ -229,7 +229,7 @@ namespace DbExtensions {
       }
 
       public int Count() {
-         return this.connection.Count(CreateCommand(DbExtensionMethods.CountQuery(GetDefiningQuery(clone: false))), this.Log);
+         return this.connection.Count(CreateCommand(Extensions.CountQuery(GetDefiningQuery(clone: false))), this.Log);
       }
 
       public int Count(string predicate) {
@@ -272,7 +272,7 @@ namespace DbExtensions {
 
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount() {
-         return this.connection.LongCount(CreateCommand(DbExtensionMethods.CountQuery(GetDefiningQuery(clone: false))), this.Log);
+         return this.connection.LongCount(CreateCommand(Extensions.CountQuery(GetDefiningQuery(clone: false))), this.Log);
       }
 
       public long LongCount(string predicate) {

@@ -31,7 +31,7 @@ namespace DbExtensions {
    /// <summary>
    /// Provides extension methods for common ADO.NET objects.
    /// </summary>
-   public static partial class DbExtensionMethods {
+   public static partial class Extensions {
 
       static readonly Func<DbConnection, DbProviderFactory> getDbProviderFactory =
          (Func<DbConnection, DbProviderFactory>)Delegate.CreateDelegate(typeof(Func<DbConnection, DbProviderFactory>), typeof(DbConnection).GetProperty("DbProviderFactory", BindingFlags.Instance | BindingFlags.NonPublic).GetGetMethod(nonPublic: true));

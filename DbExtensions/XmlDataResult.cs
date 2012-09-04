@@ -25,11 +25,7 @@ using System.Xml.XPath;
 
 namespace DbExtensions {
 
-   /// <summary>
-   /// Provides extension methods for common ADO.NET objects, for mapping the
-   /// result of SQL queries to XML.
-   /// </summary>
-   public static partial class DbExtensionMethods {
+   public static partial class Extensions {
 
       /// <summary>
       /// Maps the results of the <paramref name="command"/> to XML.
@@ -101,7 +97,7 @@ namespace DbExtensions {
    /// Maps the result of SQL queries to XML. This class cannot be instantiated, instead use
    /// the various MapXml extensions methods to create an instance of this class.
    /// </summary>
-   /// <seealso cref="DbExtensionMethods"/>
+   /// <seealso cref="Extensions"/>
    public sealed class XmlDataResult : IXmlSerializable {
 
       static readonly XmlReaderSettings closeInputSettings = new XmlReaderSettings { CloseInput = true };
