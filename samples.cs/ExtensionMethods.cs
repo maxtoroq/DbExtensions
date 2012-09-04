@@ -26,8 +26,7 @@ namespace Samples.CSharp {
       
          return connection
             .CreateCommand("SELECT * FROM Products WHERE ProductID = {0}", 1)
-            .Map<Product>(log)
-            .ToList();
+            .Map<Product>(log);
       }
 
       public IEnumerable<Product> SelectWithManyToOne() {
@@ -41,9 +40,7 @@ namespace Samples.CSharp {
             .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID")
             .WHERE("p.ProductID < {0}", 3);
 
-         var results = connection.Map<Product>(query, log).ToList();
-
-         return results;
+         return connection.Map<Product>(query, log);
       }
 
       public IEnumerable<EmployeeTerritory> SelectWithManyToOneNested() {
@@ -57,9 +54,7 @@ namespace Samples.CSharp {
             .LEFT_JOIN("Region r ON t.RegionID = r.RegionID")
             .WHERE("et.EmployeeID < {0}", 3);
 
-         var results = connection.Map<EmployeeTerritory>(query, log).ToList();
-
-         return results;
+         return connection.Map<EmployeeTerritory>(query, log);
       }
 
       public IEnumerable AnnonymousType() {
@@ -69,13 +64,10 @@ namespace Samples.CSharp {
             .FROM("Products p")
             .WHERE("p.ProductID < {0}", 3);
 
-         var summary = connection.Map(query, r => new {
-               ProductID = r.GetNullableInt32(0).GetValueOrDefault(),
-               ProductName = r.GetStringOrNull(1)
-            }, log)
-            .ToList();
-
-         return summary;
+         return connection.Map(query, r => new {
+            ProductID = r.GetInt32(0),
+            ProductName = r.GetStringOrNull(1)
+         }, log);
       }
 
       public IEnumerable<Product> MappingCalculatedColumn() {
@@ -86,9 +78,7 @@ namespace Samples.CSharp {
             .WHERE("p.ProductID < {0}", 3)
             .ORDER_BY("ValueInStock");
 
-         var results = connection.Map<Product>(query, log).ToList();
-
-         return results;
+         return connection.Map<Product>(query, log);
       }
 
       public object Exists() {

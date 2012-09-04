@@ -24,8 +24,7 @@ Public Class ExtensionMethodsSamples
 
       Return connection _
          .CreateCommand("SELECT * FROM Products WHERE ProductID = {0}", 1) _
-         .Map(Of Product)(log) _
-         .ToList()
+         .Map(Of Product)(log)
 
    End Function
 
@@ -40,9 +39,7 @@ Public Class ExtensionMethodsSamples
          .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID") _
          .WHERE("p.ProductID < {0}", 3)
 
-      Dim results = connection.Map(Of Product)(query, log).ToList()
-
-      Return results
+      Return connection.Map(Of Product)(query, log)
 
    End Function
 
@@ -57,9 +54,7 @@ Public Class ExtensionMethodsSamples
          .LEFT_JOIN("Region r ON t.RegionID = r.RegionID") _
          .WHERE("et.EmployeeID < {0}", 3)
 
-      Dim results = connection.Map(Of EmployeeTerritory)(query, log).ToList()
-
-      Return results
+      Return connection.Map(Of EmployeeTerritory)(query, log)
 
    End Function
 
@@ -70,14 +65,11 @@ Public Class ExtensionMethodsSamples
          .FROM("Products p") _
          .WHERE("p.ProductID < {0}", 3)
 
-      Dim results = connection.Map(query, Function(r) _
-          New With {
-            .ProductID = r.GetNullableInt32(0).GetValueOrDefault(),
+      Return connection.Map(query, Function(r) _
+         New With {
+            .ProductID = r.GetInt32(0),
             .ProductName = r.GetStringOrNull(1)
-          }, log) _
-         .ToList()
-
-      Return results
+         }, log)
 
    End Function
 
@@ -89,9 +81,7 @@ Public Class ExtensionMethodsSamples
          .WHERE("p.ProductID < {0}", 3) _
          .ORDER_BY("ValueInStock")
 
-      Dim results = connection.Map(Of Product)(query, log).ToList()
-
-      Return results
+      Return connection.Map(Of Product)(query, log)
 
    End Function
 

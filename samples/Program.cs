@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Linq.Mapping;
@@ -160,12 +161,15 @@ namespace Samples {
             }
 
             if (returnValue != null) {
+
                Console.WriteLine();
 
                SqlBuilder sqlbuilder = returnValue as SqlBuilder;
 
                if (sqlbuilder != null) {
+                  
                   Console.WriteLine(returnValue);
+                  
                   for (int j = 0; j < sqlbuilder.ParameterValues.Count; j++) {
 
                      object value = sqlbuilder.ParameterValues[j];
@@ -173,7 +177,12 @@ namespace Samples {
 
                      Console.WriteLine("-- {0}: {1} [{2}]", j, type, value);
                   }
+
                } else {
+
+                  if (returnValue is IEnumerable)
+                     returnValue = ((IEnumerable)returnValue).Cast<object>().ToArray();
+
                   ConsoleColor color = Console.ForegroundColor;
                   Console.ForegroundColor = ConsoleColor.DarkGray;
                   

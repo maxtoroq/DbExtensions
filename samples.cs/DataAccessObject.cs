@@ -24,7 +24,7 @@ namespace Samples.CSharp {
       }
 
       public IEnumerable<Product> PredicateOnly() {
-         return db.Products.Where("ProductID <= {0}", 7).ToList();
+         return db.Products.Where("ProductID <= {0}", 7).AsEnumerable();
       }
 
       public Product Find() {
