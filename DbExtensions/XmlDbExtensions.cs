@@ -23,13 +23,13 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
 
-namespace DbExtensions.Xml {
+namespace DbExtensions {
 
    /// <summary>
    /// Provides extension methods for common ADO.NET objects, for mapping the
    /// result of SQL queries to XML.
    /// </summary>
-   public static class XmlDbExtensions {
+   public static partial class DbExtensionMethods {
 
       /// <summary>
       /// Maps the results of the <paramref name="command"/> to XML.
@@ -101,7 +101,7 @@ namespace DbExtensions.Xml {
    /// Maps the result of SQL queries to XML. This class cannot be instantiated, instead use
    /// the various MapXml extensions methods to create an instance of this class.
    /// </summary>
-   /// <seealso cref="XmlDbExtensions"/>
+   /// <seealso cref="DbExtensionMethods"/>
    public sealed class XmlMapper : IXmlSerializable {
 
       static readonly XmlReaderSettings closeInputSettings = new XmlReaderSettings { CloseInput = true };

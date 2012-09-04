@@ -7,7 +7,6 @@ Imports System.Linq
 Imports System.Reflection
 Imports System.Xml
 Imports DbExtensions
-Imports DbExtensions.Xml
 Imports Samples.VisualBasic.Northwind
 
 Public Class ExtensionMethodsSamples
