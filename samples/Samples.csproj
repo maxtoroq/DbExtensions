@@ -46,10 +46,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <EmbeddedResource Include="Northwind\Northwind.xml" />
+    <None Include="Northwind\Northwind.mdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Utilities\ObjectDumper-LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Northwind\Northwind.sl3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
