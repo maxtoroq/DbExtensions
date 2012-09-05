@@ -96,8 +96,7 @@ namespace Samples.CSharp {
          return SQL
             .UPDATE("Products")
             .SET("Discontinued = {0}", true)
-            .WHERE("ProductID = {0}", 1)
-            .LIMIT(1);
+            .WHERE("ProductID = {0}", 1);
       }
 
       public SqlBuilder UpdateWithSubquery() {
@@ -108,16 +107,14 @@ namespace Samples.CSharp {
             .WHERE("p.ProductID = ({0})", SQL
                .SELECT("p2.ProductID")
                .FROM("Products p2")
-               .WHERE("p2.ProductID <> p.ProductID"))
-            .LIMIT(1);
+               .WHERE("p2.ProductID <> p.ProductID"));
       }
 
       public SqlBuilder Delete() {
 
          return SQL
             .DELETE_FROM("Products")
-            .WHERE("ProductID = {0}", 1)
-            .LIMIT(1);
+            .WHERE("ProductID = {0}", 1);
       }
 
       /// <summary>

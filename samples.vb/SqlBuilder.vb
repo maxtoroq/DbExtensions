@@ -101,8 +101,7 @@ Public Class SqlBuilderSamples
       Return SQL _
          .UPDATE("Products") _
          .SET("Discontinued = {0}", True) _
-         .WHERE("ProductID = {0}", 1) _
-         .LIMIT(1)
+         .WHERE("ProductID = {0}", 1)
 
    End Function
 
@@ -114,8 +113,7 @@ Public Class SqlBuilderSamples
          .WHERE("p.ProductID = ({0})", SQL _
             .SELECT("p2.ProductID") _
             .FROM("Products p2") _
-            .WHERE("p2.ProductID <> p.ProductID")) _
-         .LIMIT(1)
+            .WHERE("p2.ProductID <> p.ProductID"))
 
    End Function
 
@@ -123,8 +121,7 @@ Public Class SqlBuilderSamples
 
       Return SQL _
          .DELETE_FROM("Products") _
-         .WHERE("ProductID = {0}", 1) _
-         .LIMIT(1)
+         .WHERE("ProductID = {0}", 1)
 
    End Function
 

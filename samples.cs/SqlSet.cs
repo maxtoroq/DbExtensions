@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
@@ -49,6 +50,14 @@ namespace Samples.CSharp {
 
       public Product FirstOutOfStockProduct() {
          return productSet.First("UnitsInStock = 0");
+      }
+
+      public IEnumerable Top5ProductsWithLowestStock() {
+         return productSet.Where("UnitsInStock > 0")
+            .OrderBy("UnitsInStock")
+            .Take(5)
+            .Select(r => new { Name = r.GetString(0), UnitsInStock = r.GetInt16(1) }, "ProductName, UnitsInStock")
+            .AsEnumerable();
       }
 
       public object NamesOfOutOfStockProducts() {
