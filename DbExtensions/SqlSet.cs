@@ -32,10 +32,25 @@ namespace DbExtensions {
       readonly SqlBuilder definingQuery;
       readonly Type resultType;
       readonly int setIndex = 1;
-      int? sqlOffset;
+
+      // OrderBy and Skip calls are buffered for the following reasons:
+      // - Append LIMIT and OFFSET as one clause (MySQL, SQLite), in the appropiate order
+      //   e.g. Skip(x).Take(y) -> LIMIT y OFFSET x
+      // - Append ORDER BY, OFFSET and FETCH as one clause (for SQL Server)
+      // - Minimize the number of subqueries
+
+      SqlFragment orderByBuffer;
+      int? skipBuffer;
 
       public DbConnection Connection { get { return connection; } }
       public TextWriter Log { get; set; }
+
+      private bool HasBufferedCalls {
+         get {
+            return skipBuffer.HasValue
+               || orderByBuffer != null;
+         }
+      }
 
       public SqlSet(DbConnection connection, SqlBuilder definingQuery) 
          : this(connection, definingQuery, adoptQuery: false) { }
@@ -84,42 +99,73 @@ namespace DbExtensions {
          return GetDefiningQuery(clone: true);
       }
 
-      SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedOffset = false) {
+      SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedCalls = false) {
 
-         SqlBuilder query = (clone) ? 
-            this.definingQuery.Clone()
-            : this.definingQuery;
+         bool applyBuffer = this.HasBufferedCalls && !omitBufferedCalls;
+         bool shouldClone = clone || !applyBuffer;
 
-         if (this.sqlOffset.HasValue 
-            && !omitBufferedOffset) {
-            
-            if (!clone)
-               query = query.Clone();
+         SqlBuilder query = this.definingQuery;
 
-            ApplyLimitOffset(query, limit: null, offset: this.sqlOffset.Value);
+         if (shouldClone)
+            query = query.Clone();
+
+         if (applyBuffer) {
+
+            query = CreateSuperQuery(query, null, null);
+
+            ApplyOrderBySkipTake(query, this.orderByBuffer, this.skipBuffer);
          }
 
          return query;
       }
 
-      void ApplyLimitOffset(SqlBuilder query, int? limit, int? offset) {
+      void ApplyOrderBySkipTake(SqlBuilder query, SqlFragment orderBy, int? skip, int? take = null) {
+
+         bool hasOrderBy = orderBy != null;
+         bool hasSkip = skip.HasValue;
+         bool hasTake = take.HasValue;
+
+         if (hasOrderBy)
+            query.ORDER_BY(orderBy.Format, orderBy.Args);
 
          if (IsSqlServer()) {
 
-            query.ORDER_BY()
-               ._If(offset.HasValue || limit.HasValue, "1 OFFSET {0} ROWS", (offset ?? 0));
+            bool useFetch = hasSkip && hasTake;
+            bool usingTop = hasTake && !useFetch;
 
-            if (limit.HasValue)
-               query.AppendClause("FETCH", null, "NEXT {0} ROWS ONLY", new object[1] { limit.Value });
+            if (!hasOrderBy && hasSkip) {
+
+               // Cannot have OFFSET without ORDER BY
+               query.ORDER_BY("1");
+            }
+
+            if (hasSkip) {
+               query.OFFSET(skip.Value.ToString(CultureInfo.InvariantCulture) + " ROWS");
+
+            } else if (hasOrderBy && !usingTop) {
+
+               // The ORDER BY clause is invalid in subqueries, unless TOP, OFFSET or FOR XML is also specified.
+
+               query.OFFSET("0 ROWS");
+            }
+
+            if (useFetch)
+               query.AppendClause("FETCH", null, String.Concat("NEXT ", take.Value.ToString(CultureInfo.InvariantCulture), " ROWS ONLY"), null);
          
          } else {
 
-            if (limit.HasValue)
-               query.LIMIT(limit.Value);
+            if (hasTake)
+               query.LIMIT(take.Value);
 
-            if (offset.HasValue)
-               query.OFFSET(offset.Value);
+            if (hasSkip)
+               query.OFFSET(skip.Value);
          }
+      }
+
+      void CopyBufferState(SqlSet otherSet) {
+
+         otherSet.orderByBuffer = this.orderByBuffer;
+         otherSet.skipBuffer = this.skipBuffer;
       }
 
       bool IsSqlServer() {
@@ -132,10 +178,14 @@ namespace DbExtensions {
       }
 
       protected SqlBuilder CreateSuperQuery(string selectFormat, params object[] args) {
+         return CreateSuperQuery(GetDefiningQuery(clone: false), selectFormat, args);
+      }
+
+      SqlBuilder CreateSuperQuery(SqlBuilder definingQuery, string selectFormat, object[] args) {
 
          var query = new SqlBuilder()
             .SELECT(selectFormat ?? "*", args)
-            .FROM(GetDefiningQuery(clone: false), "__set" + this.setIndex.ToString(CultureInfo.InvariantCulture));
+            .FROM(definingQuery, "__set" + this.setIndex.ToString(CultureInfo.InvariantCulture));
 
          return query;
       }
@@ -321,16 +371,15 @@ namespace DbExtensions {
 
       public SqlSet OrderBy(string format, params object[] args) {
 
-         var superQuery = CreateSuperQuery()
-            .ORDER_BY(format, args);
+         SqlBuilder query = (this.orderByBuffer == null) ?
+            GetDefiningQuery(omitBufferedCalls: true)
+            : CreateSuperQuery();
 
-         // SQL Server 2012:
-         // The ORDER BY clause is invalid in subqueries, unless TOP, OFFSET or FOR XML is also specified.
+         SqlSet set = CreateSet(query);
+         CopyBufferState(set);
+         set.orderByBuffer = new SqlFragment(format, args);
 
-         if (IsSqlServer())
-            superQuery.OFFSET("0 ROWS");
-
-         return CreateSet(superQuery);
+         return set;
       }
 
       public SqlSet<TResult> Select<TResult>(string format) {
@@ -392,21 +441,44 @@ namespace DbExtensions {
 
       public SqlSet Skip(int count) {
 
-         SqlSet set = CreateSet(GetDefiningQuery());
-         set.sqlOffset = count;
+         SqlBuilder query = (!this.skipBuffer.HasValue) ?
+            GetDefiningQuery(omitBufferedCalls: true)
+            : CreateSuperQuery();
+
+         SqlSet set = CreateSet(query);
+         CopyBufferState(set);
+         set.skipBuffer = count;
 
          return set;
       }
 
       public SqlSet Take(int count) {
 
-         bool hasBufferedOffset = this.sqlOffset.HasValue;
+         SqlBuilder query;
 
-         SqlBuilder query = (hasBufferedOffset) ?
-            GetDefiningQuery(omitBufferedOffset: true)
-            : CreateSuperQuery();
+         if (this.HasBufferedCalls) {
+            
+            query = GetDefiningQuery(omitBufferedCalls: true);
 
-         ApplyLimitOffset(query, limit: count, offset: this.sqlOffset);
+            if (IsSqlServer() && !this.skipBuffer.HasValue) {
+               query = CreateSuperQuery(query, String.Concat("TOP(", count.ToString(CultureInfo.InvariantCulture), ") *"), null);
+               ApplyOrderBySkipTake(query, this.orderByBuffer, skip: null, take: count);
+
+            } else {
+               query = CreateSuperQuery(query, null, null);
+               ApplyOrderBySkipTake(query, this.orderByBuffer, this.skipBuffer, take: count);
+            }
+
+         } else {
+
+            if (IsSqlServer()) {
+               query = CreateSuperQuery(String.Concat("TOP(", count.ToString(CultureInfo.InvariantCulture), ") *"), null);
+
+            } else {
+               query = CreateSuperQuery();
+               ApplyOrderBySkipTake(query, orderBy: null, skip: null, take: count);
+            }
+         }
 
          return CreateSet(query);
       }
@@ -441,6 +513,20 @@ namespace DbExtensions {
             .Append(otherSet.CreateSuperQuery());
 
          return CreateSet(superQuery);
+      }
+
+      #endregion
+
+      #region Nested Types
+
+      sealed class SqlFragment {
+         public readonly string Format;
+         public readonly object[] Args;
+
+         public SqlFragment(string format, object[] args) {
+            this.Format = format;
+            this.Args = args;
+         }
       }
 
       #endregion
