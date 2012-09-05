@@ -96,10 +96,35 @@ namespace DbExtensions {
             if (!clone)
                query = query.Clone();
 
-            query.OFFSET(this.sqlOffset.Value);
+            ApplyLimitOffset(query, limit: null, offset: this.sqlOffset.Value);
          }
 
          return query;
+      }
+
+      void ApplyLimitOffset(SqlBuilder query, int? limit, int? offset) {
+
+         if (IsSqlServer()) {
+
+            query.ORDER_BY()
+               ._If(offset.HasValue || limit.HasValue, "1 OFFSET {0} ROWS", (offset ?? 0));
+
+            if (limit.HasValue)
+               query.AppendClause("FETCH", null, "NEXT {0} ROWS ONLY", new object[1] { limit.Value });
+         
+         } else {
+
+            if (limit.HasValue)
+               query.LIMIT(limit.Value);
+
+            if (offset.HasValue)
+               query.OFFSET(offset.Value);
+         }
+      }
+
+      bool IsSqlServer() {
+         return this.connection is System.Data.SqlClient.SqlConnection
+            || this.connection.GetType().Namespace.Equals("System.Data.SqlServerCe", StringComparison.Ordinal);
       }
 
       protected SqlBuilder CreateSuperQuery() {
@@ -299,6 +324,12 @@ namespace DbExtensions {
          var superQuery = CreateSuperQuery()
             .ORDER_BY(format, args);
 
+         // SQL Server 2012:
+         // The ORDER BY clause is invalid in subqueries, unless TOP, OFFSET or FOR XML is also specified.
+
+         if (IsSqlServer())
+            superQuery.OFFSET("0 ROWS");
+
          return CreateSet(superQuery);
       }
 
@@ -375,10 +406,7 @@ namespace DbExtensions {
             GetDefiningQuery(omitBufferedOffset: true)
             : CreateSuperQuery();
 
-         query.LIMIT(count);
-
-         if (hasBufferedOffset) 
-            query.OFFSET(this.sqlOffset.Value);
+         ApplyLimitOffset(query, limit: count, offset: this.sqlOffset);
 
          return CreateSet(query);
       }
