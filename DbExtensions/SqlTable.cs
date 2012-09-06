@@ -34,6 +34,8 @@ namespace DbExtensions {
       // SqlTable is only a wrapper on SqlTable<TEntity>
 
       readonly ISqlTable table;
+
+      readonly DataAccessObject dao;
       readonly MetaType metaType;
       readonly SqlCommandBuilder<object> sqlCommands;
 
@@ -42,12 +44,17 @@ namespace DbExtensions {
       }
 
       internal SqlTable(DataAccessObject dao, MetaType metaType, ISqlTable table)
-         : base(dao.Connection, dao.SELECT_FROM(metaType, null, null), metaType.Type, adoptQuery: true) {
+         : base(dao.Connection, dao.SELECT_FROM(metaType, null, null), metaType.Type, adoptQuery: true, logger: dao.Configuration.Log) {
 
          this.table = table;
+
+         this.dao = dao;
          this.metaType = metaType;
          this.sqlCommands = new SqlCommandBuilder<object>(dao, metaType);
-         this.Log = dao.Configuration.Log;
+      }
+
+      protected override DbCommand CreateCommand(string commandText, params object[] parameters) {
+         return this.dao.CreateCommand(commandText, parameters);
       }
 
       public new SqlTable<TEntity> Cast<TEntity>() where TEntity : class {
@@ -134,12 +141,11 @@ namespace DbExtensions {
       }
 
       internal SqlTable(DataAccessObject dao, MetaType metaType)
-         : base(dao.Connection, dao.SELECT_FROM(metaType, null, null), adoptQuery: true) {
+         : base(dao.Connection, dao.SELECT_FROM(metaType, null, null), adoptQuery: true, logger: dao.Configuration.Log) {
 
          this.dao = dao;
          this.metaType = metaType;
          this.sqlCommands = new SqlCommandBuilder<TEntity>(dao, metaType);
-         this.Log = dao.Configuration.Log;
       }
 
       protected override DbCommand CreateCommand(string commandText, params object[] parameters) {
