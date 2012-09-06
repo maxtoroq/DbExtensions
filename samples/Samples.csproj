@@ -47,7 +47,11 @@
     </None>
     <EmbeddedResource Include="Northwind\Northwind.xml" />
     <None Include="Northwind\Northwind.mdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Northwind\Northwind_log.ldf">
+      <DependentUpon>Northwind.mdf</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Content Include="Utilities\ObjectDumper-LICENSE.txt" />
   </ItemGroup>
