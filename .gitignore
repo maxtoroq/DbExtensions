@@ -5,5 +5,4 @@
 *.user
 packages
 *.sl3
-*.sdf
-*.mdf
+*.[msl]df
