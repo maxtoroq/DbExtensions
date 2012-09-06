@@ -484,15 +484,15 @@ namespace DbExtensions {
       }
 
       public SqlSet<TResult> Set<TResult>(SqlBuilder definingQuery) {
-         return new SqlSet<TResult>(this.Connection, definingQuery, this.Log);
+         return new SqlSet<TResult>(definingQuery, this.Connection, this.Log);
       }
 
       public SqlSet<TResult> Set<TResult>(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
-         return new SqlSet<TResult>(this.Connection, definingQuery, mapper, this.Log);
+         return new SqlSet<TResult>(definingQuery, mapper, this.Connection, this.Log);
       }
 
       public SqlSet Set(SqlBuilder definingQuery) {
-         return new SqlSet(this.Connection, definingQuery, this.Log);
+         return new SqlSet(definingQuery, this.Connection, this.Log);
       }
 
       internal SqlBuilder SELECT_(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias) {

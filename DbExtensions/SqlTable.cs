@@ -44,7 +44,7 @@ namespace DbExtensions {
       }
 
       internal SqlTable(DataAccessObject dao, MetaType metaType, ISqlTable table)
-         : base(dao.Connection, dao.SELECT_FROM(metaType, null, null), metaType.Type, adoptQuery: true, logger: dao.Configuration.Log) {
+         : base(dao.SELECT_FROM(metaType, null, null), dao.Connection, metaType.Type, adoptQuery: true, logger: dao.Configuration.Log) {
 
          this.table = table;
 
@@ -141,7 +141,7 @@ namespace DbExtensions {
       }
 
       internal SqlTable(DataAccessObject dao, MetaType metaType)
-         : base(dao.Connection, dao.SELECT_FROM(metaType, null, null), adoptQuery: true, logger: dao.Configuration.Log) {
+         : base(dao.SELECT_FROM(metaType, null, null), dao.Connection, adoptQuery: true, logger: dao.Configuration.Log) {
 
          this.dao = dao;
          this.metaType = metaType;

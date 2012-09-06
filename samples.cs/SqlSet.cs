@@ -18,7 +18,7 @@ namespace Samples.CSharp {
       public SqlSetSamples(string connectionString, TextWriter log) {
          
          this.connection = DbFactory.CreateConnection(connectionString);
-         this.productSet = new SqlSet<Product>(this.connection, new SqlBuilder("SELECT * FROM Products"), log);
+         this.productSet = new SqlSet<Product>(new SqlBuilder("SELECT * FROM Products"), this.connection, log);
       }
 
       public object AreThereAnyProducts() {

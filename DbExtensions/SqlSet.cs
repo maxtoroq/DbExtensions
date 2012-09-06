@@ -59,17 +59,23 @@ namespace DbExtensions {
          }
       }
 
-      public SqlSet(DbConnection connection, SqlBuilder definingQuery) 
-         : this(connection, definingQuery, adoptQuery: false) { }
+      public SqlSet(SqlBuilder definingQuery) 
+         : this(definingQuery, DbFactory.CreateConnection()) { }
 
-      public SqlSet(DbConnection connection, SqlBuilder definingQuery, TextWriter logger)
-         : this(connection, definingQuery, adoptQuery: false, logger: logger) { }
+      public SqlSet(SqlBuilder definingQuery, DbConnection connection) 
+         : this(definingQuery, connection, adoptQuery: false) { }
 
-      public SqlSet(DbConnection connection, SqlBuilder definingQuery, Type resultType) 
-         : this(connection, definingQuery, resultType, adoptQuery: false) { }
+      public SqlSet(SqlBuilder definingQuery, DbConnection connection, TextWriter logger)
+         : this(definingQuery, connection, adoptQuery: false, logger: logger) { }
 
-      public SqlSet(DbConnection connection, SqlBuilder definingQuery, Type resultType, TextWriter logger)
-         : this(connection, definingQuery, resultType, adoptQuery: false, logger: logger) { }
+      public SqlSet(SqlBuilder definingQuery, Type resultType)
+         : this(definingQuery, DbFactory.CreateConnection(), resultType, adoptQuery: false) { }
+
+      public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection) 
+         : this(definingQuery, connection, resultType, adoptQuery: false) { }
+
+      public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection, TextWriter logger)
+         : this(definingQuery, connection, resultType, adoptQuery: false, logger: logger) { }
 
       protected SqlSet(SqlSet set, SqlBuilder superQuery) {
 
@@ -89,7 +95,7 @@ namespace DbExtensions {
          this.resultType = resultType;
       }
 
-      private SqlSet(DbConnection connection, SqlBuilder definingQuery, bool adoptQuery, TextWriter logger = null) {
+      private SqlSet(SqlBuilder definingQuery, DbConnection connection, bool adoptQuery, TextWriter logger = null) {
 
          if (connection == null) throw new ArgumentNullException("connection");
          if (definingQuery == null) throw new ArgumentNullException("definingQuery");
@@ -102,8 +108,8 @@ namespace DbExtensions {
       }
 
       // This constructor is used by SqlTable
-      internal SqlSet(DbConnection connection, SqlBuilder definingQuery, Type resultType, bool adoptQuery, TextWriter logger = null) 
-         : this(connection, definingQuery, adoptQuery, logger) {
+      internal SqlSet(SqlBuilder definingQuery, DbConnection connection, Type resultType, bool adoptQuery, TextWriter logger = null) 
+         : this(definingQuery, connection, adoptQuery, logger) {
          
          this.resultType = resultType;
       }
@@ -550,17 +556,23 @@ namespace DbExtensions {
 
       readonly Func<IDataRecord, TResult> mapper;
 
-      public SqlSet(DbConnection connection, SqlBuilder definingQuery) 
-         : base(connection, definingQuery, typeof(TResult)) { }
+      public SqlSet(SqlBuilder definingQuery)
+         : base(definingQuery, typeof(TResult)) { }
 
-      public SqlSet(DbConnection connection, SqlBuilder definingQuery, TextWriter logger)
-         : base(connection, definingQuery, typeof(TResult), logger) { }
+      public SqlSet(SqlBuilder definingQuery, DbConnection connection) 
+         : base(definingQuery, typeof(TResult), connection) { }
 
-      public SqlSet(DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) 
-         : this(connection, definingQuery, mapper, null) { }
+      public SqlSet(SqlBuilder definingQuery, DbConnection connection, TextWriter logger)
+         : base(definingQuery, typeof(TResult), connection, logger) { }
 
-      public SqlSet(DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, TextWriter logger)
-         : base(connection, definingQuery, null, logger) {
+      public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper)
+         : this(definingQuery, mapper, DbFactory.CreateConnection()) { }
+
+      public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, DbConnection connection) 
+         : this(definingQuery, mapper, connection, null) { }
+
+      public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, DbConnection connection, TextWriter logger)
+         : base(definingQuery, null, connection, logger) {
 
          // Passing null resultType to base, must use mapper
 
@@ -578,8 +590,8 @@ namespace DbExtensions {
       }
 
       // This constructor is used by SqlTable<TEntity>
-      internal SqlSet(DbConnection connection, SqlBuilder definingQuery, bool adoptQuery, TextWriter logger = null)
-         : base(connection, definingQuery, typeof(TResult), adoptQuery, logger) { }
+      internal SqlSet(SqlBuilder definingQuery, DbConnection connection, bool adoptQuery, TextWriter logger = null)
+         : base(definingQuery, connection, typeof(TResult), adoptQuery, logger) { }
 
       // These constructors are used by SqlSet
 
