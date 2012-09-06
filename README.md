@@ -13,6 +13,3 @@ versions 1.x, 2.x and 3.x remain available there.
 
 Source code and releases for version 4.0 onwards are hosted on 
 [GitHub](https://github.com/maxtoroq/DbExtensions). Also available via [NuGet](http://www.nuget.org/packages/DbExtensions).
-
-To run the samples download the [Northwind databases](https://github.com/downloads/maxtoroq/DbExtensions/Northwind.zip)
-and unzip in samples/Northwind
