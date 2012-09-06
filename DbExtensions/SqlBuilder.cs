@@ -1366,7 +1366,7 @@ namespace DbExtensions {
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <returns>The number of affected records.</returns>
       /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>      
+      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
       public static int AffectOneOrNone(this DbConnection connection, SqlBuilder nonQuery) {
          return Affect(connection, nonQuery, 1, AffectedRecordsPolicy.AllowLower);
       }

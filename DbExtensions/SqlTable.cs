@@ -357,22 +357,20 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Executes a DELETE command for the specified <paramref name="entityType"/>
+      /// Executes a DELETE command for the entity
       /// whose primary key matches the <paramref name="id"/> parameter,
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
-      /// <param name="entityType">The entity type whose DELETE command is to be executed.</param>
       /// <param name="id">The primary key value.</param>
       public void DeleteById(object id) {
          DeleteById(id, this.dao.Configuration.DeleteConflictPolicy);
       }
 
       /// <summary>
-      /// Executes a DELETE command for the specified <paramref name="entityType"/>
+      /// Executes a DELETE command for the entity
       /// whose primary key matches the <paramref name="id"/> parameter,
       /// using the provided <paramref name="conflictPolicy"/>.
       /// </summary>
-      /// <param name="entityType">The entity type whose DELETE command is to be executed.</param>
       /// <param name="id">The primary key value.</param>
       /// <param name="conflictPolicy">
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
@@ -806,7 +804,6 @@ namespace DbExtensions {
       /// Creates and returns a DELETE command for the current table
       /// that includes the DELETE and FROM clauses.
       /// </summary>
-      /// <param name="entityType">The entityType whose DELETE command is to be created.</param>
       /// <returns>The DELETE command for the current table.</returns>
       public SqlBuilder DELETE_FROM() {
 

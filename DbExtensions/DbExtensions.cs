@@ -326,18 +326,76 @@ namespace DbExtensions {
          }
       }
 
+      /// <summary>
+      /// Creates and executes a <see cref="DbCommand"/> (whose <see cref="DbCommand.CommandText"/> property
+      /// is initialized with the <paramref name="commandText"/> parameter) in a new or existing transaction, and
+      /// validates that the affected records value is equal to one before comitting.
+      /// </summary>
+      /// <param name="connection">The connection to which the command is executed against.</param>
+      /// <param name="commandText">The command text.</param>
+      /// <returns>The number of affected records.</returns>
+      /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
+      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public static int AffectOne(this DbConnection connection, string commandText) {
          return CreateCommand(connection, commandText).AffectOne();
       }
 
+      /// <summary>
+      /// Creates and executes a <see cref="DbCommand"/> (using the provided <paramref name="commandText"/> 
+      /// as a composite format string, as used on <see cref="String.Format(String, Object[])"/>, 
+      /// where the format items are replaced with appropiate parameter names, and the objects in the
+      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection)
+      /// in a new or existing transaction, and validates that the affected records value is equal to one before comitting.
+      /// </summary>
+      /// <param name="connection">The connection to which the command is executed against.</param>
+      /// <param name="commandText">The command text.</param>
+      /// <param name="parameters">
+      /// The array of parameters to be passed to the command. Note the following 
+      /// behavior: If the number of objects in the array is less than the highest 
+      /// number identified in the command string, an exception is thrown. If the 
+      /// array contains objects that are not referenced in the command string, no 
+      /// exception is thrown. If a parameter is null, it is converted to DBNull.Value. 
+      /// </param>
+      /// <returns>The number of affected records.</returns>
+      /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
+      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public static int AffectOne(this DbConnection connection, string commandText, params object[] parameters) {
          return CreateCommand(connection, commandText, parameters).AffectOne();
       }
 
+      /// <summary>
+      /// Creates and executes a <see cref="DbCommand"/> (whose <see cref="DbCommand.CommandText"/> property
+      /// is initialized with the <paramref name="commandText"/> parameter) in a new or existing transaction, and
+      /// validates that the affected records value is less or equal to one before comitting.
+      /// </summary>
+      /// <param name="connection">The connection to which the command is executed against.</param>
+      /// <param name="commandText">The non-query command to execute.</param>
+      /// <returns>The number of affected records.</returns>
+      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
+      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
       public static int AffectOneOrNone(this DbConnection connection, string commandText) {
          return CreateCommand(connection, commandText).AffectOneOrNone();
       }
 
+      /// <summary>
+      /// Creates and executes a <see cref="DbCommand"/> (using the provided <paramref name="commandText"/> 
+      /// as a composite format string, as used on <see cref="String.Format(String, Object[])"/>, 
+      /// where the format items are replaced with appropiate parameter names, and the objects in the
+      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection)
+      /// in a new or existing transaction, and validates that the affected records value is less or equal to one before comitting.
+      /// </summary>
+      /// <param name="connection">The connection to which the command is executed against.</param>
+      /// <param name="commandText">The non-query command to execute.</param>
+      /// <param name="parameters">
+      /// The array of parameters to be passed to the command. Note the following 
+      /// behavior: If the number of objects in the array is less than the highest 
+      /// number identified in the command string, an exception is thrown. If the 
+      /// array contains objects that are not referenced in the command string, no 
+      /// exception is thrown. If a parameter is null, it is converted to DBNull.Value. 
+      /// </param>
+      /// <returns>The number of affected records.</returns>
+      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
+      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
       public static int AffectOneOrNone(this DbConnection connection, string commandText, params object[] parameters) {
          return CreateCommand(connection, commandText, parameters).AffectOneOrNone();
       }

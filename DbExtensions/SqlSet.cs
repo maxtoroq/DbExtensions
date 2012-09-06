@@ -25,6 +25,9 @@ using System.Linq;
 
 namespace DbExtensions {
 
+   /// <summary>
+   /// Represents an immutable, connected SQL query.
+   /// </summary>
    [DebuggerDisplay("{definingQuery}")]
    public class SqlSet : ISqlSet<SqlSet, object> {
 
