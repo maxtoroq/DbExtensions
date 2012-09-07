@@ -22,6 +22,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Collections;
 
 namespace DbExtensions {
 
@@ -45,7 +46,9 @@ namespace DbExtensions {
       SqlFragment orderByBuffer;
       int? skipBuffer;
 
-      public DbConnection Connection { get { return context.Connection; } }
+      public DbConnection Connection { 
+         get { return context.Connection; } 
+      }
 
       protected internal TextWriter Log {
          get { return context.Log; }
@@ -220,36 +223,16 @@ namespace DbExtensions {
          return new SqlSet<TResult>(this, superQuery, mapper);
       }
 
-      protected DbCommand CreateCommand() {
-         return CreateCommand(GetDefiningQuery(clone: false));
-      }
-
-      protected virtual DbCommand CreateCommand(SqlBuilder sqlBuilder) {
+      protected DbCommand CreateCommand(SqlBuilder sqlBuilder) {
          return this.context.CreateCommand(sqlBuilder);
       }
 
-      public IEnumerator<object> GetEnumerator() {
-         return AsEnumerable().GetEnumerator();
-      }
+      protected virtual IEnumerable Execute(DbCommand command) {
 
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public override bool Equals(object obj) {
-         return base.Equals(obj);
-      }
+         if (this.resultType == null)
+            throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
 
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public override int GetHashCode() {
-         return base.GetHashCode();
-      }
-
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Must match base signature.")]
-      public new Type GetType() {
-         return base.GetType();
-      }
-
-      public override string ToString() {
-         return GetDefiningQuery(clone: false).ToString();
+         return command.Map(resultType, this.Log);
       }
 
       #region ISqlSet<SqlSet,object> Members
@@ -291,18 +274,26 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>All objects in the set.</returns>
       public IEnumerable<object> AsEnumerable() {
-
-         if (this.resultType == null)
-            throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
-
-         return CreateCommand().Map(resultType, this.Log);
+         return (IEnumerable<object>)Execute(CreateCommand(GetDefiningQuery(clone: false)));
       }
 
       public SqlSet<TResult> Cast<TResult>() {
+
+         if (this.resultType != null
+            && this.resultType != typeof(TResult)) {
+            throw new InvalidOperationException("The specified type parameter is not valid for this instance.");
+         }
+
          return CreateSet<TResult>(GetDefiningQuery());
       }
 
       public SqlSet Cast(Type resultType) {
+
+         if (this.resultType != null
+            && this.resultType != resultType) {
+            throw new InvalidOperationException("The specified type parameter is not valid for this instance.");
+         }
+
          return CreateSet(GetDefiningQuery(), resultType);
       }
 
@@ -346,6 +337,10 @@ namespace DbExtensions {
 
       public object FirstOrDefault(string predicate, params object[] parameters) {
          return Where(predicate, parameters).FirstOrDefault();
+      }
+
+      public IEnumerator<object> GetEnumerator() {
+         return AsEnumerable().GetEnumerator();
       }
 
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
@@ -511,11 +506,37 @@ namespace DbExtensions {
 
          if (otherSet == null) throw new ArgumentNullException("otherSet");
 
+         // TODO: check result compatibility?
+
          var superQuery = CreateSuperQuery()
             .UNION()
             .Append(otherSet.CreateSuperQuery());
 
          return CreateSet(superQuery);
+      }
+
+      #endregion
+
+      #region Object Members
+
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public override bool Equals(object obj) {
+         return base.Equals(obj);
+      }
+
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public override int GetHashCode() {
+         return base.GetHashCode();
+      }
+
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Must match base signature.")]
+      public new Type GetType() {
+         return base.GetType();
+      }
+
+      public override string ToString() {
+         return GetDefiningQuery(clone: false).ToString();
       }
 
       #endregion
@@ -558,9 +579,7 @@ namespace DbExtensions {
          : this(definingQuery, mapper, connection, null) { }
 
       public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, DbConnection connection, TextWriter logger)
-         : base(definingQuery, null, connection, logger) {
-
-         // Passing null resultType to base, must use mapper
+         : base(definingQuery, typeof(TResult), connection, logger) {
 
          if (mapper == null) throw new ArgumentNullException("mapper");
 
@@ -581,9 +600,7 @@ namespace DbExtensions {
          : base(set, superQuery, typeof(TResult)) { }
 
       internal SqlSet(SqlSet set, SqlBuilder superQuery, Func<IDataRecord, TResult> mapper)
-         : base(set, superQuery, (Type)null) {
-
-         // Passing null resultType to base, must use mapper
+         : base(set, superQuery, typeof(TResult)) {
 
          if (mapper == null) throw new ArgumentNullException("mapper");
 
@@ -594,8 +611,16 @@ namespace DbExtensions {
          return new SqlSet<TResult>(this, superQuery);
       }
 
-      public new IEnumerator<TResult> GetEnumerator() {
-         return AsEnumerable().GetEnumerator();
+      protected override SqlSet<TResult2> CreateSet<TResult2>(SqlBuilder superQuery) {
+         return new SqlSet<TResult2>(this, superQuery);
+      }
+
+      protected override IEnumerable Execute(DbCommand command) {
+
+         if (this.mapper != null)
+            return command.Map(this.mapper, this.Log);
+
+         return command.Map<TResult>(this.Log);
       }
 
       #region ISqlSet<SqlSet<TResult>,TResult> Members
@@ -605,13 +630,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>All <typeparamref name="TResult"/> objects in the set.</returns>
       public new IEnumerable<TResult> AsEnumerable() {
-
-         DbCommand command = CreateCommand();
-
-         if (this.mapper != null)
-            return command.Map(this.mapper, this.Log);
-
-         return command.Map<TResult>(this.Log);
+         return (IEnumerable<TResult>)base.AsEnumerable();
       }
 
       public new TResult First() {
@@ -636,6 +655,10 @@ namespace DbExtensions {
 
       public new TResult FirstOrDefault(string predicate, params object[] parameters) {
          return Where(predicate, parameters).FirstOrDefault();
+      }
+
+      public new IEnumerator<TResult> GetEnumerator() {
+         return AsEnumerable().GetEnumerator();
       }
 
       public new SqlSet<TResult> OrderBy(string format) {
@@ -721,6 +744,7 @@ namespace DbExtensions {
       TSource FirstOrDefault();
       TSource FirstOrDefault(string predicate);
       TSource FirstOrDefault(string predicate, params object[] parameters);
+      IEnumerator<TSource> GetEnumerator();
       long LongCount();
       long LongCount(string predicate);
       long LongCount(string predicate, params object[] parameters);
