@@ -32,9 +32,8 @@ namespace DbExtensions {
    public class SqlSet : ISqlSet<SqlSet, object> {
 
       readonly SqlBuilder definingQuery;
-      readonly DbConnection connection;
       readonly Type resultType;
-      readonly TextWriter logger;
+      readonly ISqlSetContext context;
       readonly int setIndex = 1;
 
       // OrderBy and Skip calls are buffered for the following reasons:
@@ -46,10 +45,10 @@ namespace DbExtensions {
       SqlFragment orderByBuffer;
       int? skipBuffer;
 
-      public DbConnection Connection { get { return connection; } }
+      public DbConnection Connection { get { return context.Connection; } }
 
       protected internal TextWriter Log {
-         get { return logger; }
+         get { return context.Log; }
       }
 
       private bool HasBufferedCalls {
@@ -77,18 +76,19 @@ namespace DbExtensions {
       public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection, TextWriter logger)
          : this(definingQuery, resultType, connection, logger, adoptQuery: false) { }
 
-      internal SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection, TextWriter logger, bool adoptQuery) {
+      internal SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection, TextWriter logger, bool adoptQuery) 
+         : this(definingQuery, resultType, new SqlSetDefaultContext(connection, logger), adoptQuery) { }
+
+      internal SqlSet(SqlBuilder definingQuery, Type resultType, ISqlSetContext context, bool adoptQuery) {
 
          if (definingQuery == null) throw new ArgumentNullException("definingQuery");
-         if (connection == null) throw new ArgumentNullException("connection");
 
          this.definingQuery = (adoptQuery) ?
             definingQuery
             : definingQuery.Clone();
 
          this.resultType = resultType;
-         this.connection = connection;
-         this.logger = logger;
+         this.context = context;
       }
 
       protected SqlSet(SqlSet set, SqlBuilder superQuery) {
@@ -96,11 +96,10 @@ namespace DbExtensions {
          if (set == null) throw new ArgumentNullException("set");
          if (superQuery == null) throw new ArgumentNullException("superQuery");
 
-         this.connection = set.connection;
          this.definingQuery = superQuery;
          this.resultType = set.resultType;
-         this.logger = set.logger;
          this.setIndex += set.setIndex;
+         this.context = set.context;
       }
 
       protected SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType)
@@ -184,8 +183,8 @@ namespace DbExtensions {
       }
 
       bool IsSqlServer() {
-         return this.connection is System.Data.SqlClient.SqlConnection
-            || this.connection.GetType().Namespace.Equals("System.Data.SqlServerCe", StringComparison.Ordinal);
+         return this.Connection is System.Data.SqlClient.SqlConnection
+            || this.Connection.GetType().Namespace.Equals("System.Data.SqlServerCe", StringComparison.Ordinal);
       }
 
       protected SqlBuilder CreateSuperQuery() {
@@ -225,19 +224,8 @@ namespace DbExtensions {
          return CreateCommand(GetDefiningQuery(clone: false));
       }
 
-      protected DbCommand CreateCommand(SqlBuilder sqlBuilder) {
-
-         if (sqlBuilder == null) throw new ArgumentNullException("sqlBuilder");
-
-         return CreateCommand(sqlBuilder.ToString(), sqlBuilder.ParameterValues.ToArray());
-      }
-
-      protected DbCommand CreateCommand(string commandText) {
-         return CreateCommand(commandText, null);
-      }
-
-      protected virtual DbCommand CreateCommand(string commandText, params object[] parameters) {
-         return this.connection.CreateCommand(commandText, parameters);
+      protected virtual DbCommand CreateCommand(SqlBuilder sqlBuilder) {
+         return this.context.CreateCommand(sqlBuilder);
       }
 
       public IEnumerator<object> GetEnumerator() {
@@ -272,7 +260,7 @@ namespace DbExtensions {
 
       public bool All(string predicate, params object[] parameters) {
 
-         using (this.connection.EnsureOpen())
+         using (this.Connection.EnsureOpen())
             return LongCount() == Where(predicate, parameters).LongCount();
       }
 
@@ -281,7 +269,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>true id the set contains rows; otherwise, false.</returns>
       public bool Any() {
-         return this.connection.Exists(CreateCommand(Extensions.ExistsQuery(GetDefiningQuery(clone: false))), this.Log);
+         return this.Connection.Exists(CreateCommand(Extensions.ExistsQuery(GetDefiningQuery(clone: false))), this.Log);
       }
 
       public bool Any(string predicate) {
@@ -319,7 +307,7 @@ namespace DbExtensions {
       }
 
       public int Count() {
-         return this.connection.Count(CreateCommand(Extensions.CountQuery(GetDefiningQuery(clone: false))), this.Log);
+         return this.Connection.Count(CreateCommand(Extensions.CountQuery(GetDefiningQuery(clone: false))), this.Log);
       }
 
       public int Count(string predicate) {
@@ -362,7 +350,7 @@ namespace DbExtensions {
 
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount() {
-         return this.connection.LongCount(CreateCommand(Extensions.CountQuery(GetDefiningQuery(clone: false))), this.Log);
+         return this.Connection.LongCount(CreateCommand(Extensions.CountQuery(GetDefiningQuery(clone: false))), this.Log);
       }
 
       public long LongCount(string predicate) {
@@ -560,8 +548,8 @@ namespace DbExtensions {
       public SqlSet(SqlBuilder definingQuery, DbConnection connection, TextWriter logger)
          : base(definingQuery, typeof(TResult), connection, logger) { }
 
-      internal SqlSet(SqlBuilder definingQuery, DbConnection connection, TextWriter logger, bool adoptQuery)
-         : base(definingQuery, typeof(TResult), connection, logger, adoptQuery) { }
+      internal SqlSet(SqlBuilder definingQuery, ISqlSetContext context, bool adoptQuery)
+         : base(definingQuery, typeof(TResult), context, adoptQuery) { }
 
       public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper)
          : this(definingQuery, mapper, DbFactory.CreateConnection()) { }
@@ -757,5 +745,39 @@ namespace DbExtensions {
       TSqlSet Where(string predicate);
       TSqlSet Where(string predicate, params object[] parameters);
       TSqlSet Union(TSqlSet otherSet);
+   }
+
+   interface ISqlSetContext {
+
+      DbConnection Connection { get; }
+      TextWriter Log { get; }
+
+      DbCommand CreateCommand(SqlBuilder query);
+   }
+
+   sealed class SqlSetDefaultContext : ISqlSetContext {
+
+      readonly DbConnection connection;
+      readonly TextWriter log;
+
+      public DbConnection Connection {
+         get { return connection; }
+      }
+
+      public TextWriter Log {
+         get { return log; }
+      }
+
+      public SqlSetDefaultContext(DbConnection connection, TextWriter log = null) {
+
+         if (connection == null) throw new ArgumentNullException("connection");
+
+         this.connection = connection;
+         this.log = log;
+      }
+
+      public DbCommand CreateCommand(SqlBuilder query) {
+         return query.ToCommand(this.connection);
+      }
    }
 }

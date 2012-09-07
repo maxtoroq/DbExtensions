@@ -33,7 +33,7 @@ namespace DbExtensions {
    /// Creates and executes CRUD commands for entities mapped using the
    /// <see cref="N:System.Data.Linq.Mapping"/> API.
    /// </summary>
-   public class DataAccessObject {
+   public class DataAccessObject : ISqlSetContext {
 
       static readonly MethodInfo tableMethod = typeof(DataAccessObject).GetMethods(BindingFlags.Public | BindingFlags.Instance)
          .Single(m => m.Name == "Table" && m.ContainsGenericParameters && m.GetParameters().Length == 0);
@@ -838,6 +838,22 @@ namespace DbExtensions {
       public override string ToString() {
          return base.ToString();
       }
+
+      #region ISqlSetContext Members
+
+      DbConnection ISqlSetContext.Connection {
+         get { return this.Connection; }
+      }
+
+      TextWriter ISqlSetContext.Log {
+         get { return this.Log; }
+      }
+
+      DbCommand ISqlSetContext.CreateCommand(SqlBuilder query) {
+         return CreateCommand(query);
+      }
+
+      #endregion
 
       #region Nested Types
 

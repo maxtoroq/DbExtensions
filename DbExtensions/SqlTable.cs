@@ -35,7 +35,6 @@ namespace DbExtensions {
 
       readonly ISqlTable table;
 
-      readonly DataAccessObject dao;
       readonly MetaType metaType;
       readonly SqlCommandBuilder<object> sqlCommands;
 
@@ -44,20 +43,19 @@ namespace DbExtensions {
       }
 
       internal SqlTable(DataAccessObject dao, MetaType metaType, ISqlTable table)
-         : base(dao.SELECT_FROM(metaType, null, null), metaType.Type, dao.Connection, dao.Configuration.Log, adoptQuery: true) {
+         : base(dao.SELECT_FROM(metaType, null, null), metaType.Type, dao, adoptQuery: true) {
 
          this.table = table;
 
-         this.dao = dao;
          this.metaType = metaType;
          this.sqlCommands = new SqlCommandBuilder<object>(dao, metaType);
       }
 
-      protected override DbCommand CreateCommand(string commandText, params object[] parameters) {
-         return this.dao.CreateCommand(commandText, parameters);
-      }
-
       public new SqlTable<TEntity> Cast<TEntity>() where TEntity : class {
+
+         if (typeof(TEntity) != this.metaType.Type) 
+            throw new InvalidOperationException("The specified type parameter is not valid for this instance.");
+
          return (SqlTable<TEntity>)table;
       }
 
@@ -141,15 +139,11 @@ namespace DbExtensions {
       }
 
       internal SqlTable(DataAccessObject dao, MetaType metaType)
-         : base(dao.SELECT_FROM(metaType, null, null), dao.Connection, dao.Configuration.Log, adoptQuery: true) {
+         : base(dao.SELECT_FROM(metaType, null, null), dao, adoptQuery: true) {
 
          this.dao = dao;
          this.metaType = metaType;
          this.sqlCommands = new SqlCommandBuilder<TEntity>(dao, metaType);
-      }
-
-      protected override DbCommand CreateCommand(string commandText, params object[] parameters) {
-         return this.dao.CreateCommand(commandText, parameters);
       }
 
       IEnumerable<TEntity> Map(SqlBuilder query) {
