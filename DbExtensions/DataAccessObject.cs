@@ -56,6 +56,9 @@ namespace DbExtensions {
       /// </summary>		
       public DbTransaction Transaction { get; set; }
 
+      /// <summary>
+      /// Provides access to configuration options for this instance. 
+      /// </summary>
       public DataAccessObjectConfiguration Configuration { get { return config; } }
 
       private TextWriter Log { get { return config.Log; } }
@@ -301,10 +304,25 @@ namespace DbExtensions {
          return this.Connection.Execute(CreateCommand(nonQuery), this.Log);
       }
 
+      /// <summary>
+      /// Creates and executes a <see cref="DbCommand"/> whose <see cref="DbCommand.CommandText"/> property
+      /// is initialized with the <paramref name="commandText"/> parameter.
+      /// </summary>
+      /// <param name="commandText">The command text.</param>
+      /// <returns>The number of affected records.</returns>
       public int Execute(string commandText) {
          return Execute(commandText, null);
       }
 
+      /// <summary>
+      /// Creates and executes a <see cref="DbCommand"/> using the provided <paramref name="commandText"/> as a composite format string 
+      /// (as used on <see cref="String.Format(String, Object[])"/>), 
+      /// where the format items are replaced with appropiate parameter names, and the objects in the
+      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection.
+      /// </summary>
+      /// <param name="commandText">The command text.</param>
+      /// <param name="parameters">The parameters to apply to the command text.</param>
+      /// <returns>The number of affected records.</returns>
       public int Execute(string commandText, params object[] parameters) {
          return this.Connection.Execute(CreateCommand(commandText, parameters), this.Log);
       }
@@ -348,10 +366,31 @@ namespace DbExtensions {
          return CreateCommand(nonQuery).AffectOne(this.Log);
       }
 
+      /// <summary>
+      /// Creates and executes a <see cref="DbCommand"/> (whose <see cref="DbCommand.CommandText"/> property
+      /// is initialized with the <paramref name="commandText"/> parameter) in a new or existing transaction, and
+      /// validates that the affected records value is equal to one before comitting.
+      /// </summary>
+      /// <param name="commandText">The command text.</param>
+      /// <returns>The number of affected records.</returns>
+      /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
+      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public int AffectOne(string commandText) {
          return AffectOne(commandText, null);
       }
 
+      /// <summary>
+      /// Creates and executes a <see cref="DbCommand"/> (using the provided <paramref name="commandText"/> 
+      /// as a composite format string, as used on <see cref="String.Format(String, Object[])"/>, 
+      /// where the format items are replaced with appropiate parameter names, and the objects in the
+      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection)
+      /// in a new or existing transaction, and validates that the affected records value is equal to one before comitting.
+      /// </summary>
+      /// <param name="commandText">The command text.</param>
+      /// <param name="parameters">The parameters to apply to the command text.</param>
+      /// <returns>The number of affected records.</returns>
+      /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
+      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public int AffectOne(string commandText, params object[] parameters) {
          return CreateCommand(commandText, parameters).AffectOne(this.Log);
       }
@@ -368,10 +407,31 @@ namespace DbExtensions {
          return CreateCommand(nonQuery).AffectOneOrNone(this.Log);
       }
 
+      /// <summary>
+      /// Creates and executes a <see cref="DbCommand"/> (whose <see cref="DbCommand.CommandText"/> property
+      /// is initialized with the <paramref name="commandText"/> parameter) in a new or existing transaction, and
+      /// validates that the affected records value is less or equal to one before comitting.
+      /// </summary>
+      /// <param name="commandText">The non-query command to execute.</param>
+      /// <returns>The number of affected records.</returns>
+      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
+      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
       public int AffectOneOrNone(string commandText) {
          return AffectOneOrNone(commandText, null);
       }
 
+      /// <summary>
+      /// Creates and executes a <see cref="DbCommand"/> (using the provided <paramref name="commandText"/> 
+      /// as a composite format string, as used on <see cref="String.Format(String, Object[])"/>, 
+      /// where the format items are replaced with appropiate parameter names, and the objects in the
+      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection)
+      /// in a new or existing transaction, and validates that the affected records value is less or equal to one before comitting.
+      /// </summary>
+      /// <param name="commandText">The non-query command to execute.</param>
+      /// <param name="parameters">The parameters to apply to the command text.</param>
+      /// <returns>The number of affected records.</returns>
+      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
+      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
       public int AffectOneOrNone(string commandText, params object[] parameters) {
          return CreateCommand(commandText, parameters).AffectOneOrNone(this.Log);
       }
@@ -483,16 +543,36 @@ namespace DbExtensions {
          return table;
       }
 
+      /// <summary>
+      /// Creates and returns a <see cref="SqlSet&lt;TEntity>"/> for the specified <paramref name="definingQuery"/>
+      /// that maps to <typeparamref name="TResult"/> objects.
+      /// </summary>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
+      /// <param name="definingQuery"></param>
+      /// <returns></returns>
       public SqlSet<TResult> Set<TResult>(SqlBuilder definingQuery) {
-         return new SqlSet<TResult>(definingQuery, this.Connection, this.Log);
+         return new SqlSet<TResult>(definingQuery, this, adoptQuery: false);
       }
 
+      /// <summary>
+      /// Creates and returns a <see cref="SqlSet&lt;TEntity>"/> for the specified <paramref name="definingQuery"/>
+      /// that maps to <typeparamref name="TResult"/> objects using the provided <paramref name="mapper"/>.
+      /// </summary>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
+      /// <param name="definingQuery"></param>
+      /// <param name="mapper"></param>
+      /// <returns></returns>
       public SqlSet<TResult> Set<TResult>(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
-         return new SqlSet<TResult>(definingQuery, mapper, this.Connection, this.Log);
+         return new SqlSet<TResult>(definingQuery, mapper, this, adoptQuery: false);
       }
 
+      /// <summary>
+      /// Creates and returns a <see cref="SqlSet"/> for the specified <paramref name="definingQuery"/>.
+      /// </summary>
+      /// <param name="definingQuery"></param>
+      /// <returns>A new <see cref="SqlSet"/> instance for <paramref name="definingQuery"/>.</returns>
       public SqlSet Set(SqlBuilder definingQuery) {
-         return new SqlSet(definingQuery, this.Connection, this.Log);
+         return new SqlSet(definingQuery, null, this, adoptQuery: false);
       }
 
       internal SqlBuilder SELECT_(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
@@ -818,26 +898,47 @@ namespace DbExtensions {
          return this.config.Mapping.GetMetaType(entityType);
       }
 
+      #region Object Members
+
+      /// <summary>
+      /// Returns whether the specified object is equal to the current object.
+      /// </summary>
+      /// <param name="obj">The object to compare with the current object. </param>
+      /// <returns>True if the specified object is equal to the current object; otherwise, false.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override bool Equals(object obj) {
          return base.Equals(obj);
       }
 
+      /// <summary>
+      /// Returns the hash function for the current object.
+      /// </summary>
+      /// <returns>The hash function for the current object.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override int GetHashCode() {
          return base.GetHashCode();
       }
 
+      /// <summary>
+      /// Gets the type for the current object.
+      /// </summary>
+      /// <returns>The type for the current object.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Must match base signature.")]
       public new Type GetType() {
          return base.GetType();
       }
 
+      /// <summary>
+      /// Returns a string representation of the object.
+      /// </summary>
+      /// <returns>A string representation of the object.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override string ToString() {
          return base.ToString();
       }
+
+      #endregion
 
       #region ISqlSetContext Members
 
@@ -974,6 +1075,9 @@ namespace DbExtensions {
       #endregion
    }
 
+   /// <summary>
+   /// Holds configuration options that customize the behavior of <see cref="DataAccessObject"/>.
+   /// </summary>
    public sealed class DataAccessObjectConfiguration {
 
       readonly MetaModel mapping;
@@ -1003,14 +1107,14 @@ namespace DbExtensions {
 
       /// <summary>
       /// Gets or sets the default policy to use when calling
-      /// <see cref="DataAccessObject.Update(System.Object)"/>.
+      /// <see cref="SqlTable&lt;TEntity>.Update(TEntity)"/>.
       /// The default value is <see cref="ConcurrencyConflictPolicy.UseVersion"/>.
       /// </summary>
       public ConcurrencyConflictPolicy UpdateConflictPolicy { get; set; }
 
       /// <summary>
       /// Gets or sets the default policy to use when calling
-      /// <see cref="DataAccessObject.Delete(System.Object)"/>.
+      /// <see cref="SqlTable&lt;TEntity>.Delete(TEntity)"/>.
       /// The default value is <see cref="ConcurrencyConflictPolicy.IgnoreVersionAndLowerAffectedRecords"/>.
       /// </summary>
       public ConcurrencyConflictPolicy DeleteConflictPolicy { get; set; }

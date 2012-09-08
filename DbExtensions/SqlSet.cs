@@ -46,10 +46,16 @@ namespace DbExtensions {
       SqlFragment orderByBuffer;
       int? skipBuffer;
 
+      /// <summary>
+      /// The database connection.
+      /// </summary>
       public DbConnection Connection { 
          get { return context.Connection; } 
       }
 
+      /// <summary>
+      /// A <see cref="TextWriter"/> used to log when queries are executed.
+      /// </summary>
       protected internal TextWriter Log {
          get { return context.Log; }
       }
@@ -61,21 +67,60 @@ namespace DbExtensions {
          }
       }
 
+      /// <summary>
+      /// Initializes a new instance of the <see cref="SqlSet"/> class
+      /// using the provided defining query.
+      /// </summary>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       public SqlSet(SqlBuilder definingQuery) 
          : this(definingQuery, DbFactory.CreateConnection()) { }
 
+      /// <summary>
+      /// Initializes a new instance of the <see cref="SqlSet"/> class
+      /// using the provided defining query and connection.
+      /// </summary>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="connection">The database connection.</param>
       public SqlSet(SqlBuilder definingQuery, DbConnection connection) 
          : this(definingQuery, connection, null) { }
 
+      /// <summary>
+      /// Initializes a new instance of the <see cref="SqlSet"/> class
+      /// using the provided defining query, connection and logger.
+      /// </summary>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="connection">The database connection.</param>
+      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
       public SqlSet(SqlBuilder definingQuery, DbConnection connection, TextWriter logger)
          : this(definingQuery, null, connection, logger) { }
 
+      /// <summary>
+      /// Initializes a new instance of the <see cref="SqlSet"/> class
+      /// using the provided defining query and result type.
+      /// </summary>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="resultType">The type of objects to map the results to.</param>
       public SqlSet(SqlBuilder definingQuery, Type resultType)
          : this(definingQuery, resultType, DbFactory.CreateConnection()) { }
 
+      /// <summary>
+      /// Initializes a new instance of the <see cref="SqlSet"/> class
+      /// using the provided defining query, result type and connection.
+      /// </summary>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="resultType">The type of objects to map the results to.</param>
+      /// <param name="connection">The database connection.</param>
       public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection) 
          : this(definingQuery, resultType, connection, null) { }
 
+      /// <summary>
+      /// Initializes a new instance of the <see cref="SqlSet"/> class
+      /// using the provided defining query, result type, connection and logger.
+      /// </summary>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="resultType">The type of objects to map the results to.</param>
+      /// <param name="connection">The database connection.</param>
+      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
       public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection, TextWriter logger)
          : this(definingQuery, resultType, connection, logger, adoptQuery: false) { }
 
@@ -519,22 +564,39 @@ namespace DbExtensions {
 
       #region Object Members
 
+      /// <summary>
+      /// Returns whether the specified set is equal to the current set.
+      /// </summary>
+      /// <param name="obj">The set to compare with the current set. </param>
+      /// <returns>True if the specified set is equal to the current set; otherwise, false.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override bool Equals(object obj) {
          return base.Equals(obj);
       }
 
+      /// <summary>
+      /// Returns the hash function for the current set.
+      /// </summary>
+      /// <returns>The hash function for the current set.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override int GetHashCode() {
          return base.GetHashCode();
       }
 
+      /// <summary>
+      /// Gets the type for the current set.
+      /// </summary>
+      /// <returns>The type for the current set.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Must match base signature.")]
       public new Type GetType() {
          return base.GetType();
       }
 
+      /// <summary>
+      /// Returns the SQL query of the set.
+      /// </summary>
+      /// <returns>The SQL query of the set.</returns>
       public override string ToString() {
          return GetDefiningQuery(clone: false).ToString();
       }
@@ -580,6 +642,14 @@ namespace DbExtensions {
 
       public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, DbConnection connection, TextWriter logger)
          : base(definingQuery, typeof(TResult), connection, logger) {
+
+         if (mapper == null) throw new ArgumentNullException("mapper");
+
+         this.mapper = mapper;
+      }
+
+      internal SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, ISqlSetContext context, bool adoptQuery) 
+         : base(definingQuery, typeof(TResult), context, adoptQuery) {
 
          if (mapper == null) throw new ArgumentNullException("mapper");
 

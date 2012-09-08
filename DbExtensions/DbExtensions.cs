@@ -302,13 +302,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="connection">The connection to which the command is executed against.</param>
       /// <param name="commandText">The command text.</param>
-      /// <param name="parameters">
-      /// The array of parameters to be passed to the command. Note the following 
-      /// behavior: If the number of objects in the array is less than the highest 
-      /// number identified in the command string, an exception is thrown. If the 
-      /// array contains objects that are not referenced in the command string, no 
-      /// exception is thrown. If a parameter is null, it is converted to DBNull.Value. 
-      /// </param>
+      /// <param name="parameters">The parameters to apply to the command text.</param>
       /// <returns>The number of affected records.</returns>
       public static int Execute(this DbConnection connection, string commandText, params object[] parameters) {
          return Execute(connection, CreateCommand(connection, commandText, parameters), null);
@@ -349,13 +343,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="connection">The connection to which the command is executed against.</param>
       /// <param name="commandText">The command text.</param>
-      /// <param name="parameters">
-      /// The array of parameters to be passed to the command. Note the following 
-      /// behavior: If the number of objects in the array is less than the highest 
-      /// number identified in the command string, an exception is thrown. If the 
-      /// array contains objects that are not referenced in the command string, no 
-      /// exception is thrown. If a parameter is null, it is converted to DBNull.Value. 
-      /// </param>
+      /// <param name="parameters">The parameters to apply to the command text.</param>
       /// <returns>The number of affected records.</returns>
       /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
@@ -386,13 +374,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="connection">The connection to which the command is executed against.</param>
       /// <param name="commandText">The non-query command to execute.</param>
-      /// <param name="parameters">
-      /// The array of parameters to be passed to the command. Note the following 
-      /// behavior: If the number of objects in the array is less than the highest 
-      /// number identified in the command string, an exception is thrown. If the 
-      /// array contains objects that are not referenced in the command string, no 
-      /// exception is thrown. If a parameter is null, it is converted to DBNull.Value. 
-      /// </param>
+      /// <param name="parameters">The parameters to apply to the command text.</param>
       /// <returns>The number of affected records.</returns>
       /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>

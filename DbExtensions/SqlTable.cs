@@ -63,62 +63,156 @@ namespace DbExtensions {
 
       // These methods just call the same method on table
 
+      /// <summary>
+      /// Gets the entity whose primary key matches the <paramref name="id"/> parameter.
+      /// </summary>
+      /// <param name="id">The primary key value.</param>
+      /// <returns>
+      /// The entity whose primary key matches the <paramref name="id"/> parameter, 
+      /// or null if the <paramref name="id"/> does not exist.
+      /// </returns>
       public object Find(object id) {
          return table.Find(id);
       }
 
+      /// <summary>
+      /// Executes an INSERT command for the specified <paramref name="entity"/>.
+      /// </summary>
+      /// <param name="entity">
+      /// The object whose INSERT command is to be executed. This parameter is named entity for consistency
+      /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
+      /// need to have a primary key.
+      /// </param>
       public void Insert(object entity) {
          table.Insert(entity);
       }
 
+      /// <summary>
+      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all its
+      /// one-to-many associations.
+      /// </summary>
+      /// <param name="entity">The entity whose INSERT command is to be executed.</param>
       public void InsertDeep(object entity) {
          table.InsertDeep(entity);
       }
 
+      /// <summary>
+      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
       public void InsertRange(IEnumerable<object> entities) {
          table.InsertRange(entities);
       }
 
+      /// <summary>
+      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
       public void InsertRange(params object[] entities) {
          table.InsertRange(entities);
       }
 
+      /// <summary>
+      /// Executes an UPDATE command for the specified <paramref name="entity"/>,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="entity">The entity whose UPDATE command is to be executed.</param>
       public void Update(object entity) {
          table.Update(entity);
       }
 
+      /// <summary>
+      /// Executes an UPDATE command for the specified <paramref name="entity"/>
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="entity">The entity whose UPDATE command is to be executed.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the UPDATE
+      /// predicate, and how to validate the affected records value.
+      /// </param>
       public void Update(object entity, ConcurrencyConflictPolicy conflictPolicy) {
          table.Update(entity, conflictPolicy);
       }
 
+      /// <summary>
+      /// Executes a DELETE command for the specified <paramref name="entity"/>,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="entity">The entity whose DELETE command is to be executed.</param>
       public void Delete(object entity) {
          table.Delete(entity);
       }
 
+      /// <summary>
+      /// Executes a DELETE command for the specified <paramref name="entity"/>
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="entity">The entity whose DELETE command is to be executed.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
+      /// predicate, and how to validate the affected records value.
+      /// </param>
       public void Delete(object entity, ConcurrencyConflictPolicy conflictPolicy) {
          table.Delete(entity, conflictPolicy);
       }
 
+      /// <summary>
+      /// Executes a DELETE command for the entity
+      /// whose primary key matches the <paramref name="id"/> parameter,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="id">The primary key value.</param>
       public void DeleteById(object id) {
          table.DeleteById(id);
       }
 
+      /// <summary>
+      /// Executes a DELETE command for the entity
+      /// whose primary key matches the <paramref name="id"/> parameter,
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="id">The primary key value.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
+      /// </param>
       public void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
          table.DeleteById(id, conflictPolicy);
       }
 
+      /// <summary>
+      /// Checks the existance of the <paramref name="entity"/>,
+      /// using the primary key value. Version members are ignored.
+      /// </summary>
+      /// <param name="entity">The entity whose existance is to be checked.</param>
+      /// <returns>true if the primary key value exists in the database; otherwise false.</returns>
       public bool Contains(object entity) {
          return table.Contains(entity);
       }
 
+      /// <summary>
+      /// Checks the existance of the <paramref name="entity"/>,
+      /// using the primary key and optionally version column.
+      /// </summary>
+      /// <param name="entity">The entity whose existance is to be checked.</param>
+      /// <param name="version">true to check the version column; otherwise, false.</param>
+      /// <returns>true if the primary key and version combination exists in the database; otherwise, false.</returns>
       public bool Contains(object entity, bool version) {
          return table.Contains(entity, version);
       }
 
+      /// <summary>
+      /// Sets all mapped members of <paramref name="entity"/> to their default database values.
+      /// </summary>
+      /// <param name="entity">The entity whose members are to be set to their default values.</param>
+      /// <seealso cref="DbConnection.GetSchema(string, string[])"/>
       public void FillDefaults(object entity) {
          table.FillDefaults(entity);
       }
 
+      /// <summary>
+      /// Sets all mapped members of <paramref name="entity"/> to their most current persisted value.
+      /// </summary>
+      /// <param name="entity">The entity to refresh.</param>
       public void Refresh(object entity) {
          table.Refresh(entity);
       }
@@ -879,22 +973,39 @@ namespace DbExtensions {
             .WHERE(QuoteIdentifier(metaType.IdentityMembers[0].MappedName) + " = {0}", id);
       }
 
+      /// <summary>
+      /// Returns whether the specified object is equal to the current object.
+      /// </summary>
+      /// <param name="obj">The object to compare with the current object. </param>
+      /// <returns>True if the specified object is equal to the current object; otherwise, false.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override bool Equals(object obj) {
          return base.Equals(obj);
       }
 
+      /// <summary>
+      /// Returns the hash function for the current object.
+      /// </summary>
+      /// <returns>The hash function for the current object.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override int GetHashCode() {
          return base.GetHashCode();
       }
 
+      /// <summary>
+      /// Gets the type for the current object.
+      /// </summary>
+      /// <returns>The type for the current object.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Must match base signature.")]
       public new Type GetType() {
          return base.GetType();
       }
 
+      /// <summary>
+      /// Returns a string representation of the object.
+      /// </summary>
+      /// <returns>A string representation of the object.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override string ToString() {
          return base.ToString();
