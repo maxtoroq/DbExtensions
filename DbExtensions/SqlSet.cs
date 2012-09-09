@@ -299,8 +299,11 @@ namespace DbExtensions {
       /// <returns>true if every element of the set passes the test in the specified predicate, or if the set is empty; otherwise, false.</returns>
       public bool All(string predicate, params object[] parameters) {
 
-         using (this.Connection.EnsureOpen())
-            return LongCount() == Where(predicate, parameters).LongCount();
+         if (predicate == null) throw new ArgumentNullException("predicate");
+
+         predicate = String.Concat("NOT (", predicate, ")");
+
+         return !Any(predicate, parameters);
       }
 
       /// <summary>
