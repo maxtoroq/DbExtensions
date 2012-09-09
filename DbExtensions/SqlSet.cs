@@ -282,10 +282,21 @@ namespace DbExtensions {
 
       #region ISqlSet<SqlSet,object> Members
 
+      /// <summary>
+      /// Determines whether all elements of the set satisfy a condition.
+      /// </summary>
+      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <returns>true if every element of the set passes the test in the specified predicate, or if the set is empty; otherwise, false.</returns>
       public bool All(string predicate) {
          return All(predicate, null);
       }
 
+      /// <summary>
+      /// Determines whether all elements of the set satisfy a condition.
+      /// </summary>
+      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <param name="parameters">The parameters to apply to the predicate.</param>
+      /// <returns>true if every element of the set passes the test in the specified predicate, or if the set is empty; otherwise, false.</returns>
       public bool All(string predicate, params object[] parameters) {
 
          using (this.Connection.EnsureOpen())
@@ -293,31 +304,36 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Checks if the set contains rows.
+      /// Determines whether the set contains any elements.
       /// </summary>
-      /// <returns>true id the set contains rows; otherwise, false.</returns>
+      /// <returns>true if the sequence contains any elements; otherwise, false.</returns>
       public bool Any() {
          return this.Connection.Exists(CreateCommand(Extensions.ExistsQuery(GetDefiningQuery(clone: false))), this.Log);
       }
 
+      /// <summary>
+      /// Determines whether any element of the set satisfies a condition.
+      /// </summary>
+      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <returns>true if any elements in the set pass the test in the specified predicate; otherwise, false.</returns>
       public bool Any(string predicate) {
          return Where(predicate).Any();
       }
 
       /// <summary>
-      /// Checks if <paramref name="predicate"/> matches any of the rows in the set.
+      /// Determines whether any element of the set satisfies a condition.
       /// </summary>
-      /// <param name="predicate">The SQL predicate.</param>
-      /// <param name="parameters">The parameters to use in the predicate.</param>
-      /// <returns>true if at least one row matches the <paramref name="predicate"/>; otherwise, false.</returns>
+      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <param name="parameters">The parameters to apply to the predicate.</param>
+      /// <returns>true if any elements in the set pass the test in the specified predicate; otherwise, false.</returns>
       public bool Any(string predicate, params object[] parameters) {
          return Where(predicate, parameters).Any();
       }
 
       /// <summary>
-      /// Gets all objects in the set. The query is deferred-executed.
+      /// Gets all elements in the set. The query is deferred-executed.
       /// </summary>
-      /// <returns>All objects in the set.</returns>
+      /// <returns>All elements in the set.</returns>
       public IEnumerable<object> AsEnumerable() {
          return (IEnumerable<object>)Execute(CreateCommand(GetDefiningQuery(clone: false)));
       }
@@ -342,32 +358,63 @@ namespace DbExtensions {
          return CreateSet(GetDefiningQuery(), resultType);
       }
 
+      /// <summary>
+      /// Returns the number of elements in the set.
+      /// </summary>
+      /// <returns>The number of elements in the set.</returns>
+      /// <exception cref="System.OverflowException">The number of elements in the set is larger than <see cref="Int32.MaxValue"/>.</exception>
       public int Count() {
          return this.Connection.Count(CreateCommand(Extensions.CountQuery(GetDefiningQuery(clone: false))), this.Log);
       }
 
+      /// <summary>
+      /// Returns a number that represents how many elements in the set satisfy a condition.
+      /// </summary>
+      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <returns>A number that represents how many elements in the set satisfy the condition in the predicate.</returns>
+      /// <exception cref="System.OverflowException">The number of elements in the set is larger than <see cref="Int32.MaxValue"/>.</exception>      
       public int Count(string predicate) {
          return Where(predicate).Count();
+         /// <exception cref="System.OverflowException">The number of rows in the set is larger than <see cref="Int32.MaxValue"/>.</exception>
       }
 
       /// <summary>
-      /// Gets the number of rows in the set that matches the <paramref name="predicate"/>.
+      /// Gets the number of elements in the set that matches the <paramref name="predicate"/>.
       /// </summary>
-      /// <param name="predicate">The SQL predicate.</param>
-      /// <param name="parameters">The parameters to use in the predicate.</param>
-      /// <returns>The number of rows that match the <paramref name="predicate"/>.</returns>
+      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <param name="parameters">The parameters to apply to the predicate.</param>
+      /// <returns>The number of elements that match the <paramref name="predicate"/>.</returns>
+      /// <exception cref="System.OverflowException">The number of elements in the set is larger than <see cref="Int32.MaxValue"/>.</exception>      
       public int Count(string predicate, params object[] parameters) {
          return Where(predicate, parameters).Count();
       }
 
+      /// <summary>
+      /// Returns the first element of the set.
+      /// </summary>
+      /// <returns>The first element in the set.</returns>
+      /// <exception cref="System.InvalidOperationException">The set is empty.</exception>
       public object First() {
          return Take(1).AsEnumerable().First();
       }
 
+      /// <summary>
+      /// Returns the first element in the set that satisfies a specified condition.
+      /// </summary>
+      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <returns>The first element in the set that passes the test in the specified predicate.</returns>
+      /// <exception cref="System.InvalidOperationException">No element satisfies the condition in predicate.-or-The set is empty.</exception>
       public object First(string predicate) {
          return Where(predicate).First();
       }
 
+      /// <summary>
+      /// Returns the first element in the set that satisfies a specified condition.
+      /// </summary>
+      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <param name="parameters">The parameters to apply to the predicate.</param>
+      /// <returns>The first element in the set that passes the test in the specified predicate.</returns>
+      /// <exception cref="System.InvalidOperationException">No element satisfies the condition in predicate.-or-The set is empty.</exception>
       public object First(string predicate, params object[] parameters) {
          return Where(predicate, parameters).First();
       }
