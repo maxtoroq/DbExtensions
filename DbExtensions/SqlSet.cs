@@ -161,7 +161,7 @@ namespace DbExtensions {
          return GetDefiningQuery(clone: true);
       }
 
-      SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedCalls = false) {
+      internal SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedCalls = false) {
 
          bool applyBuffer = this.HasBufferedCalls && !omitBufferedCalls;
          bool shouldClone = clone || !applyBuffer;

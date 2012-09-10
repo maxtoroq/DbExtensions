@@ -101,14 +101,17 @@ namespace Samples.CSharp {
             .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID")
             .WHERE("ProductID < {0}", 3);
 
-         XmlDataResult xmlmap = connection.MapXml(query, log);
-         xmlmap.CollectionName = new XmlQualifiedName("Products", "http://example.com/ns/Store");
-         xmlmap.ItemName = "Product";
-         xmlmap.TypeAnnotation = XmlTypeAnnotation.XmlSchema;
-         xmlmap.NullHandling = XmlNullHandling.IncludeNilAttribute;
-
-         using (var xmlWriter = XmlWriter.Create(log, new XmlWriterSettings { Indent = true }))
-            xmlmap.WriteXml(xmlWriter);
+         using (var reader = connection.Set(query, log).AsXml(
+            collectionName: new XmlQualifiedName("Products", "http://example.com/ns/Store"),
+            itemName: "Product",
+            nullHandling: XmlNullHandling.IncludeNilAttribute,
+            typeAnnotation: XmlTypeAnnotation.XmlSchema)) {
+            
+            using (var writer = XmlWriter.Create(log, new XmlWriterSettings { Indent = true })) {
+               while (!reader.EOF)
+                  writer.WriteNode(reader, defattr: true);
+            }
+         }
       }
    }
 }
