@@ -1102,7 +1102,102 @@ namespace DbExtensions {
 
       #endregion
    }
-   
+
+   public static partial class Extensions {
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query.
+      /// </summary>
+      /// <param name="connection">The connection that the set is bound to.</param>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <returns>A new <see cref="SqlSet"/> object.</returns>
+      public static SqlSet Set(this DbConnection connection, SqlBuilder definingQuery) {
+         return new SqlSet(definingQuery, connection);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query and logger.
+      /// </summary>
+      /// <param name="connection">The connection that the set is bound to.</param>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
+      /// <returns>A new <see cref="SqlSet"/> object.</returns>
+      public static SqlSet Set(this DbConnection connection, SqlBuilder definingQuery, TextWriter logger) {
+         return new SqlSet(definingQuery, connection, logger);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query and result type.
+      /// </summary>
+      /// <param name="connection">The connection that the set is bound to.</param>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="resultType">The type of objects to map the results to.</param>
+      /// <returns>A new <see cref="SqlSet"/> object.</returns>
+      public static SqlSet Set(this DbConnection connection, SqlBuilder definingQuery, Type resultType) {
+         return new SqlSet(definingQuery, resultType, connection);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query, result type and logger.
+      /// </summary>
+      /// <param name="connection">The connection that the set is bound to.</param>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="resultType">The type of objects to map the results to.</param>
+      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
+      /// <returns>A new <see cref="SqlSet"/> object.</returns>
+      public static SqlSet Set(this DbConnection connection, SqlBuilder definingQuery, Type resultType, TextWriter logger) {
+         return new SqlSet(definingQuery, resultType, connection, logger);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query.
+      /// </summary>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
+      /// <param name="connection">The connection that the set is bound to.</param>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
+      public static SqlSet<TResult> Set<TResult>(this DbConnection connection, SqlBuilder definingQuery) {
+         return new SqlSet<TResult>(definingQuery, connection);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and logger.
+      /// </summary>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
+      /// <param name="connection">The connection that the set is bound to.</param>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
+      public static SqlSet<TResult> Set<TResult>(this DbConnection connection, SqlBuilder definingQuery, TextWriter logger) {
+         return new SqlSet<TResult>(definingQuery, connection, logger);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and mapper.
+      /// </summary>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
+      /// <param name="connection">The connection that the set is bound to.</param>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
+      public static SqlSet<TResult> Set<TResult>(this DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
+         return new SqlSet<TResult>(definingQuery, mapper, connection);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query, mapper and logger.
+      /// </summary>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
+      /// <param name="connection">The connection that the set is bound to.</param>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
+      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
+      public static SqlSet<TResult> Set<TResult>(this DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, TextWriter logger) {
+         return new SqlSet<TResult>(definingQuery, mapper, connection, logger);
+      }
+   }
+
    interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
 
       bool All(string predicate);
