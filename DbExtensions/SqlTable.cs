@@ -264,10 +264,6 @@ namespace DbExtensions {
          this.sqlCommands = new SqlCommandBuilder<TEntity>(dao, metaType);
       }
 
-      IEnumerable<TEntity> Map(SqlBuilder query) {
-         return CreateCommand(query).Map<TEntity>(this.Log);
-      }
-
       string QuoteIdentifier(string unquotedIdentifier) {
          return this.dao.QuoteIdentifier(unquotedIdentifier);
       }
@@ -308,7 +304,7 @@ namespace DbExtensions {
          SqlBuilder query = this.SQL.SELECT_FROM();
          query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
 
-         TEntity entity = Map(query).SingleOrDefault();
+         TEntity entity = this.dao.Map<TEntity>(query).SingleOrDefault();
 
          return entity;
       }
@@ -429,7 +425,7 @@ namespace DbExtensions {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
-         DbCommand cmd = CreateCommand(this.SQL.UPDATE_SET_WHERE(entity, conflictPolicy));
+         SqlBuilder updateSql = this.SQL.UPDATE_SET_WHERE(entity, conflictPolicy);
 
          AffectedRecordsPolicy affRec = GetAffectedRecordsPolicy(conflictPolicy);
 
@@ -440,7 +436,7 @@ namespace DbExtensions {
 
          using (this.dao.EnsureConnectionOpen()) {
 
-            cmd.Affect(1, affRec, this.Log);
+            this.dao.Affect(updateSql, 1, affRec);
 
             if (syncMembers.Length > 0)
                Refresh(entity, syncMembers);
@@ -562,7 +558,7 @@ namespace DbExtensions {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
-         DbConnection conn = this.Connection;
+         DbConnection conn = this.dao.Connection;
          string tableName = metaType.Table.TableName;
          const string collectionName = "Columns";
 
@@ -600,7 +596,7 @@ namespace DbExtensions {
 
                if (!query.IsEmpty) {
 
-                  var mapper = new PocoMapper(metaType.Type, this.Log);
+                  var mapper = new PocoMapper(metaType.Type, this.dao.Configuration.Log);
 
                   this.dao.Map<object>(query, r => {
                      mapper.Load(entity, r);
@@ -634,7 +630,7 @@ namespace DbExtensions {
          SqlBuilder query = this.SQL.SELECT_FROM(refreshMembers);
          query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
 
-         PocoMapper mapper = new PocoMapper(metaType.Type, this.Log);
+         var mapper = new PocoMapper(metaType.Type, this.dao.Configuration.Log);
 
          this.dao.Map<object>(query, r => {
             mapper.Load(entity, r);

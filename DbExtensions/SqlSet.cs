@@ -49,14 +49,14 @@ namespace DbExtensions {
       /// <summary>
       /// The database connection.
       /// </summary>
-      public DbConnection Connection { 
+      internal DbConnection Connection { 
          get { return context.Connection; } 
       }
 
       /// <summary>
       /// A <see cref="TextWriter"/> used to log when queries are executed.
       /// </summary>
-      protected internal TextWriter Log {
+      internal TextWriter Log {
          get { return context.Log; }
       }
 
@@ -268,10 +268,13 @@ namespace DbExtensions {
          return new SqlSet<TResult>(this, superQuery, mapper);
       }
 
-      protected DbCommand CreateCommand(SqlBuilder sqlBuilder) {
+      DbCommand CreateCommand(SqlBuilder sqlBuilder) {
          return this.context.CreateCommand(sqlBuilder);
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected virtual IEnumerable Execute(DbCommand command) {
 
          if (this.resultType == null)
@@ -887,6 +890,9 @@ namespace DbExtensions {
          return new SqlSet<TResult2>(this, superQuery);
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected override IEnumerable Execute(DbCommand command) {
 
          if (this.mapper != null)
