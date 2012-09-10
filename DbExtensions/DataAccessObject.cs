@@ -30,7 +30,7 @@ using System.Text;
 namespace DbExtensions {
 
    /// <summary>
-   /// Creates and executes CRUD commands for entities mapped using the
+   /// Creates and executes CRUD (Create, Read, Update, Delete) commands for entities mapped using the
    /// <see cref="N:System.Data.Linq.Mapping"/> API.
    /// </summary>
    public class DataAccessObject : ISqlSetContext {
@@ -506,6 +506,11 @@ namespace DbExtensions {
 
       // Sets
 
+      /// <summary>
+      /// Returns the <see cref="SqlTable&lt;TEntity>"/> instance for the specified <typeparamref name="TEntity"/>.
+      /// </summary>
+      /// <typeparam name="TEntity">The type of the entity.</typeparam>
+      /// <returns>The <see cref="SqlTable&lt;TEntity>"/> instance for <typeparamref name="TEntity"/>.</returns>
       public SqlTable<TEntity> Table<TEntity>() where TEntity : class {
 
          MetaType metaType = GetMetaType(typeof(TEntity));
@@ -523,10 +528,20 @@ namespace DbExtensions {
          return table;
       }
 
+      /// <summary>
+      /// Returns the <see cref="SqlTable"/> instance for the specified <paramref name="entityType"/>.
+      /// </summary>
+      /// <param name="entityType">The type of the entity.</param>
+      /// <returns>The <see cref="SqlTable"/> instance for <paramref name="entityType"/>.</returns>
       public SqlTable Table(Type entityType) {
          return Table(GetMetaType(entityType));
       }
 
+      /// <summary>
+      /// Returns the <see cref="SqlTable"/> instance for the specified <paramref name="metaType"/>.
+      /// </summary>
+      /// <param name="metaType">The <see cref="MetaType"/> of the entity.</param>
+      /// <returns>The <see cref="SqlTable"/> instance for <paramref name="metaType"/>.</returns>
       protected internal SqlTable Table(MetaType metaType) {
 
          SqlTable table;
@@ -544,33 +559,31 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Creates and returns a <see cref="SqlSet&lt;TEntity>"/> for the specified <paramref name="definingQuery"/>
-      /// that maps to <typeparamref name="TResult"/> objects.
+      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query.
       /// </summary>
       /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="definingQuery"></param>
-      /// <returns></returns>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
       public SqlSet<TResult> Set<TResult>(SqlBuilder definingQuery) {
          return new SqlSet<TResult>(definingQuery, this, adoptQuery: false);
       }
 
       /// <summary>
-      /// Creates and returns a <see cref="SqlSet&lt;TEntity>"/> for the specified <paramref name="definingQuery"/>
-      /// that maps to <typeparamref name="TResult"/> objects using the provided <paramref name="mapper"/>.
+      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and mapper.
       /// </summary>
       /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="definingQuery"></param>
-      /// <param name="mapper"></param>
-      /// <returns></returns>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
       public SqlSet<TResult> Set<TResult>(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
          return new SqlSet<TResult>(definingQuery, mapper, this, adoptQuery: false);
       }
 
       /// <summary>
-      /// Creates and returns a <see cref="SqlSet"/> for the specified <paramref name="definingQuery"/>.
+      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query.
       /// </summary>
-      /// <param name="definingQuery"></param>
-      /// <returns>A new <see cref="SqlSet"/> instance for <paramref name="definingQuery"/>.</returns>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public SqlSet Set(SqlBuilder definingQuery) {
          return new SqlSet(definingQuery, null, this, adoptQuery: false);
       }

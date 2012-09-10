@@ -27,6 +27,11 @@ using System.Text;
 
 namespace DbExtensions {
 
+   /// <summary>
+   /// A non-generic version of <see cref="SqlTable&lt;TEntity>"/> which can be used when the type of the entity is not known at build time.
+   /// This class cannot be instantiated.
+   /// </summary>
+   /// <seealso cref="DataAccessObject.Table(Type)"/>
    [DebuggerDisplay("{metaType.Name}")]
    public sealed class SqlTable : SqlSet, ISqlTable {
 
@@ -38,6 +43,9 @@ namespace DbExtensions {
       readonly MetaType metaType;
       readonly SqlCommandBuilder<object> sqlCommands;
 
+      /// <summary>
+      /// Gets a <see cref="SqlCommandBuilder&lt;Object>"/> object for the current table.
+      /// </summary>
       public SqlCommandBuilder<object> SQL {
          get { return sqlCommands; }
       }
@@ -51,6 +59,12 @@ namespace DbExtensions {
          this.sqlCommands = new SqlCommandBuilder<object>(dao, metaType);
       }
 
+      /// <summary>
+      /// Casts the current <see cref="SqlTable"/> to the generic <see cref="SqlTable&lt;TEntity>"/> instance.
+      /// </summary>
+      /// <typeparam name="TEntity">The type of the entity.</typeparam>
+      /// <returns>The <see cref="SqlTable&lt;TEntity>"/> instance for <typeparamref name="TEntity"/>.</returns>
+      /// <exception cref="System.InvalidOperationException">The specified <typeparamref name="TEntity"/> is not valid for this instance.</exception>
       public new SqlTable<TEntity> Cast<TEntity>() where TEntity : class {
 
          if (typeof(TEntity) != this.metaType.Type) 
@@ -61,7 +75,7 @@ namespace DbExtensions {
 
       #region ISqlTable Members
 
-      // These methods just call the same method on table
+      // These methods just call the same method on this.table
 
       /// <summary>
       /// Gets the entity whose primary key matches the <paramref name="id"/> parameter.
@@ -220,6 +234,13 @@ namespace DbExtensions {
       #endregion
    }
 
+   /// <summary>
+   /// A <see cref="SqlSet&lt;TEntity>"/> that provides additional methods for CRUD (Create, Read, Update, Delete)
+   /// operations for <typeparamref name="TEntity"/>, mapped using the <see cref="N:System.Data.Linq.Mapping"/> API. 
+   /// This class cannot be instantiated.
+   /// </summary>
+   /// <typeparam name="TEntity">The type of the entity.</typeparam>
+   /// <seealso cref="DataAccessObject.Table&lt;TEntity>()"/>
    [DebuggerDisplay("{metaType.Name}")]
    public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable
       where TEntity : class {
@@ -228,6 +249,9 @@ namespace DbExtensions {
       readonly MetaType metaType;
       readonly SqlCommandBuilder<TEntity> sqlCommands;
 
+      /// <summary>
+      /// Gets a <see cref="SqlCommandBuilder&lt;TEntity>"/> object for the current table.
+      /// </summary>
       public SqlCommandBuilder<TEntity> SQL {
          get { return sqlCommands; }
       }
@@ -684,6 +708,13 @@ namespace DbExtensions {
       #endregion
    }
 
+   /// <summary>
+   /// Generates SQL commands for entities mapped by <see cref="SqlTable"/> and <see cref="SqlTable&lt;TEntity>"/>.
+   /// This class cannot be instantiated.
+   /// </summary>
+   /// <typeparam name="TEntity">The type of the entity to generate commands for.</typeparam>
+   /// <seealso cref="SqlTable&lt;TEntity>.SQL"/>
+   /// <seealso cref="SqlTable.SQL"/>
    public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       readonly DataAccessObject dao;
