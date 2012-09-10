@@ -30,7 +30,7 @@ namespace DbExtensions {
    /// Represents an immutable, connected SQL query.
    /// </summary>
    [DebuggerDisplay("{definingQuery}")]
-   public class SqlSet : ISqlSet<SqlSet, object> {
+   public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       readonly SqlBuilder definingQuery;
       readonly Type resultType;
@@ -49,7 +49,7 @@ namespace DbExtensions {
       /// <summary>
       /// The database connection.
       /// </summary>
-      internal DbConnection Connection { 
+      private DbConnection Connection { 
          get { return context.Connection; } 
       }
 
@@ -161,7 +161,7 @@ namespace DbExtensions {
          return GetDefiningQuery(clone: true);
       }
 
-      internal SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedCalls = false) {
+      SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedCalls = false) {
 
          bool applyBuffer = this.HasBufferedCalls && !omitBufferedCalls;
          bool shouldClone = clone || !applyBuffer;

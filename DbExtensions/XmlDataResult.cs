@@ -26,25 +26,36 @@ using System.Xml.XPath;
 
 namespace DbExtensions {
 
-   public static partial class Extensions {
+   partial class SqlSet {
 
-      public static XmlReader AsXml(this SqlSet set) {
-         return AsXml(set, null, null);
+      public XmlReader AsXml() {
+         return AsXml(null, null);
       }
 
-      public static XmlReader AsXml(this SqlSet set, XmlQualifiedName collectionName, string itemName) {
-         return AsXml(set, collectionName, itemName, XmlNullHandling.OmitElement, XmlTypeAnnotation.None);
+      public XmlReader AsXml(XmlQualifiedName collectionName, string itemName) {
+         return AsXml(collectionName, itemName, XmlNullHandling.OmitElement, XmlTypeAnnotation.None);
       }
 
+      /// <summary>
+      /// Returns an <see cref="XmlReader"/> object that provides an XML view of the set's data. 
+      /// </summary>
+      /// <param name="collectionName">The qualified name of the outermost element. The default is 'table'.</param>
+      /// <param name="itemName">
+      /// The local name of the elements that represent rows returned by the query. 
+      /// The elements inherit the namespace specified by <paramref name="collectionName"/>. The default is 'row'.
+      /// </param>
+      /// <param name="nullHandling">Specifies how to handle null fields. The default is <see cref="XmlNullHandling.OmitElement"/>.</param>
+      /// <param name="typeAnnotation">Specifies what kind of type information to include. The default is <see cref="XmlTypeAnnotation.None"/>.</param>
+      /// <returns>An <see cref="XmlReader"/>.</returns>
       [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Other overloads are provided. For programming languages that do support default parameters this method can be called with any combination of arguments.")]
-      public static XmlReader AsXml(this SqlSet set,
+      public XmlReader AsXml(
          XmlQualifiedName collectionName = null,
          string itemName = null,
          XmlNullHandling nullHandling = XmlNullHandling.OmitElement,
          XmlTypeAnnotation typeAnnotation = XmlTypeAnnotation.None) {
          
          return new XmlMappingReader(
-            set.Connection.Map<IDataRecord>(set.GetDefiningQuery(clone: true), r => r, set.Log).GetEnumerator(),
+            this.Connection.Map<IDataRecord>(GetDefiningQuery(clone: true), r => r, this.Log).GetEnumerator(),
             settings: null,
             tableName: collectionName,
             rowName: itemName,
@@ -55,7 +66,7 @@ namespace DbExtensions {
    }
 
    /// <summary>
-   /// Specifies how <see cref="Extensions.AsXml(SqlSet)"/> should handle null fields.
+   /// Specifies how <see cref="SqlSet.AsXml()"/> should handle null fields.
    /// </summary>
    public enum XmlNullHandling {
       
@@ -71,7 +82,7 @@ namespace DbExtensions {
    }
 
    /// <summary>
-   /// Specifies what kind of type information should <see cref="Extensions.AsXml(SqlSet)"/> include.
+   /// Specifies what kind of type information should <see cref="SqlSet.AsXml()"/> include.
    /// </summary>
    public enum XmlTypeAnnotation {
 
