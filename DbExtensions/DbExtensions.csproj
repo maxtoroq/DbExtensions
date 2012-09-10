@@ -45,8 +45,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlBuilder.cs" />
     <Compile Include="SqlSet.cs" />
+    <Compile Include="SqlSet.Xml.cs" />
     <Compile Include="SqlTable.cs" />
-    <Compile Include="XmlDataResult.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
