@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Compile Include="DataAccessObject.cs" />
+    <Compile Include="Database.cs" />
     <Compile Include="DbExtensions.cs" />
     <Compile Include="DbExtensions.Xml.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

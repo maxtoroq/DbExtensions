@@ -39,7 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataAccessObject.cs" />
+    <Compile Include="Database.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Northwind\Category.cs" />
     <Compile Include="Northwind\Customer.cs" />
@@ -48,7 +48,7 @@
     <Compile Include="Northwind\Employee.cs" />
     <Compile Include="Northwind\EmployeeTerritory.cs" />
     <Compile Include="Northwind\ForXmlMappingSourceOnlyDataContext.cs" />
-    <Compile Include="Northwind\NorthwindContext.cs" />
+    <Compile Include="Northwind\NorthwindDatabase.cs" />
     <Compile Include="Northwind\Order.cs" />
     <Compile Include="Northwind\OrderDetail.cs" />
     <Compile Include="Northwind\Product.cs" />

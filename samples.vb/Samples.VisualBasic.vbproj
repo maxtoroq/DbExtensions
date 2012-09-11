@@ -60,7 +60,7 @@
     <Import Include="System.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataAccessObject.vb" />
+    <Compile Include="Database.vb" />
     <Compile Include="ExtensionMethods.vb" />
     <Compile Include="Northwind\Category.vb" />
     <Compile Include="Northwind\Customer.vb" />
@@ -69,7 +69,7 @@
     <Compile Include="Northwind\Employee.vb" />
     <Compile Include="Northwind\EmployeeTerritory.vb" />
     <Compile Include="Northwind\ForXmlMappingSourceOnlyDataContext.vb" />
-    <Compile Include="Northwind\NorthwindContext.vb" />
+    <Compile Include="Northwind\NorthwindDatabase.vb" />
     <Compile Include="Northwind\Order.vb" />
     <Compile Include="Northwind\OrderDetail.vb" />
     <Compile Include="Northwind\Product.vb" />
