@@ -52,7 +52,7 @@ namespace Samples.CSharp {
 
          Debug.Assert(product.UnitsInStock == null);
 
-         db.Products.FillDefaults(product);
+         db.Products.Initialize(product);
 
          Debug.Assert(product.UnitsInStock.HasValue && product.UnitsInStock.Value == 0);
       }

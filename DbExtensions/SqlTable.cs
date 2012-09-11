@@ -219,8 +219,8 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="entity">The entity whose members are to be set to their default values.</param>
       /// <seealso cref="DbConnection.GetSchema(string, string[])"/>
-      public void FillDefaults(object entity) {
-         table.FillDefaults(entity);
+      public void Initialize(object entity) {
+         table.Initialize(entity);
       }
 
       /// <summary>
@@ -554,7 +554,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="entity">The entity whose members are to be set to their default values.</param>
       /// <seealso cref="DbConnection.GetSchema(string, string[])"/>
-      public void FillDefaults(TEntity entity) {
+      public void Initialize(TEntity entity) {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
@@ -693,8 +693,8 @@ namespace DbExtensions {
          return Contains((TEntity)entity, version);
       }
 
-      void ISqlTable.FillDefaults(object entity) {
-         FillDefaults((TEntity)entity);
+      void ISqlTable.Initialize(object entity) {
+         Initialize((TEntity)entity);
       }
 
       void ISqlTable.Refresh(object entity) {
@@ -1047,8 +1047,8 @@ namespace DbExtensions {
       void Delete(object entity, ConcurrencyConflictPolicy conflictPolicy);
       void DeleteById(object id);
       void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy);
-      void FillDefaults(object entity);
       object Find(object id);
+      void Initialize(object entity);
       void Insert(object entity);
       void InsertDeep(object entity);
       void InsertRange(IEnumerable<object> entities);

@@ -45,7 +45,7 @@ Public Class DataAccessObjectSamples
 
       Debug.Assert(product.UnitsInStock Is Nothing)
 
-      db.Products.FillDefaults(product)
+      db.Products.Initialize(product)
 
       Debug.Assert(product.UnitsInStock = 0)
 
