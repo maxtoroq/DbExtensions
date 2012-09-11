@@ -103,6 +103,7 @@ namespace Samples {
 
                yield return new Samples.VisualBasic.ExtensionMethodsSamples(connString, log);
                yield return new Samples.VisualBasic.SqlBuilderSamples();
+               yield return new Samples.VisualBasic.SqlSetSamples(connString, log);
                yield return new Samples.VisualBasic.DatabaseSamples(connString, mapping, log);
                break;
 
