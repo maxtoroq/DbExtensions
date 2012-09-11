@@ -106,11 +106,14 @@ Public Class ExtensionMethodsSamples
          .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID") _
          .WHERE("ProductID < {0}", 3)
 
-      Dim reader = connection.Set(query, log).AsXml( _
-         collectionName:=New XmlQualifiedName("Products", "http://example.com/ns/Store"), _
-         itemName:="Product", _
-         nullHandling:=XmlNullHandling.IncludeNilAttribute, _
-         typeAnnotation:=XmlTypeAnnotation.XmlSchema)
+      Dim settings = New XmlMappingSettings With {
+         .CollectionName = New XmlQualifiedName("Products", "http://example.com/ns/Store"), _
+         .ItemName = "Product", _
+         .NullHandling = XmlNullHandling.IncludeNilAttribute, _
+         .TypeAnnotation = XmlTypeAnnotation.XmlSchema
+      }
+
+      Dim reader = connection.MapXml(query, settings, log)
 
       Using reader
          Dim writer = XmlWriter.Create(log, New XmlWriterSettings With {.Indent = True})

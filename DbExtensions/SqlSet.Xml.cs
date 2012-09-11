@@ -17,57 +17,212 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Xml;
-using System.Xml.Serialization;
-using System.Xml.XPath;
 
 namespace DbExtensions {
 
-   partial class SqlSet {
+   static partial class Extensions {
 
-      public XmlReader AsXml() {
-         return AsXml(null, null);
+      /// <summary>
+      /// Maps the results of the <paramref name="command"/> to XML.
+      /// The query is deferred-executed.
+      /// </summary>
+      /// <param name="command">The query command.</param>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public static XmlReader MapXml(this IDbCommand command) {
+         return MapXml(command, null, null);
       }
 
-      public XmlReader AsXml(XmlQualifiedName collectionName, string itemName) {
-         return AsXml(collectionName, itemName, XmlNullHandling.OmitElement, XmlTypeAnnotation.None);
+      /// <summary>
+      /// Maps the results of the <paramref name="command"/> to XML.
+      /// The query is deferred-executed.
+      /// </summary>
+      /// <param name="command">The query command.</param>
+      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public static XmlReader MapXml(this IDbCommand command, TextWriter logger) {
+         return MapXml(command, null, logger);
+      }
+
+      /// <summary>
+      /// Maps the results of the <paramref name="command"/> to XML.
+      /// The query is deferred-executed.
+      /// </summary>
+      /// <param name="command">The query command.</param>
+      /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public static XmlReader MapXml(this IDbCommand command, XmlMappingSettings settings) {
+         return MapXml(command, settings, null);
+      }
+
+      /// <summary>
+      /// Maps the results of the <paramref name="command"/> to XML.
+      /// The query is deferred-executed.
+      /// </summary>
+      /// <param name="command">The query command.</param>
+      /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
+      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public static XmlReader MapXml(this IDbCommand command, XmlMappingSettings settings, TextWriter logger) {
+         return new XmlMappingReader(command.Map(r => r, logger).GetEnumerator(), settings, null);
+      }
+
+      /// <summary>
+      /// Maps the results of the <paramref name="query"/> to XML.
+      /// The query is deferred-executed.
+      /// </summary>
+      /// <param name="connection">The connection.</param>
+      /// <param name="query">The query.</param>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public static XmlReader MapXml(this DbConnection connection, SqlBuilder query) {
+         return connection.CreateCommand(query).MapXml();
+      }
+
+      /// <summary>
+      /// Maps the results of the <paramref name="query"/> to XML.
+      /// The query is deferred-executed.
+      /// </summary>
+      /// <param name="connection">The connection.</param>
+      /// <param name="query">The query.</param>
+      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public static XmlReader MapXml(this DbConnection connection, SqlBuilder query, TextWriter logger) {
+         return connection.CreateCommand(query).MapXml(logger);
+      }
+
+      /// <summary>
+      /// Maps the results of the <paramref name="query"/> to XML.
+      /// The query is deferred-executed.
+      /// </summary>
+      /// <param name="connection">The connection.</param>
+      /// <param name="query">The query.</param>
+      /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public static XmlReader MapXml(this DbConnection connection, SqlBuilder query, XmlMappingSettings settings) {
+         return connection.CreateCommand(query).MapXml(settings);
+      }
+
+      /// <summary>
+      /// Maps the results of the <paramref name="query"/> to XML.
+      /// The query is deferred-executed.
+      /// </summary>
+      /// <param name="connection">The connection.</param>
+      /// <param name="query">The query.</param>
+      /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
+      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public static XmlReader MapXml(this DbConnection connection, SqlBuilder query, XmlMappingSettings settings, TextWriter logger) {
+         return connection.CreateCommand(query).MapXml(settings, logger);
+      }
+   }
+
+   partial class SqlSet {
+
+      /// <summary>
+      /// Returns an <see cref="XmlReader"/> object that provides an XML view of the set's data. 
+      /// </summary>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public XmlReader AsXml() {
+         return AsXml(null);
       }
 
       /// <summary>
       /// Returns an <see cref="XmlReader"/> object that provides an XML view of the set's data. 
       /// </summary>
-      /// <param name="collectionName">The qualified name of the outermost element. The default is 'table'.</param>
-      /// <param name="itemName">
-      /// The local name of the elements that represent rows returned by the query. 
-      /// The elements inherit the namespace specified by <paramref name="collectionName"/>. The default is 'row'.
-      /// </param>
-      /// <param name="nullHandling">Specifies how to handle null fields. The default is <see cref="XmlNullHandling.OmitElement"/>.</param>
-      /// <param name="typeAnnotation">Specifies what kind of type information to include. The default is <see cref="XmlTypeAnnotation.None"/>.</param>
-      /// <returns>An <see cref="XmlReader"/>.</returns>
-      [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Other overloads are provided. For programming languages that do support default parameters this method can be called with any combination of arguments.")]
-      public XmlReader AsXml(
-         XmlQualifiedName collectionName = null,
-         string itemName = null,
-         XmlNullHandling nullHandling = XmlNullHandling.OmitElement,
-         XmlTypeAnnotation typeAnnotation = XmlTypeAnnotation.None) {
-         
+      /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public XmlReader AsXml(XmlMappingSettings settings) {
+
          return new XmlMappingReader(
             this.Connection.Map<IDataRecord>(GetDefiningQuery(clone: true), r => r, this.Log).GetEnumerator(),
-            settings: null,
-            tableName: collectionName,
-            rowName: itemName,
-            xsiNil: nullHandling == XmlNullHandling.IncludeNilAttribute,
-            xsiType: typeAnnotation == XmlTypeAnnotation.XmlSchema
+            settings,
+            null
          );
       }
    }
 
+   partial class DataAccessObject {
+
+      /// <summary>
+      /// Maps the results of the <paramref name="query"/> to XML.
+      /// The query is deferred-executed.
+      /// </summary>
+      /// <param name="query">The query.</param>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public XmlReader MapXml(SqlBuilder query) {
+         return CreateCommand(query).MapXml(this.Log);
+      }
+
+      /// <summary>
+      /// Maps the results of the <paramref name="query"/> to XML.
+      /// The query is deferred-executed.
+      /// </summary>
+      /// <param name="query">The query.</param>
+      /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public XmlReader MapXml(SqlBuilder query, XmlMappingSettings settings) {
+         return CreateCommand(query).MapXml(settings, this.Log);
+      }
+   }
+
    /// <summary>
-   /// Specifies how <see cref="SqlSet.AsXml()"/> should handle null fields.
+   /// Provides settings for SQL to XML mapping.
    /// </summary>
+   /// <seealso cref="Extensions.MapXml(IDbCommand, XmlMappingSettings)"/>
+   /// <seealso cref="Extensions.MapXml(DbConnection, SqlBuilder, XmlMappingSettings)"/>
+   /// <seealso cref="SqlSet.AsXml(XmlMappingSettings)"/>
+   public class XmlMappingSettings {
+
+      internal static readonly XmlMappingSettings Defaults = new XmlMappingSettings(defaultsCtor: true);
+
+      /// <summary>
+      /// The qualified name of the outermost element. The default is 'table'.
+      /// </summary>
+      public XmlQualifiedName CollectionName { get; set; }
+
+      /// <summary>
+      /// The local name of the elements that represent rows returned
+      /// by the query. The elements inherit the namespace specified by the
+      /// <see cref="CollectionName"/> property. The default is 'row'.
+      /// </summary>
+      public string ItemName { get; set; }
+
+      /// <summary>
+      /// Specifies how to handle null fields. The default is <see cref="XmlNullHandling.OmitElement"/>.
+      /// </summary>
+      public XmlNullHandling NullHandling { get; set; }
+
+      /// <summary>
+      /// Specifies what kind of type information to include. The default is <see cref="XmlTypeAnnotation.None"/>.
+      /// </summary>
+      public XmlTypeAnnotation TypeAnnotation { get; set; }
+
+      /// <summary>
+      /// Initializes a new instance of the <see cref="XmlMappingSettings"/> class.
+      /// </summary>
+      public XmlMappingSettings() {
+         
+         this.CollectionName = Defaults.CollectionName;
+         this.ItemName = Defaults.ItemName;
+         this.NullHandling = Defaults.NullHandling;
+         this.TypeAnnotation = Defaults.TypeAnnotation;
+      }
+
+      private XmlMappingSettings(bool defaultsCtor) {
+
+         this.CollectionName = new XmlQualifiedName("table");
+         this.ItemName = "row";
+         this.NullHandling = XmlNullHandling.IncludeNilAttribute;
+         this.TypeAnnotation = XmlTypeAnnotation.XmlSchema;
+      }
+   }
+
+   /// <summary>
+   /// Specifies how to handle null fields.
+   /// </summary>
+   /// <seealso cref="XmlMappingSettings"/>
    public enum XmlNullHandling {
       
       /// <summary>
@@ -82,8 +237,9 @@ namespace DbExtensions {
    }
 
    /// <summary>
-   /// Specifies what kind of type information should <see cref="SqlSet.AsXml()"/> include.
+   /// Specifies what kind of type information to include.
    /// </summary>
+   /// <seealso cref="XmlMappingSettings"/>
    public enum XmlTypeAnnotation {
 
       /// <summary>
@@ -102,9 +258,7 @@ namespace DbExtensions {
       const string xsPrefix = "xs";
       const string xsiPrefix = "xsi";
       const string xsiNamespace = "http://www.w3.org/2001/XMLSchema-instance";
-      const string defaultRowName = "row";
       const string defaultFieldName = "field";
-      static readonly XmlQualifiedName defaultTableName = new XmlQualifiedName("table");
       static readonly XmlReaderSettings closeInputSettings = new XmlReaderSettings { CloseInput = true };
       
       readonly char[] multipartNameSeparators = { '$', '/' };
@@ -287,20 +441,19 @@ namespace DbExtensions {
 
       public XmlMappingReader(
          IEnumerator<IDataRecord> enumerator,
-         XmlReaderSettings settings = null,
-         XmlQualifiedName tableName = null,
-         string rowName = null,
-         bool xsiNil = false,
-         bool xsiType = false) {
+         XmlMappingSettings mappingSettings,
+         XmlReaderSettings readerSettings) {
 
          if (enumerator == null) throw new ArgumentNullException("enumerator");
 
+         mappingSettings = mappingSettings ?? XmlMappingSettings.Defaults;
+
          this.enumerator = enumerator;
-         this._Settings = settings ?? closeInputSettings;
-         this.xsiNil = xsiNil;
-         this.xsiType = xsiType;
-         this.tableName = tableName ?? defaultTableName;
-         this.rowName = rowName ?? defaultRowName;
+         this._Settings = readerSettings ?? closeInputSettings;
+         this.xsiNil = mappingSettings.NullHandling == XmlNullHandling.IncludeNilAttribute;
+         this.xsiType = mappingSettings.TypeAnnotation == XmlTypeAnnotation.XmlSchema;
+         this.tableName = mappingSettings.CollectionName;
+         this.rowName = mappingSettings.ItemName;
       }
 
       public override void Close() {

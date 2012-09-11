@@ -101,13 +101,15 @@ namespace Samples.CSharp {
             .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID")
             .WHERE("ProductID < {0}", 3);
 
-         using (var reader = connection.Set(query, log).AsXml(
-            collectionName: new XmlQualifiedName("Products", "http://example.com/ns/Store"),
-            itemName: "Product",
-            nullHandling: XmlNullHandling.IncludeNilAttribute,
-            typeAnnotation: XmlTypeAnnotation.XmlSchema)) {
-            
-            using (var writer = XmlWriter.Create(log, new XmlWriterSettings { Indent = true })) {
+         var settings = new XmlMappingSettings {
+            CollectionName = new XmlQualifiedName("Products", "http://example.com/ns/Store"),
+            ItemName = "Product",
+            NullHandling = XmlNullHandling.IncludeNilAttribute,
+            TypeAnnotation = XmlTypeAnnotation.XmlSchema
+         };
+
+         using (XmlReader reader = connection.MapXml(query, settings, log)) {
+            using (XmlWriter writer = XmlWriter.Create(log, new XmlWriterSettings { Indent = true })) {
                while (!reader.EOF)
                   writer.WriteNode(reader, defattr: true);
             }

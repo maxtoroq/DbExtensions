@@ -33,7 +33,7 @@ namespace DbExtensions {
    /// Creates and executes CRUD (Create, Read, Update, Delete) commands for entities mapped using the
    /// <see cref="N:System.Data.Linq.Mapping"/> API.
    /// </summary>
-   public class DataAccessObject : ISqlSetContext {
+   public partial class DataAccessObject : ISqlSetContext {
 
       static readonly MethodInfo tableMethod = typeof(DataAccessObject).GetMethods(BindingFlags.Public | BindingFlags.Instance)
          .Single(m => m.Name == "Table" && m.ContainsGenericParameters && m.GetParameters().Length == 0);
