@@ -240,15 +240,6 @@ namespace DbExtensions {
             
             object paramValue = parameters[i];
 
-#if NET40
-            if (paramValue != null) {
-               Type paramType = paramValue.GetType();
-
-               if (paramType.IsGenericType && paramType.GetGenericTypeDefinition() == typeof(Lazy<>))
-                  paramValue = paramType.GetProperty("Value").GetValue(paramValue, null);
-            } 
-#endif
-
             DbParameter dbParam = command.CreateParameter();
             dbParam.ParameterName = getParameterName(commandBuilder, i);
             dbParam.Value = paramValue ?? DBNull.Value;
