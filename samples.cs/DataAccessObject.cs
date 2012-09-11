@@ -10,13 +10,13 @@ using Samples.CSharp.Northwind;
 
 namespace Samples.CSharp {
 
-   public class DataAccessObjectSamples {
+   public class DatabaseSamples {
 
-      readonly NorthwindContext db;
+      readonly NorthwindDatabase db;
 
-      public DataAccessObjectSamples(string connString, MetaModel mapping, TextWriter log) {
+      public DatabaseSamples(string connString, MetaModel mapping, TextWriter log) {
          
-         this.db = new NorthwindContext(connString, mapping) {
+         this.db = new NorthwindDatabase(connString, mapping) {
             Configuration = { 
                Log = log
             }
@@ -57,7 +57,7 @@ namespace Samples.CSharp {
          Debug.Assert(product.UnitsInStock.HasValue && product.UnitsInStock.Value == 0);
       }
 
-      public void Transactions_Dao() {
+      public void Transactions_AdoNet() {
 
          using (var tx = db.EnsureInTransaction()) {
             // Connection is automatically opened if not open

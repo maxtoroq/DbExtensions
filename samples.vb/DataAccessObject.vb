@@ -8,12 +8,12 @@ Imports System.Data.Linq.Mapping
 Imports DbExtensions
 Imports Samples.VisualBasic.Northwind
 
-Public Class DataAccessObjectSamples
+Public Class DatabaseSamples
 
-   ReadOnly db As NorthwindContext
+   ReadOnly db As NorthwindDatabase
 
    Public Sub New(ByVal connectionString As String, ByVal mapping As MetaModel, ByVal log As TextWriter)
-      Me.db = New NorthwindContext(connectionString, mapping)
+      Me.db = New NorthwindDatabase(connectionString, mapping)
       Me.db.Configuration.Log = log
    End Sub
 
@@ -51,7 +51,7 @@ Public Class DataAccessObjectSamples
 
    End Sub
 
-   Public Sub Transactions_Dao()
+   Public Sub Transactions_AdoNet()
 
       Using tx = db.EnsureInTransaction()
          '' Connection is automatically opened if not open

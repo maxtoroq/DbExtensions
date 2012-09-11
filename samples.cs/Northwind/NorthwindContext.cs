@@ -7,7 +7,7 @@ using DbExtensions;
 
 namespace Samples.CSharp.Northwind {
    
-   public class NorthwindContext : DataAccessObject {
+   public class NorthwindDatabase : Database {
 
       public SqlTable<Product> Products {
          get { return Table<Product>(); }
@@ -17,7 +17,7 @@ namespace Samples.CSharp.Northwind {
          get { return Table<Order>(); }
       }
 
-      public NorthwindContext(string connString, MetaModel mapping) 
+      public NorthwindDatabase(string connString, MetaModel mapping) 
          : base(connString, mapping) { }
    }
 }

@@ -3,8 +3,8 @@ Imports DbExtensions
 
 Namespace Northwind
 
-   Public Class NorthwindContext
-      Inherits DataAccessObject
+   Public Class NorthwindDatabase
+      Inherits Database
 
       Public Property Products As SqlTable(Of Product)
          Get

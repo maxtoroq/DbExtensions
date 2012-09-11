@@ -33,9 +33,9 @@ namespace DbExtensions {
    /// Creates and executes CRUD (Create, Read, Update, Delete) commands for entities mapped using the
    /// <see cref="N:System.Data.Linq.Mapping"/> API.
    /// </summary>
-   public partial class DataAccessObject : ISqlSetContext {
+   public partial class Database : ISqlSetContext {
 
-      static readonly MethodInfo tableMethod = typeof(DataAccessObject).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+      static readonly MethodInfo tableMethod = typeof(Database).GetMethods(BindingFlags.Public | BindingFlags.Instance)
          .Single(m => m.Name == "Table" && m.ContainsGenericParameters && m.GetParameters().Length == 0);
 
       readonly IDictionary<MetaType, SqlTable> tables = new Dictionary<MetaType, SqlTable>();
@@ -43,7 +43,7 @@ namespace DbExtensions {
       
       DbConnection connection;
       DbCommandBuilder cb;
-      DataAccessObjectConfiguration config;
+      DatabaseConfiguration config;
 
       /// <summary>
       /// Gets the connection to associate with new commands.
@@ -59,31 +59,31 @@ namespace DbExtensions {
       /// <summary>
       /// Provides access to configuration options for this instance. 
       /// </summary>
-      public DataAccessObjectConfiguration Configuration { get { return config; } }
+      public DatabaseConfiguration Configuration { get { return config; } }
 
       private TextWriter Log { get { return config.Log; } }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="DataAccessObject"/> class.
+      /// Initializes a new instance of the <see cref="Database"/> class.
       /// </summary>
-      public DataAccessObject() 
+      public Database() 
          : this((MetaModel)null) { }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="DataAccessObject"/> class
+      /// Initializes a new instance of the <see cref="Database"/> class
       /// using the provided connection.
       /// </summary>
       /// <param name="connection">The connection.</param>
-      public DataAccessObject(DbConnection connection) 
+      public Database(DbConnection connection) 
          : this(connection, null) { }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="DataAccessObject"/> class
+      /// Initializes a new instance of the <see cref="Database"/> class
       /// using the provided connection and meta model.
       /// </summary>
       /// <param name="connection">The connection.</param>
       /// <param name="mapping">The meta model.</param>
-      public DataAccessObject(DbConnection connection, MetaModel mapping) {
+      public Database(DbConnection connection, MetaModel mapping) {
          
          if (connection == null) throw new ArgumentNullException("connection");
 
@@ -91,20 +91,20 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="DataAccessObject"/> class
+      /// Initializes a new instance of the <see cref="Database"/> class
       /// using the provided connection string.
       /// </summary>
       /// <param name="connectionString">The connection string.</param>
-      public DataAccessObject(string connectionString)
+      public Database(string connectionString)
          : this(connectionString, null) { }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="DataAccessObject"/> class
+      /// Initializes a new instance of the <see cref="Database"/> class
       /// using the provided connection string and meta model.
       /// </summary>
       /// <param name="connectionString">The connection string.</param>
       /// <param name="mapping">The meta model.</param>
-      public DataAccessObject(string connectionString, MetaModel mapping) {
+      public Database(string connectionString, MetaModel mapping) {
 
          string providerName;
          DbConnection connection = DbFactory.CreateConnection(connectionString, out providerName);
@@ -113,11 +113,11 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="DataAccessObject"/> class
+      /// Initializes a new instance of the <see cref="Database"/> class
       /// using the provided meta model.
       /// </summary>
       /// <param name="mapping">The meta model.</param>
-      public DataAccessObject(MetaModel mapping) {
+      public Database(MetaModel mapping) {
          
          string providerName;
          DbConnection connection = DbFactory.CreateConnection(out providerName);
@@ -134,11 +134,11 @@ namespace DbExtensions {
          if (mapping == null) {
             Type thisType = GetType();
 
-            if (thisType != typeof(DataAccessObject))
+            if (thisType != typeof(Database))
                mapping = new AttributeMappingSource().GetModel(thisType);
          }
 
-         this.config = new DataAccessObjectConfiguration(mapping);
+         this.config = new DatabaseConfiguration(mapping);
 
          DbProviderFactory factory = this.Connection.GetProviderFactory();
 
@@ -973,7 +973,7 @@ namespace DbExtensions {
 
       class WrappedTransaction : IDbTransaction {
 
-         readonly DataAccessObject dao;
+         readonly Database dao;
          readonly IDisposable connHolder;
          readonly IDbTransaction txAdo;
          readonly bool txBeganHere;
@@ -985,7 +985,7 @@ namespace DbExtensions {
          public IDbConnection Connection { get { return _Connection; } }
          public IsolationLevel IsolationLevel { get { return _IsolationLevel; } }
 
-         public WrappedTransaction(DataAccessObject dao, IsolationLevel isolationLevel, bool forceNew) {
+         public WrappedTransaction(Database dao, IsolationLevel isolationLevel, bool forceNew) {
 
             if (dao == null) throw new ArgumentNullException("dao");
 
@@ -1089,9 +1089,9 @@ namespace DbExtensions {
    }
 
    /// <summary>
-   /// Holds configuration options that customize the behavior of <see cref="DataAccessObject"/>.
+   /// Holds configuration options that customize the behavior of <see cref="Database"/>.
    /// </summary>
-   public sealed class DataAccessObjectConfiguration {
+   public sealed class DatabaseConfiguration {
 
       readonly MetaModel mapping;
 
@@ -1140,7 +1140,7 @@ namespace DbExtensions {
       /// </summary>
       public bool EnableBatchCommands { get; set; }
 
-      internal DataAccessObjectConfiguration(MetaModel mapping) {
+      internal DatabaseConfiguration(MetaModel mapping) {
          this.mapping = mapping;
       }
    }

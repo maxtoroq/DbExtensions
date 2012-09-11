@@ -87,23 +87,23 @@ namespace Samples {
          switch (language) {
             case "C#":
                mapping = (mappingSource is AttributeMappingSource) ? 
-                  mappingSource.GetModel(typeof(Samples.CSharp.Northwind.NorthwindContext)) 
+                  mappingSource.GetModel(typeof(Samples.CSharp.Northwind.NorthwindDatabase)) 
                   : mappingSource.GetModel(typeof(Samples.CSharp.Northwind.ForXmlMappingSourceOnlyDataContext));
 
                yield return new Samples.CSharp.ExtensionMethodsSamples(connString, log);
                yield return new Samples.CSharp.SqlBuilderSamples();
                yield return new Samples.CSharp.SqlSetSamples(connString, log);
-               yield return new Samples.CSharp.DataAccessObjectSamples(connString, mapping, log);
+               yield return new Samples.CSharp.DatabaseSamples(connString, mapping, log);
                break;
 
             case "VB":
                mapping = (mappingSource is AttributeMappingSource) ? 
-                  mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.NorthwindContext)) 
+                  mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.NorthwindDatabase)) 
                   : mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.ForXmlMappingSourceOnlyDataContext));
 
                yield return new Samples.VisualBasic.ExtensionMethodsSamples(connString, log);
                yield return new Samples.VisualBasic.SqlBuilderSamples();
-               yield return new Samples.VisualBasic.DataAccessObjectSamples(connString, mapping, log);
+               yield return new Samples.VisualBasic.DatabaseSamples(connString, mapping, log);
                break;
 
             default:

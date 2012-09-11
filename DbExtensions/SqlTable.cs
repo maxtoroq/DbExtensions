@@ -31,7 +31,7 @@ namespace DbExtensions {
    /// A non-generic version of <see cref="SqlTable&lt;TEntity>"/> which can be used when the type of the entity is not known at build time.
    /// This class cannot be instantiated.
    /// </summary>
-   /// <seealso cref="DataAccessObject.Table(Type)"/>
+   /// <seealso cref="Database.Table(Type)"/>
    [DebuggerDisplay("{metaType.Name}")]
    public sealed class SqlTable : SqlSet, ISqlTable {
 
@@ -50,7 +50,7 @@ namespace DbExtensions {
          get { return sqlCommands; }
       }
 
-      internal SqlTable(DataAccessObject dao, MetaType metaType, ISqlTable table)
+      internal SqlTable(Database dao, MetaType metaType, ISqlTable table)
          : base(dao.SELECT_FROM(metaType, null, null), metaType.Type, dao, adoptQuery: true) {
 
          this.table = table;
@@ -240,12 +240,12 @@ namespace DbExtensions {
    /// This class cannot be instantiated.
    /// </summary>
    /// <typeparam name="TEntity">The type of the entity.</typeparam>
-   /// <seealso cref="DataAccessObject.Table&lt;TEntity>()"/>
+   /// <seealso cref="Database.Table&lt;TEntity>()"/>
    [DebuggerDisplay("{metaType.Name}")]
    public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable
       where TEntity : class {
 
-      readonly DataAccessObject dao;
+      readonly Database dao;
       readonly MetaType metaType;
       readonly SqlCommandBuilder<TEntity> sqlCommands;
 
@@ -256,7 +256,7 @@ namespace DbExtensions {
          get { return sqlCommands; }
       }
 
-      internal SqlTable(DataAccessObject dao, MetaType metaType)
+      internal SqlTable(Database dao, MetaType metaType)
          : base(dao.SELECT_FROM(metaType, null, null), dao, adoptQuery: true) {
 
          this.dao = dao;
@@ -713,10 +713,10 @@ namespace DbExtensions {
    /// <seealso cref="SqlTable.SQL"/>
    public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
-      readonly DataAccessObject dao;
+      readonly Database dao;
       readonly MetaType metaType;
 
-      internal SqlCommandBuilder(DataAccessObject dao, MetaType metaType) {
+      internal SqlCommandBuilder(Database dao, MetaType metaType) {
          this.dao = dao;
          this.metaType = metaType;
       }

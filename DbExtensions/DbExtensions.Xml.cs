@@ -143,7 +143,7 @@ namespace DbExtensions {
       }
    }
 
-   partial class DataAccessObject {
+   partial class Database {
 
       /// <summary>
       /// Maps the results of the <paramref name="query"/> to XML.
