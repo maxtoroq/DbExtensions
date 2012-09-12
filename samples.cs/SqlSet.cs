@@ -50,10 +50,11 @@ namespace Samples.CSharp {
       }
 
       public IEnumerable Top5ProductsWithLowestStock() {
+         
          return productSet.Where("UnitsInStock > 0")
             .OrderBy("UnitsInStock")
             .Take(5)
-            .Select(r => new { Name = r.GetString(0), UnitsInStock = r.GetInt16(1) }, "ProductName, UnitsInStock")
+            .Select(r => new { Name = r.GetString("ProductName"), UnitsInStock = r.GetInt16("UnitsInStock") })
             .AsEnumerable();
       }
 

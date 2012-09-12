@@ -47,11 +47,13 @@ Public Class SqlSetSamples
    End Function
 
    Public Function Top5ProductsWithLowestStock() As IEnumerable
+
       Return productSet.Where("UnitsInStock > 0") _
          .OrderBy("UnitsInStock") _
          .Take(5) _
-         .Select(Function(r) New With {.Name = r.GetString(0), .UnitsInStock = r.GetInt16(1)}, "ProductName, UnitsInStock") _
+         .Select(Function(r) New With {.Name = r.GetString("ProductName"), .UnitsInStock = r.GetInt16("UnitsInStock")}) _
          .AsEnumerable()
+
    End Function
 
    Public Function NamesOfOutOfStockProducts() As Object

@@ -566,6 +566,16 @@ namespace DbExtensions {
       /// </summary>
       /// <typeparam name="TResult">The type that <paramref name="mapper"/> returns.</typeparam>
       /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/>.</returns>
+      public SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper) {
+         return CreateSet<TResult>(GetDefiningQuery(), mapper);
+      }
+
+      /// <summary>
+      /// Projects each element of the set into a new form.
+      /// </summary>
+      /// <typeparam name="TResult">The type that <paramref name="mapper"/> returns.</typeparam>
+      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
       /// <param name="columnList">The list of columns that are used by <paramref name="mapper"/>.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/>.</returns>
       public SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string columnList) {
