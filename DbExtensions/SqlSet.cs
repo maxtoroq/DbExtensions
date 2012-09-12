@@ -32,6 +32,8 @@ namespace DbExtensions {
    [DebuggerDisplay("{definingQuery}")]
    public partial class SqlSet : ISqlSet<SqlSet, object> {
 
+      // definingQuery should NEVER be modified
+
       readonly SqlBuilder definingQuery;
       readonly Type resultType;
       readonly ISqlSetContext context;
@@ -507,11 +509,22 @@ namespace DbExtensions {
          return Where(predicate, parameters).LongCount();
       }
 
-      public SqlSet OrderBy(string format) {
-         return OrderBy(format, null);
+      /// <summary>
+      /// Sorts the elements of the set according to the <paramref name="columnList"/>.
+      /// </summary>
+      /// <param name="columnList">The list of columns to base the sort on.</param>
+      /// <returns>A new <see cref="SqlSet"/> whose elements are sorted according to <paramref name="columnList"/>.</returns>
+      public SqlSet OrderBy(string columnList) {
+         return OrderBy(columnList, null);
       }
 
-      public SqlSet OrderBy(string format, params object[] args) {
+      /// <summary>
+      /// Sorts the elements of the set according to the <paramref name="columnList"/>.
+      /// </summary>
+      /// <param name="columnList">The list of columns to base the sort on.</param>
+      /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
+      /// <returns>A new <see cref="SqlSet"/> whose elements are sorted according to <paramref name="columnList"/>.</returns>
+      public SqlSet OrderBy(string columnList, params object[] parameters) {
 
          SqlBuilder query = (this.orderByBuffer == null) ?
             GetDefiningQuery(omitBufferedCalls: true)
@@ -519,40 +532,81 @@ namespace DbExtensions {
 
          SqlSet set = CreateSet(query);
          CopyBufferState(set);
-         set.orderByBuffer = new SqlFragment(format, args);
+         set.orderByBuffer = new SqlFragment(columnList, parameters);
 
          return set;
       }
 
-      public SqlSet<TResult> Select<TResult>(string format) {
-         return Select<TResult>(format, null);
+      /// <summary>
+      /// Projects each element of the set into a new form.
+      /// </summary>
+      /// <typeparam name="TResult">The type that <paramref name="columnList"/> maps to.</typeparam>
+      /// <param name="columnList">The list of columns that maps to properties on <typeparamref name="TResult"/>.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/>.</returns>
+      public SqlSet<TResult> Select<TResult>(string columnList) {
+         return Select<TResult>(columnList, null);
       }
 
-      public SqlSet<TResult> Select<TResult>(string format, params object[] args) {
+      /// <summary>
+      /// Projects each element of the set into a new form.
+      /// </summary>
+      /// <typeparam name="TResult">The type that <paramref name="columnList"/> maps to.</typeparam>
+      /// <param name="columnList">The list of columns that maps to properties on <typeparamref name="TResult"/>.</param>
+      /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/>.</returns>
+      public SqlSet<TResult> Select<TResult>(string columnList, params object[] parameters) {
 
-         var superQuery = CreateSuperQuery(format, args);
+         var superQuery = CreateSuperQuery(columnList, parameters);
 
          return CreateSet<TResult>(superQuery);
       }
 
-      public SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string format) {
-         return Select<TResult>(mapper, format, null);
+      /// <summary>
+      /// Projects each element of the set into a new form.
+      /// </summary>
+      /// <typeparam name="TResult">The type that <paramref name="mapper"/> returns.</typeparam>
+      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
+      /// <param name="columnList">The list of columns that are used by <paramref name="mapper"/>.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/>.</returns>
+      public SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string columnList) {
+         return Select<TResult>(mapper, columnList, null);
       }
 
-      public SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string format, params object[] args) {
+      /// <summary>
+      /// Projects each element of the set into a new form.
+      /// </summary>
+      /// <typeparam name="TResult">The type that <paramref name="mapper"/> returns.</typeparam>
+      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
+      /// <param name="columnList">The list of columns that are used by <paramref name="mapper"/>.</param>
+      /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/>.</returns>
+      public SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string columnList, params object[] parameters) {
 
-         var superQuery = CreateSuperQuery(format, args);
+         var superQuery = CreateSuperQuery(columnList, parameters);
 
          return CreateSet<TResult>(superQuery, mapper);
       }
 
-      public SqlSet Select(Type resultType, string format) {
-         return Select(resultType, format, null);
+      /// <summary>
+      /// Projects each element of the set into a new form.
+      /// </summary>
+      /// <param name="resultType">The type that <paramref name="columnList"/> maps to.</param>
+      /// <param name="columnList">The list of columns that maps to properties on <paramref name="resultType"/>.</param>
+      /// <returns>A new <see cref="SqlSet"/>.</returns>
+      public SqlSet Select(Type resultType, string columnList) {
+         return Select(resultType, columnList, null);
       }
 
-      public SqlSet Select(Type resultType, string format, params object[] args) {
+      /// <summary>
+      /// Projects each element of the set into a new form.
+      /// </summary>
+      /// <param name="resultType">The type that <paramref name="columnList"/> maps to.</param>
+      /// <param name="columnList">The list of columns that maps to properties on <paramref name="resultType"/>.</param>
+      /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
+      /// <returns>A new <see cref="SqlSet"/>.</returns>
+      public SqlSet Select(Type resultType, string columnList, params object[] parameters) {
 
-         var superQuery = CreateSuperQuery(format, args);
+         var superQuery = CreateSuperQuery(columnList, parameters);
 
          return CreateSet(superQuery, resultType);
       }
@@ -619,7 +673,7 @@ namespace DbExtensions {
       /// Bypasses a specified number of elements in the set and then returns the remaining elements.
       /// </summary>
       /// <param name="count">The number of elements to skip before returning the remaining elements.</param>
-      /// <returns>An new <see cref="SqlSet"/> that contains the elements that occur after the specified index in the current set.</returns>
+      /// <returns>A new <see cref="SqlSet"/> that contains the elements that occur after the specified index in the current set.</returns>
       public SqlSet Skip(int count) {
 
          SqlBuilder query = (!this.skipBuffer.HasValue) ?
@@ -637,7 +691,7 @@ namespace DbExtensions {
       /// Returns a specified number of contiguous elements from the start of the set.
       /// </summary>
       /// <param name="count">The number of elements to return.</param>
-      /// <returns>An new <see cref="SqlSet"/> that contains the specified number of elements from the start of the current set.</returns>
+      /// <returns>A new <see cref="SqlSet"/> that contains the specified number of elements from the start of the current set.</returns>
       public SqlSet Take(int count) {
 
          SqlBuilder query;
@@ -690,7 +744,7 @@ namespace DbExtensions {
       /// Filters the set based on a predicate.
       /// </summary>
       /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-      /// <returns>An new <see cref="SqlSet"/> that contains elements from the current set that satisfy the condition.</returns>
+      /// <returns>A new <see cref="SqlSet"/> that contains elements from the current set that satisfy the condition.</returns>
       public SqlSet Where(string predicate) {
          return Where(predicate, null);
       }
@@ -700,7 +754,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="predicate">A SQL expression to test each row for a condition.</param>
       /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>An new <see cref="SqlSet"/> that contains elements from the current set that satisfy the condition.</returns>
+      /// <returns>A new <see cref="SqlSet"/> that contains elements from the current set that satisfy the condition.</returns>
       public SqlSet Where(string predicate, params object[] parameters) {
 
          var superQuery = CreateSuperQuery()
@@ -982,12 +1036,23 @@ namespace DbExtensions {
          return AsEnumerable().GetEnumerator();
       }
 
-      public new SqlSet<TResult> OrderBy(string format) {
-         return (SqlSet<TResult>)base.OrderBy(format);
+      /// <summary>
+      /// Sorts the elements of the set according to the <paramref name="columnList"/>.
+      /// </summary>
+      /// <param name="columnList">The list of columns to base the sort on.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> whose elements are sorted according to <paramref name="columnList"/>.</returns>
+      public new SqlSet<TResult> OrderBy(string columnList) {
+         return (SqlSet<TResult>)base.OrderBy(columnList);
       }
 
-      public new SqlSet<TResult> OrderBy(string format, params object[] args) {
-         return (SqlSet<TResult>)base.OrderBy(format, args);
+      /// <summary>
+      /// Sorts the elements of the set according to the <paramref name="columnList"/>.
+      /// </summary>
+      /// <param name="columnList">The list of columns to base the sort on.</param>
+      /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> whose elements are sorted according to <paramref name="columnList"/>.</returns>
+      public new SqlSet<TResult> OrderBy(string columnList, params object[] parameters) {
+         return (SqlSet<TResult>)base.OrderBy(columnList, parameters);
       }
 
       /// <summary>
@@ -1052,7 +1117,7 @@ namespace DbExtensions {
       /// Bypasses a specified number of elements in the set and then returns the remaining elements.
       /// </summary>
       /// <param name="count">The number of elements to skip before returning the remaining elements.</param>
-      /// <returns>An new <see cref="SqlSet&lt;TResult>"/> that contains the elements that occur after the specified index in the current set.</returns>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> that contains the elements that occur after the specified index in the current set.</returns>
       public new SqlSet<TResult> Skip(int count) {
          return (SqlSet<TResult>)base.Skip(count);
       }
@@ -1061,7 +1126,7 @@ namespace DbExtensions {
       /// Returns a specified number of contiguous elements from the start of the set.
       /// </summary>
       /// <param name="count">The number of elements to return.</param>
-      /// <returns>An new <see cref="SqlSet"/> that contains the specified number of elements from the start of the current set.</returns>
+      /// <returns>A new <see cref="SqlSet"/> that contains the specified number of elements from the start of the current set.</returns>
       public new SqlSet<TResult> Take(int count) {
          return (SqlSet<TResult>)base.Take(count);
       }
@@ -1087,7 +1152,7 @@ namespace DbExtensions {
       /// Filters the set based on a predicate.
       /// </summary>
       /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-      /// <returns>An new <see cref="SqlSet&lt;TResult>"/> that contains elements from the current set that satisfy the condition.</returns>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> that contains elements from the current set that satisfy the condition.</returns>
       public new SqlSet<TResult> Where(string predicate) {
          return (SqlSet<TResult>)base.Where(predicate);
       }
@@ -1097,7 +1162,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="predicate">A SQL expression to test each row for a condition.</param>
       /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>An new <see cref="SqlSet&lt;TResult>"/> that contains elements from the current set that satisfy the condition.</returns>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> that contains elements from the current set that satisfy the condition.</returns>
       public new SqlSet<TResult> Where(string predicate, params object[] parameters) {
          return (SqlSet<TResult>)base.Where(predicate, parameters);
       }
@@ -1227,14 +1292,14 @@ namespace DbExtensions {
       long LongCount();
       long LongCount(string predicate);
       long LongCount(string predicate, params object[] parameters);
-      TSqlSet OrderBy(string format);
-      TSqlSet OrderBy(string format, params object[] args);
-      SqlSet<TResult> Select<TResult>(string format);
-      SqlSet<TResult> Select<TResult>(string format, params object[] args);
-      SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string format);
-      SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string format, params object[] args);
-      SqlSet Select(Type resultType, string format);
-      SqlSet Select(Type resultType, string format, params object[] args);
+      TSqlSet OrderBy(string columnList);
+      TSqlSet OrderBy(string columnList, params object[] parameters);
+      SqlSet<TResult> Select<TResult>(string columnList);
+      SqlSet<TResult> Select<TResult>(string columnList, params object[] parameters);
+      SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string columnList);
+      SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string columnList, params object[] parameters);
+      SqlSet Select(Type resultType, string columnList);
+      SqlSet Select(Type resultType, string columnList, params object[] parameters);
       TSource Single();
       TSource Single(string predicate);
       TSource Single(string predicate, params object[] parameters);
