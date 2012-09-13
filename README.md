@@ -73,7 +73,7 @@ Features
 - POCO support for queries, including many-to-one associations
 - Attributes or XML mapping for inserts, updates and deletes, using [System.Data.Linq.Mapping](http://msdn.microsoft.com/library/system.data.linq.mapping) (LINQ to SQL mapping)
 - Generic and non-generic APIs (for when the type of the entity is not known at build time)
-- Both explicit and automatic connection management (no need to explicitly open connection, but you are allowed to)
+- Automatic connection management (no need to explicitly open connection, but you are allowed to)
 - Optimistic concurrency (using version column)
 - Batch and deep inserts (recursively insert entity and all one-to-many associations)
 - Delete by primary key
@@ -86,6 +86,7 @@ DbExtensions does not do
 - Identity map
 - Lazy loading
 - Change tracking
+- Unit of work
 
 Limitations
 -----------
