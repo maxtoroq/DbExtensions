@@ -8,7 +8,7 @@ or separately:
 3. An API for building SQL queries: `SqlBuilder`
 4. CRUD operations: `Database`, `SqlTable`
 
-The key features of this library are the granularity of it's components and API aesthetics.
+The key features of this library are the granularity of it's components and code aesthetics.
 
 Querying with SqlSet (new in v4)
 --------------------------------
