@@ -39,7 +39,7 @@ var query = SQL
    .FROM("Products p")
    .JOIN("Categories c ON p.CategoryID = c.CategoryID")
    .WHERE()
-   ._If(categoryId.HasValue, "p.CategoryID = {0}", 1);
+   ._If(categoryId.HasValue, "p.CategoryID = {0}", categoryId);
 
 IEnumerable<Product> products = conn.Map<Product>(query);
 ```
