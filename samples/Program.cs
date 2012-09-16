@@ -47,7 +47,7 @@ namespace Samples {
             return;
          }
 
-         string[] samplesLangs = { "C#", "VB" };
+         string[] samplesLangs = { "C#", "VB", "F#" };
          int samplesLangIndex = GetArrayOption(samplesLangs, "Select the samples language (or Enter):");
          string samplesLanguage = samplesLangs[samplesLangIndex];
          
@@ -105,6 +105,14 @@ namespace Samples {
                yield return new Samples.VisualBasic.SqlBuilderSamples();
                yield return new Samples.VisualBasic.SqlSetSamples(connString, log);
                yield return new Samples.VisualBasic.DatabaseSamples(connString, mapping, log);
+               break;
+
+            case "F#":
+               mapping = (mappingSource is AttributeMappingSource) ?
+                  mappingSource.GetModel(typeof(Samples.FSharp.Northwind.NorthwindDatabase))
+                  : mappingSource.GetModel(typeof(Samples.FSharp.Northwind.ForXmlMappingSourceOnlyDataContext));
+               
+               yield return new Samples.FSharp.ExtensionMethodsSamples(connString, log);
                break;
 
             default:
