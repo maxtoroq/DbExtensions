@@ -22,8 +22,12 @@ Namespace Northwind
          End Set
       End Property
 
-      Public Sub New(ByVal connString As String, ByVal mapping As MetaModel)
-         MyBase.New(connString, mapping)
+      Public Sub New(ByVal connectionString As String)
+         MyBase.New(connectionString)
+      End Sub
+
+      Public Sub New(ByVal connectionString As String, ByVal mapping As MetaModel)
+         MyBase.New(connectionString, mapping)
       End Sub
 
    End Class

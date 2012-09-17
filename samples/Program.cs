@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Common;
 using System.Data.Linq.Mapping;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using DbExtensions;
 
@@ -28,9 +30,9 @@ namespace Samples {
             .ToArray();
 
          int connIndex = GetArrayOption(connectionStrings.Select(c => c.Name).ToArray(), "Select a connection string (or Enter to select the first one):");
-         var connSettings = connectionStrings[connIndex];
-         var provider = DbFactory.GetProviderFactory(connSettings.ProviderName);
-         var connString = "name=" + connSettings.Name;
+         ConnectionStringSettings connSettings = connectionStrings[connIndex];
+         DbProviderFactory provider = DbFactory.GetProviderFactory(connSettings.ProviderName);
+         string connectionString = "name=" + connSettings.Name;
 
          Console.WriteLine();
          Console.WriteLine("Provider: {0}", provider.GetType().AssemblyQualifiedName);
@@ -38,7 +40,7 @@ namespace Samples {
          Console.WriteLine("Connecting...");
 
          try {
-            var conn = DbFactory.CreateConnection(connString);
+            DbConnection conn = DbFactory.CreateConnection(connectionString);
             using (conn.EnsureOpen())
                Console.WriteLine("Server Version: {0}", conn.ServerVersion);
          } catch (Exception ex) {
@@ -50,12 +52,12 @@ namespace Samples {
          string[] samplesLangs = { "C#", "VB", "F#" };
          int samplesLangIndex = GetArrayOption(samplesLangs, "Select the samples language (or Enter):");
          string samplesLanguage = samplesLangs[samplesLangIndex];
-         
+
          MappingSource[] mappingSources = { new AttributeMappingSource(), XmlMappingSource.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("Samples.Northwind.Northwind.xml")) };
          int mappingSourceIndex = GetArrayOption(mappingSources, "Select the mapping source (or Enter):");
          MappingSource mappingSource = mappingSources[mappingSourceIndex];
-         
-         object[] samples = GetSamples(samplesLanguage, connString, mappingSource, Console.Out).ToArray();
+
+         object[] samples = GetSamples(samplesLanguage, connectionString, mappingSource, Console.Out).ToArray();
          string[] samplesOptions = samples.Select(o => o.GetType().Name).Concat(new[] { "All" }).ToArray();
 
          int samplesIndex = GetArrayOption(samplesOptions, "Select the samples category (or Enter to run all):", samplesOptions.Length - 1);
@@ -80,31 +82,31 @@ namespace Samples {
          }
       }
 
-      IEnumerable<object> GetSamples(string language, string connString, MappingSource mappingSource, TextWriter log) {
+      IEnumerable<object> GetSamples(string language, string connectionString, MappingSource mappingSource, TextWriter log) {
 
          MetaModel mapping;
 
          switch (language) {
             case "C#":
-               mapping = (mappingSource is AttributeMappingSource) ? 
-                  mappingSource.GetModel(typeof(Samples.CSharp.Northwind.NorthwindDatabase)) 
+               mapping = (mappingSource is AttributeMappingSource) ?
+                  mappingSource.GetModel(typeof(Samples.CSharp.Northwind.NorthwindDatabase))
                   : mappingSource.GetModel(typeof(Samples.CSharp.Northwind.ForXmlMappingSourceOnlyDataContext));
 
-               yield return new Samples.CSharp.ExtensionMethodsSamples(connString, log);
+               yield return new Samples.CSharp.ExtensionMethodsSamples(connectionString, log);
                yield return new Samples.CSharp.SqlBuilderSamples();
-               yield return new Samples.CSharp.SqlSetSamples(connString, log);
-               yield return new Samples.CSharp.DatabaseSamples(connString, mapping, log);
+               yield return new Samples.CSharp.SqlSetSamples(connectionString, log);
+               yield return new Samples.CSharp.DatabaseSamples(connectionString, mapping, log);
                break;
 
             case "VB":
-               mapping = (mappingSource is AttributeMappingSource) ? 
-                  mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.NorthwindDatabase)) 
+               mapping = (mappingSource is AttributeMappingSource) ?
+                  mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.NorthwindDatabase))
                   : mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.ForXmlMappingSourceOnlyDataContext));
 
-               yield return new Samples.VisualBasic.ExtensionMethodsSamples(connString, log);
+               yield return new Samples.VisualBasic.ExtensionMethodsSamples(connectionString, log);
                yield return new Samples.VisualBasic.SqlBuilderSamples();
-               yield return new Samples.VisualBasic.SqlSetSamples(connString, log);
-               yield return new Samples.VisualBasic.DatabaseSamples(connString, mapping, log);
+               yield return new Samples.VisualBasic.SqlSetSamples(connectionString, log);
+               yield return new Samples.VisualBasic.DatabaseSamples(connectionString, mapping, log);
                break;
 
             case "F#":
@@ -123,8 +125,10 @@ namespace Samples {
       void RunSamples(object samples, bool continueOnError) {
 
          Type samplesType = samples.GetType();
-         List<MethodInfo> methods = new List<MethodInfo>();
-         methods.AddRange(samplesType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
+         List<MethodInfo> methods = samplesType
+            .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+            .ToList();
 
          for (int i = 0; i < methods.Count; i++) {
             MethodInfo method = methods[i];
@@ -138,34 +142,41 @@ namespace Samples {
 
             if (method.ReturnType == typeof(void)) {
 
-               var sample = (Action)Delegate.CreateDelegate(typeof(Action), samples, method);
+               var runSample = (Action)Delegate.CreateDelegate(typeof(Action), samples, method);
 
                if (continueOnError) {
 
                   try {
-                     sample();
+                     runSample();
                   } catch (Exception ex) {
                      WriteError(ex);
                   }
 
                } else {
-                  sample();
+                  runSample();
                }
-               
+
             } else {
 
-               var sample = (Func<object>)Delegate.CreateDelegate(typeof(Func<object>), samples, method);
+               Action runSample = () => {
+                  returnValue = Expression.Lambda<Func<object>>(
+                     Expression.Convert(
+                        Expression.Call(Expression.Constant(samples), method)
+                        , typeof(object)
+                     )
+                  ).Compile()();
+               };
 
                if (continueOnError) {
 
                   try {
-                     returnValue = sample();
+                     runSample();
                   } catch (Exception ex) {
                      WriteError(ex);
                   }
 
                } else {
-                  returnValue = sample();
+                  runSample();
                }
             }
 
@@ -173,12 +184,12 @@ namespace Samples {
 
                Console.WriteLine();
 
-               SqlBuilder sqlbuilder = returnValue as SqlBuilder;
+               var sqlbuilder = returnValue as SqlBuilder;
 
                if (sqlbuilder != null) {
-                  
+
                   Console.WriteLine(returnValue);
-                  
+
                   for (int j = 0; j < sqlbuilder.ParameterValues.Count; j++) {
 
                      object value = sqlbuilder.ParameterValues[j];
@@ -194,11 +205,11 @@ namespace Samples {
 
                   ConsoleColor color = Console.ForegroundColor;
                   Console.ForegroundColor = ConsoleColor.DarkGray;
-                  
+
                   ObjectDumper.Write(returnValue, 1, Console.Out);
 
                   Console.ForegroundColor = color;
-               } 
+               }
             }
          }
       }
@@ -256,7 +267,7 @@ namespace Samples {
 
          return index;
       }
-      
+
       void WriteError(Exception ex, bool fatal = false) {
 
          ConsoleColor prevColor = Console.ForegroundColor;

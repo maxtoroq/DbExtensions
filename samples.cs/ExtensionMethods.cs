@@ -13,17 +13,17 @@ namespace Samples.CSharp {
 
    public class ExtensionMethodsSamples {
 
-      readonly DbConnection connection;
+      readonly DbConnection conn;
       readonly TextWriter log;
 
       public ExtensionMethodsSamples(string connectionString, TextWriter log) {
-         this.connection = DbFactory.CreateConnection(connectionString);
+         this.conn = DbFactory.CreateConnection(connectionString);
          this.log = log;
       }
 
       public IEnumerable<Product> StaticQuery() { 
       
-         return connection
+         return conn
             .CreateCommand("SELECT * FROM Products WHERE ProductID = {0}", 1)
             .Map<Product>(log);
       }
@@ -39,7 +39,7 @@ namespace Samples.CSharp {
             .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID")
             .WHERE("p.ProductID < {0}", 3);
 
-         return connection.Map<Product>(query, log);
+         return conn.Map<Product>(query, log);
       }
 
       public IEnumerable<EmployeeTerritory> SelectWithManyToOneNested() {
@@ -53,7 +53,7 @@ namespace Samples.CSharp {
             .LEFT_JOIN("Region r ON t.RegionID = r.RegionID")
             .WHERE("et.EmployeeID < {0}", 3);
 
-         return connection.Map<EmployeeTerritory>(query, log);
+         return conn.Map<EmployeeTerritory>(query, log);
       }
 
       public IEnumerable AnnonymousType() {
@@ -63,7 +63,7 @@ namespace Samples.CSharp {
             .FROM("Products p")
             .WHERE("p.ProductID < {0}", 3);
 
-         return connection.Map(query, r => new {
+         return conn.Map(query, r => new {
             ProductID = r.GetInt32(0),
             ProductName = r.GetStringOrNull(1)
          }, log);
@@ -77,12 +77,12 @@ namespace Samples.CSharp {
             .WHERE("p.ProductID < {0}", 3)
             .ORDER_BY("ValueInStock");
 
-         return connection.Map<Product>(query, log);
+         return conn.Map<Product>(query, log);
       }
 
-      public object Exists() {
+      public bool Exists() {
 
-         bool result = connection.Exists(SQL
+         bool result = conn.Exists(SQL
             .SELECT("ProductID")
             .FROM("Products")
             .WHERE("ProductID = 1"));
@@ -108,7 +108,7 @@ namespace Samples.CSharp {
             TypeAnnotation = XmlTypeAnnotation.XmlSchema
          };
 
-         using (XmlReader reader = connection.MapXml(query, settings, log)) {
+         using (XmlReader reader = conn.MapXml(query, settings, log)) {
             using (XmlWriter writer = XmlWriter.Create(log, new XmlWriterSettings { Indent = true })) {
                while (!reader.EOF)
                   writer.WriteNode(reader, defattr: true);

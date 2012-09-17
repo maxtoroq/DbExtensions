@@ -10,27 +10,27 @@ Imports Samples.VisualBasic.Northwind
 
 Public Class SqlSetSamples
 
-   ReadOnly connection As DbConnection
+   ReadOnly conn As DbConnection
    ReadOnly productSet As SqlSet(Of Product)
 
    Public Sub New(ByVal connectionString As String, ByVal log As TextWriter)
-      Me.connection = DbFactory.CreateConnection(connectionString)
-      Me.productSet = Me.connection.Set(Of Product)(New SqlBuilder("SELECT * FROM Products"), log)
+      Me.conn = DbFactory.CreateConnection(connectionString)
+      Me.productSet = Me.conn.Set(Of Product)(New SqlBuilder("SELECT * FROM Products"), log)
    End Sub
 
-   Public Function AreThereAnyProducts() As Object
+   Public Function AreThereAnyProducts() As Boolean
       Return productSet.Any()
    End Function
 
-   Public Function DoAllProductsHaveUnitPrice() As Object
+   Public Function DoAllProductsHaveUnitPrice() As Boolean
       Return productSet.All("NOT UnitPrice IS NULL")
    End Function
 
-   Public Function DoSomeProductsAreOutOfStock() As Object
+   Public Function DoSomeProductsAreOutOfStock() As Boolean
       Return productSet.Any("UnitsInStock = 0")
    End Function
 
-   Public Function HowManyProductsAreOutOfStock() As Object
+   Public Function HowManyProductsAreOutOfStock() As Integer
       Return productSet.Count("UnitsInStock = 0")
    End Function
 
@@ -47,18 +47,20 @@ Public Class SqlSetSamples
    End Function
 
    Public Function Top5ProductsWithLowestStock() As IEnumerable
+
       Return productSet.Where("UnitsInStock > 0") _
          .OrderBy("UnitsInStock") _
          .Take(5) _
          .Select(Function(r) New With {.Name = r.GetString(0), .UnitsInStock = r.GetInt16(1)}, "ProductName, UnitsInStock") _
          .AsEnumerable()
+
    End Function
 
-   Public Function NamesOfOutOfStockProducts() As Object
+   Public Function NamesOfOutOfStockProducts() As IEnumerable(Of String)
 
       Return productSet.Where("UnitsInStock = 0") _
          .Select(Function(r) r.GetString(0), "ProductName") _
-         .ToArray()
+         .AsEnumerable()
 
    End Function
 

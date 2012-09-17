@@ -12,28 +12,28 @@ namespace Samples.CSharp {
    
    public class SqlSetSamples {
 
-      readonly DbConnection connection;
+      readonly DbConnection conn;
       readonly SqlSet<Product> productSet;
 
       public SqlSetSamples(string connectionString, TextWriter log) {
-         
-         this.connection = DbFactory.CreateConnection(connectionString);
-         this.productSet = this.connection.Set<Product>(new SqlBuilder("SELECT * FROM Products"), log);
+
+         this.conn = DbFactory.CreateConnection(connectionString);
+         this.productSet = this.conn.Set<Product>(new SqlBuilder("SELECT * FROM Products"), log);
       }
 
-      public object AreThereAnyProducts() {
+      public bool AreThereAnyProducts() {
          return productSet.Any();
       }
 
-      public object DoAllProductsHaveUnitPrice() {
+      public bool DoAllProductsHaveUnitPrice() {
          return productSet.All("NOT UnitPrice IS NULL");
       }
 
-      public object DoSomeProductsAreOutOfStock() {
+      public bool DoSomeProductsAreOutOfStock() {
          return productSet.Any("UnitsInStock = 0");
       }
 
-      public object HowManyProductsAreOutOfStock() {
+      public int HowManyProductsAreOutOfStock() {
          return productSet.Count("UnitsInStock = 0");
       }
 
@@ -50,6 +50,7 @@ namespace Samples.CSharp {
       }
 
       public IEnumerable Top5ProductsWithLowestStock() {
+         
          return productSet.Where("UnitsInStock > 0")
             .OrderBy("UnitsInStock")
             .Take(5)
@@ -57,11 +58,11 @@ namespace Samples.CSharp {
             .AsEnumerable();
       }
 
-      public object NamesOfOutOfStockProducts() {
+      public IEnumerable<string> NamesOfOutOfStockProducts() {
          
          return productSet.Where("UnitsInStock = 0")
             .Select(r => r.GetString(0), "ProductName")
-            .ToArray();
+            .AsEnumerable();
       }
 
       public Product GetSpecificProduct() {

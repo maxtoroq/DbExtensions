@@ -17,7 +17,10 @@ namespace Samples.CSharp.Northwind {
          get { return Table<Order>(); }
       }
 
-      public NorthwindDatabase(string connString, MetaModel mapping) 
-         : base(connString, mapping) { }
+      public NorthwindDatabase(string connectionString) 
+         : base(connectionString) { }
+
+      public NorthwindDatabase(string connectionString, MetaModel mapping)
+         : base(connectionString, mapping) { }
    }
 }
