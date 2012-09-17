@@ -113,8 +113,11 @@ namespace Samples {
                mapping = (mappingSource is AttributeMappingSource) ?
                   mappingSource.GetModel(typeof(Samples.FSharp.Northwind.NorthwindDatabase))
                   : mappingSource.GetModel(typeof(Samples.FSharp.Northwind.ForXmlMappingSourceOnlyDataContext));
-               
-               yield return new Samples.FSharp.ExtensionMethodsSamples(connString, log);
+
+               yield return new Samples.FSharp.ExtensionMethodsSamples(connectionString, log);
+               yield return new Samples.FSharp.SqlBuilderSamples();
+               yield return new Samples.FSharp.SqlSetSamples(connectionString, log);
+               yield return new Samples.FSharp.DatabaseSamples(connectionString, mapping, log);
                break;
 
             default:
