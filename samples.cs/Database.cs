@@ -14,9 +14,9 @@ namespace Samples.CSharp {
 
       readonly NorthwindDatabase db;
 
-      public DatabaseSamples(string connString, MetaModel mapping, TextWriter log) {
-         
-         this.db = new NorthwindDatabase(connString, mapping) {
+      public DatabaseSamples(string connectionString, MetaModel mapping, TextWriter log) {
+
+         this.db = new NorthwindDatabase(connectionString, mapping) {
             Configuration = { 
                Log = log
             }

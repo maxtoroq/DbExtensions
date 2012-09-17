@@ -11,17 +11,17 @@ Imports Samples.VisualBasic.Northwind
 
 Public Class ExtensionMethodsSamples
 
-   ReadOnly connection As DbConnection
+   ReadOnly conn As DbConnection
    ReadOnly log As TextWriter
 
    Public Sub New(ByVal connectionString As String, ByVal log As TextWriter)
-      Me.connection = DbFactory.CreateConnection(connectionString)
+      Me.conn = DbFactory.CreateConnection(connectionString)
       Me.log = log
    End Sub
 
    Public Function StaticQuery() As IEnumerable(Of Product)
 
-      Return connection _
+      Return conn _
          .CreateCommand("SELECT * FROM Products WHERE ProductID = {0}", 1) _
          .Map(Of Product)(log)
 
@@ -38,7 +38,7 @@ Public Class ExtensionMethodsSamples
          .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID") _
          .WHERE("p.ProductID < {0}", 3)
 
-      Return connection.Map(Of Product)(query, log)
+      Return conn.Map(Of Product)(query, log)
 
    End Function
 
@@ -53,7 +53,7 @@ Public Class ExtensionMethodsSamples
          .LEFT_JOIN("Region r ON t.RegionID = r.RegionID") _
          .WHERE("et.EmployeeID < {0}", 3)
 
-      Return connection.Map(Of EmployeeTerritory)(query, log)
+      Return conn.Map(Of EmployeeTerritory)(query, log)
 
    End Function
 
@@ -64,7 +64,7 @@ Public Class ExtensionMethodsSamples
          .FROM("Products p") _
          .WHERE("p.ProductID < {0}", 3)
 
-      Return connection.Map(query, Function(r) _
+      Return conn.Map(query, Function(r) _
          New With {
             .ProductID = r.GetInt32(0),
             .ProductName = r.GetStringOrNull(1)
@@ -80,13 +80,13 @@ Public Class ExtensionMethodsSamples
          .WHERE("p.ProductID < {0}", 3) _
          .ORDER_BY("ValueInStock")
 
-      Return connection.Map(Of Product)(query, log)
+      Return conn.Map(Of Product)(query, log)
 
    End Function
 
-   Public Function Exists() As Object
+   Public Function Exists() As Boolean
 
-      Dim result = connection.Exists(SQL _
+      Dim result = conn.Exists(SQL _
          .SELECT("ProductID") _
          .FROM("Products") _
          .WHERE("ProductID = 1"))
@@ -113,7 +113,7 @@ Public Class ExtensionMethodsSamples
          .TypeAnnotation = XmlTypeAnnotation.XmlSchema
       }
 
-      Dim reader = connection.MapXml(query, settings, log)
+      Dim reader = conn.MapXml(query, settings, log)
 
       Using reader
          Dim writer = XmlWriter.Create(log, New XmlWriterSettings With {.Indent = True})
