@@ -142,6 +142,7 @@ namespace Samples {
                      runSample();
                   } catch (Exception ex) {
                      WriteError(ex);
+                     continue;
                   }
 
                } else {
@@ -168,6 +169,7 @@ namespace Samples {
                      runSample();
                   } catch (Exception ex) {
                      WriteError(ex);
+                     continue;
                   }
 
                } else {
