@@ -157,6 +157,9 @@ namespace Samples {
                         , typeof(object)
                      )
                   ).Compile()();
+
+                  if (returnValue is IEnumerable)
+                     returnValue = ((IEnumerable)returnValue).Cast<object>().ToArray();
                };
 
                if (continueOnError) {
@@ -191,9 +194,6 @@ namespace Samples {
                   }
 
                } else {
-
-                  if (returnValue is IEnumerable)
-                     returnValue = ((IEnumerable)returnValue).Cast<object>().ToArray();
 
                   ConsoleColor color = Console.ForegroundColor;
                   Console.ForegroundColor = ConsoleColor.DarkGray;
