@@ -73,18 +73,6 @@
       <Project>{00835184-82d5-4720-8750-f99a7209730a}</Project>
       <Name>DbExtensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\samples.cs\Samples.CSharp.csproj">
-      <Project>{51847777-c71e-40c7-9e55-a94f508db7be}</Project>
-      <Name>Samples.CSharp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\samples.fs\Samples.FSharp.fsproj">
-      <Project>{23bd1933-85ec-4705-b1dd-f9ccb5f10437}</Project>
-      <Name>Samples.FSharp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\samples.vb\Samples.VisualBasic.vbproj">
-      <Project>{1dfda809-54b7-44cd-98f6-877855898644}</Project>
-      <Name>Samples.VisualBasic</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
