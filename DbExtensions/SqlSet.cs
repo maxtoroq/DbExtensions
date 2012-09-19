@@ -158,6 +158,10 @@ namespace DbExtensions {
          this.resultType = resultType;
       }
 
+      /// <summary>
+      /// Returns the SQL query that is the source of data for the set.
+      /// </summary>
+      /// <returns>The SQL query that is the source of data for the set</returns>
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Calling the member twice in succession creates different results.")]
       public SqlBuilder GetDefiningQuery() {
          return GetDefiningQuery(clone: true);
@@ -370,7 +374,7 @@ namespace DbExtensions {
 
          if (this.resultType != null
             && this.resultType != resultType) {
-            throw new InvalidOperationException("The specified type parameter is not valid for this instance.");
+            throw new InvalidOperationException("The specified resultType is not valid for this instance.");
          }
 
          return CreateSet(GetDefiningQuery(), resultType);
@@ -763,6 +767,11 @@ namespace DbExtensions {
          return CreateSet(superQuery);
       }
 
+      /// <summary>
+      /// Produces the set union of the current set with <paramref name="otherSet"/>.
+      /// </summary>
+      /// <param name="otherSet">A <see cref="SqlSet"/> whose distinct elements form the second set for the union.</param>
+      /// <returns>A new <see cref="SqlSet"/> that contains the elements from both sets, excluding duplicates.</returns>
       public SqlSet Union(SqlSet otherSet) {
 
          if (otherSet == null) throw new ArgumentNullException("otherSet");
@@ -940,8 +949,8 @@ namespace DbExtensions {
          return new SqlSet<TResult>(this, superQuery);
       }
 
-      protected override SqlSet<TResult2> CreateSet<TResult2>(SqlBuilder superQuery) {
-         return new SqlSet<TResult2>(this, superQuery);
+      protected override SqlSet<T> CreateSet<T>(SqlBuilder superQuery) {
+         return new SqlSet<T>(this, superQuery);
       }
 
       /// <summary>
@@ -963,6 +972,26 @@ namespace DbExtensions {
       /// <returns>All <typeparamref name="TResult"/> objects in the set.</returns>
       public new IEnumerable<TResult> AsEnumerable() {
          return (IEnumerable<TResult>)base.AsEnumerable();
+      }
+
+      /// <summary>
+      /// Casts the elements of the set to the specified type.
+      /// </summary>
+      /// <typeparam name="T">The type to cast the elements of the set to.</typeparam>
+      /// <returns>A new <see cref="SqlSet&lt;T>"/> that contains each element of the current set cast to the specified type.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public new SqlSet<T> Cast<T>() {
+         return base.Cast<T>();
+      }
+
+      /// <summary>
+      /// Casts the elements of the set to the specified type.
+      /// </summary>
+      /// <param name="resultType">The type to cast the elements of the set to.</param>
+      /// <returns>A new <see cref="SqlSet"/> that contains each element of the current set cast to the specified type.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public new SqlSet Cast(Type resultType) {
+         return base.Cast(resultType);
       }
 
       /// <summary>
@@ -1167,6 +1196,11 @@ namespace DbExtensions {
          return (SqlSet<TResult>)base.Where(predicate, parameters);
       }
 
+      /// <summary>
+      /// Produces the set union of the current set with <paramref name="otherSet"/>.
+      /// </summary>
+      /// <param name="otherSet">A <see cref="SqlSet&lt;TResult>"/> whose distinct elements form the second set for the union.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> that contains the elements from both sets, excluding duplicates.</returns>
       public SqlSet<TResult> Union(SqlSet<TResult> otherSet) {
          return (SqlSet<TResult>)base.Union(otherSet);
       }

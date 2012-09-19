@@ -14,6 +14,8 @@ namespace Samples {
 
    class Program {
 
+      readonly string solutionPath = Path.Combine("..", "..", "..");
+
       static void Main() {
          new Program().Run();
       }
@@ -49,7 +51,8 @@ namespace Samples {
             return;
          }
 
-         string[] samplesLangs = { "C#", "VB", "F#" };
+         string[] samplesLangs = GetSamplesLanguages();
+
          int samplesLangIndex = GetArrayOption(samplesLangs, "Select the samples language (or Enter):");
          string samplesLanguage = samplesLangs[samplesLangIndex];
 
@@ -57,7 +60,16 @@ namespace Samples {
          int mappingSourceIndex = GetArrayOption(mappingSources, "Select the mapping source (or Enter):");
          MappingSource mappingSource = mappingSources[mappingSourceIndex];
 
-         object[] samples = GetSamples(samplesLanguage, connectionString, mappingSource, Console.Out).ToArray();
+         object[] samples;
+
+         try {
+            samples = GetSamples(samplesLanguage, connectionString, mappingSource, Console.Out).ToArray();
+         } catch (Exception ex) {
+
+            WriteError(ex, fatal: true);
+            return;
+         }
+
          string[] samplesOptions = samples.Select(o => o.GetType().Name).Concat(new[] { "All" }).ToArray();
 
          int samplesIndex = GetArrayOption(samplesOptions, "Select the samples category (or Enter to run all):", samplesOptions.Length - 1);
@@ -82,47 +94,61 @@ namespace Samples {
          }
       }
 
+      string[] GetSamplesLanguages() {
+
+         string[] projectsDir = Directory
+            .GetDirectories(this.solutionPath, @"samples.*", SearchOption.TopDirectoryOnly)
+            .Select(s => s.Split(Path.DirectorySeparatorChar).Last())
+            .Where(s => s.Contains('.'))
+            .ToArray();
+
+         return projectsDir.Select(s => s.Split('.').Skip(1).First()).ToArray();
+      }
+
       IEnumerable<object> GetSamples(string language, string connectionString, MappingSource mappingSource, TextWriter log) {
+
+         string projectDir = Path.Combine(this.solutionPath, "samples." + language);
+         string projectFile = Directory.GetFiles(projectDir, String.Format("*.{0}proj", language)).FirstOrDefault();
+
+         if (projectFile == null) 
+            throw new InvalidOperationException("Project file not found.");
+
+         string projectFileName = projectFile.Split(Path.DirectorySeparatorChar).Last();
+         string assemblyFileName = String.Join(".", projectFileName.Split('.').Reverse().Skip(1).Reverse()) + ".dll";
+         string assemblyPath = Path.Combine(projectDir, "bin", "Debug", assemblyFileName);
+         Assembly samplesAssembly = Assembly.Load(File.ReadAllBytes(assemblyPath));
 
          MetaModel mapping;
 
-         switch (language) {
-            case "C#":
-               mapping = (mappingSource is AttributeMappingSource) ?
-                  mappingSource.GetModel(typeof(Samples.CSharp.Northwind.NorthwindDatabase))
-                  : mappingSource.GetModel(typeof(Samples.CSharp.Northwind.ForXmlMappingSourceOnlyDataContext));
 
-               yield return new Samples.CSharp.ExtensionMethodsSamples(connectionString, log);
-               yield return new Samples.CSharp.SqlBuilderSamples();
-               yield return new Samples.CSharp.SqlSetSamples(connectionString, log);
-               yield return new Samples.CSharp.DatabaseSamples(connectionString, mapping, log);
-               break;
-
-            case "VB":
-               mapping = (mappingSource is AttributeMappingSource) ?
-                  mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.NorthwindDatabase))
-                  : mappingSource.GetModel(typeof(Samples.VisualBasic.Northwind.ForXmlMappingSourceOnlyDataContext));
-
-               yield return new Samples.VisualBasic.ExtensionMethodsSamples(connectionString, log);
-               yield return new Samples.VisualBasic.SqlBuilderSamples();
-               yield return new Samples.VisualBasic.SqlSetSamples(connectionString, log);
-               yield return new Samples.VisualBasic.DatabaseSamples(connectionString, mapping, log);
-               break;
-
-            case "F#":
-               mapping = (mappingSource is AttributeMappingSource) ?
-                  mappingSource.GetModel(typeof(Samples.FSharp.Northwind.NorthwindDatabase))
-                  : mappingSource.GetModel(typeof(Samples.FSharp.Northwind.ForXmlMappingSourceOnlyDataContext));
-
-               yield return new Samples.FSharp.ExtensionMethodsSamples(connectionString, log);
-               yield return new Samples.FSharp.SqlBuilderSamples();
-               yield return new Samples.FSharp.SqlSetSamples(connectionString, log);
-               yield return new Samples.FSharp.DatabaseSamples(connectionString, mapping, log);
-               break;
-
-            default:
-               throw new ArgumentOutOfRangeException("language", "Only C# and VB are accepted.");
+         if (mappingSource is AttributeMappingSource) {
+            mapping = mappingSource.GetModel(
+               samplesAssembly.GetTypes()
+                  .Where(t => typeof(Database).IsAssignableFrom(t))
+                  .Single()
+            );
+         } else {
+            mapping = mappingSource.GetModel(
+               samplesAssembly.GetTypes()
+                  .Where(t => typeof(System.Data.Linq.DataContext).IsAssignableFrom(t))
+                  .Single()
+            );
          }
+
+         return 
+            from t in samplesAssembly.GetTypes()
+            where t.IsPublic
+               && t.Name.EndsWith("Samples")
+            let parameters = t.GetConstructors().First().GetParameters()
+            let args = 
+               from p in parameters
+               select (p.ParameterType == typeof(string) ? connectionString 
+                  : p.ParameterType == typeof(TextWriter) ? log
+                  : p.ParameterType == typeof(MetaModel) ? mapping
+                  : p.ParameterType == typeof(DbConnection) ? DbFactory.CreateConnection(connectionString)
+                  : p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType)
+                  : null)
+            select Activator.CreateInstance(t, args.ToArray());
       }
 
       void RunSamples(object samples, bool continueOnError) {
@@ -153,6 +179,7 @@ namespace Samples {
                      runSample();
                   } catch (Exception ex) {
                      WriteError(ex);
+                     continue;
                   }
 
                } else {
@@ -168,6 +195,9 @@ namespace Samples {
                         , typeof(object)
                      )
                   ).Compile()();
+
+                  if (returnValue is IEnumerable)
+                     returnValue = ((IEnumerable)returnValue).Cast<object>().ToArray();
                };
 
                if (continueOnError) {
@@ -176,6 +206,7 @@ namespace Samples {
                      runSample();
                   } catch (Exception ex) {
                      WriteError(ex);
+                     continue;
                   }
 
                } else {
@@ -202,9 +233,6 @@ namespace Samples {
                   }
 
                } else {
-
-                  if (returnValue is IEnumerable)
-                     returnValue = ((IEnumerable)returnValue).Cast<object>().ToArray();
 
                   ConsoleColor color = Console.ForegroundColor;
                   Console.ForegroundColor = ConsoleColor.DarkGray;

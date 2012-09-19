@@ -73,6 +73,16 @@ namespace DbExtensions {
          return (SqlTable<TEntity>)table;
       }
 
+      /// <summary>
+      /// Casts the elements of the set to the specified type.
+      /// </summary>
+      /// <param name="resultType">The type to cast the elements of the set to.</param>
+      /// <returns>A new <see cref="SqlSet"/> that contains each element of the current set cast to the specified type.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public new SqlSet Cast(Type resultType) {
+         return base.Cast(resultType);
+      }
+
       #region ISqlTable Members
 
       // These methods just call the same method on this.table
