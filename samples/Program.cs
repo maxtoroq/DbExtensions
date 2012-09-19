@@ -70,7 +70,11 @@ namespace Samples {
             return;
          }
 
-         string[] samplesOptions = samples.Select(o => o.GetType().Name).Concat(new[] { "All" }).ToArray();
+         string[] samplesOptions =
+            (from s in samples
+             let name = s.GetType().Name
+             let friendlyName = name.Substring(0, name.Length - "Samples".Length)
+             select friendlyName).Concat(new[] { "All" }).ToArray();
 
          int samplesIndex = GetArrayOption(samplesOptions, "Select the samples category (or Enter to run all):", samplesOptions.Length - 1);
 
