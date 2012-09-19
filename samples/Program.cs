@@ -59,7 +59,16 @@ namespace Samples {
          int mappingSourceIndex = GetArrayOption(mappingSources, "Select the mapping source (or Enter):");
          MappingSource mappingSource = mappingSources[mappingSourceIndex];
 
-         object[] samples = GetSamples(samplesLanguage, connectionString, mappingSource, Console.Out).ToArray();
+         object[] samples;
+
+         try {
+            samples = GetSamples(samplesLanguage, connectionString, mappingSource, Console.Out).ToArray();
+         } catch (Exception ex) {
+
+            WriteError(ex, fatal: true);
+            return;
+         }
+
          string[] samplesOptions = samples.Select(o => o.GetType().Name).Concat(new[] { "All" }).ToArray();
 
          int samplesIndex = GetArrayOption(samplesOptions, "Select the samples category (or Enter to run all):", samplesOptions.Length - 1);
@@ -98,7 +107,11 @@ namespace Samples {
       IEnumerable<object> GetSamples(string language, string connectionString, MappingSource mappingSource, TextWriter log) {
 
          string projectDir = Path.Combine(this.solutionPath, "samples." + language);
-         string projectFile = Directory.GetFiles(projectDir, String.Format("*.{0}proj", language)).First();
+         string projectFile = Directory.GetFiles(projectDir, String.Format("*.{0}proj", language)).FirstOrDefault();
+
+         if (projectFile == null) 
+            throw new InvalidOperationException("Project file not found.");
+
          string projectFileName = projectFile.Split(Path.DirectorySeparatorChar).Last();
          string assemblyFileName = String.Join(".", projectFileName.Split('.').Reverse().Skip(1).Reverse()) + ".dll";
          string assemblyPath = Path.Combine(projectDir, "bin", "Debug", assemblyFileName);
