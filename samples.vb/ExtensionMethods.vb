@@ -14,8 +14,8 @@ Public Class ExtensionMethodsSamples
    ReadOnly conn As DbConnection
    ReadOnly log As TextWriter
 
-   Public Sub New(ByVal connectionString As String, ByVal log As TextWriter)
-      Me.conn = DbFactory.CreateConnection(connectionString)
+   Public Sub New(ByVal conn As DbConnection, ByVal log As TextWriter)
+      Me.conn = conn
       Me.log = log
    End Sub
 

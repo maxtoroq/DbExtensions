@@ -124,7 +124,6 @@ namespace Samples {
 
          MetaModel mapping;
 
-
          if (mappingSource is AttributeMappingSource) {
             mapping = mappingSource.GetModel(
                samplesAssembly.GetTypes()

@@ -12,13 +12,10 @@ namespace Samples.CSharp {
    
    public class SqlSetSamples {
 
-      readonly DbConnection conn;
       readonly SqlSet<Product> productSet;
 
-      public SqlSetSamples(string connectionString, TextWriter log) {
-
-         this.conn = DbFactory.CreateConnection(connectionString);
-         this.productSet = this.conn.Set<Product>(new SqlBuilder("SELECT * FROM Products"), log);
+      public SqlSetSamples(DbConnection conn, TextWriter log) {
+         this.productSet = conn.Set<Product>(new SqlBuilder("SELECT * FROM Products"), log);
       }
 
       public bool AreThereAnyProducts() {

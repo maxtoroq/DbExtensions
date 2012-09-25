@@ -10,12 +10,10 @@ Imports Samples.VisualBasic.Northwind
 
 Public Class SqlSetSamples
 
-   ReadOnly conn As DbConnection
    ReadOnly productSet As SqlSet(Of Product)
 
-   Public Sub New(ByVal connectionString As String, ByVal log As TextWriter)
-      Me.conn = DbFactory.CreateConnection(connectionString)
-      Me.productSet = Me.conn.Set(Of Product)(New SqlBuilder("SELECT * FROM Products"), log)
+   Public Sub New(ByVal conn As DbConnection, ByVal log As TextWriter)
+      Me.productSet = conn.Set(Of Product)(New SqlBuilder("SELECT * FROM Products"), log)
    End Sub
 
    Public Function AreThereAnyProducts() As Boolean

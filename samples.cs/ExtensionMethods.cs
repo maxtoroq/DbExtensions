@@ -16,8 +16,8 @@ namespace Samples.CSharp {
       readonly DbConnection conn;
       readonly TextWriter log;
 
-      public ExtensionMethodsSamples(string connectionString, TextWriter log) {
-         this.conn = DbFactory.CreateConnection(connectionString);
+      public ExtensionMethodsSamples(DbConnection conn, TextWriter log) {
+         this.conn = conn;
          this.log = log;
       }
 

@@ -2,13 +2,13 @@
 
 open System
 open System.Data
+open System.Data.Common
 open System.IO
 open DbExtensions
 open Samples.FSharp.Northwind
 
-type SqlSetSamples(connectionString : string, log : TextWriter) =
+type SqlSetSamples(conn : DbConnection, log : TextWriter) =
    
-   let conn = DbFactory.CreateConnection(connectionString)
    let log = log
    let productSet = conn.Set<Product>(new SqlBuilder("SELECT * FROM Products"), log)
 

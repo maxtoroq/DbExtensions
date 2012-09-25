@@ -4,16 +4,14 @@ open System
 open System.Collections
 open System.Collections.Generic
 open System.Data
+open System.Data.Common
 open System.IO
 open System.Xml
 open DbExtensions
 open Samples.FSharp.Northwind
 
-type ExtensionMethodsSamples(connectionString : string, log : TextWriter) = 
+type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) = 
    
-   let conn = DbFactory.CreateConnection(connectionString)
-   let log = log
-
    member this.StaticQuery() =
       conn
          .CreateCommand("SELECT * FROM Products WHERE ProductID = {0}", 1)
