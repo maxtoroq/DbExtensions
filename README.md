@@ -106,3 +106,5 @@ Resources
 - [Documentation](https://github.com/maxtoroq/DbExtensions/wiki)
 - [Ask for help](http://sourceforge.net/p/dbextensions/discussion/)
 - [Report an issue](https://github.com/maxtoroq/DbExtensions/issues)
+
+<a href="https://github.com/maxtoroq/DbExtensions/wiki/Donate"><img src="http://maxtoroq.users.sourceforge.net/donate/paypal/btn_donate_SM.gif" alt="Donate"/></a>
