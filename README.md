@@ -28,7 +28,56 @@ if (productsToReorder.Any()) {
    }
 }
 ```
-`SqlSet` provides a LINQish API for making queries, but using SQL instead of lambda expressions.
+`SqlSet` provides a LINQish API for making queries, but using SQL instead of lambda expressions. The above code executes the following queries:
+
+```sql
+SELECT (CASE WHEN EXISTS (
+        SELECT *
+        FROM (
+                SELECT * FROM Products) AS __set1
+        WHERE UnitsInStock < @p0) THEN 1 ELSE 0 END)
+-- @p0: Input Int32 (Size = 0) [10]
+-- [-1] records affected.
+SELECT *
+FROM (
+        SELECT *
+        FROM (
+                SELECT *
+                FROM (
+                        SELECT * FROM Products) AS __set1
+                WHERE UnitsInStock < @p0) AS __set3
+        ORDER BY UnitsInStock
+        LIMIT 5) AS __set4
+LIMIT 1
+-- @p0: Input Int32 (Size = 0) [10]
+-- [-1] records affected.
+SELECT COUNT(*)
+FROM (
+        SELECT *
+        FROM (
+                SELECT *
+                FROM (
+                        SELECT * FROM Products) AS __set1
+                WHERE UnitsInStock < @p0) AS __set3
+        ORDER BY UnitsInStock
+        LIMIT 5) AS __countQuery
+-- @p0: Input Int32 (Size = 0) [10]
+-- [-1] records affected.
+SELECT *
+FROM (
+        SELECT *
+        FROM (
+                SELECT *
+                FROM (
+                        SELECT * FROM Products) AS __set1
+                WHERE UnitsInStock < @p0) AS __set3
+        ORDER BY UnitsInStock
+        LIMIT 5) AS __set5
+LIMIT 1
+OFFSET 1
+-- @p0: Input Int32 (Size = 0) [10]
+-- [-1] records affected.
+```
 
 Building queries with SqlBuilder
 --------------------------------
