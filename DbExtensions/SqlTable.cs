@@ -369,8 +369,11 @@ namespace DbExtensions {
                idMember.MemberAccessor.SetBoxedValue(ref entityObj, convertedId);
             }
 
-            if (syncMembers.Length > 0)
+            if (syncMembers.Length > 0
+               && metaType.IsEntity) {
+               
                Refresh(entity, syncMembers);
+            }
 
             tx.Commit();
          }
