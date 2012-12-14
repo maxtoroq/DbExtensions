@@ -80,6 +80,18 @@ namespace Samples.CSharp {
          return conn.Map<Product>(query, log);
       }
 
+      public MappingToConstructorArgumentsSample MappingToConstructorArguments() {
+
+         var query = SQL
+            .SELECT("1 AS '0'")
+            ._("'http://example.com' AS Url$0")
+            ._("15.5 AS Price$0, 'USD' AS Price$1");
+
+         var result = conn.Map<MappingToConstructorArgumentsSample>(query, log).Single();
+
+         return result;
+      }
+
       public bool Exists() {
 
          bool result = conn.Exists(SQL
@@ -114,6 +126,28 @@ namespace Samples.CSharp {
                   writer.WriteNode(reader, defattr: true);
             }
          }
+      }
+   }
+
+   public class MappingToConstructorArgumentsSample {
+
+      public int Id { get; private set; }
+      public Uri Url { get; set; }
+      public Money? Price { get; set; }
+
+      public MappingToConstructorArgumentsSample(int id) {
+         this.Id = id;
+      }
+   }
+
+   public struct Money {
+
+      public readonly decimal Amount;
+      public readonly string Currency;
+
+      public Money(decimal amount, string currency) {
+         this.Amount = amount;
+         this.Currency = currency;
       }
    }
 }
