@@ -1334,19 +1334,17 @@ namespace DbExtensions {
 
             if (reader.Read()) {
                
-#if RELEASE
                try {
-#endif
                   current = mapper(reader);
-#if RELEASE
+
                } catch {
                   if (prevStateWasClosed) 
                      EnsureConnectionClosed();
                   
                   throw;
                }
-#endif
-                  return true;
+
+               return true;
             }
 
             if (prevStateWasClosed) 
@@ -1389,6 +1387,7 @@ namespace DbExtensions {
    using System.IO;
    using System.Linq;
    using System.Reflection;
+   using System.Text;
 
    internal class PocoMapper {
 
@@ -1404,7 +1403,7 @@ namespace DbExtensions {
          this.logger = logger;
       }
 
-      MapNode ReadMapping(IDataRecord record) {
+      void ReadMapping(IDataRecord record, MapNode rootNode) {
 
          MapGroup[] groups =
             (from i in Enumerable.Range(0, record.FieldCount)
@@ -1434,80 +1433,139 @@ namespace DbExtensions {
             };
          }
 
-         return ReadMapping(groups, topGroup, this.type);
+         ReadMapping(record, groups, topGroup, rootNode);
       }
 
-      MapNode ReadMapping(MapGroup[] groups, MapGroup currentGroup, Type parentType) {
+      void ReadMapping(IDataRecord record, MapGroup[] groups, MapGroup currentGroup, MapNode instance) {
 
-         PropertyInfo assocProperty = !String.IsNullOrEmpty(currentGroup.Name) ? 
-            GetProperty(parentType, currentGroup.Name) 
-            : null;
-
-         var instance = new MapNode(
-            (assocProperty == null) ? parentType : assocProperty.PropertyType, 
-            assocProperty
-         );
-
-         Dictionary<int, uint> constructorParameters = null;
-
+         var constructorParameters = new Dictionary<MapParam, MapNode>();
+         
          foreach (var pair in currentGroup.Properties) {
 
-            PropertyInfo property = GetProperty(instance.Type, pair.Value);
+            PropertyInfo property = GetProperty(instance.UnderlyingType, pair.Value);
 
             if (property != null) {
                instance.Properties.Add(new MapNode(pair.Key, property));
+               continue;
+            } 
+
+            uint valueAsNumber;
+
+            if (UInt32.TryParse(pair.Value, out valueAsNumber)) {
+               constructorParameters.Add(new MapParam(valueAsNumber, pair.Key), null);
+
             } else {
 
-               uint valueAsNumber;
-
-               if (UInt32.TryParse(pair.Value, out valueAsNumber)) {
-
-                  if (constructorParameters == null)
-                     constructorParameters = new Dictionary<int, uint>();
-
-                  constructorParameters.Add(pair.Key, valueAsNumber);
-
-               } else { 
-                  // TODO: log warning, cannot map column
+               if (this.logger != null) {
+                  this.logger.WriteLine("-- WARNING: Couldn't find property '{0}' on type {1}. Ignoring column.",
+                     pair.Value,
+                     instance.UnderlyingType.FullName
+                  );
                }
             }
          }
 
-         if (constructorParameters != null) {
+         MapGroup[] nextLevels =
+            (from m in groups
+             where m.Depth == currentGroup.Depth + 1 && m.Parent == currentGroup.Name
+             select m).ToArray();
+
+         for (int i = 0; i < nextLevels.Length; i++) {
+
+            MapGroup nextLevel = nextLevels[i];
+            PropertyInfo property = GetProperty(instance.UnderlyingType, nextLevel.Name);
+
+            if (property != null) {
+
+               var assocNode = new MapNode(property);
+               ReadMapping(record, groups, nextLevel, assocNode);
+
+               instance.Properties.Add(assocNode);
+               continue;
+            }
+
+            uint valueAsNumber;
+
+            if (UInt32.TryParse(nextLevel.Name, out valueAsNumber)) {
+               constructorParameters.Add(new MapParam(valueAsNumber, nextLevel), null);
+
+            } else {
+
+               if (this.logger != null) {
+                  this.logger.WriteLine("-- WARNING: Couldn't find property '{0}' on type {1}. Ignoring column(s).",
+                     nextLevel.Name,
+                     instance.UnderlyingType.FullName
+                  );
+               }
+            }
+         }
+
+         if (constructorParameters.Count > 0) {
 
             instance.Constructor = GetConstructor(instance, constructorParameters.Count);
             ParameterInfo[] parameters = instance.Constructor.GetParameters();
 
             int i = 0;
 
-            foreach (var pair in constructorParameters.OrderBy(p => p.Value)) {
+            foreach (var pair in constructorParameters.OrderBy(p => p.Key.ParameterIndex)) {
 
                ParameterInfo param = parameters[i];
+               MapScalar map;
 
-               instance.ConstructorParameters.Add(pair.Value, new MapConstructorParameter(pair.Key, param));
+               if (pair.Key.ColumnOrdinal.HasValue) {
+                  map = new MapScalar(pair.Key.ColumnOrdinal.Value, param.ParameterType);
+
+               } else {
+
+                  var argNode = new MapNode(param.ParameterType);
+                  ReadMapping(record, groups, pair.Key.Group, argNode);
+
+                  map = argNode;
+               }
+
+               if (instance.ConstructorParameters.ContainsKey(pair.Key.ParameterIndex)) {
+
+                  var message = new StringBuilder();
+                  message.AppendFormat(CultureInfo.InvariantCulture, "Already specified an argument for parameter {0}", param.Name);
+
+                  if (pair.Key.ColumnOrdinal.HasValue) 
+                     message.AppendFormat(CultureInfo.InvariantCulture, " ('{0}')", record.GetName(pair.Key.ColumnOrdinal.Value));
+
+                  message.Append(".");
+
+                  throw new InvalidOperationException(message.ToString());
+               }
+
+               instance.ConstructorParameters.Add(pair.Key.ParameterIndex, new MapParameter(map, param)); 
 
                i++;
             }
          }
-
-         instance.Properties.AddRange(
-            from m in groups
-            where m.Depth == currentGroup.Depth + 1 && m.Parent == currentGroup.Name
-            select ReadMapping(groups, m, instance.Type)
-         );
-
-         return instance;
       }
 
       static PropertyInfo GetProperty(Type declaringType, string propertyName) {
-         return declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+         
+         PropertyInfo property = declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+         if (property == null)
+            return property;
+
+         if (!property.CanWrite) {
+
+            throw new InvalidOperationException(
+               String.Format(CultureInfo.InvariantCulture,
+                  "{0} property {1} doesn't have a setter.",
+                  property.ReflectedType.FullName, property.Name
+               )
+            );
+         }
+
+         return property;
       }
 
       static ConstructorInfo GetConstructor(MapObject mapObject, int parameterLength) {
 
-         Type type = mapObject.IsNullableValueType ?
-            Nullable.GetUnderlyingType(mapObject.Type) 
-            : mapObject.Type;
+         Type type = mapObject.UnderlyingType;
 
          ConstructorInfo[] constructors = type
             .GetConstructors(BindingFlags.Public | BindingFlags.Instance)
@@ -1517,7 +1575,7 @@ namespace DbExtensions {
          if (constructors.Length == 0) {
             throw new InvalidOperationException(
                String.Format(CultureInfo.InvariantCulture,
-                  "Couldn't find public constructor with {0} parameters for type {1}.",
+                  "Couldn't find public constructor with {0} parameter(s) for type {1}.",
                   parameterLength,
                   type.FullName
                )
@@ -1527,7 +1585,7 @@ namespace DbExtensions {
          if (constructors.Length > 1) {
             throw new InvalidOperationException(
                String.Format(CultureInfo.InvariantCulture,
-                  "Found more than one public constructor with {0} parameters for type {1}. Please use another constructor.",
+                  "Found more than one public constructor with {0} parameter(s) for type {1}. Please use another constructor.",
                   parameterLength,
                   type.FullName
                )
@@ -1545,40 +1603,19 @@ namespace DbExtensions {
 
          object instance = CreateInstance(record, this.rootNode);
 
-         Load(instance, record, this.rootNode);
+         Load(ref instance, record, this.rootNode);
 
          return instance;
       }
 
-      public void Load(object instance, IDataRecord record) {
+      public void Load(ref object instance, IDataRecord record) {
          
-         if (instance == null) throw new ArgumentNullException("instance");
-         if (record == null) throw new ArgumentNullException("record");
-
          EnsureMapping(record);
 
-         Load(instance, record, this.rootNode);
+         Load(ref instance, record, this.rootNode);
       }
 
-      void EnsureMapping(IDataRecord record) {
-
-         if (this.rootNode == null)
-            this.rootNode = ReadMapping(record);
-      }
-
-      object CreateInstance(IDataRecord record, MapNode node) {
-
-         Type type = node.Type;
-
-         if (node.Constructor == null)
-            return Activator.CreateInstance(type);
-
-         object[] args = node.ConstructorParameters.Select(m => ReadScalar(record, m.Value)).ToArray();
-
-         return node.Constructor.Invoke(args);
-      }
-
-      void Load(object instance, IDataRecord record, MapNode mapNode) {
+      void Load(ref object instance, IDataRecord record, MapNode mapNode) {
 
          for (int i = 0; i < mapNode.Properties.Count; i++) {
             
@@ -1588,7 +1625,7 @@ namespace DbExtensions {
             if (prop == null) continue;
 
             if (!node.IsComplex) {
-               LoadScalarProperty(instance, record, node);
+               LoadScalarProperty(ref instance, record, node);
             
             } else {
 
@@ -1597,8 +1634,7 @@ namespace DbExtensions {
                if (node.ConstructorParameters.Count > 0) {
                   
                   value = CreateInstance(record, node);
-
-                  prop.SetValue(instance, value, null);
+                  node.SetValue(ref instance, value);
 
                } else {
 
@@ -1606,105 +1642,198 @@ namespace DbExtensions {
                      .Where(m => !m.IsComplex)
                      .All(m => record.IsDBNull(m.ColumnOrdinal));
 
-                  value = prop.GetValue(instance, null);
+                  value = node.GetValue(ref instance);
 
                   if (value == null) {
                      if (!allNulls) {
                         value = CreateInstance(record, node);
-                        prop.SetValue(instance, value, null);
+                        node.SetValue(ref instance, value);
                      }
                   } else {
                      if (allNulls) {
-                        prop.SetValue(instance, null, null);
+                        node.SetValue(ref instance, null);
                      }
                   }
                }
 
                if (value != null)
-                  Load(value, record, node); 
+                  Load(ref value, record, node); 
             }
          }
       }
 
-      object ReadScalar(IDataRecord record, MapScalar map) {
+      void EnsureMapping(IDataRecord record) {
 
-         bool isNull = record.IsDBNull(map.ColumnOrdinal);
-         object value = isNull ? null : record.GetValue(map.ColumnOrdinal);
+         if (this.rootNode == null) {
+            this.rootNode = new MapNode(this.type);
+            ReadMapping(record, this.rootNode);
+         }
+      }
+
+      object CreateInstance(IDataRecord record, MapNode node) {
+         return CreateInstanceImpl(record, node);
+      }
+
+      object CreateInstanceImpl(IDataRecord record, MapNode node) {
+
+         if (node.Constructor == null)
+            return Activator.CreateInstance(node.Type);
+
+         object[] args = node.ConstructorParameters.Select(m => {
+
+            MapNode mAsNode = m.Value.Map as MapNode;
+
+            if (mAsNode != null) {
+               object obj = CreateInstanceImpl(record, mAsNode);
+               Load(ref obj, record, mAsNode);
+
+               return obj;
+            }
+
+            return ReadValue(record, m.Value.Map);
+         
+         }).ToArray();
+
+         if (node.ConstructorParameters.Any(p => p.Value.Map.Convert != null)
+            || args.All(v => v == null)) {
+
+            return node.CreateInstance(args);
+         
+         } else {
+
+            try {
+               return node.CreateInstance(args);
+
+            } catch (ArgumentException) {
+
+               bool convertSet = false;
+
+               for (int i = 0; i < node.ConstructorParameters.Count; i++) {
+
+                  object value = args[i];
+
+                  if (value == null) continue;
+
+                  MapParameter param = node.ConstructorParameters.ElementAt(i).Value;
+
+                  if (!param.Map.Type.IsAssignableFrom(value.GetType())) {
+
+                     Func<MapScalar, object, object> convert = GetConversionFunction(value, param.Map);
+
+                     if (this.logger != null) {
+
+                        this.logger.WriteLine("-- WARNING: Couldn't instantiate {0} with argument '{1}' of type {2} {3}. Attempting conversion.",
+                           node.UnderlyingType.FullName,
+                           param.Parameter.Name, param.Map.Type.FullName,
+                           (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+                        );
+                     }
+
+                     param.Map.Convert = convert;
+
+                     convertSet = true;
+                  }
+               }
+
+               if (convertSet)
+                  return CreateInstanceImpl(record, node);
+
+               throw;
+            }
+         }
+      }
+
+      static object ReadValue(IDataRecord record, MapScalar mapScalar) {
+
+         bool isNull = record.IsDBNull(mapScalar.ColumnOrdinal);
+         object value = isNull ? null : record.GetValue(mapScalar.ColumnOrdinal);
+
+         if (isNull || value == null)
+            return value;
+
+         if (mapScalar.Convert != null) 
+            value = mapScalar.Convert(mapScalar, value);
 
          return value;
       }
 
-      void LoadScalarProperty(object instance, IDataRecord record, MapNode mapNode) {
+      void LoadScalarProperty(ref object instance, IDataRecord record, MapNode mapNode) {
 
-         PropertyInfo property = mapNode.Property;
-         Type propertyType = property.PropertyType;
-         bool isNull = record.IsDBNull(mapNode.ColumnOrdinal);
-         object value = isNull ? null : record.GetValue(mapNode.ColumnOrdinal);
+         object value = ReadValue(record, mapNode);
 
          try {
-            SetScalarProperty(instance, value, isNull, mapNode);
+            SetScalarProperty(ref instance, value, mapNode);
 
          } catch (Exception ex) {
+
+            PropertyInfo property = mapNode.Property;
+
             throw new InvalidCastException(
                String.Format(CultureInfo.InvariantCulture,
                   "Couldn't set {0} property {1} of type {2} {3}.",
-                  property.ReflectedType.FullName, property.Name, propertyType.FullName, (isNull) ? "to null" : "with value of type " + value.GetType().FullName
+                  property.ReflectedType.FullName, property.Name, mapNode.Type.FullName, (value == null) ? "to null" : "with value of type " + value.GetType().FullName
                )
             , ex);
          }
       }
 
-      void SetScalarProperty(object instance, object value, bool isNull, MapNode mapNode) {
+      void SetScalarProperty(ref object instance, object value, MapNode mapNode) {
 
          PropertyInfo property = mapNode.Property;
          Type propertyType = property.PropertyType;
 
-         if (!isNull && mapNode.RequiresConversion) {
+         if (mapNode.Convert != null || value == null) {
+            mapNode.SetValue(ref instance, value);
 
-            Type conversionType = mapNode.ConversionType;
+         } else {
 
-            if (conversionType == null) {
+            try {
+               mapNode.SetValue(ref instance, value);
 
-               bool isNullableValueType = (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>));
-               conversionType = (isNullableValueType) ? Nullable.GetUnderlyingType(propertyType) : propertyType;
+            } catch (ArgumentException) {
 
-               mapNode.ConversionType = conversionType;
-            }
-
-            if (conversionType == typeof(bool)
-               && value.GetType() == typeof(string)) {
-
-               value = Convert.ToBoolean(Convert.ToInt64(value, CultureInfo.InvariantCulture));
-
-            } else {
-               value = Convert.ChangeType(value, conversionType, CultureInfo.InvariantCulture);
-            }
-         }
-
-         try {
-            property.SetValue(instance, value, null);
-
-         } catch {
-
-            if (!isNull && !mapNode.RequiresConversion) {
+               Func<MapScalar, object, object> convert = GetConversionFunction(value, mapNode);
 
                if (this.logger != null) {
 
-                  this.logger.WriteLine("-- WARNING: Couldn't set {0} property {1} of type {2} {3}. Attempting conversion.",
-                     property.ReflectedType.FullName, 
-                     property.Name, propertyType.FullName, 
-                     (isNull) ? "to null" : "with value of type " + value.GetType().FullName
+                  this.logger.WriteLine("-- WARNING: Couldn't set {0} property '{1}' of type {2} {3}. Attempting conversion.",
+                     property.ReflectedType.FullName,
+                     property.Name, propertyType.FullName,
+                     (value == null) ? "to null" : "with value of type " + value.GetType().FullName
                   );
                }
 
-               mapNode.RequiresConversion = true;   
+               value = convert(mapNode, value);
 
-               SetScalarProperty(instance, value, isNull, mapNode);
+               mapNode.Convert = convert;
 
-            } else {
-               throw;
+               SetScalarProperty(ref instance, value, mapNode);
             }
          }
+      }
+
+      static Func<MapScalar, object, object> GetConversionFunction(object value, MapScalar mapScalar) {
+
+         Func<MapScalar, object, object> convert;
+
+         if (mapScalar.UnderlyingType == typeof(bool)
+            && value.GetType() == typeof(string)) {
+
+            convert = ConvertToBoolean;
+
+         } else {
+            convert = ConvertTo;
+         }
+
+         return convert;
+      }
+
+      static object ConvertToBoolean(MapScalar mapScalar, object value) {
+         return Convert.ToBoolean(Convert.ToInt64(value, CultureInfo.InvariantCulture));
+      }
+
+      static object ConvertTo(MapScalar mapScalar, object value) {
+         return Convert.ChangeType(value, mapScalar.UnderlyingType, CultureInfo.InvariantCulture);
       }
 
       #region Nested Types
@@ -1717,27 +1846,40 @@ namespace DbExtensions {
          public Dictionary<int, string> Properties;
       }
 
-      class MapObject {
-         
-         bool? _IsNullableValueType;
+      class MapParam { 
 
-         public readonly Type Type;
+         public readonly uint ParameterIndex;
+         public readonly int? ColumnOrdinal;
+         public readonly MapGroup Group;
 
-         public bool IsNullableValueType {
-            get {
-               if (_IsNullableValueType == null) {
-                  _IsNullableValueType = Type.IsGenericType
-                     && Type.GetGenericTypeDefinition() == typeof(Nullable<>);
-               }
-               return _IsNullableValueType.Value;
-            }
+         public MapParam(uint parameterIndex, int columnOrdinal) {
+            
+            this.ParameterIndex = parameterIndex;
+            this.ColumnOrdinal = columnOrdinal;
          }
+
+         public MapParam(uint parameterIndex, MapGroup group) {
+
+            this.ParameterIndex = parameterIndex;
+            this.Group = group;
+         }
+      }
+
+      abstract class MapObject {
+         
+         public readonly Type Type;
+         public readonly Type UnderlyingType;
 
          public MapObject(Type type) {
             
-            Debug.Assert(type != null);
-
             this.Type = type;
+
+            bool isNullableValueType = Type.IsGenericType
+               && Type.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+            this.UnderlyingType = (isNullableValueType) ?
+               Nullable.GetUnderlyingType(type)
+               : type;
          }
       }
 
@@ -1745,8 +1887,7 @@ namespace DbExtensions {
 
          public readonly int ColumnOrdinal;
 
-         public bool RequiresConversion;
-         public Type ConversionType;
+         public Func<MapScalar, object, object> Convert;
 
          public MapScalar(int columnOrdinal, Type type) 
             : base(type) {
@@ -1755,13 +1896,14 @@ namespace DbExtensions {
          }
       }
 
-      class MapConstructorParameter : MapScalar {
+      class MapParameter {
 
+         public readonly MapScalar Map;
          public readonly ParameterInfo Parameter;
 
-         public MapConstructorParameter(int columnOrdinal, ParameterInfo parameter)
-            : base(columnOrdinal, parameter.ParameterType) {
+         public MapParameter(MapScalar mapScalar, ParameterInfo parameter)  {
 
+            this.Map = mapScalar;
             this.Parameter = parameter;
          }
       }
@@ -1769,27 +1911,45 @@ namespace DbExtensions {
       class MapNode : MapScalar {
 
          public readonly PropertyInfo Property;
+         public readonly MethodInfo Setter;
          public readonly bool IsComplex;
 
          public ConstructorInfo Constructor;
-         public readonly Dictionary<uint, MapConstructorParameter> ConstructorParameters;
+         public readonly Dictionary<uint, MapParameter> ConstructorParameters;
          public readonly List<MapNode> Properties;
-         
-         public MapNode(Type type, PropertyInfo property) 
+
+         public object CreateInstance(object[] args) {
+            return this.Constructor.Invoke(args);
+         }
+
+         public object GetValue(ref object instance) {
+            return this.Property.GetValue(instance, null);
+         }
+
+         public void SetValue(ref object instance, object value) {
+            this.Setter.Invoke(instance, new object[1] { value });
+         }
+
+         public MapNode(Type type)
             : base(default(int), type) {
 
-            this.Property = property;
             this.IsComplex = true;
-            this.ConstructorParameters = new Dictionary<uint, MapConstructorParameter>();
+            this.ConstructorParameters = new Dictionary<uint, MapParameter>();
             this.Properties = new List<MapNode>();
+         }
+
+         public MapNode(PropertyInfo property)
+            : this(property.PropertyType) {
+
+            this.Property = property;
+            this.Setter = property.GetSetMethod(true);
          }
 
          public MapNode(int columnOrdinal, PropertyInfo property)
             : base(columnOrdinal, property.PropertyType) {
 
-            Debug.Assert(property != null);
-
             this.Property = property;
+            this.Setter = property.GetSetMethod(true);
          }
       }
 

@@ -611,8 +611,10 @@ namespace DbExtensions {
 
                   var mapper = new PocoMapper(metaType.Type, this.dao.Configuration.Log);
 
+                  object entityObj = (object)entity;
+
                   this.dao.Map<object>(query, r => {
-                     mapper.Load(entity, r);
+                     mapper.Load(ref entityObj, r);
                      return null;
 
                   }).SingleOrDefault();
@@ -645,8 +647,10 @@ namespace DbExtensions {
 
          var mapper = new PocoMapper(metaType.Type, this.dao.Configuration.Log);
 
+         object entityObj = (object)entity;
+
          this.dao.Map<object>(query, r => {
-            mapper.Load(entity, r);
+            mapper.Load(ref entityObj, r);
             return null;
 
          }).SingleOrDefault();

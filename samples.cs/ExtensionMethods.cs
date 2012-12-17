@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -83,11 +84,46 @@ namespace Samples.CSharp {
       public MappingToConstructorArgumentsSample MappingToConstructorArguments() {
 
          var query = SQL
-            .SELECT("1 AS '0'")
-            ._("'http://example.com' AS Url$0")
-            ._("15.5 AS Price$0, 'USD' AS Price$1");
+            .SELECT("1 AS '1'")
+            ._("'http://example.com' AS Url$1")
+            ._("15.5 AS Price$1, 'USD' AS Price$2");
 
          var result = conn.Map<MappingToConstructorArgumentsSample>(query, log).Single();
+
+         Debug.Assert(result.Id == 1);
+         Debug.Assert(result.Url != null);
+         Debug.Assert(result.Price != null);
+
+         return result;
+      }
+
+      public MappingToConstructorArgumentsSample MappingToConstructorArgumentsNested() {
+
+         var query = SQL
+            .SELECT("1 AS '1'")
+            ._("'http://example.com' AS '2$1'")
+            ._("15.5 AS '3$1', 'USD' AS '3$2'")
+            ._("1 AS Product$ProductID")
+
+            ._("2 AS 'Nested$1'")
+            ._("'http://example.org' AS 'Nested$2$1'")
+            ._("NULL AS 'Nested$3'")
+
+            ._("3 AS 'Nested$Nested$1'")
+            ._("'http://example.net' AS 'Nested$Nested$Url$1'")
+            ._("2 AS 'Nested$Nested$Product$ProductID'")
+            ;
+
+         var result = conn.Map<MappingToConstructorArgumentsSample>(query, log).Single();
+
+         Debug.Assert(result.Price != null);
+         Debug.Assert(result.Product != null);
+         Debug.Assert(result.Nested != null);
+         Debug.Assert(result.Nested.Price == null);
+         Debug.Assert(result.Nested.Nested != null);
+         Debug.Assert(result.Nested.Nested.Url != null);
+         Debug.Assert(result.Nested.Nested.Price == null);
+         Debug.Assert(result.Nested.Nested.Product != null);
 
          return result;
       }
@@ -132,11 +168,21 @@ namespace Samples.CSharp {
    public class MappingToConstructorArgumentsSample {
 
       public int Id { get; private set; }
-      public Uri Url { get; set; }
-      public Money? Price { get; set; }
+      public Uri Url { get; private set; }
+      public Money? Price { get; private set; }
+
+      public MappingToConstructorArgumentsSample Nested { get; set; }
+      public Product Product { get; set; }
 
       public MappingToConstructorArgumentsSample(int id) {
          this.Id = id;
+      }
+
+      public MappingToConstructorArgumentsSample(int id, Uri url, Money? price) {
+         
+         this.Id = id;
+         this.Url = url;
+         this.Price = price;
       }
    }
 
