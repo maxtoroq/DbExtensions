@@ -1423,15 +1423,8 @@ namespace DbExtensions {
              }
             ).ToArray();
 
-         MapGroup topGroup = groups.Where(m => m.Depth == 0).SingleOrDefault();
-
-         if (topGroup == null) {
-            topGroup = new MapGroup { 
-               Name = "", 
-               Parent = "", 
-               Properties = new Dictionary<int, string>() 
-            };
-         }
+         MapGroup topGroup = groups.Where(m => m.Depth == 0).SingleOrDefault()
+            ?? new MapGroup { Name = "", Parent = "", Properties = new Dictionary<int, string>() };
 
          ReadMapping(record, groups, topGroup, rootNode);
       }
@@ -1626,39 +1619,38 @@ namespace DbExtensions {
 
             if (!node.IsComplex) {
                LoadScalarProperty(ref instance, record, node);
-            
+               continue;
+            }
+
+            object value;
+
+            if (node.ConstructorParameters.Count > 0) {
+                  
+               value = CreateInstance(record, node);
+               node.SetValue(ref instance, value);
+
             } else {
 
-               object value;
+               bool allNulls = node.Properties
+                  .Where(m => !m.IsComplex)
+                  .All(m => record.IsDBNull(m.ColumnOrdinal));
 
-               if (node.ConstructorParameters.Count > 0) {
-                  
-                  value = CreateInstance(record, node);
-                  node.SetValue(ref instance, value);
+               value = node.GetValue(ref instance);
 
+               if (value == null) {
+                  if (!allNulls) {
+                     value = CreateInstance(record, node);
+                     node.SetValue(ref instance, value);
+                  }
                } else {
-
-                  bool allNulls = node.Properties
-                     .Where(m => !m.IsComplex)
-                     .All(m => record.IsDBNull(m.ColumnOrdinal));
-
-                  value = node.GetValue(ref instance);
-
-                  if (value == null) {
-                     if (!allNulls) {
-                        value = CreateInstance(record, node);
-                        node.SetValue(ref instance, value);
-                     }
-                  } else {
-                     if (allNulls) {
-                        node.SetValue(ref instance, null);
-                     }
+                  if (allNulls) {
+                     node.SetValue(ref instance, null);
                   }
                }
-
-               if (value != null)
-                  Load(ref value, record, node); 
             }
+
+            if (value != null)
+               Load(ref value, record, node); 
          }
       }
 
@@ -1698,48 +1690,46 @@ namespace DbExtensions {
             || args.All(v => v == null)) {
 
             return node.CreateInstance(args);
-         
-         } else {
+         }
 
-            try {
-               return node.CreateInstance(args);
+         try {
+            return node.CreateInstance(args);
 
-            } catch (ArgumentException) {
+         } catch (ArgumentException) {
 
-               bool convertSet = false;
+            bool convertSet = false;
 
-               for (int i = 0; i < node.ConstructorParameters.Count; i++) {
+            for (int i = 0; i < node.ConstructorParameters.Count; i++) {
 
-                  object value = args[i];
+               object value = args[i];
 
-                  if (value == null) continue;
+               if (value == null) continue;
 
-                  MapParameter param = node.ConstructorParameters.ElementAt(i).Value;
+               MapParameter param = node.ConstructorParameters.ElementAt(i).Value;
 
-                  if (!param.Map.Type.IsAssignableFrom(value.GetType())) {
+               if (!param.Map.Type.IsAssignableFrom(value.GetType())) {
 
-                     Func<MapScalar, object, object> convert = GetConversionFunction(value, param.Map);
+                  Func<MapScalar, object, object> convert = GetConversionFunction(value, param.Map);
 
-                     if (this.logger != null) {
+                  if (this.logger != null) {
 
-                        this.logger.WriteLine("-- WARNING: Couldn't instantiate {0} with argument '{1}' of type {2} {3}. Attempting conversion.",
-                           node.UnderlyingType.FullName,
-                           param.Parameter.Name, param.Map.Type.FullName,
-                           (value == null) ? "to null" : "with value of type " + value.GetType().FullName
-                        );
-                     }
-
-                     param.Map.Convert = convert;
-
-                     convertSet = true;
+                     this.logger.WriteLine("-- WARNING: Couldn't instantiate {0} with argument '{1}' of type {2} {3}. Attempting conversion.",
+                        node.UnderlyingType.FullName,
+                        param.Parameter.Name, param.Map.Type.FullName,
+                        (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+                     );
                   }
+
+                  param.Map.Convert = convert;
+
+                  convertSet = true;
                }
-
-               if (convertSet)
-                  return CreateInstanceImpl(record, node);
-
-               throw;
             }
+
+            if (convertSet)
+               return CreateInstanceImpl(record, node);
+
+            throw;
          }
       }
 
@@ -1784,48 +1774,42 @@ namespace DbExtensions {
 
          if (mapNode.Convert != null || value == null) {
             mapNode.SetValue(ref instance, value);
+            return;
+         }
 
-         } else {
+         try {
+            mapNode.SetValue(ref instance, value);
 
-            try {
-               mapNode.SetValue(ref instance, value);
+         } catch (ArgumentException) {
 
-            } catch (ArgumentException) {
+            Func<MapScalar, object, object> convert = GetConversionFunction(value, mapNode);
 
-               Func<MapScalar, object, object> convert = GetConversionFunction(value, mapNode);
+            if (this.logger != null) {
 
-               if (this.logger != null) {
-
-                  this.logger.WriteLine("-- WARNING: Couldn't set {0} property '{1}' of type {2} {3}. Attempting conversion.",
-                     property.ReflectedType.FullName,
-                     property.Name, propertyType.FullName,
-                     (value == null) ? "to null" : "with value of type " + value.GetType().FullName
-                  );
-               }
-
-               value = convert(mapNode, value);
-
-               mapNode.Convert = convert;
-
-               SetScalarProperty(ref instance, value, mapNode);
+               this.logger.WriteLine("-- WARNING: Couldn't set {0} property '{1}' of type {2} {3}. Attempting conversion.",
+                  property.ReflectedType.FullName,
+                  property.Name, propertyType.FullName,
+                  (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+               );
             }
+
+            value = convert(mapNode, value);
+
+            mapNode.Convert = convert;
+
+            SetScalarProperty(ref instance, value, mapNode);
          }
       }
 
       static Func<MapScalar, object, object> GetConversionFunction(object value, MapScalar mapScalar) {
 
-         Func<MapScalar, object, object> convert;
-
          if (mapScalar.UnderlyingType == typeof(bool)
             && value.GetType() == typeof(string)) {
 
-            convert = ConvertToBoolean;
-
-         } else {
-            convert = ConvertTo;
+            return ConvertToBoolean;
          }
 
-         return convert;
+         return ConvertTo;
       }
 
       static object ConvertToBoolean(MapScalar mapScalar, object value) {
