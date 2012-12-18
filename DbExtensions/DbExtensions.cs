@@ -1393,7 +1393,7 @@ namespace DbExtensions {
 
       readonly Type type;
       readonly TextWriter logger;
-      MapNode rootNode;
+      PocoNode rootNode;
 
       public PocoMapper(Type type, TextWriter logger) {
 
@@ -1403,7 +1403,7 @@ namespace DbExtensions {
          this.logger = logger;
       }
 
-      void ReadMapping(IDataRecord record, MapNode rootNode) {
+      void ReadMapping(IDataRecord record, PocoNode rootNode) {
 
          MapGroup[] groups =
             (from i in Enumerable.Range(0, record.FieldCount)
@@ -1429,16 +1429,16 @@ namespace DbExtensions {
          ReadMapping(record, groups, topGroup, rootNode);
       }
 
-      void ReadMapping(IDataRecord record, MapGroup[] groups, MapGroup currentGroup, MapNode instance) {
+      void ReadMapping(IDataRecord record, MapGroup[] groups, MapGroup currentGroup, PocoNode instance) {
 
-         var constructorParameters = new Dictionary<MapParam, MapNode>();
+         var constructorParameters = new Dictionary<MapParam, PocoNode>();
          
          foreach (var pair in currentGroup.Properties) {
 
             PropertyInfo property = GetProperty(instance.UnderlyingType, pair.Value);
 
             if (property != null) {
-               instance.Properties.Add(new MapNode(pair.Key, property));
+               instance.Properties.Add(PocoNode.Simple(pair.Key, property));
                continue;
             } 
 
@@ -1470,7 +1470,7 @@ namespace DbExtensions {
 
             if (property != null) {
 
-               var assocNode = new MapNode(property);
+               var assocNode = PocoNode.Complex(property);
                ReadMapping(record, groups, nextLevel, assocNode);
 
                instance.Properties.Add(assocNode);
@@ -1503,17 +1503,15 @@ namespace DbExtensions {
             foreach (var pair in constructorParameters.OrderBy(p => p.Key.ParameterIndex)) {
 
                ParameterInfo param = parameters[i];
-               MapScalar map;
+               PocoNode paramNode;
 
                if (pair.Key.ColumnOrdinal.HasValue) {
-                  map = new MapScalar(pair.Key.ColumnOrdinal.Value, param.ParameterType);
+                  paramNode = PocoNode.Simple(pair.Key.ColumnOrdinal.Value, param);
 
                } else {
 
-                  var argNode = new MapNode(param.ParameterType);
-                  ReadMapping(record, groups, pair.Key.Group, argNode);
-
-                  map = argNode;
+                  paramNode = PocoNode.Root(param);
+                  ReadMapping(record, groups, pair.Key.Group, paramNode);
                }
 
                if (instance.ConstructorParameters.ContainsKey(pair.Key.ParameterIndex)) {
@@ -1529,7 +1527,7 @@ namespace DbExtensions {
                   throw new InvalidOperationException(message.ToString());
                }
 
-               instance.ConstructorParameters.Add(pair.Key.ParameterIndex, new MapParameter(map, param)); 
+               instance.ConstructorParameters.Add(pair.Key.ParameterIndex, paramNode); 
 
                i++;
             }
@@ -1556,9 +1554,9 @@ namespace DbExtensions {
          return property;
       }
 
-      static ConstructorInfo GetConstructor(MapObject mapObject, int parameterLength) {
+      static ConstructorInfo GetConstructor(PocoNode node, int parameterLength) {
 
-         Type type = mapObject.UnderlyingType;
+         Type type = node.UnderlyingType;
 
          ConstructorInfo[] constructors = type
             .GetConstructors(BindingFlags.Public | BindingFlags.Instance)
@@ -1594,10 +1592,8 @@ namespace DbExtensions {
 
          EnsureMapping(record);
 
-         object instance = CreateInstance(record, this.rootNode);
-
-         Load(ref instance, record, this.rootNode);
-
+         object instance = this.rootNode.Map(record, this.logger);
+         
          return instance;
       }
 
@@ -1605,219 +1601,15 @@ namespace DbExtensions {
          
          EnsureMapping(record);
 
-         Load(ref instance, record, this.rootNode);
+         this.rootNode.Load(ref instance, record, this.logger);
       }
-
-      void Load(ref object instance, IDataRecord record, MapNode mapNode) {
-
-         for (int i = 0; i < mapNode.Properties.Count; i++) {
-            
-            MapNode node = mapNode.Properties[i];
-            PropertyInfo prop = node.Property;
-
-            if (prop == null) continue;
-
-            if (!node.IsComplex) {
-               LoadScalarProperty(ref instance, record, node);
-               continue;
-            }
-
-            object value;
-
-            if (node.ConstructorParameters.Count > 0) {
-                  
-               value = CreateInstance(record, node);
-               node.SetValue(ref instance, value);
-
-            } else {
-
-               bool allNulls = node.Properties
-                  .Where(m => !m.IsComplex)
-                  .All(m => record.IsDBNull(m.ColumnOrdinal));
-
-               value = node.GetValue(ref instance);
-
-               if (value == null) {
-                  if (!allNulls) {
-                     value = CreateInstance(record, node);
-                     node.SetValue(ref instance, value);
-                  }
-               } else {
-                  if (allNulls) {
-                     node.SetValue(ref instance, null);
-                  }
-               }
-            }
-
-            if (value != null)
-               Load(ref value, record, node); 
-         }
-      }
-
+      
       void EnsureMapping(IDataRecord record) {
 
          if (this.rootNode == null) {
-            this.rootNode = new MapNode(this.type);
+            this.rootNode = PocoNode.Root(this.type);
             ReadMapping(record, this.rootNode);
          }
-      }
-
-      object CreateInstance(IDataRecord record, MapNode node) {
-         return CreateInstanceImpl(record, node);
-      }
-
-      object CreateInstanceImpl(IDataRecord record, MapNode node) {
-
-         if (node.Constructor == null)
-            return Activator.CreateInstance(node.Type);
-
-         object[] args = node.ConstructorParameters.Select(m => {
-
-            MapNode mAsNode = m.Value.Map as MapNode;
-
-            if (mAsNode != null) {
-               object obj = CreateInstanceImpl(record, mAsNode);
-               Load(ref obj, record, mAsNode);
-
-               return obj;
-            }
-
-            return ReadValue(record, m.Value.Map);
-         
-         }).ToArray();
-
-         if (node.ConstructorParameters.Any(p => p.Value.Map.Convert != null)
-            || args.All(v => v == null)) {
-
-            return node.CreateInstance(args);
-         }
-
-         try {
-            return node.CreateInstance(args);
-
-         } catch (ArgumentException) {
-
-            bool convertSet = false;
-
-            for (int i = 0; i < node.ConstructorParameters.Count; i++) {
-
-               object value = args[i];
-
-               if (value == null) continue;
-
-               MapParameter param = node.ConstructorParameters.ElementAt(i).Value;
-
-               if (!param.Map.Type.IsAssignableFrom(value.GetType())) {
-
-                  Func<MapScalar, object, object> convert = GetConversionFunction(value, param.Map);
-
-                  if (this.logger != null) {
-
-                     this.logger.WriteLine("-- WARNING: Couldn't instantiate {0} with argument '{1}' of type {2} {3}. Attempting conversion.",
-                        node.UnderlyingType.FullName,
-                        param.Parameter.Name, param.Map.Type.FullName,
-                        (value == null) ? "to null" : "with value of type " + value.GetType().FullName
-                     );
-                  }
-
-                  param.Map.Convert = convert;
-
-                  convertSet = true;
-               }
-            }
-
-            if (convertSet)
-               return CreateInstanceImpl(record, node);
-
-            throw;
-         }
-      }
-
-      static object ReadValue(IDataRecord record, MapScalar mapScalar) {
-
-         bool isNull = record.IsDBNull(mapScalar.ColumnOrdinal);
-         object value = isNull ? null : record.GetValue(mapScalar.ColumnOrdinal);
-
-         if (isNull || value == null)
-            return value;
-
-         if (mapScalar.Convert != null) 
-            value = mapScalar.Convert(mapScalar, value);
-
-         return value;
-      }
-
-      void LoadScalarProperty(ref object instance, IDataRecord record, MapNode mapNode) {
-
-         object value = ReadValue(record, mapNode);
-
-         try {
-            SetScalarProperty(ref instance, value, mapNode);
-
-         } catch (Exception ex) {
-
-            PropertyInfo property = mapNode.Property;
-
-            throw new InvalidCastException(
-               String.Format(CultureInfo.InvariantCulture,
-                  "Couldn't set {0} property {1} of type {2} {3}.",
-                  property.ReflectedType.FullName, property.Name, mapNode.Type.FullName, (value == null) ? "to null" : "with value of type " + value.GetType().FullName
-               )
-            , ex);
-         }
-      }
-
-      void SetScalarProperty(ref object instance, object value, MapNode mapNode) {
-
-         PropertyInfo property = mapNode.Property;
-         Type propertyType = property.PropertyType;
-
-         if (mapNode.Convert != null || value == null) {
-            mapNode.SetValue(ref instance, value);
-            return;
-         }
-
-         try {
-            mapNode.SetValue(ref instance, value);
-
-         } catch (ArgumentException) {
-
-            Func<MapScalar, object, object> convert = GetConversionFunction(value, mapNode);
-
-            if (this.logger != null) {
-
-               this.logger.WriteLine("-- WARNING: Couldn't set {0} property '{1}' of type {2} {3}. Attempting conversion.",
-                  property.ReflectedType.FullName,
-                  property.Name, propertyType.FullName,
-                  (value == null) ? "to null" : "with value of type " + value.GetType().FullName
-               );
-            }
-
-            value = convert(mapNode, value);
-
-            mapNode.Convert = convert;
-
-            SetScalarProperty(ref instance, value, mapNode);
-         }
-      }
-
-      static Func<MapScalar, object, object> GetConversionFunction(object value, MapScalar mapScalar) {
-
-         if (mapScalar.UnderlyingType == typeof(bool)
-            && value.GetType() == typeof(string)) {
-
-            return ConvertToBoolean;
-         }
-
-         return ConvertTo;
-      }
-
-      static object ConvertToBoolean(MapScalar mapScalar, object value) {
-         return Convert.ToBoolean(Convert.ToInt64(value, CultureInfo.InvariantCulture));
-      }
-
-      static object ConvertTo(MapScalar mapScalar, object value) {
-         return Convert.ChangeType(value, mapScalar.UnderlyingType, CultureInfo.InvariantCulture);
       }
 
       #region Nested Types
@@ -1849,94 +1641,304 @@ namespace DbExtensions {
          }
       }
 
-      abstract class MapObject {
-         
-         public readonly Type Type;
-         public readonly Type UnderlyingType;
+      #endregion
+   }
 
-         public MapObject(Type type) {
+   class PocoNode {
+
+      public readonly Type Type;
+      public readonly Type UnderlyingType;
+
+      public readonly PropertyInfo Property;
+      public readonly MethodInfo Setter;
+      public bool IsComplex;
+
+      public ConstructorInfo Constructor;
+      public Dictionary<uint, PocoNode> ConstructorParameters;
+      public List<PocoNode> Properties;
+
+      public int ColumnOrdinal;
+      public Func<PocoNode, object, object> ConvertFunction;
+
+      public ParameterInfo Parameter;
+
+      public static PocoNode Root(Type type) {
+
+         var node = new PocoNode(type) {
+            IsComplex = true,
+            ConstructorParameters = new Dictionary<uint, PocoNode>(),
+            Properties = new List<PocoNode>(),
+         };
+
+         return node;
+      }
+
+      public static PocoNode Root(ParameterInfo parameter) {
+
+         var node = Root(parameter.ParameterType);
+         node.Parameter = parameter;
+
+         return node;
+      }
+
+      public static PocoNode Complex(PropertyInfo property) {
+
+         var node = new PocoNode(property) {
+            IsComplex = true,
+            ConstructorParameters = new Dictionary<uint, PocoNode>(),
+            Properties = new List<PocoNode>()
+         };
+
+         return node;
+      }
+
+      public static PocoNode Simple(int columnOrdinal, PropertyInfo property) {
+
+         var node = new PocoNode(property) {
+            ColumnOrdinal = columnOrdinal
+         };
+
+         return node;
+      }
+
+      public static PocoNode Simple(int columnOrdinal, ParameterInfo parameter) {
+
+         var node = new PocoNode(parameter.ParameterType) {
+            ColumnOrdinal = columnOrdinal,
+            Parameter = parameter
+         };
+
+         return node;
+      }
+
+      public object Map(IDataRecord record, TextWriter logger) {
+
+         object value;
+
+         if (this.IsComplex) {
             
-            this.Type = type;
+            value = Create(record, logger);
+            Load(ref value, record, logger);
 
-            bool isNullableValueType = Type.IsGenericType
-               && Type.GetGenericTypeDefinition() == typeof(Nullable<>);
+         } else {
+            
+            bool isNull = record.IsDBNull(this.ColumnOrdinal);
+            value = isNull ? null : record.GetValue(this.ColumnOrdinal);
 
-            this.UnderlyingType = (isNullableValueType) ?
-               Nullable.GetUnderlyingType(type)
-               : type;
+            if (!isNull
+               && value != null
+               && this.ConvertFunction != null) {
+               
+               value = this.ConvertFunction(this, value);
+            }
          }
+
+         return value;
       }
 
-      class MapScalar : MapObject {
+      public object Create(IDataRecord record, TextWriter logger) {
 
-         public readonly int ColumnOrdinal;
+         if (this.Constructor == null)
+            return Activator.CreateInstance(this.Type);
 
-         public Func<MapScalar, object, object> Convert;
+         object[] args = this.ConstructorParameters.Select(m => m.Value.Map(record, logger)).ToArray();
 
-         public MapScalar(int columnOrdinal, Type type) 
-            : base(type) {
+         if (this.ConstructorParameters.Any(p => p.Value.ConvertFunction != null)
+            || args.All(v => v == null)) {
 
-            this.ColumnOrdinal = columnOrdinal;
-         }
-      }
-
-      class MapParameter {
-
-         public readonly MapScalar Map;
-         public readonly ParameterInfo Parameter;
-
-         public MapParameter(MapScalar mapScalar, ParameterInfo parameter)  {
-
-            this.Map = mapScalar;
-            this.Parameter = parameter;
-         }
-      }
-
-      class MapNode : MapScalar {
-
-         public readonly PropertyInfo Property;
-         public readonly MethodInfo Setter;
-         public readonly bool IsComplex;
-
-         public ConstructorInfo Constructor;
-         public readonly Dictionary<uint, MapParameter> ConstructorParameters;
-         public readonly List<MapNode> Properties;
-
-         public object CreateInstance(object[] args) {
             return this.Constructor.Invoke(args);
          }
 
-         public object GetValue(ref object instance) {
-            return this.Property.GetValue(instance, null);
-         }
+         try {
+            return this.Constructor.Invoke(args);
 
-         public void SetValue(ref object instance, object value) {
-            this.Setter.Invoke(instance, new object[1] { value });
-         }
+         } catch (ArgumentException) {
 
-         public MapNode(Type type)
-            : base(default(int), type) {
+            bool convertSet = false;
 
-            this.IsComplex = true;
-            this.ConstructorParameters = new Dictionary<uint, MapParameter>();
-            this.Properties = new List<MapNode>();
-         }
+            for (int i = 0; i < this.ConstructorParameters.Count; i++) {
 
-         public MapNode(PropertyInfo property)
-            : this(property.PropertyType) {
+               object value = args[i];
 
-            this.Property = property;
-            this.Setter = property.GetSetMethod(true);
-         }
+               if (value == null) continue;
 
-         public MapNode(int columnOrdinal, PropertyInfo property)
-            : base(columnOrdinal, property.PropertyType) {
+               PocoNode paramNode = this.ConstructorParameters.ElementAt(i).Value;
 
-            this.Property = property;
-            this.Setter = property.GetSetMethod(true);
+               if (!paramNode.Type.IsAssignableFrom(value.GetType())) {
+
+                  Func<PocoNode, object, object> convert = GetConversionFunction(value, paramNode);
+
+                  if (logger != null) {
+
+                     logger.WriteLine("-- WARNING: Couldn't instantiate {0} with argument '{1}' of type {2} {3}. Attempting conversion.",
+                        this.UnderlyingType.FullName,
+                        paramNode.Parameter.Name, paramNode.Type.FullName,
+                        (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+                     );
+                  }
+
+                  paramNode.ConvertFunction = convert;
+
+                  convertSet = true;
+               }
+            }
+
+            if (convertSet)
+               return Create(record, logger);
+
+            throw;
          }
       }
 
-      #endregion
+      public void Load(ref object instance, IDataRecord record, TextWriter logger) {
+
+         for (int i = 0; i < this.Properties.Count; i++) {
+
+            PocoNode childNode = this.Properties[i];
+            PropertyInfo prop = childNode.Property;
+
+            if (prop == null) continue;
+
+            if (!childNode.IsComplex) {
+               childNode.Read(ref instance, record, logger);
+               continue;
+            }
+
+            if (childNode.ConstructorParameters.Count > 0) {
+               childNode.Read(ref instance, record, logger);
+
+            } else {
+
+               bool allNulls = childNode.Properties
+                  .Where(m => !m.IsComplex)
+                  .All(m => record.IsDBNull(m.ColumnOrdinal));
+
+               object value = childNode.Get(ref instance);
+
+               if (!allNulls) {
+                  if (value != null) {
+                     childNode.Load(ref value, record, logger);
+                  } else {
+                     childNode.Read(ref instance, record, logger);
+                  }
+               } else {
+                  if (value != null) {
+                     childNode.Set(ref instance, null, logger);
+                  }
+               }
+            }
+         }
+      }
+
+      public void Read(ref object instance, IDataRecord record, TextWriter logger) {
+
+         object value = Map(record, logger);
+
+         if (this.IsComplex) {
+            Set(ref instance, value, logger);
+         
+         } else { 
+
+            try {
+               Set(ref instance, value, logger);
+
+            } catch (Exception ex) {
+
+               throw new InvalidCastException(
+                  String.Format(CultureInfo.InvariantCulture,
+                     "Couldn't set {0} property {1} of type {2} {3}.",
+                     this.Property.ReflectedType.FullName, this.Property.Name, this.Type.FullName, (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+                  )
+               , ex);
+            }
+         }
+      }
+
+      public object Get(ref object instance) {
+         return GetProperty(ref instance);
+      }
+
+      public void Set(ref object instance, object value, TextWriter logger) {
+
+         if (this.IsComplex) {
+            SetProperty(ref instance, value);
+
+         } else {
+
+            if (this.ConvertFunction != null || value == null) {
+               SetProperty(ref instance, value);
+               return;
+            }
+
+            try {
+               SetProperty(ref instance, value);
+
+            } catch (ArgumentException) {
+
+               Func<PocoNode, object, object> convert = GetConversionFunction(value, this);
+
+               if (logger != null) {
+
+                  logger.WriteLine("-- WARNING: Couldn't set {0} property '{1}' of type {2} {3}. Attempting conversion.",
+                     this.Property.ReflectedType.FullName,
+                     this.Property.Name, this.Property.PropertyType.FullName,
+                     (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+                  );
+               }
+
+               value = convert(this, value);
+
+               this.ConvertFunction = convert;
+
+               Set(ref instance, value, logger);
+            }
+         }
+      }
+
+      object GetProperty(ref object instance) {
+         return this.Property.GetValue(instance, null);
+      }
+
+      void SetProperty(ref object instance, object value) {
+         this.Setter.Invoke(instance, new object[1] { value });
+      }
+
+      static Func<PocoNode, object, object> GetConversionFunction(object value, PocoNode node) {
+
+         if (node.UnderlyingType == typeof(bool)
+            && value.GetType() == typeof(string)) {
+
+            return ConvertToBoolean;
+         }
+
+         return ConvertTo;
+      }
+
+      static object ConvertToBoolean(PocoNode node, object value) {
+         return Convert.ToBoolean(Convert.ToInt64(value, CultureInfo.InvariantCulture));
+      }
+
+      static object ConvertTo(PocoNode node, object value) {
+         return Convert.ChangeType(value, node.UnderlyingType, CultureInfo.InvariantCulture);
+      }
+
+      private PocoNode(Type type) {
+
+         this.Type = type;
+
+         bool isNullableValueType = type.IsGenericType
+            && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+         this.UnderlyingType = (isNullableValueType) ?
+            Nullable.GetUnderlyingType(type)
+            : type;
+      }
+
+      private PocoNode(PropertyInfo property)
+         : this(property.PropertyType) {
+
+         this.Property = property;
+         this.Setter = property.GetSetMethod(true);
+      }
    }
 }

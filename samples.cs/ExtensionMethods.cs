@@ -111,6 +111,7 @@ namespace Samples.CSharp {
 
             ._("3 AS 'Nested$Nested$1'")
             ._("'http://example.net' AS 'Nested$Nested$Url$1'")
+            ._("NULL AS 'Nested$Nested$Price$1', NULL AS 'Nested$Nested$Price$2'")
             ._("2 AS 'Nested$Nested$Product$ProductID'")
             ;
 
