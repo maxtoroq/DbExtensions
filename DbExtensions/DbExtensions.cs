@@ -1711,6 +1711,25 @@ namespace DbExtensions {
          return node;
       }
 
+      private PocoNode(Type type) {
+
+         this.Type = type;
+
+         bool isNullableValueType = type.IsGenericType
+            && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+         this.UnderlyingType = (isNullableValueType) ?
+            Nullable.GetUnderlyingType(type)
+            : type;
+      }
+
+      private PocoNode(PropertyInfo property)
+         : this(property.PropertyType) {
+
+         this.Property = property;
+         this.Setter = property.GetSetMethod(true);
+      }
+
       public object Map(IDataRecord record, TextWriter logger) {
 
          object value;
@@ -1742,6 +1761,11 @@ namespace DbExtensions {
             return Activator.CreateInstance(this.Type);
 
          object[] args = this.ConstructorParameters.Select(m => m.Value.Map(record, logger)).ToArray();
+
+         return Create(record, args, logger);
+      }
+
+      object Create(IDataRecord record, object[] args, TextWriter logger) {
 
          if (this.ConstructorParameters.Any(p => p.Value.ConvertFunction != null)
             || args.All(v => v == null)) {
@@ -1805,7 +1829,19 @@ namespace DbExtensions {
             }
 
             if (childNode.ConstructorParameters.Count > 0) {
-               childNode.Read(ref instance, record, logger);
+
+               object[] args = childNode.ConstructorParameters.Select(m => m.Value.Map(record, logger)).ToArray();
+
+               bool allNulls = args.All(v => v == null);
+
+               if (!allNulls) {
+                  object value = childNode.Create(record, args, logger);
+                  childNode.Load(ref value, record, logger);
+                  childNode.Set(ref instance, value, logger);
+
+               } else {
+                  childNode.Set(ref instance, null, logger);
+               }
 
             } else {
 
@@ -1920,25 +1956,6 @@ namespace DbExtensions {
 
       static object ConvertTo(PocoNode node, object value) {
          return Convert.ChangeType(value, node.UnderlyingType, CultureInfo.InvariantCulture);
-      }
-
-      private PocoNode(Type type) {
-
-         this.Type = type;
-
-         bool isNullableValueType = type.IsGenericType
-            && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-
-         this.UnderlyingType = (isNullableValueType) ?
-            Nullable.GetUnderlyingType(type)
-            : type;
-      }
-
-      private PocoNode(PropertyInfo property)
-         : this(property.PropertyType) {
-
-         this.Property = property;
-         this.Setter = property.GetSetMethod(true);
       }
    }
 }
