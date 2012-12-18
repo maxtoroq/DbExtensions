@@ -1590,26 +1590,30 @@ namespace DbExtensions {
 
       public object Map(IDataRecord record) {
 
-         EnsureMapping(record);
+         PocoNode node = GetRootNode(record);
 
-         object instance = this.rootNode.Map(record, this.logger);
-         
+         object instance = node.Create(record, this.logger);
+
+         node.Load(ref instance, record, this.logger);
+
          return instance;
       }
 
       public void Load(ref object instance, IDataRecord record) {
-         
-         EnsureMapping(record);
 
-         this.rootNode.Load(ref instance, record, this.logger);
+         PocoNode node = GetRootNode(record);
+
+         node.Load(ref instance, record, this.logger);
       }
       
-      void EnsureMapping(IDataRecord record) {
+      PocoNode GetRootNode(IDataRecord record) { 
 
          if (this.rootNode == null) {
             this.rootNode = PocoNode.Root(this.type);
             ReadMapping(record, this.rootNode);
          }
+
+         return this.rootNode;
       }
 
       #region Nested Types
@@ -1735,9 +1739,34 @@ namespace DbExtensions {
          object value;
 
          if (this.IsComplex) {
-            
-            value = Create(record, logger);
-            Load(ref value, record, logger);
+
+            object[] args = null;
+
+            if (this.ConstructorParameters.Count > 0) {
+               
+               args = this.ConstructorParameters
+                  .Select(p => p.Value.Map(record, logger))
+                  .ToArray();
+            }
+
+            object[] properties = this.Properties
+               .Select(p => p.Map(record, logger))
+               .ToArray();
+
+            if ((args == null || args.All(v => v == null))
+               && (properties.Length == 0 || properties.All(v => v == null))) {
+
+               value = null;
+
+            } else {
+
+               value = (args != null) ?
+                  Create(record, args, logger)
+                  : Create(record, logger);
+
+               for (int i = 0; i < this.Properties.Count; i++)
+                  this.Properties[i].Set(ref value, properties[i], logger);
+            }
 
          } else {
             
@@ -1757,7 +1786,7 @@ namespace DbExtensions {
 
       public object Create(IDataRecord record, TextWriter logger) {
 
-         if (this.Constructor == null)
+         if (this.Constructor == null) 
             return Activator.CreateInstance(this.Type);
 
          object[] args = this.ConstructorParameters.Select(m => m.Value.Map(record, logger)).ToArray();
@@ -1819,49 +1848,20 @@ namespace DbExtensions {
          for (int i = 0; i < this.Properties.Count; i++) {
 
             PocoNode childNode = this.Properties[i];
-            PropertyInfo prop = childNode.Property;
 
-            if (prop == null) continue;
-
-            if (!childNode.IsComplex) {
+            if (!childNode.IsComplex
+               || childNode.ConstructorParameters.Count > 0) {
+               
                childNode.Read(ref instance, record, logger);
                continue;
             }
 
-            if (childNode.ConstructorParameters.Count > 0) {
+            object currentValue = childNode.Get(ref instance);
 
-               object[] args = childNode.ConstructorParameters.Select(m => m.Value.Map(record, logger)).ToArray();
-
-               bool allNulls = args.All(v => v == null);
-
-               if (!allNulls) {
-                  object value = childNode.Create(record, args, logger);
-                  childNode.Load(ref value, record, logger);
-                  childNode.Set(ref instance, value, logger);
-
-               } else {
-                  childNode.Set(ref instance, null, logger);
-               }
-
+            if (currentValue != null) {
+               childNode.Load(ref currentValue, record, logger);
             } else {
-
-               bool allNulls = childNode.Properties
-                  .Where(m => !m.IsComplex)
-                  .All(m => record.IsDBNull(m.ColumnOrdinal));
-
-               object value = childNode.Get(ref instance);
-
-               if (!allNulls) {
-                  if (value != null) {
-                     childNode.Load(ref value, record, logger);
-                  } else {
-                     childNode.Read(ref instance, record, logger);
-                  }
-               } else {
-                  if (value != null) {
-                     childNode.Set(ref instance, null, logger);
-                  }
-               }
+               childNode.Read(ref instance, record, logger);               
             }
          }
       }
@@ -1869,25 +1869,7 @@ namespace DbExtensions {
       public void Read(ref object instance, IDataRecord record, TextWriter logger) {
 
          object value = Map(record, logger);
-
-         if (this.IsComplex) {
-            Set(ref instance, value, logger);
-         
-         } else { 
-
-            try {
-               Set(ref instance, value, logger);
-
-            } catch (Exception ex) {
-
-               throw new InvalidCastException(
-                  String.Format(CultureInfo.InvariantCulture,
-                     "Couldn't set {0} property {1} of type {2} {3}.",
-                     this.Property.ReflectedType.FullName, this.Property.Name, this.Type.FullName, (value == null) ? "to null" : "with value of type " + value.GetType().FullName
-                  )
-               , ex);
-            }
-         }
+         Set(ref instance, value, logger);
       }
 
       public object Get(ref object instance) {
@@ -1901,33 +1883,49 @@ namespace DbExtensions {
 
          } else {
 
-            if (this.ConvertFunction != null || value == null) {
-               SetProperty(ref instance, value);
-               return;
-            }
-
             try {
-               SetProperty(ref instance, value);
+               SetSimple(ref instance, value, logger);
 
-            } catch (ArgumentException) {
+            } catch (Exception ex) {
 
-               Func<PocoNode, object, object> convert = GetConversionFunction(value, this);
-
-               if (logger != null) {
-
-                  logger.WriteLine("-- WARNING: Couldn't set {0} property '{1}' of type {2} {3}. Attempting conversion.",
-                     this.Property.ReflectedType.FullName,
-                     this.Property.Name, this.Property.PropertyType.FullName,
-                     (value == null) ? "to null" : "with value of type " + value.GetType().FullName
-                  );
-               }
-
-               value = convert(this, value);
-
-               this.ConvertFunction = convert;
-
-               Set(ref instance, value, logger);
+               throw new InvalidCastException(
+                  String.Format(CultureInfo.InvariantCulture,
+                     "Couldn't set {0} property {1} of type {2} {3}.",
+                     this.Property.ReflectedType.FullName, this.Property.Name, this.Type.FullName, (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+                  )
+               , ex);
             }
+         }
+      }
+
+      void SetSimple(ref object instance, object value, TextWriter logger) {
+
+         if (this.ConvertFunction != null || value == null) {
+            SetProperty(ref instance, value);
+            return;
+         }
+
+         try {
+            SetProperty(ref instance, value);
+
+         } catch (ArgumentException) {
+
+            Func<PocoNode, object, object> convert = GetConversionFunction(value, this);
+
+            if (logger != null) {
+
+               logger.WriteLine("-- WARNING: Couldn't set {0} property '{1}' of type {2} {3}. Attempting conversion.",
+                  this.Property.ReflectedType.FullName,
+                  this.Property.Name, this.Property.PropertyType.FullName,
+                  (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+               );
+            }
+
+            value = convert(this, value);
+
+            this.ConvertFunction = convert;
+
+            SetSimple(ref instance, value, logger);
          }
       }
 

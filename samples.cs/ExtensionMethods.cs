@@ -179,9 +179,9 @@ namespace Samples.CSharp {
          this.Id = id;
       }
 
-      public MappingToConstructorArgumentsSample(int id, Uri url, Money? price) {
+      public MappingToConstructorArgumentsSample(int id, Uri url, Money? price) 
+         : this(id) {
          
-         this.Id = id;
          this.Url = url;
          this.Price = price;
       }
