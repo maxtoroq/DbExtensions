@@ -1736,49 +1736,51 @@ namespace DbExtensions {
 
       public object Map(IDataRecord record, TextWriter logger) {
 
-         object value;
+         if (this.IsComplex) 
+            return MapComplex(record, logger);
+            
+         return MapSimple(record, logger);
+      }
+
+      object MapComplex(IDataRecord record, TextWriter logger) {
+
+         if (AllColumnsNull(record))
+            return null;
+
+         object value = Create(record, logger);
+         Load(ref value, record, logger);
+
+         return value;
+      }
+
+      bool AllColumnsNull(IDataRecord record) {
 
          if (this.IsComplex) {
 
-            object[] args = null;
-
-            if (this.ConstructorParameters.Count > 0) {
-               
-               args = this.ConstructorParameters
-                  .Select(p => p.Value.Map(record, logger))
-                  .ToArray();
-            }
-
-            object[] properties = this.Properties
-               .Select(p => p.Map(record, logger))
-               .ToArray();
-
-            if ((args == null || args.All(v => v == null))
-               && (properties.Length == 0 || properties.All(v => v == null))) {
-
-               value = null;
-
-            } else {
-
-               value = (args != null) ?
-                  Create(record, args, logger)
-                  : Create(record, logger);
-
-               for (int i = 0; i < this.Properties.Count; i++)
-                  this.Properties[i].Set(ref value, properties[i], logger);
-            }
+            return (this.ConstructorParameters.Count == 0
+                  || this.ConstructorParameters
+                     .OrderBy(n => n.Value.IsComplex)
+                     .All(n => n.Value.AllColumnsNull(record)))
+               && this.Properties
+                  .OrderBy(n => n.IsComplex)
+                  .All(n => n.AllColumnsNull(record));
 
          } else {
-            
-            bool isNull = record.IsDBNull(this.ColumnOrdinal);
-            value = isNull ? null : record.GetValue(this.ColumnOrdinal);
+            return record.IsDBNull(this.ColumnOrdinal);
+         }
+      }
 
-            if (!isNull
-               && value != null
-               && this.ConvertFunction != null) {
-               
-               value = this.ConvertFunction(this, value);
-            }
+      object MapSimple(IDataRecord record, TextWriter logger) {
+
+         bool isNull = record.IsDBNull(this.ColumnOrdinal);
+         object value = isNull ? null : record.GetValue(this.ColumnOrdinal);
+         Func<PocoNode, object, object> convertFn;
+
+         if (!isNull
+            && value != null
+            && (convertFn = this.ConvertFunction) != null) {
+
+            value = convertFn(this, value);
          }
 
          return value;
@@ -1790,11 +1792,6 @@ namespace DbExtensions {
             return Activator.CreateInstance(this.Type);
 
          object[] args = this.ConstructorParameters.Select(m => m.Value.Map(record, logger)).ToArray();
-
-         return Create(record, args, logger);
-      }
-
-      object Create(IDataRecord record, object[] args, TextWriter logger) {
 
          if (this.ConstructorParameters.Any(p => p.Value.ConvertFunction != null)
             || args.All(v => v == null)) {

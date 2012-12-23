@@ -88,13 +88,7 @@ namespace Samples.CSharp {
             ._("'http://example.com' AS Url$1")
             ._("15.5 AS Price$1, 'USD' AS Price$2");
 
-         var result = conn.Map<MappingToConstructorArgumentsSample>(query, log).Single();
-
-         Debug.Assert(result.Id == 1);
-         Debug.Assert(result.Url != null);
-         Debug.Assert(result.Price != null);
-
-         return result;
+         return conn.Map<MappingToConstructorArgumentsSample>(query, log).Single();
       }
 
       public MappingToConstructorArgumentsSample MappingToConstructorArgumentsNested() {
@@ -102,31 +96,9 @@ namespace Samples.CSharp {
          var query = SQL
             .SELECT("1 AS '1'")
             ._("'http://example.com' AS '2$1'")
-            ._("15.5 AS '3$1', 'USD' AS '3$2'")
-            ._("1 AS Product$ProductID")
+            ._("15.5 AS '3$1', 'USD' AS '3$2'");
 
-            ._("2 AS 'Nested$1'")
-            ._("'http://example.org' AS 'Nested$2$1'")
-            ._("NULL AS 'Nested$3'")
-
-            ._("3 AS 'Nested$Nested$1'")
-            ._("'http://example.net' AS 'Nested$Nested$Url$1'")
-            ._("NULL AS 'Nested$Nested$Price$1', NULL AS 'Nested$Nested$Price$2'")
-            ._("2 AS 'Nested$Nested$Product$ProductID'")
-            ;
-
-         var result = conn.Map<MappingToConstructorArgumentsSample>(query, log).Single();
-
-         Debug.Assert(result.Price != null);
-         Debug.Assert(result.Product != null);
-         Debug.Assert(result.Nested != null);
-         Debug.Assert(result.Nested.Price == null);
-         Debug.Assert(result.Nested.Nested != null);
-         Debug.Assert(result.Nested.Nested.Url != null);
-         Debug.Assert(result.Nested.Nested.Price == null);
-         Debug.Assert(result.Nested.Nested.Product != null);
-
-         return result;
+         return conn.Map<MappingToConstructorArgumentsSample>(query, log).Single();
       }
 
       public bool Exists() {
@@ -172,9 +144,6 @@ namespace Samples.CSharp {
       public Uri Url { get; private set; }
       public Money? Price { get; private set; }
 
-      public MappingToConstructorArgumentsSample Nested { get; set; }
-      public Product Product { get; set; }
-
       public MappingToConstructorArgumentsSample(int id) {
          this.Id = id;
       }
@@ -185,16 +154,16 @@ namespace Samples.CSharp {
          this.Url = url;
          this.Price = price;
       }
-   }
 
-   public struct Money {
+      public struct Money {
 
-      public readonly decimal Amount;
-      public readonly string Currency;
+         public readonly decimal Amount;
+         public readonly string Currency;
 
-      public Money(decimal amount, string currency) {
-         this.Amount = amount;
-         this.Currency = currency;
+         public Money(decimal amount, string currency) {
+            this.Amount = amount;
+            this.Currency = currency;
+         }
       }
    }
 }
