@@ -144,8 +144,9 @@ Limitations
 
 Source code and releases
 ------------------------
-Hosted on [GitHub](https://github.com/maxtoroq/DbExtensions). 
-Also available via [NuGet](http://www.nuget.org/packages/DbExtensions).
+Code hosted on [GitHub](https://github.com/maxtoroq/DbExtensions). 
+Releases available on [SourceForge](https://sourceforge.net/projects/dbextensions/files/)
+and [NuGet](http://www.nuget.org/packages/DbExtensions).
 
 This project was originally hosted on [SourceForge](https://sourceforge.net/projects/dbextensions/), source code and releases for
 versions 1.x, 2.x and 3.x remain available there.
