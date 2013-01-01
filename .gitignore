@@ -4,5 +4,8 @@
 *.suo
 *.user
 packages
+NuGet.exe
 *.sl3
 *.[msl]df
+samples/x64
+samples/x86
