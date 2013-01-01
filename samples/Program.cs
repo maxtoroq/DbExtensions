@@ -93,7 +93,7 @@ namespace Samples {
 
             RunSamples(selectedSamples[i], continueOnError);
             Console.WriteLine();
-            Console.WriteLine((i == selectedSamples.Length - 1) ? "Press key to continue..." : "Press key to exit...");
+            Console.WriteLine((i == selectedSamples.Length - 1) ? "Press key to exit..." : "Press key to continue...");
             Console.ReadKey();
          }
       }
