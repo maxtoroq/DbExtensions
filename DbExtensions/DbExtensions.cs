@@ -1201,7 +1201,7 @@ namespace DbExtensions {
          if (connStringSettings == null) {
             throw new ArgumentException(
                String.Format(CultureInfo.InvariantCulture, "Couldn't find '{0}' in System.Configuration.ConfigurationManager.ConnectionStrings.", name)
-            , "connectionString");
+            , "name");
          }
 
          providerName = connStringSettings.ProviderName;
