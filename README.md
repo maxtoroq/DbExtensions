@@ -13,7 +13,7 @@ The key features of this library are the granularity of it's components and code
 Querying with SqlSet (new in v4)
 --------------------------------
 ```csharp
-DbConnection conn = DbFactory.CreateConnection("name=Northwind");
+DbConnection conn = Database.CreateConnection("name=Northwind");
 
 SqlSet<Product> products = conn.Set<Product>(new SqlBuilder("SELECT * FROM Products"));
 SqlSet<Product> productsToReorder = products.Where("UnitsInStock < {0}", 10);

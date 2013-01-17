@@ -1980,7 +1980,7 @@ namespace DbExtensions {
       [EditorBrowsable(EditorBrowsableState.Never)]
       [Obsolete("Please use DbExtensions.Database.GetProviderFactory(string) instead.")]
       public static DbProviderFactory GetProviderFactory(string providerInvariantName) {
-         return DbFactory.GetProviderFactory(providerInvariantName);
+         return Database.GetProviderFactory(providerInvariantName);
       }
 
       /// <summary>
@@ -1992,7 +1992,7 @@ namespace DbExtensions {
       [EditorBrowsable(EditorBrowsableState.Never)]
       [Obsolete("Please use DbExtensions.Database.CreateConnection() instead.")]
       public static DbConnection CreateConnection() {
-         return DbFactory.CreateConnection();
+         return Database.CreateConnection();
       }
 
       /// <summary>
@@ -2007,7 +2007,7 @@ namespace DbExtensions {
       [EditorBrowsable(EditorBrowsableState.Never)]
       [Obsolete("Please use DbExtensions.Database.CreateConnection(string) instead.")]
       public static DbConnection CreateConnection(string connectionString) {
-         return DbFactory.CreateConnection(connectionString);
+         return Database.CreateConnection(connectionString);
       }
    }
 }
