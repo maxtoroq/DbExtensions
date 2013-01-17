@@ -1091,11 +1091,7 @@ namespace DbExtensions {
       #endregion
    }
 
-   /// <summary>
-   /// Provides a set of static (Shared in Visual Basic) methods for the creation 
-   /// and location of common ADO.NET objects.
-   /// </summary>
-   public static class DbFactory {
+   public partial class Database {
 
       static readonly Regex namedConnectionStringPattern = new Regex(@"^name=([^;].+);?$", RegexOptions.IgnoreCase);
       static readonly IDictionary<string, DbProviderFactory> factories = new Dictionary<string, DbProviderFactory>();
@@ -1144,14 +1140,15 @@ namespace DbExtensions {
 
       internal static DbConnection CreateConnection(out string providerName) {
 
-         var defaultConnection = ConfigurationManager.AppSettings[DbExtensions_DefaultConnectionName];
+         string defaultConnection = ConfigurationManager.AppSettings[DbExtensions_DefaultConnectionName];
 
-         if (defaultConnection == null)
+         if (defaultConnection == null) {
             throw new InvalidOperationException(
                String.Format(CultureInfo.InvariantCulture, "A default connection name must be provided using the '{0}' key in the appSettings configuration section.", DbExtensions_DefaultConnectionName)
             );
+         }
 
-         return CreateConnection("name=" + defaultConnection, out providerName);
+         return CreateNamedConnection(defaultConnection, out providerName);
       }
 
       /// <summary>
@@ -1174,39 +1171,45 @@ namespace DbExtensions {
 
          if (connectionString == null) throw new ArgumentNullException("connectionString");
 
-         var namedMatch = namedConnectionStringPattern.Match(connectionString.Trim());
+         Match namedMatch = namedConnectionStringPattern.Match(connectionString.Trim());
 
          if (namedMatch.Success) {
 
-            var name = namedMatch.Groups[1].Value;
-            var connStringSettings = ConfigurationManager.ConnectionStrings[name];
+            string name = namedMatch.Groups[1].Value;
 
-            if (connStringSettings == null)
-               throw new ArgumentException(
-                  String.Format(CultureInfo.InvariantCulture, "Couldn't find '{0}' in System.Configuration.ConfigurationManager.ConnectionStrings.", name)
-               , "connectionString");
+            return CreateNamedConnection(name, out providerName);
+         } 
 
-            providerName = connStringSettings.ProviderName;
+         providerName = ConfigurationManager.AppSettings[DbExtensions_DefaultProviderName];
 
-            var factory = DbFactory.GetProviderFactory(providerName);
-            var connection = factory.CreateConnection(connStringSettings.ConnectionString);
-
-            return connection;
-
-         } else {
-
-            providerName = ConfigurationManager.AppSettings[DbExtensions_DefaultProviderName];
-
-            if (providerName == null)
-               throw new InvalidOperationException(
-                  String.Format(CultureInfo.InvariantCulture, "A default provider name must be provided using the '{0}' key in the appSettings configuration section.", DbExtensions_DefaultProviderName)
-               );
-
-            var factory = DbFactory.GetProviderFactory(providerName);
-            var connection = factory.CreateConnection(connectionString);
-
-            return connection;
+         if (providerName == null) {
+            throw new InvalidOperationException(
+               String.Format(CultureInfo.InvariantCulture, "A default provider name must be provided using the '{0}' key in the appSettings configuration section.", DbExtensions_DefaultProviderName)
+            );
          }
+
+         DbProviderFactory factory = GetProviderFactory(providerName);
+         DbConnection connection = factory.CreateConnection(connectionString);
+
+         return connection;
+      }
+
+      static DbConnection CreateNamedConnection(string name, out string providerName) {
+
+         ConnectionStringSettings connStringSettings = ConfigurationManager.ConnectionStrings[name];
+
+         if (connStringSettings == null) {
+            throw new ArgumentException(
+               String.Format(CultureInfo.InvariantCulture, "Couldn't find '{0}' in System.Configuration.ConfigurationManager.ConnectionStrings.", name)
+            , "connectionString");
+         }
+
+         providerName = connStringSettings.ProviderName;
+
+         DbProviderFactory factory = GetProviderFactory(providerName);
+         DbConnection connection = factory.CreateConnection(connStringSettings.ConnectionString);
+
+         return connection;
       }
    }
 
@@ -1951,6 +1954,60 @@ namespace DbExtensions {
 
       static object ConvertTo(PocoNode node, object value) {
          return Convert.ChangeType(value, node.UnderlyingType, CultureInfo.InvariantCulture);
+      }
+   }
+}
+
+namespace DbExtensions {
+
+   using System;
+   using System.Data.Common;
+   using System.ComponentModel;
+
+   /// <summary>
+   /// Provides a set of static (Shared in Visual Basic) methods for the creation 
+   /// and location of common ADO.NET objects.
+   /// </summary>
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public static class DbFactory {
+
+      /// <summary>
+      /// Locates a <see cref="DbProviderFactory"/> using <see cref="DbProviderFactories.GetFactory(string)"/>
+      /// and caches the result.
+      /// </summary>
+      /// <param name="providerInvariantName">The provider invariant name.</param>
+      /// <returns>The requested provider factory.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use DbExtensions.Database.GetProviderFactory(string) instead.")]
+      public static DbProviderFactory GetProviderFactory(string providerInvariantName) {
+         return DbFactory.GetProviderFactory(providerInvariantName);
+      }
+
+      /// <summary>
+      /// Creates a connection using the default connection name specified by the 
+      /// "DbExtensions:DefaultConnectionName" key in the appSettings configuration section, 
+      /// which is used to locate a connection string in the connectionStrings configuration section.
+      /// </summary>
+      /// <returns>The requested connection.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use DbExtensions.Database.CreateConnection() instead.")]
+      public static DbConnection CreateConnection() {
+         return DbFactory.CreateConnection();
+      }
+
+      /// <summary>
+      /// Creates a connection using the provided connection string. If the connection
+      /// string is a named connection string (e.g. "name=Northwind"), then the name is used to
+      /// locate the connection string in the connectionStrings configuration section, else the 
+      /// default provider is used to create the connection (specified by the "DbExtensions:DefaultProviderName"
+      /// key in the appSettings configuration section).
+      /// </summary>
+      /// <param name="connectionString">The connection string.</param>
+      /// <returns>The requested connection.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use DbExtensions.Database.CreateConnection(string) instead.")]
+      public static DbConnection CreateConnection(string connectionString) {
+         return DbFactory.CreateConnection(connectionString);
       }
    }
 }

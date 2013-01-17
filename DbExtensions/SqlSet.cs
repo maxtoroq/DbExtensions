@@ -75,7 +75,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       public SqlSet(SqlBuilder definingQuery) 
-         : this(definingQuery, DbFactory.CreateConnection()) { }
+         : this(definingQuery, Database.CreateConnection()) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlSet"/> class
@@ -103,7 +103,7 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <param name="resultType">The type of objects to map the results to.</param>
       public SqlSet(SqlBuilder definingQuery, Type resultType)
-         : this(definingQuery, resultType, DbFactory.CreateConnection()) { }
+         : this(definingQuery, resultType, Database.CreateConnection()) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlSet"/> class
@@ -888,7 +888,7 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
       public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper)
-         : this(definingQuery, mapper, DbFactory.CreateConnection()) { }
+         : this(definingQuery, mapper, Database.CreateConnection()) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlSet&lt;TResult>"/> class

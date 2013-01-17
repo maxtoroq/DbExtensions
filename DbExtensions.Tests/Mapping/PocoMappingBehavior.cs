@@ -15,7 +15,7 @@ namespace DbExtensions.Tests.Mapping {
       [TestInitialize]
       public void Initialize() {
 
-         this.conn = DbFactory.GetProviderFactory("System.Data.SqlClient")
+         this.conn = Database.GetProviderFactory("System.Data.SqlClient")
             .CreateConnection(@"Data Source=(localdb)\v11.0;");
       }
       
