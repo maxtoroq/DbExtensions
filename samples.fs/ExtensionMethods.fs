@@ -6,9 +6,29 @@ open System.Collections.Generic
 open System.Data
 open System.Data.Common
 open System.IO
+open System.Linq
 open System.Xml
 open DbExtensions
 open Samples.FSharp.Northwind
+
+type Money =
+   struct
+      val Amount : decimal
+      val Currency : string
+
+      new(amount : decimal, currency : string) = {
+         Amount = amount
+         Currency = currency
+      }
+   end
+
+type MappingToConstructorArgumentsSample(id : int, url : Uri, price : Nullable<Money>) =
+
+   member val Id = id with get,set
+   member val Url : Uri = url with get,set
+   member val Price = price with get,set
+
+   new(id) = MappingToConstructorArgumentsSample(id, null, new Nullable<Money>())
 
 type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) = 
    
@@ -66,6 +86,26 @@ type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) =
 
       conn.Map<Product>(query, log)
    
+   member this.MappingToConstructorArguments() =
+
+      let query = 
+         SQL
+            .SELECT("1 AS '1'")
+            .SELECT("'http://example.com' AS Url$1")
+            .SELECT("15.5 AS Price$1, 'USD' AS Price$2")
+
+      conn.Map<MappingToConstructorArgumentsSample>(query, log).Single()
+
+   member this.MappingToConstructorArgumentsNested() =
+
+      let query = 
+         SQL
+            .SELECT("1 AS '1'")
+            .SELECT("'http://example.com' AS '2$1'")
+            .SELECT("15.5 AS '3$1', 'USD' AS '3$2'")
+
+      conn.Map<MappingToConstructorArgumentsSample>(query, log).Single()
+
    member this.Exists() =
 
       conn.Exists(SQL
@@ -99,4 +139,4 @@ type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) =
                writer.WriteNode(reader, defattr = true)
          )
       )
-      
+

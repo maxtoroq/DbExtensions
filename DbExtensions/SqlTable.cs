@@ -1,4 +1,4 @@
-﻿// Copyright 2012 Max Toro Q.
+﻿// Copyright 2012-2013 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -369,8 +369,11 @@ namespace DbExtensions {
                idMember.MemberAccessor.SetBoxedValue(ref entityObj, convertedId);
             }
 
-            if (syncMembers.Length > 0)
+            if (syncMembers.Length > 0
+               && metaType.IsEntity) {
+               
                Refresh(entity, syncMembers);
+            }
 
             tx.Commit();
          }
@@ -608,8 +611,10 @@ namespace DbExtensions {
 
                   var mapper = new PocoMapper(metaType.Type, this.dao.Configuration.Log);
 
+                  object entityObj = (object)entity;
+
                   this.dao.Map<object>(query, r => {
-                     mapper.Load(entity, r);
+                     mapper.Load(ref entityObj, r);
                      return null;
 
                   }).SingleOrDefault();
@@ -642,8 +647,10 @@ namespace DbExtensions {
 
          var mapper = new PocoMapper(metaType.Type, this.dao.Configuration.Log);
 
+         object entityObj = (object)entity;
+
          this.dao.Map<object>(query, r => {
-            mapper.Load(entity, r);
+            mapper.Load(ref entityObj, r);
             return null;
 
          }).SingleOrDefault();

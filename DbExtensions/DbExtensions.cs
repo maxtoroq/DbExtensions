@@ -1,4 +1,4 @@
-﻿// Copyright 2009-2012 Max Toro Q.
+﻿// Copyright 2009-2013 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1091,11 +1091,7 @@ namespace DbExtensions {
       #endregion
    }
 
-   /// <summary>
-   /// Provides a set of static (Shared in Visual Basic) methods for the creation 
-   /// and location of common ADO.NET objects.
-   /// </summary>
-   public static class DbFactory {
+   public partial class Database {
 
       static readonly Regex namedConnectionStringPattern = new Regex(@"^name=([^;].+);?$", RegexOptions.IgnoreCase);
       static readonly IDictionary<string, DbProviderFactory> factories = new Dictionary<string, DbProviderFactory>();
@@ -1144,14 +1140,15 @@ namespace DbExtensions {
 
       internal static DbConnection CreateConnection(out string providerName) {
 
-         var defaultConnection = ConfigurationManager.AppSettings[DbExtensions_DefaultConnectionName];
+         string defaultConnection = ConfigurationManager.AppSettings[DbExtensions_DefaultConnectionName];
 
-         if (defaultConnection == null)
+         if (defaultConnection == null) {
             throw new InvalidOperationException(
                String.Format(CultureInfo.InvariantCulture, "A default connection name must be provided using the '{0}' key in the appSettings configuration section.", DbExtensions_DefaultConnectionName)
             );
+         }
 
-         return CreateConnection("name=" + defaultConnection, out providerName);
+         return CreateNamedConnection(defaultConnection, out providerName);
       }
 
       /// <summary>
@@ -1174,39 +1171,45 @@ namespace DbExtensions {
 
          if (connectionString == null) throw new ArgumentNullException("connectionString");
 
-         var namedMatch = namedConnectionStringPattern.Match(connectionString.Trim());
+         Match namedMatch = namedConnectionStringPattern.Match(connectionString.Trim());
 
          if (namedMatch.Success) {
 
-            var name = namedMatch.Groups[1].Value;
-            var connStringSettings = ConfigurationManager.ConnectionStrings[name];
+            string name = namedMatch.Groups[1].Value;
 
-            if (connStringSettings == null)
-               throw new ArgumentException(
-                  String.Format(CultureInfo.InvariantCulture, "Couldn't find '{0}' in System.Configuration.ConfigurationManager.ConnectionStrings.", name)
-               , "connectionString");
+            return CreateNamedConnection(name, out providerName);
+         } 
 
-            providerName = connStringSettings.ProviderName;
+         providerName = ConfigurationManager.AppSettings[DbExtensions_DefaultProviderName];
 
-            var factory = DbFactory.GetProviderFactory(providerName);
-            var connection = factory.CreateConnection(connStringSettings.ConnectionString);
-
-            return connection;
-
-         } else {
-
-            providerName = ConfigurationManager.AppSettings[DbExtensions_DefaultProviderName];
-
-            if (providerName == null)
-               throw new InvalidOperationException(
-                  String.Format(CultureInfo.InvariantCulture, "A default provider name must be provided using the '{0}' key in the appSettings configuration section.", DbExtensions_DefaultProviderName)
-               );
-
-            var factory = DbFactory.GetProviderFactory(providerName);
-            var connection = factory.CreateConnection(connectionString);
-
-            return connection;
+         if (providerName == null) {
+            throw new InvalidOperationException(
+               String.Format(CultureInfo.InvariantCulture, "A default provider name must be provided using the '{0}' key in the appSettings configuration section.", DbExtensions_DefaultProviderName)
+            );
          }
+
+         DbProviderFactory factory = GetProviderFactory(providerName);
+         DbConnection connection = factory.CreateConnection(connectionString);
+
+         return connection;
+      }
+
+      static DbConnection CreateNamedConnection(string name, out string providerName) {
+
+         ConnectionStringSettings connStringSettings = ConfigurationManager.ConnectionStrings[name];
+
+         if (connStringSettings == null) {
+            throw new ArgumentException(
+               String.Format(CultureInfo.InvariantCulture, "Couldn't find '{0}' in System.Configuration.ConfigurationManager.ConnectionStrings.", name)
+            , "name");
+         }
+
+         providerName = connStringSettings.ProviderName;
+
+         DbProviderFactory factory = GetProviderFactory(providerName);
+         DbConnection connection = factory.CreateConnection(connStringSettings.ConnectionString);
+
+         return connection;
       }
    }
 
@@ -1336,14 +1339,14 @@ namespace DbExtensions {
                
                try {
                   current = mapper(reader);
-               
+
                } catch {
                   if (prevStateWasClosed) 
                      EnsureConnectionClosed();
                   
                   throw;
                }
-               
+
                return true;
             }
 
@@ -1382,16 +1385,18 @@ namespace DbExtensions {
    using System;
    using System.Collections.Generic;
    using System.Data;
+   using System.Diagnostics;
    using System.Globalization;
    using System.IO;
    using System.Linq;
    using System.Reflection;
+   using System.Text;
 
    internal class PocoMapper {
 
       readonly Type type;
       readonly TextWriter logger;
-      MapNode rootNode;
+      PocoNode rootNode;
 
       public PocoMapper(Type type, TextWriter logger) {
 
@@ -1401,7 +1406,7 @@ namespace DbExtensions {
          this.logger = logger;
       }
 
-      MapNode ReadMapping(IDataRecord record) {
+      void ReadMapping(IDataRecord record, PocoNode rootNode) {
 
          MapGroup[] groups =
             (from i in Enumerable.Range(0, record.FieldCount)
@@ -1421,200 +1426,588 @@ namespace DbExtensions {
              }
             ).ToArray();
 
-         return ReadMapping(groups, groups.Where(m => m.Depth == 0).Single(), this.type);
+         MapGroup topGroup = groups.Where(m => m.Depth == 0).SingleOrDefault()
+            ?? new MapGroup { Name = "", Parent = "", Properties = new Dictionary<int, string>() };
+
+         ReadMapping(record, groups, topGroup, rootNode);
       }
 
-      MapNode ReadMapping(MapGroup[] groups, MapGroup currentGroup, Type parentType) {
+      void ReadMapping(IDataRecord record, MapGroup[] groups, MapGroup currentGroup, PocoNode instance) {
 
-         PropertyInfo property = !String.IsNullOrEmpty(currentGroup.Name) ? GetProperty(parentType, currentGroup.Name) : null;
-         Type declaringType = (property == null) ? parentType : property.PropertyType;
+         var constructorParameters = new Dictionary<MapParam, PocoNode>();
+         
+         foreach (var pair in currentGroup.Properties) {
 
-         MapNode instance = new MapNode(property);
+            PropertyInfo property = GetProperty(instance.UnderlyingType, pair.Value);
 
-         instance.Properties.AddRange(
-            from p in currentGroup.Properties
-            select new MapNode(GetProperty(declaringType, p.Value), p.Key)
-         );
+            if (property != null) {
+               instance.Properties.Add(PocoNode.Simple(pair.Key, property));
+               continue;
+            } 
 
-         instance.Properties.AddRange(
-            from m in groups
-            where m.Depth == currentGroup.Depth + 1 && m.Parent == currentGroup.Name
-            select ReadMapping(groups, m, declaringType)
-         );
+            uint valueAsNumber;
 
-         return instance;
+            if (UInt32.TryParse(pair.Value, out valueAsNumber)) {
+               constructorParameters.Add(new MapParam(valueAsNumber, pair.Key), null);
+
+            } else {
+
+               if (this.logger != null) {
+                  this.logger.WriteLine("-- WARNING: Couldn't find property '{0}' on type {1}. Ignoring column.",
+                     pair.Value,
+                     instance.UnderlyingType.FullName
+                  );
+               }
+            }
+         }
+
+         MapGroup[] nextLevels =
+            (from m in groups
+             where m.Depth == currentGroup.Depth + 1 && m.Parent == currentGroup.Name
+             select m).ToArray();
+
+         for (int i = 0; i < nextLevels.Length; i++) {
+
+            MapGroup nextLevel = nextLevels[i];
+            PropertyInfo property = GetProperty(instance.UnderlyingType, nextLevel.Name);
+
+            if (property != null) {
+
+               var assocNode = PocoNode.Complex(property);
+               ReadMapping(record, groups, nextLevel, assocNode);
+
+               instance.Properties.Add(assocNode);
+               continue;
+            }
+
+            uint valueAsNumber;
+
+            if (UInt32.TryParse(nextLevel.Name, out valueAsNumber)) {
+               constructorParameters.Add(new MapParam(valueAsNumber, nextLevel), null);
+
+            } else {
+
+               if (this.logger != null) {
+                  this.logger.WriteLine("-- WARNING: Couldn't find property '{0}' on type {1}. Ignoring column(s).",
+                     nextLevel.Name,
+                     instance.UnderlyingType.FullName
+                  );
+               }
+            }
+         }
+
+         if (constructorParameters.Count > 0) {
+
+            instance.Constructor = GetConstructor(instance, constructorParameters.Count);
+            ParameterInfo[] parameters = instance.Constructor.GetParameters();
+
+            int i = 0;
+
+            foreach (var pair in constructorParameters.OrderBy(p => p.Key.ParameterIndex)) {
+
+               ParameterInfo param = parameters[i];
+               PocoNode paramNode;
+
+               if (pair.Key.ColumnOrdinal.HasValue) {
+                  paramNode = PocoNode.Simple(pair.Key.ColumnOrdinal.Value, param);
+
+               } else {
+
+                  paramNode = PocoNode.Root(param);
+                  ReadMapping(record, groups, pair.Key.Group, paramNode);
+               }
+
+               if (instance.ConstructorParameters.ContainsKey(pair.Key.ParameterIndex)) {
+
+                  var message = new StringBuilder();
+                  message.AppendFormat(CultureInfo.InvariantCulture, "Already specified an argument for parameter {0}", param.Name);
+
+                  if (pair.Key.ColumnOrdinal.HasValue) 
+                     message.AppendFormat(CultureInfo.InvariantCulture, " ('{0}')", record.GetName(pair.Key.ColumnOrdinal.Value));
+
+                  message.Append(".");
+
+                  throw new InvalidOperationException(message.ToString());
+               }
+
+               instance.ConstructorParameters.Add(pair.Key.ParameterIndex, paramNode); 
+
+               i++;
+            }
+         }
       }
 
       static PropertyInfo GetProperty(Type declaringType, string propertyName) {
-         return declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+         
+         PropertyInfo property = declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+         if (property == null)
+            return property;
+
+         if (!property.CanWrite) {
+
+            throw new InvalidOperationException(
+               String.Format(CultureInfo.InvariantCulture,
+                  "{0} property {1} doesn't have a setter.",
+                  property.ReflectedType.FullName, property.Name
+               )
+            );
+         }
+
+         return property;
+      }
+
+      static ConstructorInfo GetConstructor(PocoNode node, int parameterLength) {
+
+         Type type = node.UnderlyingType;
+
+         ConstructorInfo[] constructors = type
+            .GetConstructors(BindingFlags.Public | BindingFlags.Instance)
+            .Where(c => c.GetParameters().Length == parameterLength)
+            .ToArray();
+
+         if (constructors.Length == 0) {
+            throw new InvalidOperationException(
+               String.Format(CultureInfo.InvariantCulture,
+                  "Couldn't find public constructor with {0} parameter(s) for type {1}.",
+                  parameterLength,
+                  type.FullName
+               )
+            );
+         }
+
+         if (constructors.Length > 1) {
+            throw new InvalidOperationException(
+               String.Format(CultureInfo.InvariantCulture,
+                  "Found more than one public constructor with {0} parameter(s) for type {1}. Please use another constructor.",
+                  parameterLength,
+                  type.FullName
+               )
+            );
+         }
+
+         ConstructorInfo constructor = constructors[0];
+
+         return constructor;
       }
 
       public object Map(IDataRecord record) {
 
-         object instance = Activator.CreateInstance(this.type);
+         PocoNode node = GetRootNode(record);
 
-         Load(instance, record);
+         object instance = node.Create(record, this.logger);
+
+         node.Load(ref instance, record, this.logger);
 
          return instance;
       }
 
-      public void Load(object instance, IDataRecord record) {
-         
-         if (instance == null) throw new ArgumentNullException("instance");
-         if (record == null) throw new ArgumentNullException("record");
+      public void Load(ref object instance, IDataRecord record) {
 
-         if (this.rootNode == null)
-            this.rootNode = ReadMapping(record);
+         PocoNode node = GetRootNode(record);
 
-         Load(instance, record, this.rootNode);
+         node.Load(ref instance, record, this.logger);
       }
+      
+      PocoNode GetRootNode(IDataRecord record) { 
 
-      void Load(object instance, IDataRecord record, MapNode mapNode) {
-
-         for (int i = 0; i < mapNode.Properties.Count; i++) {
-            MapNode node = mapNode.Properties[i];
-            PropertyInfo prop = node.Property;
-
-            if (!node.IsComplex) {
-               if (prop != null) {
-                  LoadScalarProperty(instance, record, node);
-               }
-            
-            } else {
-
-               if (prop != null) {
-                  
-                  bool allNulls = node.Properties
-                     .Where(m => !m.IsComplex)
-                     .All(m => record.IsDBNull(m.ColumnOrdinal));
-
-                  object value = prop.GetValue(instance, null);
-
-                  if (value == null) {
-                     if (!allNulls) {
-                        value = Activator.CreateInstance(prop.PropertyType);
-                        prop.SetValue(instance, value, null);
-                     }
-                  } else {
-                     if (allNulls) {
-                        prop.SetValue(instance, null, null);
-                     }
-                  }
-
-                  if (value != null)
-                     Load(value, record, node); 
-               }
-            }
-         }
-      }
-
-      void LoadScalarProperty(object instance, IDataRecord record, MapNode mapNode) {
-
-         PropertyInfo property = mapNode.Property;
-         Type propertyType = property.PropertyType;
-         bool isNull = record.IsDBNull(mapNode.ColumnOrdinal);
-         object value = isNull ? null : record.GetValue(mapNode.ColumnOrdinal);
-
-         try {
-            SetScalarProperty(instance, value, isNull, mapNode);
-
-         } catch (Exception ex) {
-            throw new InvalidCastException(
-               String.Format(CultureInfo.InvariantCulture,
-                  "Couldn't set {0} property {1} of type {2} {3}.",
-                  property.ReflectedType.FullName, property.Name, propertyType.FullName, (isNull) ? "to null" : "with value of type " + value.GetType().FullName
-               )
-            , ex);
-         }
-      }
-
-      void SetScalarProperty(object instance, object value, bool isNull, MapNode mapNode) {
-
-         PropertyInfo property = mapNode.Property;
-         Type propertyType = property.PropertyType;
-
-         if (!isNull && mapNode.RequiresConversion) {
-
-            Type conversionType = mapNode.ConversionType;
-
-            if (conversionType == null) {
-
-               bool isNullableValueType = (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>));
-               conversionType = (isNullableValueType) ? Nullable.GetUnderlyingType(propertyType) : propertyType;
-
-               mapNode.ConversionType = conversionType;
-            }
-
-            if (conversionType == typeof(bool)
-               && value.GetType() == typeof(string)) {
-
-               value = Convert.ToBoolean(Convert.ToInt64(value, CultureInfo.InvariantCulture));
-
-            } else {
-               value = Convert.ChangeType(value, conversionType, CultureInfo.InvariantCulture);
-            }
+         if (this.rootNode == null) {
+            this.rootNode = PocoNode.Root(this.type);
+            ReadMapping(record, this.rootNode);
          }
 
-         try {
-            property.SetValue(instance, value, null);
-
-         } catch {
-
-            if (!isNull && !mapNode.RequiresConversion) {
-
-               if (this.logger != null) {
-
-                  this.logger.WriteLine("-- WARNING: Couldn't set {0} property {1} of type {2} {3}. Attempting conversion.",
-                     property.ReflectedType.FullName, 
-                     property.Name, propertyType.FullName, 
-                     (isNull) ? "to null" : "with value of type " + value.GetType().FullName
-                  );
-               }
-
-               mapNode.RequiresConversion = true;   
-
-               SetScalarProperty(instance, value, isNull, mapNode);
-
-            } else {
-               throw;
-            }
-         }
+         return this.rootNode;
       }
 
       #region Nested Types
 
       class MapGroup {
+
          public string Name;
          public int Depth;
          public string Parent;
          public Dictionary<int, string> Properties;
       }
 
-      class MapNode {
+      class MapParam { 
 
-         public readonly PropertyInfo Property;
-         public readonly bool IsComplex;
-         public bool RequiresConversion;
-         public Type ConversionType;
+         public readonly uint ParameterIndex;
+         public readonly int? ColumnOrdinal;
+         public readonly MapGroup Group;
 
-         // mutually exclusive
-         public readonly int ColumnOrdinal;
-         public readonly List<MapNode> Properties;
-
-         public MapNode(PropertyInfo property) {
-
-            this.Property = property;
-            this.IsComplex = true;
-            this.Properties = new List<MapNode>();
+         public MapParam(uint parameterIndex, int columnOrdinal) {
+            
+            this.ParameterIndex = parameterIndex;
+            this.ColumnOrdinal = columnOrdinal;
          }
 
-         public MapNode(PropertyInfo property, int columnOrdinal) {
+         public MapParam(uint parameterIndex, MapGroup group) {
 
-            this.Property = property;
-            this.ColumnOrdinal = columnOrdinal;
+            this.ParameterIndex = parameterIndex;
+            this.Group = group;
          }
       }
 
       #endregion
+   }
+
+   class PocoNode {
+
+      public readonly Type Type;
+      public readonly Type UnderlyingType;
+
+      public readonly PropertyInfo Property;
+      public readonly MethodInfo Setter;
+      public bool IsComplex;
+
+      public ConstructorInfo Constructor;
+      public Dictionary<uint, PocoNode> ConstructorParameters;
+      public List<PocoNode> Properties;
+
+      public int ColumnOrdinal;
+      public Func<PocoNode, object, object> ConvertFunction;
+
+      public ParameterInfo Parameter;
+
+      public static PocoNode Root(Type type) {
+
+         var node = new PocoNode(type) {
+            IsComplex = true,
+            ConstructorParameters = new Dictionary<uint, PocoNode>(),
+            Properties = new List<PocoNode>(),
+         };
+
+         return node;
+      }
+
+      public static PocoNode Root(ParameterInfo parameter) {
+
+         var node = Root(parameter.ParameterType);
+         node.Parameter = parameter;
+
+         return node;
+      }
+
+      public static PocoNode Complex(PropertyInfo property) {
+
+         var node = new PocoNode(property) {
+            IsComplex = true,
+            ConstructorParameters = new Dictionary<uint, PocoNode>(),
+            Properties = new List<PocoNode>()
+         };
+
+         return node;
+      }
+
+      public static PocoNode Simple(int columnOrdinal, PropertyInfo property) {
+
+         var node = new PocoNode(property) {
+            ColumnOrdinal = columnOrdinal
+         };
+
+         return node;
+      }
+
+      public static PocoNode Simple(int columnOrdinal, ParameterInfo parameter) {
+
+         var node = new PocoNode(parameter.ParameterType) {
+            ColumnOrdinal = columnOrdinal,
+            Parameter = parameter
+         };
+
+         return node;
+      }
+
+      private PocoNode(Type type) {
+
+         this.Type = type;
+
+         bool isNullableValueType = type.IsGenericType
+            && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+         this.UnderlyingType = (isNullableValueType) ?
+            Nullable.GetUnderlyingType(type)
+            : type;
+      }
+
+      private PocoNode(PropertyInfo property)
+         : this(property.PropertyType) {
+
+         this.Property = property;
+         this.Setter = property.GetSetMethod(true);
+      }
+
+      public object Map(IDataRecord record, TextWriter logger) {
+
+         if (this.IsComplex) 
+            return MapComplex(record, logger);
+            
+         return MapSimple(record, logger);
+      }
+
+      object MapComplex(IDataRecord record, TextWriter logger) {
+
+         if (AllColumnsNull(record))
+            return null;
+
+         object value = Create(record, logger);
+         Load(ref value, record, logger);
+
+         return value;
+      }
+
+      bool AllColumnsNull(IDataRecord record) {
+
+         if (this.IsComplex) {
+
+            return (this.ConstructorParameters.Count == 0
+                  || this.ConstructorParameters
+                     .OrderBy(n => n.Value.IsComplex)
+                     .All(n => n.Value.AllColumnsNull(record)))
+               && this.Properties
+                  .OrderBy(n => n.IsComplex)
+                  .All(n => n.AllColumnsNull(record));
+
+         } else {
+            return record.IsDBNull(this.ColumnOrdinal);
+         }
+      }
+
+      object MapSimple(IDataRecord record, TextWriter logger) {
+
+         bool isNull = record.IsDBNull(this.ColumnOrdinal);
+         object value = isNull ? null : record.GetValue(this.ColumnOrdinal);
+         Func<PocoNode, object, object> convertFn;
+
+         if (!isNull
+            && value != null
+            && (convertFn = this.ConvertFunction) != null) {
+
+            value = convertFn(this, value);
+         }
+
+         return value;
+      }
+
+      public object Create(IDataRecord record, TextWriter logger) {
+
+         if (this.Constructor == null) 
+            return Activator.CreateInstance(this.Type);
+
+         object[] args = this.ConstructorParameters.Select(m => m.Value.Map(record, logger)).ToArray();
+
+         if (this.ConstructorParameters.Any(p => p.Value.ConvertFunction != null)
+            || args.All(v => v == null)) {
+
+            return this.Constructor.Invoke(args);
+         }
+
+         try {
+            return this.Constructor.Invoke(args);
+
+         } catch (ArgumentException) {
+
+            bool convertSet = false;
+
+            for (int i = 0; i < this.ConstructorParameters.Count; i++) {
+
+               object value = args[i];
+
+               if (value == null) continue;
+
+               PocoNode paramNode = this.ConstructorParameters.ElementAt(i).Value;
+
+               if (!paramNode.Type.IsAssignableFrom(value.GetType())) {
+
+                  Func<PocoNode, object, object> convert = GetConversionFunction(value, paramNode);
+
+                  if (logger != null) {
+
+                     logger.WriteLine("-- WARNING: Couldn't instantiate {0} with argument '{1}' of type {2} {3}. Attempting conversion.",
+                        this.UnderlyingType.FullName,
+                        paramNode.Parameter.Name, paramNode.Type.FullName,
+                        (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+                     );
+                  }
+
+                  paramNode.ConvertFunction = convert;
+
+                  convertSet = true;
+               }
+            }
+
+            if (convertSet)
+               return Create(record, logger);
+
+            throw;
+         }
+      }
+
+      public void Load(ref object instance, IDataRecord record, TextWriter logger) {
+
+         for (int i = 0; i < this.Properties.Count; i++) {
+
+            PocoNode childNode = this.Properties[i];
+
+            if (!childNode.IsComplex
+               || childNode.ConstructorParameters.Count > 0) {
+               
+               childNode.Read(ref instance, record, logger);
+               continue;
+            }
+
+            object currentValue = childNode.Get(ref instance);
+
+            if (currentValue != null) {
+               childNode.Load(ref currentValue, record, logger);
+            } else {
+               childNode.Read(ref instance, record, logger);               
+            }
+         }
+      }
+
+      public void Read(ref object instance, IDataRecord record, TextWriter logger) {
+
+         object value = Map(record, logger);
+         Set(ref instance, value, logger);
+      }
+
+      public object Get(ref object instance) {
+         return GetProperty(ref instance);
+      }
+
+      public void Set(ref object instance, object value, TextWriter logger) {
+
+         if (this.IsComplex) {
+            SetProperty(ref instance, value);
+
+         } else {
+
+            try {
+               SetSimple(ref instance, value, logger);
+
+            } catch (Exception ex) {
+
+               throw new InvalidCastException(
+                  String.Format(CultureInfo.InvariantCulture,
+                     "Couldn't set {0} property {1} of type {2} {3}.",
+                     this.Property.ReflectedType.FullName, this.Property.Name, this.Type.FullName, (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+                  )
+               , ex);
+            }
+         }
+      }
+
+      void SetSimple(ref object instance, object value, TextWriter logger) {
+
+         if (this.ConvertFunction != null || value == null) {
+            SetProperty(ref instance, value);
+            return;
+         }
+
+         try {
+            SetProperty(ref instance, value);
+
+         } catch (ArgumentException) {
+
+            Func<PocoNode, object, object> convert = GetConversionFunction(value, this);
+
+            if (logger != null) {
+
+               logger.WriteLine("-- WARNING: Couldn't set {0} property '{1}' of type {2} {3}. Attempting conversion.",
+                  this.Property.ReflectedType.FullName,
+                  this.Property.Name, this.Property.PropertyType.FullName,
+                  (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+               );
+            }
+
+            value = convert(this, value);
+
+            this.ConvertFunction = convert;
+
+            SetSimple(ref instance, value, logger);
+         }
+      }
+
+      object GetProperty(ref object instance) {
+         return this.Property.GetValue(instance, null);
+      }
+
+      void SetProperty(ref object instance, object value) {
+         this.Setter.Invoke(instance, new object[1] { value });
+      }
+
+      static Func<PocoNode, object, object> GetConversionFunction(object value, PocoNode node) {
+
+         if (node.UnderlyingType == typeof(bool)
+            && value.GetType() == typeof(string)) {
+
+            return ConvertToBoolean;
+         }
+
+         return ConvertTo;
+      }
+
+      static object ConvertToBoolean(PocoNode node, object value) {
+         return Convert.ToBoolean(Convert.ToInt64(value, CultureInfo.InvariantCulture));
+      }
+
+      static object ConvertTo(PocoNode node, object value) {
+         return Convert.ChangeType(value, node.UnderlyingType, CultureInfo.InvariantCulture);
+      }
+   }
+}
+
+namespace DbExtensions {
+
+   using System;
+   using System.Data.Common;
+   using System.ComponentModel;
+
+   /// <summary>
+   /// Provides a set of static (Shared in Visual Basic) methods for the creation 
+   /// and location of common ADO.NET objects.
+   /// </summary>
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public static class DbFactory {
+
+      /// <summary>
+      /// Locates a <see cref="DbProviderFactory"/> using <see cref="DbProviderFactories.GetFactory(string)"/>
+      /// and caches the result.
+      /// </summary>
+      /// <param name="providerInvariantName">The provider invariant name.</param>
+      /// <returns>The requested provider factory.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use DbExtensions.Database.GetProviderFactory(string) instead.")]
+      public static DbProviderFactory GetProviderFactory(string providerInvariantName) {
+         return Database.GetProviderFactory(providerInvariantName);
+      }
+
+      /// <summary>
+      /// Creates a connection using the default connection name specified by the 
+      /// "DbExtensions:DefaultConnectionName" key in the appSettings configuration section, 
+      /// which is used to locate a connection string in the connectionStrings configuration section.
+      /// </summary>
+      /// <returns>The requested connection.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use DbExtensions.Database.CreateConnection() instead.")]
+      public static DbConnection CreateConnection() {
+         return Database.CreateConnection();
+      }
+
+      /// <summary>
+      /// Creates a connection using the provided connection string. If the connection
+      /// string is a named connection string (e.g. "name=Northwind"), then the name is used to
+      /// locate the connection string in the connectionStrings configuration section, else the 
+      /// default provider is used to create the connection (specified by the "DbExtensions:DefaultProviderName"
+      /// key in the appSettings configuration section).
+      /// </summary>
+      /// <param name="connectionString">The connection string.</param>
+      /// <returns>The requested connection.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use DbExtensions.Database.CreateConnection(string) instead.")]
+      public static DbConnection CreateConnection(string connectionString) {
+         return Database.CreateConnection(connectionString);
+      }
    }
 }

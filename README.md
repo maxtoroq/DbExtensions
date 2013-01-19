@@ -13,7 +13,7 @@ The key features of this library are the granularity of it's components and code
 Querying with SqlSet (new in v4)
 --------------------------------
 ```csharp
-DbConnection conn = DbFactory.CreateConnection("name=Northwind");
+DbConnection conn = Database.CreateConnection("name=Northwind");
 
 SqlSet<Product> products = conn.Set<Product>(new SqlBuilder("SELECT * FROM Products"));
 SqlSet<Product> productsToReorder = products.Where("UnitsInStock < {0}", 10);
@@ -119,7 +119,9 @@ You can also use `SqlBuilder` to build insert, update and delete commands.
 Features
 --------
 - Deferred execution
-- POCO mapping for queries, including complex properties
+- POCO mapping for queries
+  - Mapping to properties (including complex)
+  - Mapping to constructor arguments
 - Attributes or XML mapping for inserts, updates and deletes, using [System.Data.Linq.Mapping](http://msdn.microsoft.com/library/system.data.linq.mapping) (LINQ to SQL mapping)
 - Generic and non-generic APIs (for when the type of the entity is not known at build time)
 - Automatic connection management (no need to explicitly open connection, but you are allowed to)

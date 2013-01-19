@@ -84,6 +84,28 @@ Public Class ExtensionMethodsSamples
 
    End Function
 
+   Public Function MappingToConstructorArguments() As MappingToConstructorArgumentsSample
+
+      Dim query = SQL _
+         .SELECT("1 AS '1'") _
+         .SELECT("'http://example.com' AS Url$1") _
+         .SELECT("15.5 AS Price$1, 'USD' AS Price$2")
+
+      Return conn.Map(Of MappingToConstructorArgumentsSample)(query, log).Single()
+
+   End Function
+
+   Public Function MappingToConstructorArgumentsNested() As MappingToConstructorArgumentsSample
+
+      Dim query = SQL _
+         .SELECT("1 AS '1'") _
+         .SELECT("'http://example.com' AS '2$1'") _
+         .SELECT("15.5 AS '3$1', 'USD' AS '3$2'")
+
+      Return conn.Map(Of MappingToConstructorArgumentsSample)(query, log).Single()
+
+   End Function
+
    Public Function Exists() As Boolean
 
       Dim result = conn.Exists(SQL _
@@ -126,6 +148,35 @@ Public Class ExtensionMethodsSamples
       End Using
 
    End Sub
+
+End Class
+
+Public Class MappingToConstructorArgumentsSample
+
+   Public Property Id As Integer
+   Public Property Url As Uri
+   Public Property Price As Nullable(Of Money)
+
+   Public Sub New(id As Integer)
+      Me.Id = id
+   End Sub
+
+   Public Sub New(id As Integer, url As Uri, price As Nullable(Of Money))
+      Me.New(id)
+
+      Me.Url = url
+      Me.Price = price
+   End Sub
+
+   Public Structure Money
+      Public ReadOnly Amount As Decimal
+      Public ReadOnly Currency As String
+
+      Public Sub New(amount As Decimal, currency As String)
+         Me.Amount = amount
+         Me.Currency = currency
+      End Sub
+   End Structure
 
 End Class
 

@@ -33,7 +33,7 @@ namespace Samples {
 
          int connIndex = GetArrayOption(connectionStrings.Select(c => c.Name).ToArray(), "Select a connection string (or Enter to select the first one):");
          ConnectionStringSettings connSettings = connectionStrings[connIndex];
-         DbProviderFactory provider = DbFactory.GetProviderFactory(connSettings.ProviderName);
+         DbProviderFactory provider = Database.GetProviderFactory(connSettings.ProviderName);
          string connectionString = "name=" + connSettings.Name;
 
          Console.WriteLine();
@@ -42,7 +42,7 @@ namespace Samples {
          Console.WriteLine("Connecting...");
 
          try {
-            DbConnection conn = DbFactory.CreateConnection(connectionString);
+            DbConnection conn = Database.CreateConnection(connectionString);
             using (conn.EnsureOpen())
                Console.WriteLine("Server Version: {0}", conn.ServerVersion);
          } catch (Exception ex) {
@@ -93,7 +93,7 @@ namespace Samples {
 
             RunSamples(selectedSamples[i], continueOnError);
             Console.WriteLine();
-            Console.WriteLine((i == selectedSamples.Length - 1) ? "Press key to continue..." : "Press key to exit...");
+            Console.WriteLine((i == selectedSamples.Length - 1) ? "Press key to exit..." : "Press key to continue...");
             Console.ReadKey();
          }
       }
@@ -148,7 +148,7 @@ namespace Samples {
                select (p.ParameterType == typeof(string) ? connectionString 
                   : p.ParameterType == typeof(TextWriter) ? log
                   : p.ParameterType == typeof(MetaModel) ? mapping
-                  : p.ParameterType == typeof(DbConnection) ? DbFactory.CreateConnection(connectionString)
+                  : p.ParameterType == typeof(DbConnection) ? Database.CreateConnection(connectionString)
                   : p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType)
                   : null)
             select Activator.CreateInstance(t, args.ToArray());

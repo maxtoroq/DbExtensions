@@ -1,4 +1,4 @@
-﻿// Copyright 2009-2012 Max Toro Q.
+﻿// Copyright 2009-2013 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ namespace DbExtensions {
       public Database(string connectionString, MetaModel mapping) {
 
          string providerName;
-         DbConnection connection = DbFactory.CreateConnection(connectionString, out providerName);
+         DbConnection connection = CreateConnection(connectionString, out providerName);
 
          Initialize(connection, providerName, mapping);
       }
@@ -120,7 +120,7 @@ namespace DbExtensions {
       public Database(MetaModel mapping) {
          
          string providerName;
-         DbConnection connection = DbFactory.CreateConnection(out providerName);
+         DbConnection connection = CreateConnection(out providerName);
 
          Initialize(connection, providerName, mapping);
       }

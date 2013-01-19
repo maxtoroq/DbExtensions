@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -80,6 +81,26 @@ namespace Samples.CSharp {
          return conn.Map<Product>(query, log);
       }
 
+      public MappingToConstructorArgumentsSample MappingToConstructorArguments() {
+
+         var query = SQL
+            .SELECT("1 AS '1'")
+            ._("'http://example.com' AS Url$1")
+            ._("15.5 AS Price$1, 'USD' AS Price$2");
+
+         return conn.Map<MappingToConstructorArgumentsSample>(query, log).Single();
+      }
+
+      public MappingToConstructorArgumentsSample MappingToConstructorArgumentsNested() {
+
+         var query = SQL
+            .SELECT("1 AS '1'")
+            ._("'http://example.com' AS '2$1'")
+            ._("15.5 AS '3$1', 'USD' AS '3$2'");
+
+         return conn.Map<MappingToConstructorArgumentsSample>(query, log).Single();
+      }
+
       public bool Exists() {
 
          bool result = conn.Exists(SQL
@@ -113,6 +134,35 @@ namespace Samples.CSharp {
                while (!reader.EOF)
                   writer.WriteNode(reader, defattr: true);
             }
+         }
+      }
+   }
+
+   public class MappingToConstructorArgumentsSample {
+
+      public int Id { get; private set; }
+      public Uri Url { get; private set; }
+      public Money? Price { get; private set; }
+
+      public MappingToConstructorArgumentsSample(int id) {
+         this.Id = id;
+      }
+
+      public MappingToConstructorArgumentsSample(int id, Uri url, Money? price) 
+         : this(id) {
+         
+         this.Url = url;
+         this.Price = price;
+      }
+
+      public struct Money {
+
+         public readonly decimal Amount;
+         public readonly string Currency;
+
+         public Money(decimal amount, string currency) {
+            this.Amount = amount;
+            this.Currency = currency;
          }
       }
    }
