@@ -69,7 +69,22 @@ namespace DbExtensions {
       /// <param name="connection">The connection.</param>
       /// <returns>The <see cref="DbProviderFactory"/> associated with the connection.</returns>
       public static DbProviderFactory GetProviderFactory(this DbConnection connection) {
-         return getDbProviderFactory(connection);
+
+         DbProviderFactory factory = getDbProviderFactory(connection);
+
+         if (factory != null)
+            return factory;
+
+         // In .NET 4.5 Odbc and OleDb do not override DbConnection.DbProviderFactory
+         // https://connect.microsoft.com/VisualStudio/feedback/details/785312
+
+         if (connection is System.Data.Odbc.OdbcConnection)
+            return System.Data.Odbc.OdbcFactory.Instance;
+
+         if (connection is System.Data.OleDb.OleDbConnection)
+            return System.Data.OleDb.OleDbFactory.Instance;
+
+         return null;
       }
 
       /// <summary>
