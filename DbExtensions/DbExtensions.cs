@@ -617,7 +617,7 @@ namespace DbExtensions {
          
          PocoMapper mapper = new PocoMapper(typeof(TResult), logger);
 
-         return Map(command, r => mapper.Map(r), logger).Cast<TResult>();
+         return Map(command, r => (TResult)mapper.Map(r), logger);
       }
 
       /// <summary>
