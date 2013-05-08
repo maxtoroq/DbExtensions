@@ -167,7 +167,7 @@ namespace DbExtensions {
          return GetDefiningQuery(clone: true);
       }
 
-      SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedCalls = false) {
+      internal SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedCalls = false) {
 
          bool applyBuffer = this.HasBufferedCalls && !omitBufferedCalls;
          bool shouldClone = clone || !applyBuffer;
@@ -274,7 +274,7 @@ namespace DbExtensions {
          return new SqlSet<TResult>(this, superQuery, mapper);
       }
 
-      DbCommand CreateCommand(SqlBuilder sqlBuilder) {
+      internal DbCommand CreateCommand(SqlBuilder sqlBuilder) {
          return this.context.CreateCommand(sqlBuilder);
       }
 
@@ -347,7 +347,11 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>All elements in the set.</returns>
       public IEnumerable<object> AsEnumerable() {
-         return (IEnumerable<object>)Execute(CreateCommand(GetDefiningQuery(clone: false)));
+
+         IEnumerable enumerable = Execute(CreateCommand(GetDefiningQuery(clone: false)));
+
+         return enumerable as IEnumerable<object>
+            ?? enumerable.Cast<object>();
       }
 
       /// <summary>
@@ -971,7 +975,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>All <typeparamref name="TResult"/> objects in the set.</returns>
       public new IEnumerable<TResult> AsEnumerable() {
-         return (IEnumerable<TResult>)base.AsEnumerable();
+         return (IEnumerable<TResult>)Execute(CreateCommand(GetDefiningQuery(clone: false)));
       }
 
       /// <summary>
