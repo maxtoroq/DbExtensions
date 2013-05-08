@@ -208,7 +208,7 @@ namespace DbExtensions {
             }
 
             if (hasSkip) {
-               query.OFFSET(skip.Value.ToString(CultureInfo.InvariantCulture) + " ROWS");
+               query.OFFSET("{0} ROWS", skip.Value);
 
             } else if (hasOrderBy && !usingTop) {
 
@@ -218,7 +218,7 @@ namespace DbExtensions {
             }
 
             if (useFetch)
-               query.AppendClause("FETCH", null, String.Concat("NEXT ", take.Value.ToString(CultureInfo.InvariantCulture), " ROWS ONLY"), null);
+               query.AppendClause("FETCH", null, "NEXT {0} ROWS ONLY", new object[] { take.Value });
          
          } else {
 
@@ -705,7 +705,7 @@ namespace DbExtensions {
             query = GetDefiningQuery(omitBufferedCalls: true);
 
             if (IsSqlServer() && !this.skipBuffer.HasValue) {
-               query = CreateSuperQuery(query, String.Concat("TOP(", count.ToString(CultureInfo.InvariantCulture), ") *"), null);
+               query = CreateSuperQuery(query, "TOP({0}) *", new object[] { count });
                ApplyOrderBySkipTake(query, this.orderByBuffer, skip: null, take: count);
 
             } else {
@@ -716,7 +716,7 @@ namespace DbExtensions {
          } else {
 
             if (IsSqlServer()) {
-               query = CreateSuperQuery(String.Concat("TOP(", count.ToString(CultureInfo.InvariantCulture), ") *"), null);
+               query = CreateSuperQuery("TOP({0}) *", count);
 
             } else {
                query = CreateSuperQuery();
