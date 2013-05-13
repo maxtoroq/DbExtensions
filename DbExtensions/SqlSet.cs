@@ -167,7 +167,7 @@ namespace DbExtensions {
          return GetDefiningQuery(clone: true);
       }
 
-      SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedCalls = false) {
+      internal SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedCalls = false) {
 
          bool applyBuffer = this.HasBufferedCalls && !omitBufferedCalls;
          bool shouldClone = clone || !applyBuffer;
@@ -208,7 +208,7 @@ namespace DbExtensions {
             }
 
             if (hasSkip) {
-               query.OFFSET(skip.Value.ToString(CultureInfo.InvariantCulture) + " ROWS");
+               query.OFFSET("{0} ROWS", skip.Value);
 
             } else if (hasOrderBy && !usingTop) {
 
@@ -218,7 +218,7 @@ namespace DbExtensions {
             }
 
             if (useFetch)
-               query.AppendClause("FETCH", null, String.Concat("NEXT ", take.Value.ToString(CultureInfo.InvariantCulture), " ROWS ONLY"), null);
+               query.AppendClause("FETCH", null, "NEXT {0} ROWS ONLY", new object[] { take.Value });
          
          } else {
 
@@ -274,7 +274,7 @@ namespace DbExtensions {
          return new SqlSet<TResult>(this, superQuery, mapper);
       }
 
-      DbCommand CreateCommand(SqlBuilder sqlBuilder) {
+      internal DbCommand CreateCommand(SqlBuilder sqlBuilder) {
          return this.context.CreateCommand(sqlBuilder);
       }
 
@@ -347,7 +347,11 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>All elements in the set.</returns>
       public IEnumerable<object> AsEnumerable() {
-         return (IEnumerable<object>)Execute(CreateCommand(GetDefiningQuery(clone: false)));
+
+         IEnumerable enumerable = Execute(CreateCommand(GetDefiningQuery(clone: false)));
+
+         return enumerable as IEnumerable<object>
+            ?? enumerable.Cast<object>();
       }
 
       /// <summary>
@@ -705,7 +709,7 @@ namespace DbExtensions {
             query = GetDefiningQuery(omitBufferedCalls: true);
 
             if (IsSqlServer() && !this.skipBuffer.HasValue) {
-               query = CreateSuperQuery(query, String.Concat("TOP(", count.ToString(CultureInfo.InvariantCulture), ") *"), null);
+               query = CreateSuperQuery(query, "TOP({0}) *", new object[] { count });
                ApplyOrderBySkipTake(query, this.orderByBuffer, skip: null, take: count);
 
             } else {
@@ -716,7 +720,7 @@ namespace DbExtensions {
          } else {
 
             if (IsSqlServer()) {
-               query = CreateSuperQuery(String.Concat("TOP(", count.ToString(CultureInfo.InvariantCulture), ") *"), null);
+               query = CreateSuperQuery("TOP({0}) *", count);
 
             } else {
                query = CreateSuperQuery();
@@ -971,7 +975,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>All <typeparamref name="TResult"/> objects in the set.</returns>
       public new IEnumerable<TResult> AsEnumerable() {
-         return (IEnumerable<TResult>)base.AsEnumerable();
+         return (IEnumerable<TResult>)Execute(CreateCommand(GetDefiningQuery(clone: false)));
       }
 
       /// <summary>

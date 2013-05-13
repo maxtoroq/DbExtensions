@@ -910,7 +910,7 @@ namespace DbExtensions {
       /// <param name="maxRecords">The value to use as the body of the LIMIT clause.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
       public SqlBuilder LIMIT(int maxRecords) {
-         return LIMIT(maxRecords.ToString(CultureInfo.InvariantCulture));
+         return LIMIT("{0}", maxRecords);
       }
 
       /// <summary>
@@ -948,7 +948,7 @@ namespace DbExtensions {
       /// <param name="startIndex">The value to use as the body of the OFFSET clause.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
       public SqlBuilder OFFSET(int startIndex) {
-         return OFFSET(startIndex.ToString(CultureInfo.InvariantCulture));
+         return OFFSET("{0}", startIndex);
       }
 
       /// <summary>
