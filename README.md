@@ -156,7 +156,7 @@ versions 1.x, 2.x and 3.x remain available there.
 Resources
 ---------
 - [Documentation](https://github.com/maxtoroq/DbExtensions/wiki)
-- [Ask for help](http://sourceforge.net/p/dbextensions/discussion/)
+- [Ask for help](https://github.com/maxtoroq/DbExtensions/issues/new)
 - [Report an issue](https://github.com/maxtoroq/DbExtensions/issues)
 - [Roadmap](https://github.com/maxtoroq/DbExtensions/wiki/Roadmap)
 
