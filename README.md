@@ -127,7 +127,6 @@ Features
 - Automatic connection management (no need to explicitly open connection, but you are allowed to)
 - Optimistic concurrency (using version column)
 - Batch and deep inserts (recursively insert entity and all one-to-many associations)
-- Delete by primary key
 - Query results as XML
 - Profiling
 - Provider-independent (tested against SQLite, SQL Server CE, SQL Server and MySQL)
