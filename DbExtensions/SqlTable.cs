@@ -225,6 +225,15 @@ namespace DbExtensions {
       }
 
       /// <summary>
+      /// Checks the existance of an entity whose primary matches the provided values.
+      /// </summary>
+      /// <param name="keyValues">The primary key values.</param>
+      /// <returns>true if the primary key values exists in the database; otherwise false.</returns>
+      public bool ContainsKey(params object[] keyValues) {
+         return table.ContainsKey(keyValues);
+      }
+
+      /// <summary>
       /// Sets all mapped members of <paramref name="entity"/> to their default database values.
       /// </summary>
       /// <param name="entity">The entity whose members are to be set to their default values.</param>
@@ -555,6 +564,34 @@ namespace DbExtensions {
             m => m.MappedName,
             m => m.MemberAccessor.GetBoxedValue(entity)
          );
+
+         return Contains(predicateMembers, predicateValues);
+      }
+
+      /// <summary>
+      /// Checks the existance of an entity whose primary matches the provided values.
+      /// </summary>
+      /// <param name="keyValues">The primary key values.</param>
+      /// <returns>true if the primary key values exists in the database; otherwise false.</returns>
+      public bool ContainsKey(params object[] keyValues) {
+
+         if (keyValues == null) throw new ArgumentNullException("keyValues");
+
+         EnsureEntityType();
+
+         MetaDataMember[] predicateMembers = metaType.IdentityMembers.ToArray();
+
+         if (keyValues.Length != predicateMembers.Length)
+            throw new ArgumentException("The Length of keyValues must match the number of identity members.", "keyValues");
+
+         IDictionary<string, object> predicateValues =
+            Enumerable.Range(0, predicateMembers.Length)
+               .ToDictionary(i => predicateMembers[i].MappedName, i => keyValues[i]);
+
+         return Contains(predicateMembers, predicateValues);
+      }
+
+      bool Contains(MetaDataMember[] predicateMembers, IDictionary<string, object> predicateValues) {
 
          SqlBuilder query = this.SQL.SELECT_FROM(new[] { predicateMembers[0] });
          query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
@@ -1060,6 +1097,7 @@ namespace DbExtensions {
 
       bool Contains(object entity);
       bool Contains(object entity, bool version);
+      bool ContainsKey(params object[] keyValues);
       void Delete(object entity);
       void Delete(object entity, ConcurrencyConflictPolicy conflictPolicy);
       void DeleteById(object id);
