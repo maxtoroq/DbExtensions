@@ -907,6 +907,15 @@ namespace DbExtensions {
       }
 
       /// <summary>
+      /// Creates and returns an UPDATE command for the current table
+      /// that includes the UPDATE clause.
+      /// </summary>
+      /// <returns>The UPDATE command for the current table.</returns>
+      public SqlBuilder UPDATE() {
+         return new SqlBuilder("UPDATE " + QuoteIdentifier(metaType.Table.TableName));
+      }
+
+      /// <summary>
       /// Creates and returns an UPDATE command for the specified <paramref name="entity"/>,
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
