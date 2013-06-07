@@ -225,12 +225,12 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Checks the existance of an entity whose primary matches the provided values.
+      /// Checks the existance of an entity whose primary matches the <paramref name="id"/> parameter.
       /// </summary>
-      /// <param name="keyValues">The primary key values.</param>
-      /// <returns>true if the primary key values exists in the database; otherwise false.</returns>
-      public bool ContainsKey(params object[] keyValues) {
-         return table.ContainsKey(keyValues);
+      /// <param name="id">The primary key value.</param>
+      /// <returns>true if the primary key value exists in the database; otherwise false.</returns>
+      public bool ContainsKey(object id) {
+         return table.ContainsKey(id);
       }
 
       /// <summary>
@@ -569,11 +569,15 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Checks the existance of an entity whose primary matches the provided values.
+      /// Checks the existance of an entity whose primary matches the <paramref name="id"/> parameter.
       /// </summary>
-      /// <param name="keyValues">The primary key values.</param>
-      /// <returns>true if the primary key values exists in the database; otherwise false.</returns>
-      public bool ContainsKey(params object[] keyValues) {
+      /// <param name="id">The primary key value.</param>
+      /// <returns>true if the primary key value exists in the database; otherwise false.</returns>
+      public bool ContainsKey(object id) {
+         return ContainsKey(new object[1] { id });
+      }
+
+      bool ContainsKey(object[] keyValues) {
 
          if (keyValues == null) throw new ArgumentNullException("keyValues");
 
@@ -1106,7 +1110,7 @@ namespace DbExtensions {
 
       bool Contains(object entity);
       bool Contains(object entity, bool version);
-      bool ContainsKey(params object[] keyValues);
+      bool ContainsKey(object id);
       void Delete(object entity);
       void Delete(object entity, ConcurrencyConflictPolicy conflictPolicy);
       void DeleteById(object id);
