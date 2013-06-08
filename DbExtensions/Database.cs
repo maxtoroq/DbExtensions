@@ -629,49 +629,7 @@ namespace DbExtensions {
       }
 
       // CRUD
-
-      internal void InsertChildren(MetaType metaType, object entity) {
-
-         MetaAssociation[] oneToMany = metaType.Associations.Where(a => a.IsMany).ToArray();
-
-         for (int i = 0; i < oneToMany.Length; i++) {
-
-            MetaAssociation assoc = oneToMany[i];
-
-            object[] many = ((IEnumerable<object>)assoc.ThisMember.MemberAccessor.GetBoxedValue(entity) ?? new object[0])
-               .Where(o => o != null)
-               .ToArray();
-
-            if (many.Length == 0) continue;
-
-            for (int j = 0; j < many.Length; j++) {
-
-               object child = many[j];
-
-               for (int k = 0; k < assoc.ThisKey.Count; k++) {
-
-                  MetaDataMember thisKey = assoc.ThisKey[k];
-                  MetaDataMember otherKey = assoc.OtherKey[k];
-
-                  object thisKeyVal = thisKey.MemberAccessor.GetBoxedValue(entity);
-
-                  otherKey.MemberAccessor.SetBoxedValue(ref child, thisKeyVal);
-               }
-            }
-
-            MetaType otherType = assoc.OtherType;
-
-            InsertRangeImpl(otherType, many);
-
-            for (int j = 0; j < many.Length; j++) {
-
-               object child = many[j];
-
-               InsertChildren(otherType, child);
-            }
-         }
-      }
-
+      
       /// <summary>
       /// Executes INSERT commands for the specified <paramref name="entities"/>.
       /// </summary>
@@ -688,10 +646,6 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
       public void InsertRange(params object[] entities) {
-         InsertRangeImpl(null, entities);
-      }
-
-      internal void InsertRangeImpl(MetaType metaType, object[] entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
@@ -702,54 +656,20 @@ namespace DbExtensions {
 
          var byType = entities.GroupBy(e => GetMetaType(e.GetType())).ToArray();
 
-         if (byType.Length > 1) {
-
-            using (var tx = EnsureInTransaction()) {
-
-               for (int i = 0; i < byType.Length; i++) {
-                  var grp = byType[i];
-
-                  InsertRangeImpl(grp.Key, grp.ToArray());
-               }
-
-               tx.Commit();
-            }
-
+         if (byType.Length == 1) {
+            Table(entities[0].GetType()).InsertRange(entities);
             return;
          }
 
-         if (metaType == null)
-            metaType = GetMetaType(entities[0].GetType());
+         using (var tx = EnsureInTransaction()) {
 
-         SqlTable table = Table(metaType);
+            for (int i = 0; i < byType.Length; i++) {
+               var grp = byType[i];
 
-         if (entities.Length == 1) {
-            table.Insert(entities[0]);
-            return;
-         }
-
-         MetaDataMember[] syncMembers =
-            (from m in metaType.PersistentDataMembers
-             where (m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
-             select m).ToArray();
-
-         bool batch = syncMembers.Length == 0 && this.config.EnableBatchCommands;
-
-         if (batch) {
-
-            SqlBuilder batchInsert = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => table.SQL.INSERT_INTO_VALUES(e)));
-
-            Affect(batchInsert, entities.Length, AffectedRecordsPolicy.MustMatchAffecting);
-
-         } else {
-
-            using (var tx = EnsureInTransaction()) {
-
-               for (int i = 0; i < entities.Length; i++)
-                  table.Insert(entities[i]);
-
-               tx.Commit();
+               Table(grp.Key).InsertRange(grp.ToArray());
             }
+
+            tx.Commit();
          }
       }
       

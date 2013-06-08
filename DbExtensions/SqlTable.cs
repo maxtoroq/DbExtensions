@@ -120,6 +120,10 @@ namespace DbExtensions {
          table.InsertDeep(entity);
       }
 
+      void ISqlTable.InsertDescendants(object entity) {
+         table.InsertDescendants(entity);
+      }
+
       /// <summary>
       /// Executes INSERT commands for the specified <paramref name="entities"/>.
       /// </summary>
@@ -400,9 +404,51 @@ namespace DbExtensions {
          using (var tx = this.dao.EnsureInTransaction()) {
 
             Insert(entity);
-            this.dao.InsertChildren(metaType, entity);
+            InsertDescendants(entity);
 
             tx.Commit();
+         }
+      }
+
+      void InsertDescendants(TEntity entity) {
+
+         MetaAssociation[] oneToMany = metaType.Associations.Where(a => a.IsMany).ToArray();
+
+         for (int i = 0; i < oneToMany.Length; i++) {
+
+            MetaAssociation assoc = oneToMany[i];
+
+            object[] many = ((IEnumerable<object>)assoc.ThisMember.MemberAccessor.GetBoxedValue(entity) ?? new object[0])
+               .Where(o => o != null)
+               .ToArray();
+
+            if (many.Length == 0) continue;
+
+            for (int j = 0; j < many.Length; j++) {
+
+               object child = many[j];
+
+               for (int k = 0; k < assoc.ThisKey.Count; k++) {
+
+                  MetaDataMember thisKey = assoc.ThisKey[k];
+                  MetaDataMember otherKey = assoc.OtherKey[k];
+
+                  object thisKeyVal = thisKey.MemberAccessor.GetBoxedValue(entity);
+
+                  otherKey.MemberAccessor.SetBoxedValue(ref child, thisKeyVal);
+               }
+            }
+
+            SqlTable otherTable = this.dao.Table(assoc.OtherType);
+
+            otherTable.InsertRange(many);
+
+            for (int j = 0; j < many.Length; j++) {
+
+               object child = many[j];
+
+               ((ISqlTable)otherTable).InsertDescendants(child);
+            }
          }
       }
 
@@ -422,7 +468,43 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
       public void InsertRange(params TEntity[] entities) {
-         this.dao.InsertRange(entities);
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         entities = entities.Where(o => o != null).ToArray();
+
+         if (entities.Length == 0)
+            return;
+
+         if (entities.Length == 1) {
+            Insert(entities[0]);
+            return;
+         }
+
+         MetaDataMember[] syncMembers =
+            (from m in metaType.PersistentDataMembers
+             where (m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
+             select m).ToArray();
+
+         bool batch = syncMembers.Length == 0 
+            && this.dao.Configuration.EnableBatchCommands;
+
+         if (batch) {
+
+            SqlBuilder batchInsert = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.SQL.INSERT_INTO_VALUES(e)));
+
+            this.dao.Affect(batchInsert, entities.Length, AffectedRecordsPolicy.MustMatchAffecting);
+
+         } else {
+
+            using (var tx = this.dao.EnsureInTransaction()) {
+
+               for (int i = 0; i < entities.Length; i++)
+                  Insert(entities[i]);
+
+               tx.Commit();
+            }
+         }
       }
 
       /// <summary>
@@ -711,12 +793,16 @@ namespace DbExtensions {
          InsertDeep((TEntity)entity);
       }
 
+      void ISqlTable.InsertDescendants(object entity) {
+         InsertDescendants((TEntity)entity);
+      }
+
       void ISqlTable.InsertRange(IEnumerable<object> entities) {
          InsertRange((IEnumerable<TEntity>)entities);
       }
 
       void ISqlTable.InsertRange(params object[] entities) {
-         InsertRange((TEntity[])entities);
+         InsertRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
       }
 
       void ISqlTable.Update(object entity) {
@@ -1119,6 +1205,7 @@ namespace DbExtensions {
       void Initialize(object entity);
       void Insert(object entity);
       void InsertDeep(object entity);
+      void InsertDescendants(object entity);
       void InsertRange(IEnumerable<object> entities);
       void InsertRange(params object[] entities);
       void Refresh(object entity);
