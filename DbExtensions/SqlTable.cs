@@ -110,12 +110,18 @@ namespace DbExtensions {
       public void Insert(object entity) {
          table.Insert(entity);
       }
+      
+      public void Insert(object entity, bool deep) {
+         table.Insert(entity, deep);
+      }
 
       /// <summary>
       /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all its
       /// one-to-many associations.
       /// </summary>
       /// <param name="entity">The entity whose INSERT command is to be executed.</param>
+      [Obsolete("Please use Insert(TEntity, bool) instead.")]
+      [EditorBrowsable(EditorBrowsableState.Never)]
       public void InsertDeep(object entity) {
          table.InsertDeep(entity);
       }
@@ -132,12 +138,20 @@ namespace DbExtensions {
          table.InsertRange(entities);
       }
 
+      public void InsertRange(IEnumerable<object> entities, bool deep) {
+         table.InsertRange(entities, deep);
+      }
+
       /// <summary>
       /// Executes INSERT commands for the specified <paramref name="entities"/>.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
       public void InsertRange(params object[] entities) {
          table.InsertRange(entities);
+      }
+
+      public void InsertRange(object[] entities, bool deep) {
+         table.InsertRange(entities, deep);
       }
 
       /// <summary>
@@ -341,6 +355,10 @@ namespace DbExtensions {
       /// need to have a primary key.
       /// </param>
       public void Insert(TEntity entity) {
+         Insert(entity, deep: false);
+      }
+
+      public void Insert(TEntity entity, bool deep) {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
@@ -388,6 +406,8 @@ namespace DbExtensions {
                Refresh(entity, syncMembers);
             }
 
+            InsertDescendants(entity);
+
             tx.Commit();
          }
       }
@@ -397,6 +417,8 @@ namespace DbExtensions {
       /// one-to-many associations.
       /// </summary>
       /// <param name="entity">The entity whose INSERT command is to be executed.</param>
+      [Obsolete("Please use Insert(TEntity, bool) instead.")]
+      [EditorBrowsable(EditorBrowsableState.Never)]
       public void InsertDeep(TEntity entity) {
 
          if (entity == null) throw new ArgumentNullException("entity");
@@ -463,11 +485,22 @@ namespace DbExtensions {
          InsertRange(entities.ToArray());
       }
 
+      public void InsertRange(IEnumerable<TEntity> entities, bool deep) {
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         InsertRange(entities.ToArray(), deep);
+      }
+
       /// <summary>
       /// Executes INSERT commands for the specified <paramref name="entities"/>.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
       public void InsertRange(params TEntity[] entities) {
+         InsertRange(entities, deep: false);
+      }
+
+      public void InsertRange(TEntity[] entities, bool deep) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
@@ -477,7 +510,7 @@ namespace DbExtensions {
             return;
 
          if (entities.Length == 1) {
-            Insert(entities[0]);
+            Insert(entities[0], deep);
             return;
          }
 
@@ -493,14 +526,24 @@ namespace DbExtensions {
 
             SqlBuilder batchInsert = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.SQL.INSERT_INTO_VALUES(e)));
 
-            this.dao.Affect(batchInsert, entities.Length, AffectedRecordsPolicy.MustMatchAffecting);
+            using (var tx = this.dao.EnsureInTransaction()) {
+               
+               this.dao.Affect(batchInsert, entities.Length, AffectedRecordsPolicy.MustMatchAffecting);
+
+               if (deep) {
+                  for (int i = 0; i < entities.Length; i++)
+                     InsertDescendants(entities[i]);
+               }
+
+               tx.Commit();
+            }
 
          } else {
 
             using (var tx = this.dao.EnsureInTransaction()) {
 
                for (int i = 0; i < entities.Length; i++)
-                  Insert(entities[i]);
+                  Insert(entities[i], deep);
 
                tx.Commit();
             }
@@ -789,8 +832,17 @@ namespace DbExtensions {
          Insert((TEntity)entity);
       }
 
+      void ISqlTable.Insert(object entity, bool deep) {
+         Insert((TEntity)entity, deep);
+      }
+
       void ISqlTable.InsertDeep(object entity) {
+
+#pragma warning disable 0618
+
          InsertDeep((TEntity)entity);
+
+#pragma warning restore 0618
       }
 
       void ISqlTable.InsertDescendants(object entity) {
@@ -801,8 +853,22 @@ namespace DbExtensions {
          InsertRange((IEnumerable<TEntity>)entities);
       }
 
+      void ISqlTable.InsertRange(IEnumerable<object> entities, bool deep) {
+         InsertRange((IEnumerable<TEntity>)entities, deep);
+      }
+
       void ISqlTable.InsertRange(params object[] entities) {
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
          InsertRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
+      }
+
+      void ISqlTable.InsertRange(object[] entities, bool deep) {
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         InsertRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray(), deep);
       }
 
       void ISqlTable.Update(object entity) {
@@ -1203,11 +1269,18 @@ namespace DbExtensions {
       void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy);
       object Find(object id);
       void Initialize(object entity);
+
       void Insert(object entity);
-      void InsertDeep(object entity);
-      void InsertDescendants(object entity);
+      void Insert(object entity, bool deep);
+      
+      void InsertDeep(object entity); // deprecated
+      void InsertDescendants(object entity); // internal
+      
       void InsertRange(IEnumerable<object> entities);
+      void InsertRange(IEnumerable<object> entities, bool deep);
       void InsertRange(params object[] entities);
+      void InsertRange(object[] entities, bool deep);
+
       void Refresh(object entity);
       void Update(object entity);
       void Update(object entity, ConcurrencyConflictPolicy conflictPolicy);

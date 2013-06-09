@@ -93,7 +93,7 @@ namespace Samples.CSharp {
             }
          };
 
-         db.Orders.InsertDeep(order);
+         db.Orders.Insert(order, deep: true);
 
          order.Freight = 10m;
 

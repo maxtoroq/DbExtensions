@@ -75,7 +75,7 @@ type DatabaseSamples(connectionString : string, mapping : MetaModel, log : TextW
       order.OrderDetails.Add(new OrderDetail(ProductID = 77, Quantity = 1s))
       order.OrderDetails.Add(new OrderDetail(ProductID = 41, Quantity = 2s))
 
-      db.Orders.InsertDeep(order)
+      db.Orders.Insert(order, deep = true)
 
       order.Freight <- new Nullable<decimal>(10m)
 
