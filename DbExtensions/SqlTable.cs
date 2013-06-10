@@ -233,6 +233,22 @@ namespace DbExtensions {
          table.DeleteKey(id, conflictPolicy);
       }
 
+      public void DeleteRange(IEnumerable<object> entities) {
+         table.DeleteRange(entities);
+      }
+
+      public void DeleteRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
+         table.DeleteRange(entities, conflictPolicy);
+      }
+
+      public void DeleteRange(params object[] entities) {
+         table.DeleteRange(entities);
+      }
+
+      public void DeleteRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
+         table.DeleteRange(entities, conflictPolicy);
+      }
+
       /// <summary>
       /// Checks the existance of the <paramref name="entity"/>,
       /// using the primary key value. Version members are ignored.
@@ -664,6 +680,80 @@ namespace DbExtensions {
          this.dao.Affect(this.SQL.DELETE_FROM_WHERE_id(id), 1, GetAffectedRecordsPolicy(conflictPolicy));
       }
 
+      public void DeleteRange(IEnumerable<TEntity> entities) {
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         DeleteRange(entities.ToArray());
+      }
+
+      public void DeleteRange(IEnumerable<TEntity> entities, ConcurrencyConflictPolicy conflictPolicy) {
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         DeleteRange(entities.ToArray(), conflictPolicy);
+      }
+
+      public void DeleteRange(params TEntity[] entities) {
+         DeleteRange(entities, this.dao.Configuration.DeleteConflictPolicy);
+      }
+
+      public void DeleteRange(TEntity[] entities, ConcurrencyConflictPolicy conflictPolicy) {
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         entities = entities.Where(o => o != null).ToArray();
+
+         if (entities.Length == 0)
+            return;
+
+         if (entities.Length == 1) {
+            Delete(entities[0], conflictPolicy);
+            return;
+         }
+
+         EnsureEntityType();
+
+         AffectedRecordsPolicy affRec = GetAffectedRecordsPolicy(conflictPolicy);
+
+         bool useVersion = conflictPolicy == ConcurrencyConflictPolicy.UseVersion
+            && this.metaType.VersionMember != null;
+
+         bool singleStatement = this.metaType.IdentityMembers.Count == 1
+            && !useVersion;
+
+         bool batch = this.dao.Configuration.EnableBatchCommands;
+
+         if (singleStatement) {
+
+            MetaDataMember idMember = this.metaType.IdentityMembers[0];
+
+            object[] ids = entities.Select(e => idMember.MemberAccessor.GetBoxedValue(e)).ToArray();
+
+            SqlBuilder sql = this.SQL
+               .DELETE_FROM()
+               .WHERE(this.dao.QuoteIdentifier(idMember.MappedName) + " IN ({0})", new object[1] { ids });
+
+            this.dao.Affect(sql, entities.Length, affRec);
+
+         } else if (batch) {
+
+            SqlBuilder batchDelete = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.SQL.DELETE_FROM_WHERE(e, conflictPolicy)));
+
+            this.dao.Affect(batchDelete, entities.Length, affRec);
+
+         } else {
+
+            using (var tx = this.dao.EnsureInTransaction()) {
+
+               for (int i = 0; i < entities.Length; i++)
+                  Delete(entities[i], conflictPolicy);
+
+               tx.Commit();
+            }
+         }
+      }
+
       static AffectedRecordsPolicy GetAffectedRecordsPolicy(ConcurrencyConflictPolicy conflictPolicy) {
 
          switch (conflictPolicy) {
@@ -935,6 +1025,28 @@ namespace DbExtensions {
 
       void ISqlTable.DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
          DeleteKey(id, conflictPolicy);
+      }
+
+      void ISqlTable.DeleteRange(IEnumerable<object> entities) {
+         DeleteRange((IEnumerable<TEntity>)entities);
+      }
+
+      void ISqlTable.DeleteRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
+         DeleteRange((IEnumerable<TEntity>)entities, conflictPolicy);
+      }
+
+      void ISqlTable.DeleteRange(params object[] entities) { 
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         DeleteRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
+      }
+
+      void ISqlTable.DeleteRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         DeleteRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray(), conflictPolicy);
       }
 
       bool ISqlTable.Contains(object entity) {
@@ -1310,6 +1422,10 @@ namespace DbExtensions {
       void Delete(object entity, ConcurrencyConflictPolicy conflictPolicy);
       void DeleteKey(object id);
       void DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy);
+      void DeleteRange(IEnumerable<object> entities);
+      void DeleteRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy);
+      void DeleteRange(params object[] entities);
+      void DeleteRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy);
 
       void DeleteById(object id); // deprecated
       void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy); // deprecated

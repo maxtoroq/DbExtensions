@@ -94,11 +94,7 @@ Public Class DatabaseSamples
 
       db.Orders.Update(order)
 
-      db.Affect(db.Table(Of OrderDetail).SQL _
-         .DELETE_FROM() _
-         .WHERE("OrderID = {0}", order.OrderID) _
-         , order.OrderDetails.Count)
-
+      db.OrderDetails.DeleteRange(order.OrderDetails)
       db.Orders.Delete(order)
 
    End Sub
