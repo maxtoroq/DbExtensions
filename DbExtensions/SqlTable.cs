@@ -204,6 +204,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="id">The primary key value.</param>
+      [Obsolete("Please use DeleteKey(object) instead.")]
+      [EditorBrowsable(EditorBrowsableState.Never)]
       public void DeleteById(object id) {
          table.DeleteById(id);
       }
@@ -217,8 +219,18 @@ namespace DbExtensions {
       /// <param name="conflictPolicy">
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
       /// </param>
+      [Obsolete("Please use DeleteKey(object, ConcurrencyConflictPolicy) instead.")]
+      [EditorBrowsable(EditorBrowsableState.Never)]
       public void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
          table.DeleteById(id, conflictPolicy);
+      }
+
+      public void DeleteKey(object id) {
+         table.DeleteKey(id);
+      }
+
+      public void DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
+         table.DeleteKey(id, conflictPolicy);
       }
 
       /// <summary>
@@ -617,14 +629,26 @@ namespace DbExtensions {
          this.dao.Affect(this.SQL.DELETE_FROM_WHERE(entity, conflictPolicy), 1, affRec);
       }
 
+      [Obsolete("Please use DeleteKey(object) instead.")]
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public void DeleteById(object id) {
+         DeleteKey(id);
+      }
+
+      [Obsolete("Please use DeleteKey(object, ConcurrencyConflictPolicy) instead.")]
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
+         DeleteKey(id, conflictPolicy);
+      }
+
       /// <summary>
       /// Executes a DELETE command for the entity
       /// whose primary key matches the <paramref name="id"/> parameter,
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="id">The primary key value.</param>
-      public void DeleteById(object id) {
-         DeleteById(id, this.dao.Configuration.DeleteConflictPolicy);
+      public void DeleteKey(object id) {
+         DeleteKey(id, this.dao.Configuration.DeleteConflictPolicy);
       }
 
       /// <summary>
@@ -636,7 +660,7 @@ namespace DbExtensions {
       /// <param name="conflictPolicy">
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
       /// </param>
-      public void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
+      public void DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
          this.dao.Affect(this.SQL.DELETE_FROM_WHERE_id(id), 1, GetAffectedRecordsPolicy(conflictPolicy));
       }
 
@@ -888,11 +912,29 @@ namespace DbExtensions {
       }
 
       void ISqlTable.DeleteById(object id) {
+
+#pragma warning disable 0618
+
          DeleteById(id);
+
+#pragma warning restore 0618
       }
 
       void ISqlTable.DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
+
+#pragma warning disable 0618
+
          DeleteById(id, conflictPolicy);
+
+#pragma warning restore 0618
+      }
+
+      void ISqlTable.DeleteKey(object id) {
+         DeleteKey(id);
+      }
+
+      void ISqlTable.DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
+         DeleteKey(id, conflictPolicy);
       }
 
       bool ISqlTable.Contains(object entity) {
@@ -1263,10 +1305,15 @@ namespace DbExtensions {
       bool Contains(object entity);
       bool Contains(object entity, bool version);
       bool ContainsKey(object id);
+      
       void Delete(object entity);
       void Delete(object entity, ConcurrencyConflictPolicy conflictPolicy);
-      void DeleteById(object id);
-      void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy);
+      void DeleteKey(object id);
+      void DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy);
+
+      void DeleteById(object id); // deprecated
+      void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy); // deprecated
+      
       object Find(object id);
       void Initialize(object entity);
 
