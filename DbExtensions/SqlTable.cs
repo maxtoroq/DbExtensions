@@ -120,7 +120,7 @@ namespace DbExtensions {
       /// one-to-many associations.
       /// </summary>
       /// <param name="entity">The entity whose INSERT command is to be executed.</param>
-      [Obsolete("Please use Insert(TEntity, bool) instead.")]
+      [Obsolete("Please use Insert(TEntity, Boolean) instead.")]
       [EditorBrowsable(EditorBrowsableState.Never)]
       public void InsertDeep(object entity) {
          table.InsertDeep(entity);
@@ -204,7 +204,7 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="id">The primary key value.</param>
-      [Obsolete("Please use DeleteKey(object) instead.")]
+      [Obsolete("Please use DeleteKey(Object) instead.")]
       [EditorBrowsable(EditorBrowsableState.Never)]
       public void DeleteById(object id) {
          table.DeleteById(id);
@@ -219,7 +219,7 @@ namespace DbExtensions {
       /// <param name="conflictPolicy">
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
       /// </param>
-      [Obsolete("Please use DeleteKey(object, ConcurrencyConflictPolicy) instead.")]
+      [Obsolete("Please use DeleteKey(Object, ConcurrencyConflictPolicy) instead.")]
       [EditorBrowsable(EditorBrowsableState.Never)]
       public void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
          table.DeleteById(id, conflictPolicy);
@@ -429,7 +429,7 @@ namespace DbExtensions {
       /// one-to-many associations.
       /// </summary>
       /// <param name="entity">The entity whose INSERT command is to be executed.</param>
-      [Obsolete("Please use Insert(TEntity, bool) instead.")]
+      [Obsolete("Please use Insert(TEntity, Boolean) instead.")]
       [EditorBrowsable(EditorBrowsableState.Never)]
       public void InsertDeep(TEntity entity) {
 
@@ -629,13 +629,13 @@ namespace DbExtensions {
          this.dao.Affect(this.SQL.DELETE_FROM_WHERE(entity, conflictPolicy), 1, affRec);
       }
 
-      [Obsolete("Please use DeleteKey(object) instead.")]
+      [Obsolete("Please use DeleteKey(Object) instead.")]
       [EditorBrowsable(EditorBrowsableState.Never)]
       public void DeleteById(object id) {
          DeleteKey(id);
       }
 
-      [Obsolete("Please use DeleteKey(object, ConcurrencyConflictPolicy) instead.")]
+      [Obsolete("Please use DeleteKey(Object, ConcurrencyConflictPolicy) instead.")]
       [EditorBrowsable(EditorBrowsableState.Never)]
       public void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
          DeleteKey(id, conflictPolicy);

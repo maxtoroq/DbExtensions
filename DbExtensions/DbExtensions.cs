@@ -1993,7 +1993,7 @@ namespace DbExtensions {
       /// <param name="providerInvariantName">The provider invariant name.</param>
       /// <returns>The requested provider factory.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use DbExtensions.Database.GetProviderFactory(string) instead.")]
+      [Obsolete("Please use DbExtensions.Database.GetProviderFactory(String) instead.")]
       public static DbProviderFactory GetProviderFactory(string providerInvariantName) {
          return Database.GetProviderFactory(providerInvariantName);
       }
@@ -2020,7 +2020,7 @@ namespace DbExtensions {
       /// <param name="connectionString">The connection string.</param>
       /// <returns>The requested connection.</returns>
       [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use DbExtensions.Database.CreateConnection(string) instead.")]
+      [Obsolete("Please use DbExtensions.Database.CreateConnection(String) instead.")]
       public static DbConnection CreateConnection(string connectionString) {
          return Database.CreateConnection(connectionString);
       }
