@@ -434,7 +434,8 @@ namespace DbExtensions {
                Refresh(entity, syncMembers);
             }
 
-            InsertDescendants(entity);
+            if (deep)
+               InsertDescendants(entity);
 
             tx.Commit();
          }
@@ -448,16 +449,7 @@ namespace DbExtensions {
       [Obsolete("Please use Insert(TEntity, Boolean) instead.")]
       [EditorBrowsable(EditorBrowsableState.Never)]
       public void InsertDeep(TEntity entity) {
-
-         if (entity == null) throw new ArgumentNullException("entity");
-
-         using (var tx = this.dao.EnsureInTransaction()) {
-
-            Insert(entity);
-            InsertDescendants(entity);
-
-            tx.Commit();
-         }
+         Insert(entity, deep: true);
       }
 
       void InsertDescendants(TEntity entity) {
