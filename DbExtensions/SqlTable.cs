@@ -50,8 +50,58 @@ namespace DbExtensions {
          get { return sqlCommands; }
       }
 
+      internal static SqlBuilder SELECT_(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias, Database db) {
+
+         if (selectMembers == null)
+            selectMembers = metaType.PersistentDataMembers.Where(m => !m.IsAssociation);
+
+         SqlBuilder query = new SqlBuilder();
+
+         string qualifier = (!String.IsNullOrEmpty(tableAlias)) ?
+            db.QuoteIdentifier(tableAlias) + "." : null;
+
+         IEnumerator<MetaDataMember> enumerator = selectMembers.GetEnumerator();
+
+         while (enumerator.MoveNext()) {
+
+            string mappedName = enumerator.Current.MappedName;
+            string memberName = enumerator.Current.Name;
+            string columnAlias = !String.Equals(mappedName, memberName, StringComparison.Ordinal) ?
+               memberName : null;
+
+            query.SELECT((qualifier ?? "") + db.QuoteIdentifier(enumerator.Current.MappedName));
+
+            if (columnAlias != null)
+               query.Buffer.Append(" AS ").Append(db.QuoteIdentifier(memberName));
+         }
+
+         return query;
+      }
+
+      internal static SqlBuilder SELECT_FROM(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias, Database db) {
+
+         if (metaType.Table == null) throw new InvalidOperationException("metaType.Table cannot be null.");
+
+         SqlBuilder query = SELECT_(metaType, selectMembers, tableAlias, db);
+
+         string alias = (!String.IsNullOrEmpty(tableAlias)) ?
+            " AS " + db.QuoteIdentifier(tableAlias) : null;
+
+         return query.FROM(db.QuoteIdentifier(metaType.Table.TableName) + (alias ?? ""));
+      }
+
+      internal static void EnsureEntityType(MetaType metaType) {
+
+         if (!metaType.IsEntity) {
+            throw new InvalidOperationException(
+               String.Format(CultureInfo.InvariantCulture,
+                  "The operation is not available for non-entity types ('{0}').", metaType.Type.FullName)
+            );
+         }
+      }
+
       internal SqlTable(Database db, MetaType metaType, ISqlTable table)
-         : base(db.SELECT_FROM(metaType, null, null), metaType.Type, db, adoptQuery: true) {
+         : base(SELECT_FROM(metaType, null, null, db), metaType.Type, db, adoptQuery: true) {
 
          this.table = table;
 
@@ -322,7 +372,7 @@ namespace DbExtensions {
       }
 
       internal SqlTable(Database db, MetaType metaType)
-         : base(db.SELECT_FROM(metaType, null, null), db, adoptQuery: true) {
+         : base(SqlTable.SELECT_FROM(metaType, null, null, db), db, adoptQuery: true) {
 
          this.db = db;
          this.metaType = metaType;
@@ -334,11 +384,11 @@ namespace DbExtensions {
       }
 
       string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
-         return this.db.BuildPredicateFragment(predicateValues, parametersBuffer);
+         return this.SQL.BuildPredicateFragment(predicateValues, parametersBuffer);
       }
 
       void EnsureEntityType() {
-         this.db.EnsureEntityType(metaType);
+         SqlTable.EnsureEntityType(metaType);
       }
 
       // CRUD
@@ -1085,12 +1135,34 @@ namespace DbExtensions {
          return this.db.QuoteIdentifier(unquotedIdentifier);
       }
 
-      string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
-         return this.db.BuildPredicateFragment(predicateValues, parametersBuffer);
+      internal string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
+
+         if (predicateValues == null || predicateValues.Count == 0) throw new ArgumentException("predicateValues cannot be empty", "predicateValues");
+         if (parametersBuffer == null) throw new ArgumentNullException("parametersBuffer");
+
+         var sb = new StringBuilder();
+
+         foreach (var item in predicateValues) {
+            if (sb.Length > 0) sb.Append(" AND ");
+
+            sb.Append(QuoteIdentifier(item.Key));
+
+            if (item.Value == null) {
+               sb.Append(" IS NULL");
+            } else {
+               sb.Append(" = {")
+                  .Append(parametersBuffer.Count)
+                  .Append("}");
+
+               parametersBuffer.Add(item.Value);
+            }
+         }
+
+         return sb.ToString();
       }
 
       void EnsureEntityType() {
-         this.db.EnsureEntityType(metaType);
+         SqlTable.EnsureEntityType(metaType);
       }
 
       /// <summary>
@@ -1122,7 +1194,7 @@ namespace DbExtensions {
       /// <param name="tableAlias">The table alias.</param>
       /// <returns>The SELECT query.</returns>
       internal SqlBuilder SELECT_(IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
-         return this.db.SELECT_(metaType, selectMembers, tableAlias);
+         return SqlTable.SELECT_(metaType, selectMembers, tableAlias, db);
       }
 
       /// <summary>
@@ -1164,7 +1236,7 @@ namespace DbExtensions {
       /// <param name="tableAlias">The table alias.</param>
       /// <returns>The SELECT query.</returns>
       internal SqlBuilder SELECT_FROM(IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
-         return this.db.SELECT_FROM(metaType, selectMembers, tableAlias);
+         return SqlTable.SELECT_FROM(metaType, selectMembers, tableAlias, db);
       }
 
       /// <summary>

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -25,7 +24,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace DbExtensions {
 
@@ -588,46 +586,6 @@ namespace DbExtensions {
          return new SqlSet(definingQuery, null, this, adoptQuery: false);
       }
 
-      internal SqlBuilder SELECT_(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
-
-         if (selectMembers == null)
-            selectMembers = metaType.PersistentDataMembers.Where(m => !m.IsAssociation);
-
-         SqlBuilder query = new SqlBuilder();
-
-         string qualifier = (!String.IsNullOrEmpty(tableAlias)) ?
-            QuoteIdentifier(tableAlias) + "." : null;
-
-         IEnumerator<MetaDataMember> enumerator = selectMembers.GetEnumerator();
-
-         while (enumerator.MoveNext()) {
-
-            string mappedName = enumerator.Current.MappedName;
-            string memberName = enumerator.Current.Name;
-            string columnAlias = !String.Equals(mappedName, memberName, StringComparison.Ordinal) ?
-               memberName : null;
-
-            query.SELECT((qualifier ?? "") + QuoteIdentifier(enumerator.Current.MappedName));
-
-            if (columnAlias != null)
-               query.Buffer.Append(" AS ").Append(QuoteIdentifier(memberName));
-         }
-
-         return query;
-      }
-
-      internal SqlBuilder SELECT_FROM(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
-
-         if (metaType.Table == null) throw new InvalidOperationException("metaType.Table cannot be null.");
-
-         SqlBuilder query = SELECT_(metaType, selectMembers, tableAlias);
-
-         string alias = (!String.IsNullOrEmpty(tableAlias)) ?
-            " AS " + QuoteIdentifier(tableAlias) : null;
-
-         return query.FROM(QuoteIdentifier(metaType.Table.TableName) + (alias ?? ""));
-      }
-
       // CRUD
       
       /// <summary>
@@ -779,46 +737,10 @@ namespace DbExtensions {
          return this.cb.QuoteIdentifier(unquotedIdentifier);
       }
 
-      internal string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
-
-         if (predicateValues == null || predicateValues.Count == 0) throw new ArgumentException("predicateValues cannot be empty", "predicateValues");
-         if (parametersBuffer == null) throw new ArgumentNullException("parametersBuffer");
-
-         var sb = new StringBuilder();
-
-         foreach (var item in predicateValues) {
-            if (sb.Length > 0) sb.Append(" AND ");
-
-            sb.Append(QuoteIdentifier(item.Key));
-
-            if (item.Value == null) {
-               sb.Append(" IS NULL");
-            } else {
-               sb.Append(" = {")
-                  .Append(parametersBuffer.Count)
-                  .Append("}");
-
-               parametersBuffer.Add(item.Value);
-            }
-         }
-
-         return sb.ToString();
-      }
-
       internal void LogLine(string message) {
 
          if (this.Log != null)
             this.Log.WriteLine(message);
-      }
-
-      internal void EnsureEntityType(MetaType metaType) {
-
-         if (!metaType.IsEntity) {
-            throw new InvalidOperationException(
-               String.Format(CultureInfo.InvariantCulture,
-                  "The operation is not available for non-entity types ('{0}').", metaType.Type.FullName)
-            );
-         }
       }
 
       MetaType GetMetaType(Type entityType) {
@@ -826,7 +748,7 @@ namespace DbExtensions {
          if (entityType == null) throw new ArgumentNullException("entityType");
 
          if (this.config.Mapping == null)
-            throw new InvalidOperationException("There's not MetaModel associatated, the operation is not available.");
+            throw new InvalidOperationException("There's no MetaModel associated, the operation is not available.");
 
          return this.config.Mapping.GetMetaType(entityType);
       }
