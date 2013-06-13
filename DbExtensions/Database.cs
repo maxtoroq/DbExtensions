@@ -182,7 +182,7 @@ namespace DbExtensions {
       /// </remarks>
       /// <example>
       /// <code>
-      /// using (dao.EnsureConnectionOpen()) {
+      /// using (db.EnsureConnectionOpen()) {
       ///   // Execute commands.
       /// }
       /// </code>
@@ -216,7 +216,7 @@ namespace DbExtensions {
       /// <code>
       /// void DoSomething() {
       /// 
-      ///    using (var tx = this.dao.EnsureInTransaction()) {
+      ///    using (var tx = this.db.EnsureInTransaction()) {
       ///       
       ///       // Execute commands
       /// 
@@ -228,7 +228,7 @@ namespace DbExtensions {
       /// 
       /// void DoSomethingElse() { 
       ///    
-      ///    using (var tx = this.dao.EnsureInTransaction()) {
+      ///    using (var tx = this.db.EnsureInTransaction()) {
       ///       
       ///       // Execute commands
       /// 
@@ -270,7 +270,7 @@ namespace DbExtensions {
       /// <code>
       /// void DoSomething() {
       /// 
-      ///    using (var tx = this.dao.EnsureInTransaction()) {
+      ///    using (var tx = this.db.EnsureInTransaction()) {
       ///       
       ///       // Execute commands
       /// 
@@ -282,7 +282,7 @@ namespace DbExtensions {
       /// 
       /// void DoSomethingElse() { 
       ///    
-      ///    using (var tx = this.dao.EnsureInTransaction()) {
+      ///    using (var tx = this.db.EnsureInTransaction()) {
       ///       
       ///       // Execute commands
       /// 
@@ -893,7 +893,7 @@ namespace DbExtensions {
 
       class WrappedTransaction : IDbTransaction {
 
-         readonly Database dao;
+         readonly Database db;
          readonly IDisposable connHolder;
          readonly IDbTransaction txAdo;
          readonly bool txBeganHere;
@@ -905,17 +905,17 @@ namespace DbExtensions {
          public IDbConnection Connection { get { return _Connection; } }
          public IsolationLevel IsolationLevel { get { return _IsolationLevel; } }
 
-         public WrappedTransaction(Database dao, IsolationLevel isolationLevel, bool forceNew) {
+         public WrappedTransaction(Database db, IsolationLevel isolationLevel, bool forceNew) {
 
-            if (dao == null) throw new ArgumentNullException("dao");
+            if (db == null) throw new ArgumentNullException("db");
 
-            this.dao = dao;
-            this.txAdo = this.dao.Transaction;
+            this.db = db;
+            this.txAdo = this.db.Transaction;
 
-            this._Connection = this.dao.Connection;
+            this._Connection = this.db.Connection;
             this._IsolationLevel = isolationLevel;
 
-            this.connHolder = this.dao.EnsureConnectionOpen();
+            this.connHolder = this.db.EnsureConnectionOpen();
 
             try {
 
@@ -925,8 +925,8 @@ namespace DbExtensions {
                if (this.txScope == null 
                   && (this.txAdo == null || forceNew)) {
 
-                  this.txAdo = this.dao.Transaction = this.dao.Connection.BeginTransaction(isolationLevel);
-                  this.dao.LogLine("-- TRANSACTION STARTED");
+                  this.txAdo = this.db.Transaction = this.db.Connection.BeginTransaction(isolationLevel);
+                  this.db.LogLine("-- TRANSACTION STARTED");
                   this.txBeganHere = true;
                }
 
@@ -949,7 +949,7 @@ namespace DbExtensions {
 
                try {
                   txAdo.Commit();
-                  dao.LogLine("-- TRANSACTION COMMITED");
+                  db.LogLine("-- TRANSACTION COMMITED");
 
                } finally {
                   RemoveTxFromDao();
@@ -966,7 +966,7 @@ namespace DbExtensions {
 
                try {
                   txAdo.Rollback();
-                  dao.LogLine("-- TRANSACTION ROLLED BACK");
+                  db.LogLine("-- TRANSACTION ROLLED BACK");
 
                } finally {
                   RemoveTxFromDao();
@@ -1000,8 +1000,8 @@ namespace DbExtensions {
 
          void RemoveTxFromDao() {
 
-            if (dao.Transaction != null && Object.ReferenceEquals(dao.Transaction, txAdo))
-               dao.Transaction = null;
+            if (db.Transaction != null && Object.ReferenceEquals(db.Transaction, txAdo))
+               db.Transaction = null;
          }
       }
 

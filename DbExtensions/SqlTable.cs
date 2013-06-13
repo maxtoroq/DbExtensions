@@ -50,13 +50,13 @@ namespace DbExtensions {
          get { return sqlCommands; }
       }
 
-      internal SqlTable(Database dao, MetaType metaType, ISqlTable table)
-         : base(dao.SELECT_FROM(metaType, null, null), metaType.Type, dao, adoptQuery: true) {
+      internal SqlTable(Database db, MetaType metaType, ISqlTable table)
+         : base(db.SELECT_FROM(metaType, null, null), metaType.Type, db, adoptQuery: true) {
 
          this.table = table;
 
          this.metaType = metaType;
-         this.sqlCommands = new SqlCommandBuilder<object>(dao, metaType);
+         this.sqlCommands = new SqlCommandBuilder<object>(db, metaType);
       }
 
       /// <summary>
@@ -310,7 +310,7 @@ namespace DbExtensions {
    public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable
       where TEntity : class {
 
-      readonly Database dao;
+      readonly Database db;
       readonly MetaType metaType;
       readonly SqlCommandBuilder<TEntity> sqlCommands;
 
@@ -321,24 +321,24 @@ namespace DbExtensions {
          get { return sqlCommands; }
       }
 
-      internal SqlTable(Database dao, MetaType metaType)
-         : base(dao.SELECT_FROM(metaType, null, null), dao, adoptQuery: true) {
+      internal SqlTable(Database db, MetaType metaType)
+         : base(db.SELECT_FROM(metaType, null, null), db, adoptQuery: true) {
 
-         this.dao = dao;
+         this.db = db;
          this.metaType = metaType;
-         this.sqlCommands = new SqlCommandBuilder<TEntity>(dao, metaType);
+         this.sqlCommands = new SqlCommandBuilder<TEntity>(db, metaType);
       }
 
       string QuoteIdentifier(string unquotedIdentifier) {
-         return this.dao.QuoteIdentifier(unquotedIdentifier);
+         return this.db.QuoteIdentifier(unquotedIdentifier);
       }
 
       string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
-         return this.dao.BuildPredicateFragment(predicateValues, parametersBuffer);
+         return this.db.BuildPredicateFragment(predicateValues, parametersBuffer);
       }
 
       void EnsureEntityType() {
-         this.dao.EnsureEntityType(metaType);
+         this.db.EnsureEntityType(metaType);
       }
 
       // CRUD
@@ -369,7 +369,7 @@ namespace DbExtensions {
          SqlBuilder query = this.SQL.SELECT_FROM();
          query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
 
-         TEntity entity = this.dao.Map<TEntity>(query).SingleOrDefault();
+         TEntity entity = this.db.Map<TEntity>(query).SingleOrDefault();
 
          return entity;
       }
@@ -400,16 +400,16 @@ namespace DbExtensions {
                && m != idMember
              select m).ToArray();
 
-         using (var tx = this.dao.EnsureInTransaction()) {
+         using (var tx = this.db.EnsureInTransaction()) {
 
             // Transaction is required by SQLCE 4.0
             // https://connect.microsoft.com/SQLServer/feedback/details/653675/sql-ce-4-0-select-identity-returns-null
 
-            this.dao.AffectOne(insertSql);
+            this.db.AffectOne(insertSql);
 
             if (idMember != null) {
 
-               object id = this.dao.LastInsertId();
+               object id = this.db.LastInsertId();
 
                if (Convert.IsDBNull(id) || id == null)
                   throw new DataException("The last insert id value cannot be null.");
@@ -481,7 +481,7 @@ namespace DbExtensions {
                }
             }
 
-            SqlTable otherTable = this.dao.Table(assoc.OtherType);
+            SqlTable otherTable = this.db.Table(assoc.OtherType);
 
             otherTable.InsertRange(many);
 
@@ -540,15 +540,15 @@ namespace DbExtensions {
              select m).ToArray();
 
          bool batch = syncMembers.Length == 0 
-            && this.dao.Configuration.EnableBatchCommands;
+            && this.db.Configuration.EnableBatchCommands;
 
          if (batch) {
 
             SqlBuilder batchInsert = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.SQL.INSERT_INTO_VALUES(e)));
 
-            using (var tx = this.dao.EnsureInTransaction()) {
+            using (var tx = this.db.EnsureInTransaction()) {
                
-               this.dao.Affect(batchInsert, entities.Length, AffectedRecordsPolicy.MustMatchAffecting);
+               this.db.Affect(batchInsert, entities.Length, AffectedRecordsPolicy.MustMatchAffecting);
 
                if (deep) {
                   for (int i = 0; i < entities.Length; i++)
@@ -560,7 +560,7 @@ namespace DbExtensions {
 
          } else {
 
-            using (var tx = this.dao.EnsureInTransaction()) {
+            using (var tx = this.db.EnsureInTransaction()) {
 
                for (int i = 0; i < entities.Length; i++)
                   Insert(entities[i], deep);
@@ -576,7 +576,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="entity">The entity whose UPDATE command is to be executed.</param>
       public void Update(TEntity entity) {
-         Update(entity, this.dao.Configuration.UpdateConflictPolicy);
+         Update(entity, this.db.Configuration.UpdateConflictPolicy);
       }
 
       /// <summary>
@@ -601,9 +601,9 @@ namespace DbExtensions {
              where m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate
              select m).ToArray();
 
-         using (this.dao.EnsureConnectionOpen()) {
+         using (this.db.EnsureConnectionOpen()) {
 
-            this.dao.Affect(updateSql, 1, affRec);
+            this.db.Affect(updateSql, 1, affRec);
 
             if (syncMembers.Length > 0)
                Refresh(entity, syncMembers);
@@ -616,7 +616,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="entity">The entity whose DELETE command is to be executed.</param>
       public void Delete(TEntity entity) {
-         Delete(entity, this.dao.Configuration.DeleteConflictPolicy);
+         Delete(entity, this.db.Configuration.DeleteConflictPolicy);
       }
 
       /// <summary>
@@ -634,7 +634,7 @@ namespace DbExtensions {
 
          AffectedRecordsPolicy affRec = GetAffectedRecordsPolicy(conflictPolicy);
 
-         this.dao.Affect(this.SQL.DELETE_FROM_WHERE(entity, conflictPolicy), 1, affRec);
+         this.db.Affect(this.SQL.DELETE_FROM_WHERE(entity, conflictPolicy), 1, affRec);
       }
 
       [Obsolete("Please use DeleteKey(Object) instead.")]
@@ -656,7 +656,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="id">The primary key value.</param>
       public void DeleteKey(object id) {
-         DeleteKey(id, this.dao.Configuration.DeleteConflictPolicy);
+         DeleteKey(id, this.db.Configuration.DeleteConflictPolicy);
       }
 
       /// <summary>
@@ -669,7 +669,7 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
       /// </param>
       public void DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
-         this.dao.Affect(this.SQL.DELETE_FROM_WHERE_id(id), 1, GetAffectedRecordsPolicy(conflictPolicy));
+         this.db.Affect(this.SQL.DELETE_FROM_WHERE_id(id), 1, GetAffectedRecordsPolicy(conflictPolicy));
       }
 
       public void DeleteRange(IEnumerable<TEntity> entities) {
@@ -687,7 +687,7 @@ namespace DbExtensions {
       }
 
       public void DeleteRange(params TEntity[] entities) {
-         DeleteRange(entities, this.dao.Configuration.DeleteConflictPolicy);
+         DeleteRange(entities, this.db.Configuration.DeleteConflictPolicy);
       }
 
       public void DeleteRange(TEntity[] entities, ConcurrencyConflictPolicy conflictPolicy) {
@@ -714,7 +714,7 @@ namespace DbExtensions {
          bool singleStatement = this.metaType.IdentityMembers.Count == 1
             && !useVersion;
 
-         bool batch = this.dao.Configuration.EnableBatchCommands;
+         bool batch = this.db.Configuration.EnableBatchCommands;
 
          if (singleStatement) {
 
@@ -724,19 +724,19 @@ namespace DbExtensions {
 
             SqlBuilder sql = this.SQL
                .DELETE_FROM()
-               .WHERE(this.dao.QuoteIdentifier(idMember.MappedName) + " IN ({0})", new object[1] { ids });
+               .WHERE(this.db.QuoteIdentifier(idMember.MappedName) + " IN ({0})", new object[1] { ids });
 
-            this.dao.Affect(sql, entities.Length, affRec);
+            this.db.Affect(sql, entities.Length, affRec);
 
          } else if (batch) {
 
             SqlBuilder batchDelete = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.SQL.DELETE_FROM_WHERE(e, conflictPolicy)));
 
-            this.dao.Affect(batchDelete, entities.Length, affRec);
+            this.db.Affect(batchDelete, entities.Length, affRec);
 
          } else {
 
-            using (var tx = this.dao.EnsureInTransaction()) {
+            using (var tx = this.db.EnsureInTransaction()) {
 
                for (int i = 0; i < entities.Length; i++)
                   Delete(entities[i], conflictPolicy);
@@ -831,7 +831,7 @@ namespace DbExtensions {
          SqlBuilder query = this.SQL.SELECT_FROM(new[] { predicateMembers[0] });
          query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
 
-         return this.dao.Exists(query);
+         return this.db.Exists(query);
       }
 
       /// <summary>
@@ -843,11 +843,11 @@ namespace DbExtensions {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
-         DbConnection conn = this.dao.Connection;
+         DbConnection conn = this.db.Connection;
          string tableName = metaType.Table.TableName;
          const string collectionName = "Columns";
 
-         using (this.dao.EnsureConnectionOpen()) {
+         using (this.db.EnsureConnectionOpen()) {
 
             DataTable schema = conn.GetSchema(collectionName, new string[4] { conn.Database, null, tableName, null });
 
@@ -881,11 +881,11 @@ namespace DbExtensions {
 
                if (!query.IsEmpty) {
 
-                  var mapper = new PocoMapper(metaType.Type, this.dao.Configuration.Log);
+                  PocoMapper mapper = CreatePocoMapper();
 
                   object entityObj = (object)entity;
 
-                  this.dao.Map<object>(query, r => {
+                  this.db.Map<object>(query, r => {
                      mapper.Load(ref entityObj, r);
                      return null;
 
@@ -917,15 +917,19 @@ namespace DbExtensions {
          SqlBuilder query = this.SQL.SELECT_FROM(refreshMembers);
          query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
 
-         var mapper = new PocoMapper(metaType.Type, this.dao.Configuration.Log);
+         PocoMapper mapper = CreatePocoMapper();
 
          object entityObj = (object)entity;
 
-         this.dao.Map<object>(query, r => {
+         this.db.Map<object>(query, r => {
             mapper.Load(ref entityObj, r);
             return null;
 
          }).SingleOrDefault();
+      }
+
+      PocoMapper CreatePocoMapper() {
+         return new PocoMapper(metaType.Type, this.db.Configuration.Log);
       }
 
       #region ISqlTable Members
@@ -1069,24 +1073,24 @@ namespace DbExtensions {
    /// <seealso cref="SqlTable.SQL"/>
    public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
-      readonly Database dao;
+      readonly Database db;
       readonly MetaType metaType;
 
-      internal SqlCommandBuilder(Database dao, MetaType metaType) {
-         this.dao = dao;
+      internal SqlCommandBuilder(Database db, MetaType metaType) {
+         this.db = db;
          this.metaType = metaType;
       }
 
       string QuoteIdentifier(string unquotedIdentifier) {
-         return this.dao.QuoteIdentifier(unquotedIdentifier);
+         return this.db.QuoteIdentifier(unquotedIdentifier);
       }
 
       string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
-         return this.dao.BuildPredicateFragment(predicateValues, parametersBuffer);
+         return this.db.BuildPredicateFragment(predicateValues, parametersBuffer);
       }
 
       void EnsureEntityType() {
-         this.dao.EnsureEntityType(metaType);
+         this.db.EnsureEntityType(metaType);
       }
 
       /// <summary>
@@ -1118,7 +1122,7 @@ namespace DbExtensions {
       /// <param name="tableAlias">The table alias.</param>
       /// <returns>The SELECT query.</returns>
       internal SqlBuilder SELECT_(IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
-         return this.dao.SELECT_(metaType, selectMembers, tableAlias);
+         return this.db.SELECT_(metaType, selectMembers, tableAlias);
       }
 
       /// <summary>
@@ -1160,7 +1164,7 @@ namespace DbExtensions {
       /// <param name="tableAlias">The table alias.</param>
       /// <returns>The SELECT query.</returns>
       internal SqlBuilder SELECT_FROM(IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
-         return this.dao.SELECT_FROM(metaType, selectMembers, tableAlias);
+         return this.db.SELECT_FROM(metaType, selectMembers, tableAlias);
       }
 
       /// <summary>
@@ -1224,7 +1228,7 @@ namespace DbExtensions {
       /// <param name="entity">The entity whose UPDATE command is to be created.</param>
       /// <returns>The UPDATE command for <paramref name="entity"/>.</returns>
       public SqlBuilder UPDATE_SET_WHERE(TEntity entity) {
-         return UPDATE_SET_WHERE(entity, this.dao.Configuration.UpdateConflictPolicy);
+         return UPDATE_SET_WHERE(entity, this.db.Configuration.UpdateConflictPolicy);
       }
 
       /// <summary>
@@ -1307,7 +1311,7 @@ namespace DbExtensions {
       /// <param name="entity">The entity whose DELETE command is to be created.</param>
       /// <returns>The DELETE command for <paramref name="entity"/>.</returns>
       public SqlBuilder DELETE_FROM_WHERE(TEntity entity) {
-         return DELETE_FROM_WHERE(entity, this.dao.Configuration.DeleteConflictPolicy);
+         return DELETE_FROM_WHERE(entity, this.db.Configuration.DeleteConflictPolicy);
       }
 
       /// <summary>
