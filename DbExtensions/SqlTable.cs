@@ -226,6 +226,22 @@ namespace DbExtensions {
          table.Update(entity, conflictPolicy);
       }
 
+      public void UpdateRange(IEnumerable<object> entities) {
+         table.UpdateRange(entities);
+      }
+
+      public void UpdateRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
+         table.UpdateRange(entities, conflictPolicy);
+      }
+
+      public void UpdateRange(params object[] entities) {
+         table.UpdateRange(entities);
+      }
+
+      public void UpdateRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
+         table.UpdateRange(entities, conflictPolicy);
+      }
+
       /// <summary>
       /// Executes a DELETE command for the specified <paramref name="entity"/>,
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
@@ -660,6 +676,68 @@ namespace DbExtensions {
          }
       }
 
+      public void UpdateRange(IEnumerable<TEntity> entities) {
+         
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         UpdateRange(entities.ToArray());
+      }
+
+      public void UpdateRange(IEnumerable<TEntity> entities, ConcurrencyConflictPolicy conflictPolicy) {
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         UpdateRange(entities.ToArray(), conflictPolicy);
+      }
+
+      public void UpdateRange(params TEntity[] entities) {
+         UpdateRange(entities, this.db.Configuration.UpdateConflictPolicy);
+      }
+
+      public void UpdateRange(TEntity[] entities, ConcurrencyConflictPolicy conflictPolicy) {
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         entities = entities.Where(o => o != null).ToArray();
+
+         if (entities.Length == 0)
+            return;
+
+         if (entities.Length == 1) {
+            Update(entities[0], conflictPolicy);
+            return;
+         }
+
+         EnsureEntityType();
+
+         MetaDataMember[] syncMembers =
+            (from m in metaType.PersistentDataMembers
+             where m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate
+             select m).ToArray();
+
+         bool batch = syncMembers.Length == 0
+            && this.db.Configuration.EnableBatchCommands;
+
+         if (batch) {
+
+            SqlBuilder batchUpdate = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.SQL.UPDATE_SET_WHERE(e, conflictPolicy)));
+
+            AffectedRecordsPolicy affRec = GetAffectedRecordsPolicy(conflictPolicy);
+
+            this.db.Affect(batchUpdate, entities.Length, affRec);
+
+         } else {
+
+            using (var tx = this.db.EnsureInTransaction()) {
+
+               for (int i = 0; i < entities.Length; i++)
+                  Update(entities[i], conflictPolicy);
+
+               tx.Commit();
+            }
+         }
+      }
+
       /// <summary>
       /// Executes a DELETE command for the specified <paramref name="entity"/>,
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
@@ -1037,6 +1115,28 @@ namespace DbExtensions {
 
       void ISqlTable.Update(object entity, ConcurrencyConflictPolicy conflictPolicy) {
          Update((TEntity)entity, conflictPolicy);
+      }
+
+      void ISqlTable.UpdateRange(IEnumerable<object> entities) {
+         UpdateRange((IEnumerable<TEntity>)entities);
+      }
+
+      void ISqlTable.UpdateRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
+         UpdateRange((IEnumerable<TEntity>)entities, conflictPolicy);
+      }
+
+      void ISqlTable.UpdateRange(params object[] entities) {
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         UpdateRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
+      }
+
+      void ISqlTable.UpdateRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
+
+         if (entities == null) throw new ArgumentNullException("entities");
+
+         UpdateRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray(), conflictPolicy);
       }
 
       void ISqlTable.Delete(object entity) {
@@ -1513,7 +1613,12 @@ namespace DbExtensions {
       void InsertRange(object[] entities, bool deep);
 
       void Refresh(object entity);
+
       void Update(object entity);
       void Update(object entity, ConcurrencyConflictPolicy conflictPolicy);
+      void UpdateRange(IEnumerable<object> entities);
+      void UpdateRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy);
+      void UpdateRange(params object[] entities);
+      void UpdateRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy);
    }
 }
