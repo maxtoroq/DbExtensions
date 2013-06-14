@@ -592,6 +592,8 @@ namespace DbExtensions {
       /// Executes INSERT commands for the specified <paramref name="entities"/>.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use Table<TEntity>().InsertRange or Table(Type).InsertRange instead.")]
       public void InsertRange(IEnumerable<object> entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
@@ -603,6 +605,8 @@ namespace DbExtensions {
       /// Executes INSERT commands for the specified <paramref name="entities"/>.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use Table<TEntity>().InsertRange or Table(Type).InsertRange instead.")]
       public void InsertRange(params object[] entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
