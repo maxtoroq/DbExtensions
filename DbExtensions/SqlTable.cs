@@ -160,7 +160,16 @@ namespace DbExtensions {
       public void Insert(object entity) {
          table.Insert(entity);
       }
-      
+
+      /// <summary>
+      /// Executes an INSERT command for the specified <paramref name="entity"/>.
+      /// </summary>
+      /// <param name="entity">
+      /// The object whose INSERT command is to be executed. This parameter is named entity for consistency
+      /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
+      /// need to have a primary key.
+      /// </param>
+      /// <param name="deep">true to recursively execute INSERT commands for the <paramref name="entity"/>'s one-to-many associations; otherwise, false.</param>
       public void Insert(object entity, bool deep) {
          table.Insert(entity, deep);
       }
@@ -188,6 +197,11 @@ namespace DbExtensions {
          table.InsertRange(entities);
       }
 
+      /// <summary>
+      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
+      /// <param name="deep">true to recursively execute INSERT commands for each entity's one-to-many associations; otherwise, false.</param>
       public void InsertRange(IEnumerable<object> entities, bool deep) {
          table.InsertRange(entities, deep);
       }
@@ -200,6 +214,11 @@ namespace DbExtensions {
          table.InsertRange(entities);
       }
 
+      /// <summary>
+      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
+      /// <param name="deep">true to recursively execute INSERT commands for each entity's one-to-many associations; otherwise, false.</param>
       public void InsertRange(object[] entities, bool deep) {
          table.InsertRange(entities, deep);
       }
@@ -226,18 +245,46 @@ namespace DbExtensions {
          table.Update(entity, conflictPolicy);
       }
 
+      /// <summary>
+      /// Executes UPDATE commands for the specified <paramref name="entities"/>,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose UPDATE commands are to be executed.</param>
       public void UpdateRange(IEnumerable<object> entities) {
          table.UpdateRange(entities);
       }
 
+      /// <summary>
+      /// Executes UPDATE commands for the specified <paramref name="entities"/>
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose UPDATE commands are to be executed.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the UPDATE
+      /// predicate, and how to validate the affected records value.
+      /// </param>
       public void UpdateRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
          table.UpdateRange(entities, conflictPolicy);
       }
 
+      /// <summary>
+      /// Executes UPDATE commands for the specified <paramref name="entities"/>,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose UPDATE commands are to be executed.</param>
       public void UpdateRange(params object[] entities) {
          table.UpdateRange(entities);
       }
 
+      /// <summary>
+      /// Executes UPDATE commands for the specified <paramref name="entities"/>
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose UPDATE commands are to be executed.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the UPDATE
+      /// predicate, and how to validate the affected records value.
+      /// </param>
       public void UpdateRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
          table.UpdateRange(entities, conflictPolicy);
       }
@@ -291,26 +338,69 @@ namespace DbExtensions {
          table.DeleteById(id, conflictPolicy);
       }
 
+      /// <summary>
+      /// Executes a DELETE command for the entity
+      /// whose primary key matches the <paramref name="id"/> parameter,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="id">The primary key value.</param>
       public void DeleteKey(object id) {
          table.DeleteKey(id);
       }
 
+      /// <summary>
+      /// Executes a DELETE command for the entity
+      /// whose primary key matches the <paramref name="id"/> parameter,
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="id">The primary key value.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
+      /// </param>
       public void DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
          table.DeleteKey(id, conflictPolicy);
       }
 
+      /// <summary>
+      /// Executes DELETE commands for the specified <paramref name="entities"/>,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
       public void DeleteRange(IEnumerable<object> entities) {
          table.DeleteRange(entities);
       }
 
+      /// <summary>
+      /// Executes DELETE commands for the specified <paramref name="entities"/>,
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
+      /// predicate, and how to validate the affected records value.
+      /// </param>
       public void DeleteRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
          table.DeleteRange(entities, conflictPolicy);
       }
 
+      /// <summary>
+      /// Executes DELETE commands for the specified <paramref name="entities"/>,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
       public void DeleteRange(params object[] entities) {
          table.DeleteRange(entities);
       }
 
+      /// <summary>
+      /// Executes DELETE commands for the specified <paramref name="entities"/>,
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
+      /// predicate, and how to validate the affected records value.
+      /// </param>
       public void DeleteRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
          table.DeleteRange(entities, conflictPolicy);
       }
@@ -452,6 +542,15 @@ namespace DbExtensions {
          Insert(entity, deep: false);
       }
 
+      /// <summary>
+      /// Executes an INSERT command for the specified <paramref name="entity"/>.
+      /// </summary>
+      /// <param name="entity">
+      /// The object whose INSERT command is to be executed. This parameter is named entity for consistency
+      /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
+      /// need to have a primary key.
+      /// </param>
+      /// <param name="deep">true to recursively execute INSERT commands for the <paramref name="entity"/>'s one-to-many associations; otherwise, false.</param>
       public void Insert(TEntity entity, bool deep) {
 
          if (entity == null) throw new ArgumentNullException("entity");
@@ -571,6 +670,11 @@ namespace DbExtensions {
          InsertRange(entities.ToArray());
       }
 
+      /// <summary>
+      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
+      /// <param name="deep">true to recursively execute INSERT commands for each entity's one-to-many associations; otherwise, false.</param>
       public void InsertRange(IEnumerable<TEntity> entities, bool deep) {
 
          if (entities == null) throw new ArgumentNullException("entities");
@@ -586,6 +690,11 @@ namespace DbExtensions {
          InsertRange(entities, deep: false);
       }
 
+      /// <summary>
+      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
+      /// <param name="deep">true to recursively execute INSERT commands for each entity's one-to-many associations; otherwise, false.</param>
       public void InsertRange(TEntity[] entities, bool deep) {
 
          if (entities == null) throw new ArgumentNullException("entities");
@@ -676,6 +785,11 @@ namespace DbExtensions {
          }
       }
 
+      /// <summary>
+      /// Executes UPDATE commands for the specified <paramref name="entities"/>,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose UPDATE commands are to be executed.</param>
       public void UpdateRange(IEnumerable<TEntity> entities) {
          
          if (entities == null) throw new ArgumentNullException("entities");
@@ -683,6 +797,15 @@ namespace DbExtensions {
          UpdateRange(entities.ToArray());
       }
 
+      /// <summary>
+      /// Executes UPDATE commands for the specified <paramref name="entities"/>
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose UPDATE commands are to be executed.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the UPDATE
+      /// predicate, and how to validate the affected records value.
+      /// </param>
       public void UpdateRange(IEnumerable<TEntity> entities, ConcurrencyConflictPolicy conflictPolicy) {
 
          if (entities == null) throw new ArgumentNullException("entities");
@@ -690,10 +813,24 @@ namespace DbExtensions {
          UpdateRange(entities.ToArray(), conflictPolicy);
       }
 
+      /// <summary>
+      /// Executes UPDATE commands for the specified <paramref name="entities"/>,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose UPDATE commands are to be executed.</param>
       public void UpdateRange(params TEntity[] entities) {
          UpdateRange(entities, this.db.Configuration.UpdateConflictPolicy);
       }
 
+      /// <summary>
+      /// Executes UPDATE commands for the specified <paramref name="entities"/>
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose UPDATE commands are to be executed.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the UPDATE
+      /// predicate, and how to validate the affected records value.
+      /// </param>
       public void UpdateRange(TEntity[] entities, ConcurrencyConflictPolicy conflictPolicy) {
 
          if (entities == null) throw new ArgumentNullException("entities");
@@ -765,12 +902,27 @@ namespace DbExtensions {
          this.db.Affect(this.SQL.DELETE_FROM_WHERE(entity, conflictPolicy), 1, affRec);
       }
 
+      /// <summary>
+      /// Executes a DELETE command for the entity
+      /// whose primary key matches the <paramref name="id"/> parameter,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="id">The primary key value.</param>
       [Obsolete("Please use DeleteKey(Object) instead.")]
       [EditorBrowsable(EditorBrowsableState.Never)]
       public void DeleteById(object id) {
          DeleteKey(id);
       }
 
+      /// <summary>
+      /// Executes a DELETE command for the entity
+      /// whose primary key matches the <paramref name="id"/> parameter,
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="id">The primary key value.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
+      /// </param>
       [Obsolete("Please use DeleteKey(Object, ConcurrencyConflictPolicy) instead.")]
       [EditorBrowsable(EditorBrowsableState.Never)]
       public void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
@@ -800,6 +952,11 @@ namespace DbExtensions {
          this.db.Affect(this.SQL.DELETE_FROM_WHERE_id(id), 1, GetAffectedRecordsPolicy(conflictPolicy));
       }
 
+      /// <summary>
+      /// Executes DELETE commands for the specified <paramref name="entities"/>,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
       public void DeleteRange(IEnumerable<TEntity> entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
@@ -807,6 +964,15 @@ namespace DbExtensions {
          DeleteRange(entities.ToArray());
       }
 
+      /// <summary>
+      /// Executes DELETE commands for the specified <paramref name="entities"/>,
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
+      /// predicate, and how to validate the affected records value.
+      /// </param>
       public void DeleteRange(IEnumerable<TEntity> entities, ConcurrencyConflictPolicy conflictPolicy) {
 
          if (entities == null) throw new ArgumentNullException("entities");
@@ -814,10 +980,24 @@ namespace DbExtensions {
          DeleteRange(entities.ToArray(), conflictPolicy);
       }
 
+      /// <summary>
+      /// Executes DELETE commands for the specified <paramref name="entities"/>,
+      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
       public void DeleteRange(params TEntity[] entities) {
          DeleteRange(entities, this.db.Configuration.DeleteConflictPolicy);
       }
 
+      /// <summary>
+      /// Executes DELETE commands for the specified <paramref name="entities"/>,
+      /// using the provided <paramref name="conflictPolicy"/>.
+      /// </summary>
+      /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
+      /// <param name="conflictPolicy">
+      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
+      /// predicate, and how to validate the affected records value.
+      /// </param>
       public void DeleteRange(TEntity[] entities, ConcurrencyConflictPolicy conflictPolicy) {
 
          if (entities == null) throw new ArgumentNullException("entities");
