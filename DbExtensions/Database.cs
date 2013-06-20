@@ -73,7 +73,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="connection">The connection.</param>
       public Database(DbConnection connection) 
-         : this(connection, null) { }
+         : this(connection, (MetaModel)null) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="Database"/> class
@@ -94,7 +94,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="connectionString">The connection string.</param>
       public Database(string connectionString)
-         : this(connectionString, null) { }
+         : this(connectionString, (MetaModel)null) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="Database"/> class
@@ -309,7 +309,7 @@ namespace DbExtensions {
       /// <param name="commandText">The command text.</param>
       /// <returns>The number of affected records.</returns>
       public int Execute(string commandText) {
-         return Execute(commandText, null);
+         return Execute(commandText, (object[])null);
       }
 
       /// <summary>
@@ -374,7 +374,7 @@ namespace DbExtensions {
       /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public int AffectOne(string commandText) {
-         return AffectOne(commandText, null);
+         return AffectOne(commandText, (object[])null);
       }
 
       /// <summary>
@@ -415,7 +415,7 @@ namespace DbExtensions {
       /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
       public int AffectOneOrNone(string commandText) {
-         return AffectOneOrNone(commandText, null);
+         return AffectOneOrNone(commandText, (object[])null);
       }
 
       /// <summary>
@@ -583,7 +583,7 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public SqlSet Set(SqlBuilder definingQuery) {
-         return new SqlSet(definingQuery, null, this, adoptQuery: false);
+         return new SqlSet(definingQuery, (Type)null, this, adoptQuery: false);
       }
 
       // CRUD
@@ -692,7 +692,7 @@ namespace DbExtensions {
       /// <see cref="Transaction"/> is associated with all new commands created using this method.
       /// </remarks>
       public DbCommand CreateCommand(string commandText) {
-         return CreateCommand(commandText, null);
+         return CreateCommand(commandText, (object[])null);
       }
 
       /// <summary>
