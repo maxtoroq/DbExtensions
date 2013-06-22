@@ -119,14 +119,14 @@ You can also use `SqlBuilder` to build insert, update and delete commands.
 Features
 --------
 - Deferred execution
-- POCO mapping for queries
+- POCO and dynamic mapping for queries
   - Mapping to properties (including complex)
   - Mapping to constructor arguments
 - Attributes or XML mapping for inserts, updates and deletes, using [System.Data.Linq.Mapping](http://msdn.microsoft.com/library/system.data.linq.mapping) (LINQ to SQL mapping)
 - Generic and non-generic APIs (for when the type of the entity is not known at build time)
 - Automatic connection management (no need to explicitly open connection, but you are allowed to)
 - Optimistic concurrency (using version column)
-- Batch and deep inserts (recursively insert entity and all one-to-many associations)
+- Batch and deep commands (e.g. recursively insert entity and all one-to-many associations)
 - Delete by primary key
 - Query results as XML
 - Profiling

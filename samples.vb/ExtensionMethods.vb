@@ -149,6 +149,20 @@ Public Class ExtensionMethodsSamples
 
    End Sub
 
+   Public Function Dynamic() As IEnumerable(Of Object)
+
+      Dim query = SQL _
+         .SELECT("p.ProductID, p.ProductName, p.CategoryID, s.SupplierID") _
+         .SELECT("c.CategoryID AS Category$CategoryID, c.CategoryName AS Category$CategoryName") _
+         .SELECT("s.SupplierID AS Supplier$SupplierID, s.CompanyName AS Supplier$CompanyName") _
+         .FROM("Products p") _
+         .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID") _
+         .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID") _
+         .WHERE("p.ProductID < {0}", 3)
+
+      Return conn.Map(query, log)
+
+   End Function
 End Class
 
 Public Class MappingToConstructorArgumentsSample

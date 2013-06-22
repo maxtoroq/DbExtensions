@@ -367,6 +367,7 @@ type NorthwindDatabase =
 
    member this.Products = this.Table<Product>()
    member this.Orders = this.Table<Order>()
+   member this.OrderDetails = this.Table<OrderDetail>()
 
    new(connString : string, mapping : MetaModel) = {
       inherit Database(connString, mapping)

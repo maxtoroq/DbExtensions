@@ -88,17 +88,13 @@ Public Class DatabaseSamples
       order.OrderDetails.Add(New OrderDetail With {.ProductID = 77, .Quantity = 1})
       order.OrderDetails.Add(New OrderDetail With {.ProductID = 41, .Quantity = 2})
 
-      db.Orders.InsertDeep(order)
+      db.Orders.Insert(order, deep:=True)
 
       order.Freight = 10
 
       db.Orders.Update(order)
 
-      db.Affect(db.Table(Of OrderDetail).SQL _
-         .DELETE_FROM() _
-         .WHERE("OrderID = {0}", order.OrderID) _
-         , order.OrderDetails.Count)
-
+      db.OrderDetails.DeleteRange(order.OrderDetails)
       db.Orders.Delete(order)
 
    End Sub

@@ -84,7 +84,7 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <param name="connection">The database connection.</param>
       public SqlSet(SqlBuilder definingQuery, DbConnection connection) 
-         : this(definingQuery, connection, null) { }
+         : this(definingQuery, connection, (TextWriter)null) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlSet"/> class
@@ -94,7 +94,7 @@ namespace DbExtensions {
       /// <param name="connection">The database connection.</param>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
       public SqlSet(SqlBuilder definingQuery, DbConnection connection, TextWriter logger)
-         : this(definingQuery, null, connection, logger) { }
+         : this(definingQuery, (Type)null, connection, logger) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlSet"/> class
@@ -113,7 +113,7 @@ namespace DbExtensions {
       /// <param name="resultType">The type of objects to map the results to.</param>
       /// <param name="connection">The database connection.</param>
       public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection) 
-         : this(definingQuery, resultType, connection, null) { }
+         : this(definingQuery, resultType, connection, (TextWriter)null) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlSet"/> class
@@ -283,8 +283,13 @@ namespace DbExtensions {
       /// </summary>
       protected virtual IEnumerable Execute(DbCommand command) {
 
-         if (this.resultType == null)
+         if (this.resultType == null) {
+#if NET40
+            return command.Map(this.Log);
+#else
             throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
+#endif
+         }
 
          return command.Map(resultType, this.Log);
       }
@@ -902,7 +907,7 @@ namespace DbExtensions {
       /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
       /// <param name="connection">The database connection.</param>
       public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, DbConnection connection) 
-         : this(definingQuery, mapper, connection, null) { }
+         : this(definingQuery, mapper, connection, (TextWriter)null) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlSet&lt;TResult>"/> class
