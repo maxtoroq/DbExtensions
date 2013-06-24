@@ -136,6 +136,20 @@ namespace Samples.CSharp {
             }
          }
       }
+
+      public IEnumerable<dynamic> Dynamic() {
+
+         var query = SQL
+            .SELECT("p.ProductID, p.ProductName, p.CategoryID, s.SupplierID")
+            ._("c.CategoryID AS Category$CategoryID, c.CategoryName AS Category$CategoryName")
+            ._("s.SupplierID AS Supplier$SupplierID, s.CompanyName AS Supplier$CompanyName")
+            .FROM("Products p")
+            .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID")
+            .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID")
+            .WHERE("p.ProductID < {0}", 3);
+
+         return conn.Map(query, log);
+      }
    }
 
    public class MappingToConstructorArgumentsSample {

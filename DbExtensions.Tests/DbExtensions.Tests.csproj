@@ -54,6 +54,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Mapping\DynamicMappingBehavior.cs" />
     <Compile Include="Mapping\PocoMappingBehavior.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Querying\SqlBuilderBehavior.cs" />

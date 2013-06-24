@@ -6,20 +6,22 @@ Namespace Northwind
    Public Class NorthwindDatabase
       Inherits Database
 
-      Public Property Products As SqlTable(Of Product)
+      Public ReadOnly Property Products As SqlTable(Of Product)
          Get
             Return Table(Of Product)()
          End Get
-         Set(value As SqlTable(Of Product))
-         End Set
       End Property
 
-      Public Property Orders As SqlTable(Of Order)
+      Public ReadOnly Property Orders As SqlTable(Of Order)
          Get
             Return Table(Of Order)()
          End Get
-         Set(value As SqlTable(Of Order))
-         End Set
+      End Property
+
+      Public ReadOnly Property OrderDetails As SqlTable(Of OrderDetail)
+         Get
+            Return Table(Of OrderDetail)()
+         End Get
       End Property
 
       Public Sub New(ByVal connectionString As String)

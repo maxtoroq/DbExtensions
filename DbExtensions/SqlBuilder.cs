@@ -1248,7 +1248,7 @@ namespace DbExtensions {
       }
    }
 
-   public static partial class Extensions {
+   static partial class Extensions {
 
       /// <summary>
       /// Executes the <paramref name="nonQuery"/> command.
@@ -1257,7 +1257,7 @@ namespace DbExtensions {
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <returns>The number of affected records.</returns>
       public static int Execute(this DbConnection connection, SqlBuilder nonQuery) {
-         return connection.Execute(CreateCommand(connection, nonQuery), null);
+         return connection.Execute(CreateCommand(connection, nonQuery), (TextWriter)null);
       }
 
       /// <summary>
@@ -1477,7 +1477,7 @@ namespace DbExtensions {
       /// <param name="query">The query whose count is to be computed.</param>
       /// <returns>The number of results the <paramref name="query"/> would return.</returns>
       public static int Count(this DbConnection connection, SqlBuilder query) {
-         return Count(connection, query, null);
+         return Count(connection, query, (TextWriter)null);
       }
 
       /// <summary>
@@ -1503,7 +1503,7 @@ namespace DbExtensions {
       /// <returns>The number of results the <paramref name="query"/> would return.</returns>
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public static long LongCount(this DbConnection connection, SqlBuilder query) {
-         return LongCount(connection, query, null);
+         return LongCount(connection, query, (TextWriter)null);
       }
 
       /// <summary>
@@ -1540,7 +1540,7 @@ namespace DbExtensions {
       /// <param name="query">The query whose existance is to be checked.</param>
       /// <returns>true if <paramref name="query"/> contains any rows; otherwise, false.</returns>
       public static bool Exists(this DbConnection connection, SqlBuilder query) {
-         return Exists(connection, query, null);
+         return Exists(connection, query, (TextWriter)null);
       }
 
       /// <summary>

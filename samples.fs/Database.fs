@@ -75,16 +75,11 @@ type DatabaseSamples(connectionString : string, mapping : MetaModel, log : TextW
       order.OrderDetails.Add(new OrderDetail(ProductID = 77, Quantity = 1s))
       order.OrderDetails.Add(new OrderDetail(ProductID = 41, Quantity = 2s))
 
-      db.Orders.InsertDeep(order)
+      db.Orders.Insert(order, deep = true)
 
       order.Freight <- new Nullable<decimal>(10m)
 
       db.Orders.Update(order)
 
-      db.Affect(db.Table<OrderDetail>()
-         .SQL
-            .DELETE_FROM()
-            .WHERE("OrderID = {0}", order.OrderID)
-            , order.OrderDetails.Count) |> ignore
-
+      db.OrderDetails.DeleteRange(order.OrderDetails);
       db.Orders.Delete(order)

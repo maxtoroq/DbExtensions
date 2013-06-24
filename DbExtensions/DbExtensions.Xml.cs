@@ -32,7 +32,7 @@ namespace DbExtensions {
       /// <param name="command">The query command.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public static XmlReader MapXml(this IDbCommand command) {
-         return MapXml(command, null, null);
+         return MapXml(command, (XmlMappingSettings)null, (TextWriter)null);
       }
 
       /// <summary>
@@ -43,7 +43,7 @@ namespace DbExtensions {
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public static XmlReader MapXml(this IDbCommand command, TextWriter logger) {
-         return MapXml(command, null, logger);
+         return MapXml(command, (XmlMappingSettings)null, logger);
       }
 
       /// <summary>
@@ -54,7 +54,7 @@ namespace DbExtensions {
       /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public static XmlReader MapXml(this IDbCommand command, XmlMappingSettings settings) {
-         return MapXml(command, settings, null);
+         return MapXml(command, settings, (TextWriter)null);
       }
 
       /// <summary>
@@ -66,7 +66,7 @@ namespace DbExtensions {
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public static XmlReader MapXml(this IDbCommand command, XmlMappingSettings settings, TextWriter logger) {
-         return new XmlMappingReader(command.Map(r => r, logger).GetEnumerator(), settings, null);
+         return new XmlMappingReader(command.Map(r => r, logger).GetEnumerator(), settings, (XmlReaderSettings)null);
       }
 
       /// <summary>
@@ -125,7 +125,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public XmlReader AsXml() {
-         return AsXml(null);
+         return AsXml((XmlMappingSettings)null);
       }
 
       /// <summary>
@@ -138,7 +138,7 @@ namespace DbExtensions {
          return new XmlMappingReader(
             this.Connection.Map<IDataRecord>(GetDefiningQuery(clone: true), r => r, this.Log).GetEnumerator(),
             settings,
-            null
+            (XmlReaderSettings)null
          );
       }
    }

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -25,7 +24,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace DbExtensions {
 
@@ -75,7 +73,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="connection">The connection.</param>
       public Database(DbConnection connection) 
-         : this(connection, null) { }
+         : this(connection, (MetaModel)null) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="Database"/> class
@@ -96,7 +94,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="connectionString">The connection string.</param>
       public Database(string connectionString)
-         : this(connectionString, null) { }
+         : this(connectionString, (MetaModel)null) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="Database"/> class
@@ -182,7 +180,7 @@ namespace DbExtensions {
       /// </remarks>
       /// <example>
       /// <code>
-      /// using (dao.EnsureConnectionOpen()) {
+      /// using (db.EnsureConnectionOpen()) {
       ///   // Execute commands.
       /// }
       /// </code>
@@ -216,7 +214,7 @@ namespace DbExtensions {
       /// <code>
       /// void DoSomething() {
       /// 
-      ///    using (var tx = this.dao.EnsureInTransaction()) {
+      ///    using (var tx = this.db.EnsureInTransaction()) {
       ///       
       ///       // Execute commands
       /// 
@@ -228,7 +226,7 @@ namespace DbExtensions {
       /// 
       /// void DoSomethingElse() { 
       ///    
-      ///    using (var tx = this.dao.EnsureInTransaction()) {
+      ///    using (var tx = this.db.EnsureInTransaction()) {
       ///       
       ///       // Execute commands
       /// 
@@ -270,7 +268,7 @@ namespace DbExtensions {
       /// <code>
       /// void DoSomething() {
       /// 
-      ///    using (var tx = this.dao.EnsureInTransaction()) {
+      ///    using (var tx = this.db.EnsureInTransaction()) {
       ///       
       ///       // Execute commands
       /// 
@@ -282,7 +280,7 @@ namespace DbExtensions {
       /// 
       /// void DoSomethingElse() { 
       ///    
-      ///    using (var tx = this.dao.EnsureInTransaction()) {
+      ///    using (var tx = this.db.EnsureInTransaction()) {
       ///       
       ///       // Execute commands
       /// 
@@ -311,7 +309,7 @@ namespace DbExtensions {
       /// <param name="commandText">The command text.</param>
       /// <returns>The number of affected records.</returns>
       public int Execute(string commandText) {
-         return Execute(commandText, null);
+         return Execute(commandText, (object[])null);
       }
 
       /// <summary>
@@ -376,7 +374,7 @@ namespace DbExtensions {
       /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public int AffectOne(string commandText) {
-         return AffectOne(commandText, null);
+         return AffectOne(commandText, (object[])null);
       }
 
       /// <summary>
@@ -417,7 +415,7 @@ namespace DbExtensions {
       /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
       /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
       public int AffectOneOrNone(string commandText) {
-         return AffectOneOrNone(commandText, null);
+         return AffectOneOrNone(commandText, (object[])null);
       }
 
       /// <summary>
@@ -585,97 +583,17 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public SqlSet Set(SqlBuilder definingQuery) {
-         return new SqlSet(definingQuery, null, this, adoptQuery: false);
-      }
-
-      internal SqlBuilder SELECT_(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
-
-         if (selectMembers == null)
-            selectMembers = metaType.PersistentDataMembers.Where(m => !m.IsAssociation);
-
-         SqlBuilder query = new SqlBuilder();
-
-         string qualifier = (!String.IsNullOrEmpty(tableAlias)) ?
-            QuoteIdentifier(tableAlias) + "." : null;
-
-         IEnumerator<MetaDataMember> enumerator = selectMembers.GetEnumerator();
-
-         while (enumerator.MoveNext()) {
-
-            string mappedName = enumerator.Current.MappedName;
-            string memberName = enumerator.Current.Name;
-            string columnAlias = !String.Equals(mappedName, memberName, StringComparison.Ordinal) ?
-               memberName : null;
-
-            query.SELECT((qualifier ?? "") + QuoteIdentifier(enumerator.Current.MappedName));
-
-            if (columnAlias != null)
-               query.Buffer.Append(" AS ").Append(QuoteIdentifier(memberName));
-         }
-
-         return query;
-      }
-
-      internal SqlBuilder SELECT_FROM(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
-
-         if (metaType.Table == null) throw new InvalidOperationException("metaType.Table cannot be null.");
-
-         SqlBuilder query = SELECT_(metaType, selectMembers, tableAlias);
-
-         string alias = (!String.IsNullOrEmpty(tableAlias)) ?
-            " AS " + QuoteIdentifier(tableAlias) : null;
-
-         return query.FROM(QuoteIdentifier(metaType.Table.TableName) + (alias ?? ""));
+         return new SqlSet(definingQuery, (Type)null, this, adoptQuery: false);
       }
 
       // CRUD
-
-      internal void InsertChildren(MetaType metaType, object entity) {
-
-         MetaAssociation[] oneToMany = metaType.Associations.Where(a => a.IsMany).ToArray();
-
-         for (int i = 0; i < oneToMany.Length; i++) {
-
-            MetaAssociation assoc = oneToMany[i];
-
-            object[] many = ((IEnumerable<object>)assoc.ThisMember.MemberAccessor.GetBoxedValue(entity) ?? new object[0])
-               .Where(o => o != null)
-               .ToArray();
-
-            if (many.Length == 0) continue;
-
-            for (int j = 0; j < many.Length; j++) {
-
-               object child = many[j];
-
-               for (int k = 0; k < assoc.ThisKey.Count; k++) {
-
-                  MetaDataMember thisKey = assoc.ThisKey[k];
-                  MetaDataMember otherKey = assoc.OtherKey[k];
-
-                  object thisKeyVal = thisKey.MemberAccessor.GetBoxedValue(entity);
-
-                  otherKey.MemberAccessor.SetBoxedValue(ref child, thisKeyVal);
-               }
-            }
-
-            MetaType otherType = assoc.OtherType;
-
-            InsertRangeImpl(otherType, many);
-
-            for (int j = 0; j < many.Length; j++) {
-
-               object child = many[j];
-
-               InsertChildren(otherType, child);
-            }
-         }
-      }
-
+      
       /// <summary>
       /// Executes INSERT commands for the specified <paramref name="entities"/>.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use Table<TEntity>().InsertRange or Table(Type).InsertRange instead.")]
       public void InsertRange(IEnumerable<object> entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
@@ -687,11 +605,9 @@ namespace DbExtensions {
       /// Executes INSERT commands for the specified <paramref name="entities"/>.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use Table<TEntity>().InsertRange or Table(Type).InsertRange instead.")]
       public void InsertRange(params object[] entities) {
-         InsertRangeImpl(null, entities);
-      }
-
-      internal void InsertRangeImpl(MetaType metaType, object[] entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
@@ -702,54 +618,20 @@ namespace DbExtensions {
 
          var byType = entities.GroupBy(e => GetMetaType(e.GetType())).ToArray();
 
-         if (byType.Length > 1) {
-
-            using (var tx = EnsureInTransaction()) {
-
-               for (int i = 0; i < byType.Length; i++) {
-                  var grp = byType[i];
-
-                  InsertRangeImpl(grp.Key, grp.ToArray());
-               }
-
-               tx.Commit();
-            }
-
+         if (byType.Length == 1) {
+            Table(entities[0].GetType()).InsertRange(entities);
             return;
          }
 
-         if (metaType == null)
-            metaType = GetMetaType(entities[0].GetType());
+         using (var tx = EnsureInTransaction()) {
 
-         SqlTable table = Table(metaType);
+            for (int i = 0; i < byType.Length; i++) {
+               var grp = byType[i];
 
-         if (entities.Length == 1) {
-            table.Insert(entities[0]);
-            return;
-         }
-
-         MetaDataMember[] syncMembers =
-            (from m in metaType.PersistentDataMembers
-             where (m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
-             select m).ToArray();
-
-         bool batch = syncMembers.Length == 0 && this.config.EnableBatchCommands;
-
-         if (batch) {
-
-            SqlBuilder batchInsert = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => table.SQL.INSERT_INTO_VALUES(e)));
-
-            Affect(batchInsert, entities.Length, AffectedRecordsPolicy.MustMatchAffecting);
-
-         } else {
-
-            using (var tx = EnsureInTransaction()) {
-
-               for (int i = 0; i < entities.Length; i++)
-                  table.Insert(entities[i]);
-
-               tx.Commit();
+               Table(grp.Key).InsertRange(grp.ToArray());
             }
+
+            tx.Commit();
          }
       }
       
@@ -810,7 +692,7 @@ namespace DbExtensions {
       /// <see cref="Transaction"/> is associated with all new commands created using this method.
       /// </remarks>
       public DbCommand CreateCommand(string commandText) {
-         return CreateCommand(commandText, null);
+         return CreateCommand(commandText, (object[])null);
       }
 
       /// <summary>
@@ -859,46 +741,10 @@ namespace DbExtensions {
          return this.cb.QuoteIdentifier(unquotedIdentifier);
       }
 
-      internal string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
-
-         if (predicateValues == null || predicateValues.Count == 0) throw new ArgumentException("predicateValues cannot be empty", "predicateValues");
-         if (parametersBuffer == null) throw new ArgumentNullException("parametersBuffer");
-
-         var sb = new StringBuilder();
-
-         foreach (var item in predicateValues) {
-            if (sb.Length > 0) sb.Append(" AND ");
-
-            sb.Append(QuoteIdentifier(item.Key));
-
-            if (item.Value == null) {
-               sb.Append(" IS NULL");
-            } else {
-               sb.Append(" = {")
-                  .Append(parametersBuffer.Count)
-                  .Append("}");
-
-               parametersBuffer.Add(item.Value);
-            }
-         }
-
-         return sb.ToString();
-      }
-
       internal void LogLine(string message) {
 
          if (this.Log != null)
             this.Log.WriteLine(message);
-      }
-
-      internal void EnsureEntityType(MetaType metaType) {
-
-         if (!metaType.IsEntity) {
-            throw new InvalidOperationException(
-               String.Format(CultureInfo.InvariantCulture,
-                  "The operation is not available for non-entity types ('{0}').", metaType.Type.FullName)
-            );
-         }
       }
 
       MetaType GetMetaType(Type entityType) {
@@ -906,7 +752,7 @@ namespace DbExtensions {
          if (entityType == null) throw new ArgumentNullException("entityType");
 
          if (this.config.Mapping == null)
-            throw new InvalidOperationException("There's not MetaModel associatated, the operation is not available.");
+            throw new InvalidOperationException("There's no MetaModel associated, the operation is not available.");
 
          return this.config.Mapping.GetMetaType(entityType);
       }
@@ -973,7 +819,7 @@ namespace DbExtensions {
 
       class WrappedTransaction : IDbTransaction {
 
-         readonly Database dao;
+         readonly Database db;
          readonly IDisposable connHolder;
          readonly IDbTransaction txAdo;
          readonly bool txBeganHere;
@@ -985,17 +831,17 @@ namespace DbExtensions {
          public IDbConnection Connection { get { return _Connection; } }
          public IsolationLevel IsolationLevel { get { return _IsolationLevel; } }
 
-         public WrappedTransaction(Database dao, IsolationLevel isolationLevel, bool forceNew) {
+         public WrappedTransaction(Database db, IsolationLevel isolationLevel, bool forceNew) {
 
-            if (dao == null) throw new ArgumentNullException("dao");
+            if (db == null) throw new ArgumentNullException("db");
 
-            this.dao = dao;
-            this.txAdo = this.dao.Transaction;
+            this.db = db;
+            this.txAdo = this.db.Transaction;
 
-            this._Connection = this.dao.Connection;
+            this._Connection = this.db.Connection;
             this._IsolationLevel = isolationLevel;
 
-            this.connHolder = this.dao.EnsureConnectionOpen();
+            this.connHolder = this.db.EnsureConnectionOpen();
 
             try {
 
@@ -1005,8 +851,8 @@ namespace DbExtensions {
                if (this.txScope == null 
                   && (this.txAdo == null || forceNew)) {
 
-                  this.txAdo = this.dao.Transaction = this.dao.Connection.BeginTransaction(isolationLevel);
-                  this.dao.LogLine("-- TRANSACTION STARTED");
+                  this.txAdo = this.db.Transaction = this.db.Connection.BeginTransaction(isolationLevel);
+                  this.db.LogLine("-- TRANSACTION STARTED");
                   this.txBeganHere = true;
                }
 
@@ -1029,7 +875,7 @@ namespace DbExtensions {
 
                try {
                   txAdo.Commit();
-                  dao.LogLine("-- TRANSACTION COMMITED");
+                  db.LogLine("-- TRANSACTION COMMITED");
 
                } finally {
                   RemoveTxFromDao();
@@ -1046,7 +892,7 @@ namespace DbExtensions {
 
                try {
                   txAdo.Rollback();
-                  dao.LogLine("-- TRANSACTION ROLLED BACK");
+                  db.LogLine("-- TRANSACTION ROLLED BACK");
 
                } finally {
                   RemoveTxFromDao();
@@ -1080,8 +926,8 @@ namespace DbExtensions {
 
          void RemoveTxFromDao() {
 
-            if (dao.Transaction != null && Object.ReferenceEquals(dao.Transaction, txAdo))
-               dao.Transaction = null;
+            if (db.Transaction != null && Object.ReferenceEquals(db.Transaction, txAdo))
+               db.Transaction = null;
          }
       }
 
