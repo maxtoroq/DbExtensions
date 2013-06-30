@@ -431,7 +431,7 @@ namespace DbExtensions {
          }
       }
 
-#if !NET40
+#if NET35
       public override bool HasValue {
          get {
             return (0L != (157084 & (1 << (int)NodeType)));

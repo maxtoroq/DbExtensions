@@ -1257,7 +1257,7 @@ namespace DbExtensions {
 
    class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposable {
 
-      MappingEnumerable<TResult>.Enumerator enumerator;
+      IEnumerator<TResult> enumerator;
 
       public MappingEnumerable(IDbCommand command, Func<IDataRecord, TResult> mapper)
          : this(command, mapper, null) { }
@@ -1268,7 +1268,7 @@ namespace DbExtensions {
 
       public IEnumerator<TResult> GetEnumerator() {
 
-         MappingEnumerable<TResult>.Enumerator e = enumerator;
+         IEnumerator<TResult> e = enumerator;
 
          if (e == null)
             throw new InvalidOperationException("Cannot enumerate more than once.");
@@ -1305,10 +1305,12 @@ namespace DbExtensions {
             if (command == null) throw new ArgumentNullException("command");
             if (mapper == null) throw new ArgumentNullException("mapper");
 
-            if (command.Connection == null)
+            IDbConnection conn = command.Connection;
+
+            if (conn == null)
                throw new ArgumentException("command.Connection cannot be null", "command");
 
-            prevStateWasClosed = (command.Connection.State == ConnectionState.Closed);
+            prevStateWasClosed = (conn.State == ConnectionState.Closed);
 
             this.command = command;
             this.mapper = mapper;
@@ -1385,8 +1387,10 @@ namespace DbExtensions {
 
          void EnsureConnectionClosed() {
 
-            if (command.Connection.State != ConnectionState.Closed)
-               command.Connection.Close();
+            IDbConnection conn = command.Connection;
+
+            if (conn.State != ConnectionState.Closed)
+               conn.Close();
          }
       }
 
@@ -1609,9 +1613,7 @@ namespace DbExtensions {
             );
          }
 
-         ConstructorInfo constructor = constructors[0];
-
-         return constructor;
+         return constructors[0];
       }
 
       #region Nested Types

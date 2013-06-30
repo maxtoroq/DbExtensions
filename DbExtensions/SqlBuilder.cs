@@ -440,7 +440,7 @@ namespace DbExtensions {
       /// <returns>A new <see cref="SqlBuilder"/> that is equivalent to this instance.</returns>
       public SqlBuilder Clone() {
 
-         SqlBuilder clone = new SqlBuilder();
+         var clone = new SqlBuilder();
          clone.Buffer.Append(this.Buffer.ToString());
          clone.CurrentClause = this.CurrentClause;
          clone.CurrentSeparator = this.CurrentSeparator;

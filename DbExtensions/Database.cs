@@ -290,7 +290,7 @@ namespace DbExtensions {
       /// </code>
       /// </remarks>
       public IDbTransaction EnsureInTransaction(IsolationLevel isolationLevel) {
-         return new WrappedTransaction(this, isolationLevel, forceNew: false);
+         return new WrappedTransaction(this, isolationLevel);
       }
 
       /// <summary>
@@ -831,7 +831,7 @@ namespace DbExtensions {
          public IDbConnection Connection { get { return _Connection; } }
          public IsolationLevel IsolationLevel { get { return _IsolationLevel; } }
 
-         public WrappedTransaction(Database db, IsolationLevel isolationLevel, bool forceNew) {
+         public WrappedTransaction(Database db, IsolationLevel isolationLevel) {
 
             if (db == null) throw new ArgumentNullException("db");
 
@@ -845,11 +845,11 @@ namespace DbExtensions {
 
             try {
 
-               if (!forceNew && System.Transactions.Transaction.Current != null)
+               if (System.Transactions.Transaction.Current != null)
                   this.txScope = new System.Transactions.TransactionScope();
 
                if (this.txScope == null 
-                  && (this.txAdo == null || forceNew)) {
+                  && this.txAdo == null) {
 
                   this.txAdo = this.db.Transaction = this.db.Connection.BeginTransaction(isolationLevel);
                   this.db.LogLine("-- TRANSACTION STARTED");

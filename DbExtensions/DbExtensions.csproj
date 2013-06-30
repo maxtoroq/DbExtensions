@@ -18,7 +18,7 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\net40\</OutputPath>
     <IntermediateOutputPath>obj\Debug\net40\</IntermediateOutputPath>
-    <DefineConstants>TRACE;DEBUG;NET40;CODE_ANALYSIS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -27,7 +27,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\net40\</OutputPath>
     <IntermediateOutputPath>obj\Release\net40\</IntermediateOutputPath>
-    <DefineConstants>TRACE;NET40</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\net40\DbExtensions.xml</DocumentationFile>
