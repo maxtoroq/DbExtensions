@@ -83,3 +83,6 @@ type DatabaseSamples(connectionString : string, mapping : MetaModel, log : TextW
 
       db.OrderDetails.DeleteRange(order.OrderDetails);
       db.Orders.Delete(order)
+
+   interface IDisposable with
+      override this.Dispose() = db.Dispose()

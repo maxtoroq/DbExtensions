@@ -9,6 +9,7 @@ Imports DbExtensions
 Imports Samples.VisualBasic.Northwind
 
 Public Class DatabaseSamples
+   Implements IDisposable
 
    ReadOnly db As NorthwindDatabase
 
@@ -97,6 +98,10 @@ Public Class DatabaseSamples
       db.OrderDetails.DeleteRange(order.OrderDetails)
       db.Orders.Delete(order)
 
+   End Sub
+
+   Public Sub Dispose() Implements IDisposable.Dispose
+      Me.db.Dispose()
    End Sub
 
 End Class

@@ -91,7 +91,15 @@ namespace Samples {
 
          for (int i = 0; i < selectedSamples.Length; i++) {
 
-            RunSamples(selectedSamples[i], continueOnError);
+            object sampl = selectedSamples[i];
+
+            RunSamples(sampl, continueOnError);
+
+            IDisposable disp = sampl as IDisposable;
+
+            if (disp != null)
+               disp.Dispose();
+
             Console.WriteLine();
             Console.WriteLine((i == selectedSamples.Length - 1) ? "Press key to exit..." : "Press key to continue...");
             Console.ReadKey();
@@ -157,13 +165,21 @@ namespace Samples {
       void RunSamples(object samples, bool continueOnError) {
 
          Type samplesType = samples.GetType();
+         bool isDisposable = samples is IDisposable;
 
          List<MethodInfo> methods = samplesType
             .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
             .ToList();
 
          for (int i = 0; i < methods.Count; i++) {
+
             MethodInfo method = methods[i];
+
+            if (isDisposable
+               && method.Name == "Dispose") {
+
+               continue;
+            }
 
             Console.WriteLine();
             Console.WriteLine(method.Name);

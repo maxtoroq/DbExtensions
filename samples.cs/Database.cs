@@ -10,7 +10,7 @@ using Samples.CSharp.Northwind;
 
 namespace Samples.CSharp {
 
-   public class DatabaseSamples {
+   public class DatabaseSamples : IDisposable {
 
       readonly NorthwindDatabase db;
 
@@ -101,6 +101,10 @@ namespace Samples.CSharp {
 
          db.OrderDetails.DeleteRange(order.OrderDetails);
          db.Orders.Delete(order);
+      }
+
+      public void Dispose() {
+         this.db.Dispose();
       }
    }
 }
