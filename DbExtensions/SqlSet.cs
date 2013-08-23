@@ -284,10 +284,10 @@ namespace DbExtensions {
       protected virtual IEnumerable Execute(DbCommand command) {
 
          if (this.resultType == null) {
-#if NET40
-            return command.Map(this.Log);
-#else
+#if NET35
             throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
+#else
+            return command.Map(this.Log);
 #endif
          }
 
@@ -1368,27 +1368,27 @@ namespace DbExtensions {
 
    sealed class SqlSetDefaultContext : ISqlSetContext {
 
-      readonly DbConnection connection;
-      readonly TextWriter log;
+      readonly DbConnection _Connection;
+      readonly TextWriter _Log;
 
       public DbConnection Connection {
-         get { return connection; }
+         get { return _Connection; }
       }
 
       public TextWriter Log {
-         get { return log; }
+         get { return _Log; }
       }
 
       public SqlSetDefaultContext(DbConnection connection, TextWriter log = null) {
 
          if (connection == null) throw new ArgumentNullException("connection");
 
-         this.connection = connection;
-         this.log = log;
+         this._Connection = connection;
+         this._Log = log;
       }
 
       public DbCommand CreateCommand(SqlBuilder query) {
-         return query.ToCommand(this.connection);
+         return query.ToCommand(this.Connection);
       }
    }
 }

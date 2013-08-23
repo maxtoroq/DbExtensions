@@ -31,7 +31,7 @@ namespace DbExtensions {
    /// Creates and executes CRUD (Create, Read, Update, Delete) commands for entities mapped using the
    /// <see cref="N:System.Data.Linq.Mapping"/> API.
    /// </summary>
-   public partial class Database : ISqlSetContext {
+   public partial class Database : IDisposable, ISqlSetContext {
 
       static readonly MethodInfo tableMethod = typeof(Database).GetMethods(BindingFlags.Public | BindingFlags.Instance)
          .Single(m => m.Name == "Table" && m.ContainsGenericParameters && m.GetParameters().Length == 0);
@@ -39,7 +39,9 @@ namespace DbExtensions {
       readonly IDictionary<MetaType, SqlTable> tables = new Dictionary<MetaType, SqlTable>();
       readonly IDictionary<MetaType, ISqlTable> genericTables = new Dictionary<MetaType, ISqlTable>();
       
-      DbConnection connection;
+      readonly DbConnection connection;
+      readonly bool disposeConnection;
+
       DbCommandBuilder cb;
       DatabaseConfiguration config;
 
@@ -85,7 +87,9 @@ namespace DbExtensions {
          
          if (connection == null) throw new ArgumentNullException("connection");
 
-         Initialize(connection, null, mapping);
+         this.connection = connection;
+
+         Initialize(null, mapping);
       }
 
       /// <summary>
@@ -105,9 +109,11 @@ namespace DbExtensions {
       public Database(string connectionString, MetaModel mapping) {
 
          string providerName;
-         DbConnection connection = CreateConnection(connectionString, out providerName);
+         
+         this.connection = CreateConnection(connectionString, out providerName);
+         this.disposeConnection = true;
 
-         Initialize(connection, providerName, mapping);
+         Initialize(providerName, mapping);
       }
 
       /// <summary>
@@ -118,16 +124,14 @@ namespace DbExtensions {
       public Database(MetaModel mapping) {
          
          string providerName;
-         DbConnection connection = CreateConnection(out providerName);
+         
+         this.connection = CreateConnection(out providerName);
+         this.disposeConnection = true;
 
-         Initialize(connection, providerName, mapping);
+         Initialize(providerName, mapping);
       }
 
-      void Initialize(DbConnection connection, string providerName, MetaModel mapping) {
-
-         if (connection == null) throw new ArgumentNullException("connection");
-
-         this.connection = connection;
+      void Initialize(string providerName, MetaModel mapping) {
 
          if (mapping == null) {
             Type thisType = GetType();
@@ -290,7 +294,7 @@ namespace DbExtensions {
       /// </code>
       /// </remarks>
       public IDbTransaction EnsureInTransaction(IsolationLevel isolationLevel) {
-         return new WrappedTransaction(this, isolationLevel, forceNew: false);
+         return new WrappedTransaction(this, isolationLevel);
       }
 
       /// <summary>
@@ -815,6 +819,30 @@ namespace DbExtensions {
 
       #endregion
 
+      #region IDisposable Members
+
+      public void Dispose() {
+
+         Dispose(true);
+         GC.SuppressFinalize(this);
+      }
+
+      protected virtual void Dispose(bool disposing) {
+
+         if (disposing) {
+
+            if (this.disposeConnection) {
+
+               DbConnection conn = this.Connection;
+
+               if (conn != null)
+                  conn.Dispose();
+            }
+         }
+      }
+
+      #endregion
+
       #region Nested Types
 
       class WrappedTransaction : IDbTransaction {
@@ -831,7 +859,7 @@ namespace DbExtensions {
          public IDbConnection Connection { get { return _Connection; } }
          public IsolationLevel IsolationLevel { get { return _IsolationLevel; } }
 
-         public WrappedTransaction(Database db, IsolationLevel isolationLevel, bool forceNew) {
+         public WrappedTransaction(Database db, IsolationLevel isolationLevel) {
 
             if (db == null) throw new ArgumentNullException("db");
 
@@ -845,11 +873,11 @@ namespace DbExtensions {
 
             try {
 
-               if (!forceNew && System.Transactions.Transaction.Current != null)
+               if (System.Transactions.Transaction.Current != null)
                   this.txScope = new System.Transactions.TransactionScope();
 
                if (this.txScope == null 
-                  && (this.txAdo == null || forceNew)) {
+                  && this.txAdo == null) {
 
                   this.txAdo = this.db.Transaction = this.db.Connection.BeginTransaction(isolationLevel);
                   this.db.LogLine("-- TRANSACTION STARTED");
