@@ -62,13 +62,6 @@ namespace DbExtensions {
          get { return context.Log; }
       }
 
-      private bool HasBufferedCalls {
-         get {
-            return skipBuffer.HasValue
-               || orderByBuffer != null;
-         }
-      }
-
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlSet"/> class
       /// using the provided defining query.
@@ -169,71 +162,117 @@ namespace DbExtensions {
 
       internal SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedCalls = false) {
 
-         bool applyBuffer = this.HasBufferedCalls && !omitBufferedCalls;
-         bool shouldClone = clone || !applyBuffer;
+         bool hasBufferedCalls = skipBuffer.HasValue || orderByBuffer != null;
+         bool applyBuffer = hasBufferedCalls && !omitBufferedCalls;
+
+         if (applyBuffer) {
+            return OrderBySkipTake(null);
+         }
 
          SqlBuilder query = this.definingQuery;
 
-         if (shouldClone)
+         if (clone) {
             query = query.Clone();
-
-         if (applyBuffer) {
-
-            query = CreateSuperQuery(query, null, null);
-
-            ApplyOrderBySkipTake(query, this.orderByBuffer, this.skipBuffer);
          }
 
          return query;
-      }
-
-      void ApplyOrderBySkipTake(SqlBuilder query, SqlFragment orderBy, int? skip, int? take = null) {
-
-         bool hasOrderBy = orderBy != null;
-         bool hasSkip = skip.HasValue;
-         bool hasTake = take.HasValue;
-
-         if (hasOrderBy)
-            query.ORDER_BY(orderBy.Format, orderBy.Args);
-
-         if (IsSqlServer()) {
-
-            bool useFetch = hasSkip && hasTake;
-            bool usingTop = hasTake && !useFetch;
-
-            if (!hasOrderBy && hasSkip) {
-
-               // Cannot have OFFSET without ORDER BY
-               query.ORDER_BY("1");
-            }
-
-            if (hasSkip) {
-               query.OFFSET("{0} ROWS", skip.Value);
-
-            } else if (hasOrderBy && !usingTop) {
-
-               // The ORDER BY clause is invalid in subqueries, unless TOP, OFFSET or FOR XML is also specified.
-
-               query.OFFSET("0 ROWS");
-            }
-
-            if (useFetch)
-               query.AppendClause("FETCH", null, "NEXT {0} ROWS ONLY", new object[] { take.Value });
-         
-         } else {
-
-            if (hasTake)
-               query.LIMIT(take.Value);
-
-            if (hasSkip)
-               query.OFFSET(skip.Value);
-         }
       }
 
       void CopyBufferState(SqlSet otherSet) {
 
          otherSet.orderByBuffer = this.orderByBuffer;
          otherSet.skipBuffer = this.skipBuffer;
+      }
+
+      SqlBuilder OrderBySkipTake(int? take = null) {
+
+         if (IsSqlServer()) {
+            return OrderBySkipTake_SqlServer(take);
+         }
+
+         return OrderBySkipTake_Default(take);
+      }
+
+      SqlBuilder OrderBySkipTake_Default(int? take = null) {
+
+         bool hasOrderBy = this.orderByBuffer != null;
+         bool hasSkip = this.skipBuffer.HasValue;
+         bool hasTake = take.HasValue;
+
+         if (hasOrderBy
+            || hasTake
+            || hasSkip) {
+
+            SqlBuilder query = CreateSuperQuery(this.definingQuery, null, null);
+
+            if (hasOrderBy) {
+               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+            }
+
+            if (hasTake) {
+               query.LIMIT(take.Value);
+            }
+
+            if (hasSkip) {
+               query.OFFSET(this.skipBuffer.Value);
+            }
+
+            return query;
+         }
+
+         return null;
+      }
+
+      SqlBuilder OrderBySkipTake_SqlServer(int? take = null) {
+
+         bool hasOrderBy = this.orderByBuffer != null;
+         bool hasSkip = this.skipBuffer.HasValue;
+         bool hasTake = take.HasValue;
+
+         if (hasSkip) {
+
+            SqlBuilder query = CreateSuperQuery(this.definingQuery, null, null);
+
+            if (hasOrderBy) {
+               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+
+            } else {
+
+               // Cannot have OFFSET without ORDER BY
+               query.ORDER_BY("1");
+            }
+
+            query.OFFSET("{0} ROWS", this.skipBuffer.Value);
+
+            if (hasTake)
+               query.AppendClause("FETCH", null, "NEXT {0} ROWS ONLY", new object[] { take.Value });
+
+            return query;
+         }
+
+         if (hasTake) {
+
+            SqlBuilder query = CreateSuperQuery(this.definingQuery, "TOP({0}) *", new object[] { take.Value });
+
+            if (hasOrderBy) {
+               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+            }
+
+            return query;
+         }
+
+         if (hasOrderBy) {
+
+            SqlBuilder query = CreateSuperQuery(this.definingQuery, null, null);
+
+            query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+
+            // The ORDER BY clause is invalid in subqueries, unless TOP, OFFSET or FOR XML is also specified.
+
+            query.OFFSET("0 ROWS");
+         }
+
+         return null;
       }
 
       bool IsSqlServer() {
@@ -707,31 +746,7 @@ namespace DbExtensions {
       /// <returns>A new <see cref="SqlSet"/> that contains the specified number of elements from the start of the current set.</returns>
       public SqlSet Take(int count) {
 
-         SqlBuilder query;
-
-         if (this.HasBufferedCalls) {
-            
-            query = GetDefiningQuery(omitBufferedCalls: true);
-
-            if (IsSqlServer() && !this.skipBuffer.HasValue) {
-               query = CreateSuperQuery(query, "TOP({0}) *", new object[] { count });
-               ApplyOrderBySkipTake(query, this.orderByBuffer, skip: null, take: count);
-
-            } else {
-               query = CreateSuperQuery(query, null, null);
-               ApplyOrderBySkipTake(query, this.orderByBuffer, this.skipBuffer, take: count);
-            }
-
-         } else {
-
-            if (IsSqlServer()) {
-               query = CreateSuperQuery("TOP({0}) *", count);
-
-            } else {
-               query = CreateSuperQuery();
-               ApplyOrderBySkipTake(query, orderBy: null, skip: null, take: count);
-            }
-         }
+         SqlBuilder query = OrderBySkipTake(count);
 
          return CreateSet(query);
       }
