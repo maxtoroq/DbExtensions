@@ -136,7 +136,7 @@ namespace DbExtensions {
       public XmlReader AsXml(XmlMappingSettings settings) {
 
          return new XmlMappingReader(
-            this.Connection.Map<IDataRecord>(GetDefiningQuery(clone: true), r => r, this.Log).GetEnumerator(),
+            this.Connection.Map<IDataRecord>(GetDefiningQuery(), r => r, this.Log).GetEnumerator(),
             settings,
             (XmlReaderSettings)null
          );
