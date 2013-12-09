@@ -22,6 +22,7 @@ namespace DbExtensions {
    using System.Diagnostics.CodeAnalysis;
    using System.Globalization;
    using System.IO;
+   using System.Linq;
    using System.Reflection;
    using System.Text;
    using System.Text.RegularExpressions;
@@ -69,13 +70,14 @@ namespace DbExtensions {
       /// <returns>The <see cref="DbProviderFactory"/> associated with the connection.</returns>
       public static DbProviderFactory GetProviderFactory(this DbConnection connection) {
 
+         if (connection == null) throw new ArgumentNullException("connection");
+
          DbProviderFactory factory = getDbProviderFactory(connection);
 
          if (factory != null)
             return factory;
 
          // In .NET 4.5 Odbc and OleDb do not override DbConnection.DbProviderFactory
-         // https://connect.microsoft.com/VisualStudio/feedback/details/785312
 
          if (connection is System.Data.Odbc.OdbcConnection)
             return System.Data.Odbc.OdbcFactory.Instance;
@@ -83,7 +85,16 @@ namespace DbExtensions {
          if (connection is System.Data.OleDb.OleDbConnection)
             return System.Data.OleDb.OleDbFactory.Instance;
 
-         return null;
+         Type type = connection.GetType();
+         string ns = type.Namespace;
+         string factoryName = ns.Split('.').Last() + "Factory";
+         
+         Type factoryType = type.Assembly.GetType(ns + "." + factoryName, throwOnError: false);
+
+         if (factoryType == null)
+            return null;
+
+         return (DbProviderFactory)factoryType.GetField("Instance", BindingFlags.Static | BindingFlags.Public).GetValue(null);
       }
 
       /// <summary>
