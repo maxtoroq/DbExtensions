@@ -28,5 +28,15 @@ namespace DbExtensions.Tests.Querying {
 
          Assert.AreEqual(1, query.ParameterValues.Count);
       }
+
+      [TestMethod]
+      public void VerifyArrayToList()
+      {
+          var query = SQL
+              .SELECT("*")
+              .WHERE("VALUE IN ({0})", new object[] { "a", "b", "c" });
+
+          Assert.AreEqual(3, query.ParameterValues.Count);
+      }
    }
 }

@@ -325,7 +325,10 @@ namespace DbExtensions {
                format = String.Join(" ", templArgs);
             }
 
-            this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, fargs.Cast<object>().ToArray());
+            // HACK ToArray for compatibility with .Net 3.5. Not required for 4.0 and later.
+            string joinedArgs = String.Join(", ", fargs.ToArray());
+            object[] jargs = new object[] { joinedArgs };
+            this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, jargs);
 
             foreach (object item in oargs)
                this.ParameterValues.Add(item);
