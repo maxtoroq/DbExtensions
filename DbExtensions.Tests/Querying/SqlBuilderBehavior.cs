@@ -127,6 +127,22 @@ namespace DbExtensions.Tests.Querying {
       }
 
       [TestMethod]
+      public void VerifySinglePlusArrayToListIsBroken() {
+         int[] ids = { 1, 2, 3 };
+
+         var query = SQL
+             .SELECT("*")
+             .WHERE("X = {0} OR VALUE IN ({0})", 1, ids);
+
+         // TODO fix when SqlBuilder supports dealing with mix of array and non-array
+         // HACK this "test" will start to fail when SqlBuilder gets fixed
+         Assert.IsFalse(query.ToString().Contains("WHERE X = {0} OR VALUE IN ({1}, {2}, {3})"));
+
+         var cmd = query.ToCommand(conn);
+         Assert.IsTrue(cmd.CommandText.Contains("@p3"));
+      }
+
+      [TestMethod]
       public void VerifyStringArrayToList2() {
          var query = SQL
              .SELECT("*")
@@ -136,20 +152,6 @@ namespace DbExtensions.Tests.Querying {
 
          var cmd = query.ToCommand(conn);
          Assert.IsTrue(cmd.CommandText.Contains("@p2"));
-      }
-
-      [TestMethod]
-      public void VerifyStringListToList2() {
-         var ids = new List<string> { "a", "b", "c" };
-
-         var query = SQL
-             .SELECT("*")
-             .WHERE("VALUE IN ({0})", ids.ToArray());
-
-         var cmd = query.ToCommand(conn);
-         Assert.IsTrue(cmd.CommandText.Contains("@p2"));
-
-         Assert.AreEqual(3, query.ParameterValues.Count);
       }
    }
 }
