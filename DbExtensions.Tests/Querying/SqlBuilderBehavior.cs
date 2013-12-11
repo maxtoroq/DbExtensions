@@ -54,6 +54,19 @@ namespace DbExtensions.Tests.Querying {
       }
 
       [TestMethod]
+      public void VerifySingleValue2() {
+         var query = SQL
+             .SELECT("*")
+             .WHERE("VALUE = {0}", 1);
+
+         Assert.AreEqual(1, query.ParameterValues.Count);
+
+         var cmd = query.ToCommand(conn);
+         Assert.IsTrue(cmd.CommandText.Contains("@p0"));
+         Assert.IsFalse(cmd.CommandText.Contains("@p1"));
+      }
+
+      [TestMethod]
       public void VerifyArrayToList() {
          int[] ids = { 1, 2, 3 };
 
@@ -91,6 +104,32 @@ namespace DbExtensions.Tests.Querying {
 
          var cmd = query.ToCommand(conn);
          Assert.IsTrue(cmd.CommandText.Contains("@p2"));
+      }
+
+      [TestMethod]
+      public void VerifyStringArrayToList2() {
+         var query = SQL
+             .SELECT("*")
+             .WHERE("VALUE IN ({0})", "a", "b", "c");
+
+         Assert.AreEqual(3, query.ParameterValues.Count);
+
+         var cmd = query.ToCommand(conn);
+         Assert.IsTrue(cmd.CommandText.Contains("@p2"));
+      }
+
+      [TestMethod]
+      public void VerifyStringListToList2() {
+         var ids = new List<string> { "a", "b", "c" };
+
+         var query = SQL
+             .SELECT("*")
+             .WHERE("VALUE IN ({0})", ids.ToArray());
+
+         var cmd = query.ToCommand(conn);
+         Assert.IsTrue(cmd.CommandText.Contains("@p2"));
+
+         Assert.AreEqual(3, query.ParameterValues.Count);
       }
    }
 }
