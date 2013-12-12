@@ -30,6 +30,17 @@ namespace DbExtensions.Tests.Querying {
       }
 
       [TestMethod]
+      public void Adjust_Other_Placeholders_When_Using_Array_Parameter() {
+
+         var query = SQL
+            .SELECT("*")
+            .WHERE("c IN ({0}) AND c <> {1}", new object[] { new int[] { 1, 2, 3 }, 4 });
+
+         Assert.IsTrue(query.ToString().Contains("{3}"));
+         Assert.AreEqual(4, query.ParameterValues.Count);
+      }
+
+      [TestMethod]
       public void Use_Parameter_On_Limit_Clause() {
 
          var query = SQL
