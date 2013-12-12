@@ -40,10 +40,11 @@ namespace DbExtensions.Tests.Querying {
 
       [TestMethod]
       public void Adjust_Other_Placeholders_When_Using_Array_Parameter() {
+         var ids = new int[] { 1, 2, 3 };
 
          var query = SQL
             .SELECT("*")
-            .WHERE("c IN ({0}) AND c <> {1}", new object[] { new int[] { 1, 2, 3 }, 4 });
+            .WHERE("c IN ({0}) AND c <> {1}", ids, 4);
 
          Assert.IsTrue(query.ToString().Contains("{3}"));
          Assert.AreEqual(4, query.ParameterValues.Count);
