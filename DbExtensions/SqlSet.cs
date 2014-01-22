@@ -33,6 +33,8 @@ namespace DbExtensions {
    public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       const string SetAliasPrefix = "dbex_set";
+      static readonly object padlock = new object();
+      static readonly IDictionary<Type, SqlDialect> connectionDialect = new Dictionary<Type, SqlDialect>();
 
       // definingQuery should NEVER be modified
 
@@ -188,15 +190,19 @@ namespace DbExtensions {
 
       SqlBuilder OrderBySkipTake(int? take = null) {
 
-         if (IsSqlServer()) {
-            return OrderBySkipTake_SqlServer(take);
-         }
+         switch (GetConnectionDialect()) {
+            case SqlDialect.Default:
+               return OrderBySkipTake_Default(take);
+               
+            case SqlDialect.SqlServer:
+               return OrderBySkipTake_SqlServer(take);
 
-         if (IsOracle()) {
-            return OrderBySkipTake_Oracle(take);
+            case SqlDialect.Oracle:
+               return OrderBySkipTake_Oracle(take);
+            
+            default:
+               throw new NotImplementedException();
          }
-
-         return OrderBySkipTake_Default(take);
       }
 
       SqlBuilder OrderBySkipTake_Default(int? take = null) {
@@ -341,6 +347,28 @@ namespace DbExtensions {
          }
 
          return null;
+      }
+
+      SqlDialect GetConnectionDialect() {
+
+         Type connType = this.Connection.GetType();
+
+         SqlDialect dialect;
+
+         if (!connectionDialect.TryGetValue(connType, out dialect)) {
+            lock (padlock) {
+               if (!connectionDialect.TryGetValue(connType, out dialect)) {
+
+                  dialect = IsSqlServer() ? SqlDialect.SqlServer
+                     : IsOracle() ? SqlDialect.Oracle
+                     : SqlDialect.Default;
+
+                  connectionDialect[connType] = dialect;
+               }
+            }
+         }
+
+         return dialect;
       }
 
       bool IsSqlServer() {
@@ -961,6 +989,12 @@ namespace DbExtensions {
             this.Format = format;
             this.Args = args;
          }
+      }
+
+      enum SqlDialect { 
+         Default = 0,
+         SqlServer,
+         Oracle
       }
 
       #endregion
