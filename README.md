@@ -47,9 +47,11 @@ FROM (
                         SELECT * FROM Products) dbex_set1
                 WHERE UnitsInStock < @p0) dbex_set3
         ORDER BY UnitsInStock
-        LIMIT 5) dbex_set4
-LIMIT 1
+        LIMIT @p1) dbex_set4
+LIMIT @p2
 -- @p0: Input Int32 (Size = 0) [10]
+-- @p1: Input Int32 (Size = 0) [5]
+-- @p2: Input Int32 (Size = 0) [1]
 -- [-1] records affected.
 SELECT COUNT(*)
 FROM (
@@ -60,8 +62,9 @@ FROM (
                         SELECT * FROM Products) dbex_set1
                 WHERE UnitsInStock < @p0) dbex_set3
         ORDER BY UnitsInStock
-        LIMIT 5) dbex_count
+        LIMIT @p1) dbex_count
 -- @p0: Input Int32 (Size = 0) [10]
+-- @p1: Input Int32 (Size = 0) [5]
 -- [-1] records affected.
 SELECT *
 FROM (
@@ -72,10 +75,13 @@ FROM (
                         SELECT * FROM Products) dbex_set1
                 WHERE UnitsInStock < @p0) dbex_set3
         ORDER BY UnitsInStock
-        LIMIT 5) dbex_set5
-LIMIT 1
-OFFSET 1
+        LIMIT @p1) dbex_set5
+LIMIT @p2
+OFFSET @p3
 -- @p0: Input Int32 (Size = 0) [10]
+-- @p1: Input Int32 (Size = 0) [5]
+-- @p2: Input Int32 (Size = 0) [1]
+-- @p3: Input Int32 (Size = 0) [1]
 -- [-1] records affected.
 ```
 
