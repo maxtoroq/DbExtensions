@@ -448,7 +448,7 @@ namespace DbExtensions {
 
          SqlBuilder query = GetDefiningQuery(clone: false);
 
-         if (this.resultType == null) {
+         if (this.resultType != null) {
             return Extensions.Map<object>(q => CreateCommand(query), query, new PocoMapper(this.resultType, this.Log), this.Log);
 
          } else {
