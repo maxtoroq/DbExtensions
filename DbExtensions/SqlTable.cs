@@ -440,6 +440,8 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="entity">The entity whose members are to be set to their default values.</param>
       /// <seealso cref="DbConnection.GetSchema(string, string[])"/>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("This method will be removed in the next major version.")]
       public void Initialize(object entity) {
          table.Initialize(entity);
       }
@@ -1147,6 +1149,8 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="entity">The entity whose members are to be set to their default values.</param>
       /// <seealso cref="DbConnection.GetSchema(string, string[])"/>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("This method will be removed in the next major version.")]
       public void Initialize(TEntity entity) {
 
          if (entity == null) throw new ArgumentNullException("entity");
@@ -1384,7 +1388,12 @@ namespace DbExtensions {
       }
 
       void ISqlTable.Initialize(object entity) {
+
+#pragma warning disable 0618
+
          Initialize((TEntity)entity);
+
+#pragma warning restore 0618
       }
 
       void ISqlTable.Refresh(object entity) {
@@ -1779,7 +1788,7 @@ namespace DbExtensions {
       void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy); // deprecated
       
       object Find(object id);
-      void Initialize(object entity);
+      void Initialize(object entity); // deprecated
 
       void Insert(object entity);
       void Insert(object entity, bool deep);

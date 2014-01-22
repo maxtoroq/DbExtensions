@@ -46,17 +46,6 @@ namespace Samples.CSharp {
          Debug.Assert(product.ProductName == "Chai");
       }
 
-      public void DefaultValues() {
-
-         Product product = new Product();
-
-         Debug.Assert(product.UnitsInStock == null);
-
-         db.Products.Initialize(product);
-
-         Debug.Assert(product.UnitsInStock.HasValue && product.UnitsInStock.Value == 0);
-      }
-
       public void Transactions_AdoNet() {
 
          using (var tx = db.EnsureInTransaction()) {

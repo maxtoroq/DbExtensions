@@ -35,16 +35,6 @@ type DatabaseSamples(connectionString : string, mapping : MetaModel, log : TextW
 
       Debug.Assert(product.ProductName = "Chai")
 
-   member this.DefaultValues() =
-
-      let product = new Product()
-
-      Debug.Assert(not product.UnitsInStock.HasValue);
-
-      db.Products.Initialize(product)
-      
-      Debug.Assert(product.UnitsInStock.HasValue && product.UnitsInStock.Value = 0s)
-   
    member this.Transactions_AdoNet() =
 
       using (db.EnsureInTransaction())(fun tx ->

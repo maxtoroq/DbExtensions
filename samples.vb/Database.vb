@@ -40,18 +40,6 @@ Public Class DatabaseSamples
 
    End Sub
 
-   Public Sub DefaultValues()
-
-      Dim product As New Product()
-
-      Debug.Assert(product.UnitsInStock Is Nothing)
-
-      db.Products.Initialize(product)
-
-      Debug.Assert(product.UnitsInStock = 0)
-
-   End Sub
-
    Public Sub Transactions_AdoNet()
 
       Using tx = db.EnsureInTransaction()
