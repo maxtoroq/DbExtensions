@@ -32,22 +32,22 @@ if (productsToReorder.Any()) {
 
 ```sql
 SELECT (CASE WHEN EXISTS (
-        SELECT *
-        FROM (
-                SELECT * FROM Products) dbex_set1
-        WHERE UnitsInStock < @p0) THEN 1 ELSE 0 END)
+   SELECT *
+   FROM (
+      SELECT * FROM Products) dbex_set1
+   WHERE UnitsInStock < @p0) THEN 1 ELSE 0 END)
 -- @p0: Input Int32 (Size = 0) [10]
 -- [-1] records affected.
 SELECT *
 FROM (
-        SELECT *
-        FROM (
-                SELECT *
-                FROM (
-                        SELECT * FROM Products) dbex_set1
-                WHERE UnitsInStock < @p0) dbex_set3
-        ORDER BY UnitsInStock
-        LIMIT @p1) dbex_set4
+   SELECT *
+   FROM (
+      SELECT *
+      FROM (
+         SELECT * FROM Products) dbex_set1
+      WHERE UnitsInStock < @p0) dbex_set3
+   ORDER BY UnitsInStock
+   LIMIT @p1) dbex_set4
 LIMIT @p2
 -- @p0: Input Int32 (Size = 0) [10]
 -- @p1: Input Int32 (Size = 0) [5]
@@ -55,27 +55,27 @@ LIMIT @p2
 -- [-1] records affected.
 SELECT COUNT(*)
 FROM (
-        SELECT *
-        FROM (
-                SELECT *
-                FROM (
-                        SELECT * FROM Products) dbex_set1
-                WHERE UnitsInStock < @p0) dbex_set3
-        ORDER BY UnitsInStock
-        LIMIT @p1) dbex_count
+   SELECT *
+   FROM (
+      SELECT *
+      FROM (
+         SELECT * FROM Products) dbex_set1
+      WHERE UnitsInStock < @p0) dbex_set3
+   ORDER BY UnitsInStock
+   LIMIT @p1) dbex_count
 -- @p0: Input Int32 (Size = 0) [10]
 -- @p1: Input Int32 (Size = 0) [5]
 -- [-1] records affected.
 SELECT *
 FROM (
-        SELECT *
-        FROM (
-                SELECT *
-                FROM (
-                        SELECT * FROM Products) dbex_set1
-                WHERE UnitsInStock < @p0) dbex_set3
-        ORDER BY UnitsInStock
-        LIMIT @p1) dbex_set5
+   SELECT *
+   FROM (
+      SELECT *
+      FROM (
+         SELECT * FROM Products) dbex_set1
+      WHERE UnitsInStock < @p0) dbex_set3
+   ORDER BY UnitsInStock
+   LIMIT @p1) dbex_set5
 LIMIT @p2
 OFFSET @p3
 -- @p0: Input Int32 (Size = 0) [10]
