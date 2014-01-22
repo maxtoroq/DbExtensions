@@ -699,7 +699,7 @@ namespace DbExtensions {
       /// <param name="alias">The alias of the sub-query.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
       public SqlBuilder FROM(SqlBuilder subQuery, string alias) {
-         return FROM("({0}) AS " + alias, subQuery);
+         return FROM("({0}) " + alias, subQuery);
       }
 
       /// <summary>
@@ -1567,7 +1567,7 @@ namespace DbExtensions {
 
          return new SqlBuilder()
             .SELECT("COUNT(*)")
-            .FROM("({0}) AS dbex_count", query);
+            .FROM("({0}) dbex_count", query);
       }
 
       /// <summary>

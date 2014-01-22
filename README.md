@@ -34,7 +34,7 @@ if (productsToReorder.Any()) {
 SELECT (CASE WHEN EXISTS (
         SELECT *
         FROM (
-                SELECT * FROM Products) AS dbex_set1
+                SELECT * FROM Products) dbex_set1
         WHERE UnitsInStock < @p0) THEN 1 ELSE 0 END)
 -- @p0: Input Int32 (Size = 0) [10]
 -- [-1] records affected.
@@ -44,10 +44,10 @@ FROM (
         FROM (
                 SELECT *
                 FROM (
-                        SELECT * FROM Products) AS dbex_set1
-                WHERE UnitsInStock < @p0) AS dbex_set3
+                        SELECT * FROM Products) dbex_set1
+                WHERE UnitsInStock < @p0) dbex_set3
         ORDER BY UnitsInStock
-        LIMIT 5) AS dbex_set4
+        LIMIT 5) dbex_set4
 LIMIT 1
 -- @p0: Input Int32 (Size = 0) [10]
 -- [-1] records affected.
@@ -57,10 +57,10 @@ FROM (
         FROM (
                 SELECT *
                 FROM (
-                        SELECT * FROM Products) AS dbex_set1
-                WHERE UnitsInStock < @p0) AS dbex_set3
+                        SELECT * FROM Products) dbex_set1
+                WHERE UnitsInStock < @p0) dbex_set3
         ORDER BY UnitsInStock
-        LIMIT 5) AS dbex_count
+        LIMIT 5) dbex_count
 -- @p0: Input Int32 (Size = 0) [10]
 -- [-1] records affected.
 SELECT *
@@ -69,10 +69,10 @@ FROM (
         FROM (
                 SELECT *
                 FROM (
-                        SELECT * FROM Products) AS dbex_set1
-                WHERE UnitsInStock < @p0) AS dbex_set3
+                        SELECT * FROM Products) dbex_set1
+                WHERE UnitsInStock < @p0) dbex_set3
         ORDER BY UnitsInStock
-        LIMIT 5) AS dbex_set5
+        LIMIT 5) dbex_set5
 LIMIT 1
 OFFSET 1
 -- @p0: Input Int32 (Size = 0) [10]

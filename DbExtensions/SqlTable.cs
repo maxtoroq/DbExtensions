@@ -85,7 +85,7 @@ namespace DbExtensions {
          SqlBuilder query = SELECT_(metaType, selectMembers, tableAlias, db);
 
          string alias = (!String.IsNullOrEmpty(tableAlias)) ?
-            " AS " + db.QuoteIdentifier(tableAlias) : null;
+            " " + db.QuoteIdentifier(tableAlias) : null;
 
          return query.FROM(db.QuoteIdentifier(metaType.Table.TableName) + (alias ?? ""));
       }
