@@ -70,7 +70,10 @@ namespace DbExtensions {
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
       /// <returns>The results of the query as dynamic objects.</returns>
       public static IEnumerable<dynamic> Map(this DbConnection connection, SqlBuilder query, TextWriter logger) {
-         return connection.CreateCommand(query).Map(logger);
+
+         var mapper = new DynamicMapper(logger);
+
+         return Map<dynamic>(q => connection.CreateCommand(q), query, mapper, logger);
       }
    }
 
@@ -84,7 +87,10 @@ namespace DbExtensions {
       /// <returns>The results of the query as dynamic objects.</returns>
       /// <seealso cref="Extensions.Map(IDbCommand, TextWriter)"/>
       public IEnumerable<dynamic> Map(SqlBuilder query) {
-         return CreateCommand(query).Map(this.Log);
+
+         var mapper = new DynamicMapper(this.Log);
+
+         return Extensions.Map<dynamic>(q => CreateCommand(q), query, mapper, this.Log);
       }
    }
 

@@ -33,6 +33,8 @@ namespace DbExtensions {
    [DebuggerDisplay("{Buffer}")]
    public class SqlBuilder {
 
+      HashSet<int> _IgnoredColumns;
+
       /// <summary>
       /// The underlying <see cref="StringBuilder"/>.
       /// </summary>
@@ -48,13 +50,13 @@ namespace DbExtensions {
       /// appends to the same clause.
       /// </summary>
       public string CurrentClause { get; set; }
-      
+
       /// <summary>
       /// Gets or sets the separator of the current SQL clause body.
       /// </summary>
       /// <seealso cref="CurrentClause"/>
       public string CurrentSeparator { get; set; }
-      
+
       /// <summary>
       /// Gets or sets the next SQL clause. Used by clause continuation methods,
       /// such as <see cref="AppendToCurrentClause(string)"/> and the methods that start with "_".
@@ -74,6 +76,20 @@ namespace DbExtensions {
          get { return this.Buffer.Length == 0; }
       }
 
+      internal HashSet<int> IgnoredColumns {
+         get {
+            return _IgnoredColumns
+               ?? (_IgnoredColumns = new HashSet<int>());
+         }
+      }
+
+      internal bool HasIgnoredColumns {
+         get {
+            return _IgnoredColumns != null
+               && _IgnoredColumns.Count > 0;
+         }
+      }
+
       /// <summary>
       /// Concatenates a specified separator <see cref="String"/> between each element of a 
       /// specified <see cref="SqlBuilder"/> array, yielding a single concatenated <see cref="SqlBuilder"/>.
@@ -90,7 +106,7 @@ namespace DbExtensions {
 
          SqlBuilder sql = new SqlBuilder();
 
-         if (values.Length == 0) 
+         if (values.Length == 0)
             return sql;
 
          if (separator == null)
@@ -158,7 +174,7 @@ namespace DbExtensions {
       /// Initializes a new instance of the <see cref="SqlBuilder"/> class.
       /// </summary>
       public SqlBuilder() {
-         
+
          this.Buffer = new StringBuilder();
          this.ParameterValues = new Collection<object>();
       }
@@ -168,7 +184,7 @@ namespace DbExtensions {
       /// using the provided SQL string.
       /// </summary>
       /// <param name="sql">The SQL string.</param>
-      public SqlBuilder(string sql) 
+      public SqlBuilder(string sql)
          : this(sql, null) { }
 
       /// <summary>
@@ -177,9 +193,9 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="format">The SQL format string.</param>
       /// <param name="args">The array of parameters.</param>
-      public SqlBuilder(string format, params object[] args) 
+      public SqlBuilder(string format, params object[] args)
          : this() {
-         
+
          Append(format, args);
       }
 
@@ -194,7 +210,7 @@ namespace DbExtensions {
       /// <returns>A reference to this instance after the append operation has completed.</returns>
       public SqlBuilder AppendClause(string clauseName, string separator, string format, object[] args) {
 
-         if (separator == null 
+         if (separator == null
             || !String.Equals(clauseName, this.CurrentClause, StringComparison.OrdinalIgnoreCase)) {
 
             if (!this.IsEmpty)
@@ -339,7 +355,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
       public SqlBuilder AppendLine() {
-         
+
          this.Buffer.AppendLine();
          return this;
       }
@@ -381,7 +397,7 @@ namespace DbExtensions {
       /// <returns>A reference to this instance after the operation has completed.</returns>
       /// <seealso cref="NextClause"/>
       public SqlBuilder SetNextClause(string clauseName, string separator) {
-         
+
          this.NextClause = clauseName;
          this.NextSeparator = separator;
 
@@ -401,7 +417,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="Extensions.CreateCommand(DbProviderFactory, string, object[])"/>
       public DbCommand ToCommand(DbProviderFactory providerFactory) {
-         
+
          if (providerFactory == null) throw new ArgumentNullException("providerFactory");
 
          return providerFactory.CreateCommand(ToString(), this.ParameterValues.ToArray());
@@ -420,7 +436,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="Extensions.CreateCommand(DbConnection, string, object[])"/>
       public DbCommand ToCommand(DbConnection connection) {
-         
+
          if (connection == null) throw new ArgumentNullException("connection");
 
          return connection.CreateCommand(ToString(), this.ParameterValues.ToArray());
@@ -445,8 +461,16 @@ namespace DbExtensions {
          clone.CurrentClause = this.CurrentClause;
          clone.CurrentSeparator = this.CurrentSeparator;
 
-         foreach (object item in this.ParameterValues) 
+         foreach (object item in this.ParameterValues) {
             clone.ParameterValues.Add(item);
+         }
+
+         if (this.HasIgnoredColumns) {
+
+            foreach (int item in this.IgnoredColumns) {
+               clone.IgnoredColumns.Add(item);
+            }
+         }
 
          return clone;
       }
@@ -1396,7 +1420,7 @@ namespace DbExtensions {
       /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
       /// <seealso cref="Extensions.Map(IDbCommand, Type)"/>
       public static IEnumerable<object> Map(this DbConnection connection, Type resultType, SqlBuilder query) {
-         return query.ToCommand(connection).Map(resultType);
+         return Map(connection, resultType, query, (TextWriter)null);
       }
 
       /// <summary>
@@ -1411,7 +1435,10 @@ namespace DbExtensions {
       /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
       /// <seealso cref="Extensions.Map(IDbCommand, Type, TextWriter)"/>
       public static IEnumerable<object> Map(this DbConnection connection, Type resultType, SqlBuilder query, TextWriter logger) {
-         return query.ToCommand(connection).Map(resultType, logger);
+
+         var mapper = new PocoMapper(resultType, logger);
+
+         return Map<object>(q => q.ToCommand(connection), query, mapper, logger);
       }
 
       /// <summary>
@@ -1424,7 +1451,7 @@ namespace DbExtensions {
       /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       /// <seealso cref="Extensions.Map&lt;T>(IDbCommand)"/>
       public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query) {
-         return query.ToCommand(connection).Map<TResult>();
+         return Map<TResult>(connection, query, (TextWriter)null);
       }
 
       /// <summary>
@@ -1438,7 +1465,17 @@ namespace DbExtensions {
       /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, TextWriter)"/>
       public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query, TextWriter logger) {
-         return query.ToCommand(connection).Map<TResult>(logger);
+         
+         var mapper = new PocoMapper(typeof(TResult), logger);
+
+         return Map<TResult>(q => q.ToCommand(connection), query, mapper, logger);
+      }
+
+      internal static IEnumerable<TResult> Map<TResult>(Func<SqlBuilder, IDbCommand> queryToCommand, SqlBuilder query, Mapper mapper, TextWriter logger) {
+
+         mapper.SetIgnoredColumns(query);
+
+         return Map<TResult>(queryToCommand(query), r => (TResult)mapper.Map(r), logger);
       }
 
       /// <summary>
@@ -1558,7 +1595,7 @@ namespace DbExtensions {
       }
 
       internal static bool Exists(this DbConnection connection, IDbCommand command, TextWriter logger) {
-         
+
          return command.Map(r => Convert.ToInt32(r[0], CultureInfo.InvariantCulture) != 0, logger)
             .SingleOrDefault();
       }
@@ -1597,6 +1634,16 @@ namespace DbExtensions {
       /// <seealso cref="Extensions.CreateCommand(DbConnection, string, object[])"/>
       public static DbCommand CreateCommand(this DbConnection connection, SqlBuilder sqlBuilder) {
          return sqlBuilder.ToCommand(connection);
+      }
+   }
+
+   partial class Mapper {
+
+      internal void SetIgnoredColumns(SqlBuilder query) { 
+         
+         if (query.HasIgnoredColumns) {
+            this.ignoredColumns = new HashSet<int>(query.IgnoredColumns);
+         }
       }
    }
 }

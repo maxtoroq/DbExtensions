@@ -32,6 +32,8 @@ namespace DbExtensions {
    [DebuggerDisplay("{definingQuery}")]
    public partial class SqlSet : ISqlSet<SqlSet, object> {
 
+      const string SetAliasPrefix = "dbex_set";
+
       // definingQuery should NEVER be modified
 
       readonly SqlBuilder definingQuery;
@@ -190,6 +192,10 @@ namespace DbExtensions {
             return OrderBySkipTake_SqlServer(take);
          }
 
+         if (IsOracle()) {
+            return OrderBySkipTake_Oracle(take);
+         }
+
          return OrderBySkipTake_Default(take);
       }
 
@@ -275,9 +281,75 @@ namespace DbExtensions {
          return null;
       }
 
+      SqlBuilder OrderBySkipTake_Oracle(int? take = null) { 
+         
+         bool hasOrderBy = this.orderByBuffer != null;
+         bool hasSkip = this.skipBuffer.HasValue;
+         bool hasTake = take.HasValue;
+
+         if (hasSkip || hasTake) {
+
+            string queryAlias = SetAliasPrefix + this.setIndex.ToString(CultureInfo.InvariantCulture);
+            string innerQueryAlias = queryAlias + "_1";
+            string rowNumberAlias = "dbex_rn";
+
+            int start = (hasSkip) ? this.skipBuffer.Value : 0;
+            int? end = (hasTake) ? start + take.Value : default(int?);
+
+            var innerQuery = new SqlBuilder();
+
+            if (hasOrderBy) {
+
+               innerQuery
+                  .SELECT(String.Concat("ROW_NUMBER() OVER (ORDER BY ", this.orderByBuffer.Format, ") AS ", rowNumberAlias), this.orderByBuffer.Args);
+            
+            } else {
+
+               innerQuery
+                  .SELECT("ROWNUM AS " + rowNumberAlias);
+            }
+
+            innerQuery
+               .SELECT(innerQueryAlias + ".*")
+               .FROM(this.definingQuery, innerQueryAlias);
+
+            var query = new SqlBuilder()
+               .SELECT("*")
+               .FROM(innerQuery, queryAlias);
+
+            if (end.HasValue) {
+               query.WHERE(rowNumberAlias + " BETWEEN {0} AND {1}", (start + 1), end.Value);
+            
+            } else {
+               query.WHERE(rowNumberAlias + " > {0}", start);
+            }
+
+            query.ORDER_BY(rowNumberAlias);
+
+            query.IgnoredColumns.Add(0);
+
+            return query;
+         }
+
+         if (hasOrderBy) {
+
+            SqlBuilder query = CreateSuperQuery(this.definingQuery, null, null);
+
+            query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+
+            return query;
+         }
+
+         return null;
+      }
+
       bool IsSqlServer() {
          return this.Connection is System.Data.SqlClient.SqlConnection
             || this.Connection.GetType().Namespace.Equals("System.Data.SqlServerCe", StringComparison.Ordinal);
+      }
+
+      bool IsOracle() {
+         return this.Connection.GetType().Namespace.Equals("System.Data.OracleClient", StringComparison.Ordinal);
       }
 
       protected SqlBuilder CreateSuperQuery() {
@@ -292,7 +364,17 @@ namespace DbExtensions {
 
          var query = new SqlBuilder()
             .SELECT(selectFormat ?? "*", args)
-            .FROM(definingQuery, "__set" + this.setIndex.ToString(CultureInfo.InvariantCulture));
+            .FROM(definingQuery, SetAliasPrefix + this.setIndex.ToString(CultureInfo.InvariantCulture));
+
+         if (selectFormat == null) {
+
+            if (definingQuery.HasIgnoredColumns) {
+               
+               foreach (int item in definingQuery.IgnoredColumns) {
+                  query.IgnoredColumns.Add(item);
+               } 
+            }
+         }
 
          return query;
       }
@@ -320,6 +402,7 @@ namespace DbExtensions {
       /// <summary>
       /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
       /// </summary>
+      [Obsolete]
       protected virtual IEnumerable Execute(DbCommand command) {
 
          if (this.resultType == null) {
@@ -331,6 +414,22 @@ namespace DbExtensions {
          }
 
          return command.Map(resultType, this.Log);
+      }
+
+      internal virtual IEnumerable Map() {
+
+         SqlBuilder query = GetDefiningQuery(clone: false);
+
+         if (this.resultType == null) {
+            return Extensions.Map<object>(q => CreateCommand(query), query, new PocoMapper(this.resultType, this.Log), this.Log);
+
+         } else {
+#if NET35
+            throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
+#else
+            return Extensions.Map<dynamic>(q => CreateCommand(query), query, new DynamicMapper(this.Log), this.Log);
+#endif
+         }
       }
 
       #region ISqlSet<SqlSet,object> Members
@@ -392,7 +491,7 @@ namespace DbExtensions {
       /// <returns>All elements in the set.</returns>
       public IEnumerable<object> AsEnumerable() {
 
-         IEnumerable enumerable = Execute(CreateCommand(GetDefiningQuery(clone: false)));
+         IEnumerable enumerable = Map();
 
          return enumerable as IEnumerable<object>
             ?? enumerable.Cast<object>();
@@ -980,12 +1079,25 @@ namespace DbExtensions {
       /// <summary>
       /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
       /// </summary>
+      [Obsolete]
       protected override IEnumerable Execute(DbCommand command) {
 
          if (this.mapper != null)
             return command.Map(this.mapper, this.Log);
 
          return command.Map<TResult>(this.Log);
+      }
+
+      internal override IEnumerable Map() {
+
+         SqlBuilder query = GetDefiningQuery(clone: false);
+
+         if (this.mapper != null) {
+            return CreateCommand(query).Map(this.mapper, this.Log);
+
+         } else {
+            return Extensions.Map<TResult>(q => CreateCommand(q), query, new PocoMapper(typeof(TResult), this.Log), this.Log);
+         }
       }
 
       #region ISqlSet<SqlSet<TResult>,TResult> Members
@@ -995,7 +1107,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>All <typeparamref name="TResult"/> objects in the set.</returns>
       public new IEnumerable<TResult> AsEnumerable() {
-         return (IEnumerable<TResult>)Execute(CreateCommand(GetDefiningQuery(clone: false)));
+         return (IEnumerable<TResult>)Map();
       }
 
       /// <summary>

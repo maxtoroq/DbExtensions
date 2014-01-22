@@ -1420,10 +1420,11 @@ namespace DbExtensions {
    using System.Reflection;
    using System.Text;
 
-   abstract class Mapper {
+   abstract partial class Mapper {
 
       readonly TextWriter logger;
       Node rootNode;
+      HashSet<int> ignoredColumns;
 
       protected Mapper(TextWriter logger) {
          this.logger = logger;
@@ -1433,6 +1434,8 @@ namespace DbExtensions {
 
          MapGroup[] groups =
             (from i in Enumerable.Range(0, record.FieldCount)
+             where this.ignoredColumns == null
+               || !this.ignoredColumns.Contains(i)
              let columnName = record.GetName(i)
              let path = columnName.Split('$')
              let property = (path.Length == 1) ? columnName : path[path.Length - 1]

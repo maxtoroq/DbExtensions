@@ -77,7 +77,7 @@ namespace DbExtensions {
       /// <param name="query">The query.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public static XmlReader MapXml(this DbConnection connection, SqlBuilder query) {
-         return connection.CreateCommand(query).MapXml();
+         return MapXml(connection, query, (XmlMappingSettings)null, (TextWriter)null);
       }
 
       /// <summary>
@@ -89,7 +89,7 @@ namespace DbExtensions {
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public static XmlReader MapXml(this DbConnection connection, SqlBuilder query, TextWriter logger) {
-         return connection.CreateCommand(query).MapXml(logger);
+         return MapXml(connection, query, (XmlMappingSettings)null, logger);
       }
 
       /// <summary>
@@ -101,7 +101,7 @@ namespace DbExtensions {
       /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public static XmlReader MapXml(this DbConnection connection, SqlBuilder query, XmlMappingSettings settings) {
-         return connection.CreateCommand(query).MapXml(settings);
+         return MapXml(connection, query, settings, (TextWriter)null);
       }
 
       /// <summary>
@@ -114,7 +114,23 @@ namespace DbExtensions {
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public static XmlReader MapXml(this DbConnection connection, SqlBuilder query, XmlMappingSettings settings, TextWriter logger) {
-         return connection.CreateCommand(query).MapXml(settings, logger);
+         return MapXml(q => connection.CreateCommand(q), query, settings, logger);
+      }
+
+      internal static XmlReader MapXml(Func<SqlBuilder, IDbCommand> queryToCommand, SqlBuilder query, XmlMappingSettings settings, TextWriter logger) {
+
+         if (query.HasIgnoredColumns) {
+
+            if (settings == null) {
+               settings = new XmlMappingSettings();
+            }
+
+            foreach (int item in query.IgnoredColumns) {
+               settings.IgnoredColumns.Add(item);
+            }
+         }
+
+         return MapXml(queryToCommand(query), settings, logger);
       }
    }
 
@@ -134,12 +150,7 @@ namespace DbExtensions {
       /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public XmlReader AsXml(XmlMappingSettings settings) {
-
-         return new XmlMappingReader(
-            this.Connection.Map<IDataRecord>(GetDefiningQuery(), r => r, this.Log).GetEnumerator(),
-            settings,
-            (XmlReaderSettings)null
-         );
+         return Extensions.MapXml(q => CreateCommand(q), GetDefiningQuery(), settings, this.Log);
       }
    }
 
@@ -152,7 +163,7 @@ namespace DbExtensions {
       /// <param name="query">The query.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public XmlReader MapXml(SqlBuilder query) {
-         return CreateCommand(query).MapXml(this.Log);
+         return MapXml(query, (XmlMappingSettings)null);
       }
 
       /// <summary>
@@ -163,7 +174,7 @@ namespace DbExtensions {
       /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public XmlReader MapXml(SqlBuilder query, XmlMappingSettings settings) {
-         return CreateCommand(query).MapXml(settings, this.Log);
+         return Extensions.MapXml(q => CreateCommand(q), query, settings, this.Log);
       }
    }
 
@@ -176,6 +187,8 @@ namespace DbExtensions {
    public class XmlMappingSettings {
 
       internal static readonly XmlMappingSettings Defaults = new XmlMappingSettings(defaultsCtor: true);
+
+      HashSet<int> _IgnoredColumns;
 
       /// <summary>
       /// The qualified name of the outermost element. The default is 'table'.
@@ -198,6 +211,20 @@ namespace DbExtensions {
       /// Specifies what kind of type information to include. The default is <see cref="XmlTypeAnnotation.None"/>.
       /// </summary>
       public XmlTypeAnnotation TypeAnnotation { get; set; }
+
+      internal HashSet<int> IgnoredColumns {
+         get {
+            return _IgnoredColumns
+               ?? (_IgnoredColumns = new HashSet<int>());
+         }
+      }
+
+      internal bool HasIgnoredColumns {
+         get {
+            return _IgnoredColumns != null
+               && _IgnoredColumns.Count > 0;
+         }
+      }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="XmlMappingSettings"/> class.
@@ -254,6 +281,8 @@ namespace DbExtensions {
    }
 
    sealed class XmlMappingReader : XmlReader {
+
+      // TODO: ignored columns
 
       const string xsPrefix = "xs";
       const string xsiPrefix = "xsi";

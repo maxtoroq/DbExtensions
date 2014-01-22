@@ -447,7 +447,7 @@ namespace DbExtensions {
       /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, TextWriter)"/>
       public IEnumerable<TResult> Map<TResult>(SqlBuilder query) {
-         return CreateCommand(query).Map<TResult>(this.Log);
+         return Extensions.Map<TResult>(q => CreateCommand(q), query, new PocoMapper(typeof(TResult), this.Log), this.Log);
       }
 
       /// <summary>
@@ -473,7 +473,7 @@ namespace DbExtensions {
       /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
       /// <seealso cref="Extensions.Map(IDbCommand, Type, TextWriter)"/>
       public IEnumerable<object> Map(Type resultType, SqlBuilder query) {
-         return CreateCommand(query).Map(resultType, this.Log);
+         return Extensions.Map<object>(q => CreateCommand(q), query, new PocoMapper(resultType, this.Log), this.Log);
       }
 
       /// <summary>
