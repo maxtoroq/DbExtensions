@@ -1567,7 +1567,7 @@ namespace DbExtensions {
 
          return new SqlBuilder()
             .SELECT("COUNT(*)")
-            .FROM("({0}) AS __countQuery", query);
+            .FROM("({0}) AS dbex_count", query);
       }
 
       /// <summary>

@@ -60,7 +60,7 @@ FROM (
                         SELECT * FROM Products) AS dbex_set1
                 WHERE UnitsInStock < @p0) AS dbex_set3
         ORDER BY UnitsInStock
-        LIMIT 5) AS __countQuery
+        LIMIT 5) AS dbex_count
 -- @p0: Input Int32 (Size = 0) [10]
 -- [-1] records affected.
 SELECT *
