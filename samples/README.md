@@ -1,2 +1,2 @@
-To run the samples download the [Northwind databases](http://sourceforge.net/projects/dbextensions/files/4.0/Northwind.zip/download)
+To run the samples download the [Northwind databases](http://dbextensions.sf.net/resources/)
 and unzip in Northwind
