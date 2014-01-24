@@ -137,8 +137,10 @@ Features
 - Profiling
 - Provider-independent (tested against SQLite, SQL Server Compact, SQL Server and MySQL)
 
-DbExtensions does not do
+Not included
 ------------------------
+DbExtensions doesn't provide the following functionality:
+
 - Identity map
 - Lazy loading
 - Change tracking
