@@ -1010,7 +1010,7 @@ namespace DbExtensions {
       /// true to execute batch commands when possible; otherwise, false. The default is true.
       /// You can override the default value using a "DbExtensions:{providerInvariantName}:EnableBatchCommands" 
       /// entry in the appSettings configuration section, where {providerInvariantName} is replaced with the provider 
-      /// invariant name (e.g. DbExtensions:System.Data.SqlClient:LastInsertIdCommand).
+      /// invariant name (e.g. DbExtensions:System.Data.SqlClient:EnableBatchCommands).
       /// </summary>
       public bool EnableBatchCommands { get; set; }
 
