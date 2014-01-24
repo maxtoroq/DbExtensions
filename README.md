@@ -135,7 +135,7 @@ Features
 - Batch and deep commands (e.g. recursively insert entity and all one-to-many associations)
 - Query results as XML
 - Profiling
-- Provider-independent (tested against SQLite, SQL Server CE, SQL Server and MySQL)
+- Provider-independent (tested against SQLite, SQL Server Compact, SQL Server and MySQL)
 
 DbExtensions does not do
 ------------------------
@@ -146,13 +146,13 @@ DbExtensions does not do
 
 Limitations
 -----------
-- For SQL Server and SQL Server CE, `SqlSet.Skip()` uses OFFSET, available
-  in SQL Server 2012 and SQL Server CE 4
+- For SQL Server and SQL Server Compact, `SqlSet.Skip()` uses OFFSET, available
+  in SQL Server 2012 and SQL Server Compact 4
 
 Source code and releases
 ------------------------
 Code hosted on [GitHub](https://github.com/maxtoroq/DbExtensions). 
-Releases available on [SourceForge](https://sourceforge.net/projects/dbextensions/files/)
+Releases available on [GitHub](https://github.com/maxtoroq/DbExtensions/releases)
 and [NuGet](http://www.nuget.org/packages/DbExtensions).
 
 This project was originally hosted on [SourceForge](https://sourceforge.net/projects/dbextensions/), source code and releases for
