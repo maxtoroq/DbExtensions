@@ -138,6 +138,9 @@ namespace DbExtensions {
          this.context = context;
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected SqlSet(SqlSet set, SqlBuilder superQuery) {
 
          if (set == null) throw new ArgumentNullException("set");
@@ -149,6 +152,9 @@ namespace DbExtensions {
          this.context = set.context;
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType)
          : this(set, superQuery) {
 
@@ -380,10 +386,16 @@ namespace DbExtensions {
          return this.Connection.GetType().Namespace.Equals("System.Data.OracleClient", StringComparison.Ordinal);
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected SqlBuilder CreateSuperQuery() {
          return CreateSuperQuery(null, null);
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected SqlBuilder CreateSuperQuery(string selectFormat, params object[] args) {
          return CreateSuperQuery(GetDefiningQuery(clone: false), selectFormat, args);
       }
@@ -407,18 +419,30 @@ namespace DbExtensions {
          return query;
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected virtual SqlSet CreateSet(SqlBuilder superQuery) {
          return new SqlSet(this, superQuery);
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected virtual SqlSet CreateSet(SqlBuilder superQuery, Type resultType) {
          return new SqlSet(this, superQuery, resultType);
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected virtual SqlSet<TResult> CreateSet<TResult>(SqlBuilder superQuery) {
          return new SqlSet<TResult>(this, superQuery);
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected virtual SqlSet<TResult> CreateSet<TResult>(SqlBuilder superQuery, Func<IDataRecord, TResult> mapper) {
          return new SqlSet<TResult>(this, superQuery, mapper);
       }
@@ -1081,6 +1105,9 @@ namespace DbExtensions {
          this.mapper = mapper;
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected SqlSet(SqlSet<TResult> set, SqlBuilder superQuery) 
          : base((SqlSet)set, superQuery) {
 
@@ -1102,10 +1129,16 @@ namespace DbExtensions {
          this.mapper = mapper;
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected override SqlSet CreateSet(SqlBuilder superQuery) {
          return new SqlSet<TResult>(this, superQuery);
       }
 
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
       protected override SqlSet<T> CreateSet<T>(SqlBuilder superQuery) {
          return new SqlSet<T>(this, superQuery);
       }

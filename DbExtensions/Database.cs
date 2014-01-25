@@ -821,12 +821,21 @@ namespace DbExtensions {
 
       #region IDisposable Members
 
+      /// <summary>
+      /// Releases all resources used by the current instance of the <see cref="Database"/> class.
+      /// </summary>
       public void Dispose() {
 
          Dispose(true);
          GC.SuppressFinalize(this);
       }
 
+      /// <summary>
+      /// Releases the resources used by this <see cref="Database"/> instance.
+      /// </summary>
+      /// <param name="disposing">
+      /// true if this method is being called due to a call to <see cref="Dispose()"/>; otherwise, false.
+      /// </param>
       protected virtual void Dispose(bool disposing) {
 
          if (disposing) {
@@ -835,8 +844,9 @@ namespace DbExtensions {
 
                DbConnection conn = this.Connection;
 
-               if (conn != null)
+               if (conn != null) {
                   conn.Dispose();
+               }
             }
          }
       }
