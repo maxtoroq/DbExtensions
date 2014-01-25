@@ -1135,19 +1135,19 @@ namespace DbExtensions {
 
          if (providerInvariantName == null) throw new ArgumentNullException("providerInvariantName");
 
-         if (!factories.ContainsKey(providerInvariantName)) {
+         DbProviderFactory factory;
+
+         if (!factories.TryGetValue(providerInvariantName, out factory)) {
             lock (padlock) {
-               if (!factories.ContainsKey(providerInvariantName)) {
+               if (!factories.TryGetValue(providerInvariantName, out factory)) {
 
-                  var factory = DbProviderFactories.GetFactory(providerInvariantName);
+                  factory = DbProviderFactories.GetFactory(providerInvariantName);
                   factories[providerInvariantName] = factory;
-
-                  return factory;
                }
             }
          }
 
-         return factories[providerInvariantName];
+         return factory;
       }
 
       /// <summary>
