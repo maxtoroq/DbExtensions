@@ -31,7 +31,7 @@ namespace DbExtensions {
    /// Creates and executes CRUD (Create, Read, Update, Delete) commands for entities mapped using the
    /// <see cref="N:System.Data.Linq.Mapping"/> API.
    /// </summary>
-   public partial class Database : IDisposable, ISqlSetContext {
+   public partial class Database : IDisposable, IConnectionContext {
 
       static readonly MethodInfo tableMethod = typeof(Database).GetMethods(BindingFlags.Public | BindingFlags.Instance)
          .Single(m => m.Name == "Table" && m.ContainsGenericParameters && m.GetParameters().Length == 0);
@@ -561,11 +561,82 @@ namespace DbExtensions {
       }
 
       /// <summary>
+      /// Creates and returns a new <see cref="SqlSet"/> using the provided table name.
+      /// </summary>
+      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
+      /// <returns>A new <see cref="SqlSet"/> object.</returns>
+      public SqlSet From(string tableName) {
+         return new SqlSet(tableName, (Type)null, this);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet"/> using the provided table name.
+      /// </summary>
+      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
+      /// <param name="resultType">The type of objects to map the results to.</param>
+      /// <returns>A new <see cref="SqlSet"/> object.</returns>
+      public SqlSet From(string tableName, Type resultType) {
+         return new SqlSet(tableName, resultType, this);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided table name.
+      /// </summary>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
+      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
+      public SqlSet<TResult> From<TResult>(string tableName) {
+         return new SqlSet<TResult>(tableName, this);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query.
+      /// </summary>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <returns>A new <see cref="SqlSet"/> object.</returns>
+      public SqlSet From(SqlBuilder definingQuery) {
+         return new SqlSet(definingQuery, (Type)null, this, adoptQuery: false);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query.
+      /// </summary>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="resultType">The type of objects to map the results to.</param>
+      /// <returns>A new <see cref="SqlSet"/> object.</returns>
+      public SqlSet From(SqlBuilder definingQuery, Type resultType) {
+         return new SqlSet(definingQuery, resultType, this, adoptQuery: false);
+      }
+
+      /// <summary>
       /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query.
       /// </summary>
       /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
+      public SqlSet<TResult> From<TResult>(SqlBuilder definingQuery) {
+         return new SqlSet<TResult>(definingQuery, this, adoptQuery: false);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and mapper.
+      /// </summary>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
+      public SqlSet<TResult> From<TResult>(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
+         return new SqlSet<TResult>(definingQuery, mapper, this, adoptQuery: false);
+      }
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query.
+      /// </summary>
+      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
+      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use From<TResult>(SqlBuilder) instead.")]
       public SqlSet<TResult> Set<TResult>(SqlBuilder definingQuery) {
          return new SqlSet<TResult>(definingQuery, this, adoptQuery: false);
       }
@@ -577,6 +648,8 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use From<TResult>(SqlBuilder, Func<IDataRecord, TResult>) instead.")]
       public SqlSet<TResult> Set<TResult>(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
          return new SqlSet<TResult>(definingQuery, mapper, this, adoptQuery: false);
       }
@@ -586,12 +659,14 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Please use From(SqlBuilder) instead.")]
       public SqlSet Set(SqlBuilder definingQuery) {
          return new SqlSet(definingQuery, (Type)null, this, adoptQuery: false);
       }
 
       // CRUD
-      
+
       /// <summary>
       /// Executes INSERT commands for the specified <paramref name="entities"/>.
       /// </summary>
@@ -803,17 +878,17 @@ namespace DbExtensions {
 
       #endregion
 
-      #region ISqlSetContext Members
+      #region IConnectionContext Members
 
-      DbConnection ISqlSetContext.Connection {
+      DbConnection IConnectionContext.Connection {
          get { return this.Connection; }
       }
 
-      TextWriter ISqlSetContext.Log {
+      TextWriter IConnectionContext.Log {
          get { return this.Log; }
       }
 
-      DbCommand ISqlSetContext.CreateCommand(SqlBuilder query) {
+      DbCommand IConnectionContext.CreateCommand(SqlBuilder query) {
          return CreateCommand(query);
       }
 

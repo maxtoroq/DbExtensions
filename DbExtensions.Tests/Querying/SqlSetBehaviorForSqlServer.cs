@@ -15,14 +15,14 @@ namespace DbExtensions.Tests.Querying {
       [TestInitialize]
       public void Initialize() {
 
-         this.conn = Database.GetProviderFactory("System.Data.SqlClient")
+         this.conn = System.Data.SqlClient.SqlClientFactory.Instance
             .CreateConnection();
       }
 
       [TestMethod]
       public void Use_Parameter_On_Skip() {
 
-         var query = conn.Set(SQL.SELECT("1"))
+         var query = conn.From(SQL.SELECT("1"))
             .Skip(1)
             .GetDefiningQuery();
 
@@ -32,7 +32,7 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Use_Parameter_On_Take() {
 
-         var query = conn.Set(SQL.SELECT("1"))
+         var query = conn.From(SQL.SELECT("1"))
             .Take(1)
             .GetDefiningQuery();
 
@@ -42,7 +42,7 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Use_Parameter_On_Skip_And_Take() {
 
-         var query = conn.Set(SQL.SELECT("1"))
+         var query = conn.From(SQL.SELECT("1"))
             .Skip(1)
             .Take(1)
             .GetDefiningQuery();
