@@ -73,7 +73,7 @@ type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) =
             .FROM("Products p")
             .WHERE("p.ProductID < {0}", 3)
 
-      conn.Map(query, (fun (r : IDataRecord) -> (r.GetInt32(0), r.GetStringOrNull(1))), log)
+      conn.Map(query, (fun r -> (r.GetInt32(0), r.GetStringOrNull(1))), log)
 
    member this.MappingCalculatedColumn() =
 

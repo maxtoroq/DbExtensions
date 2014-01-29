@@ -38,13 +38,13 @@ type SqlSetSamples(conn : DbConnection, log : TextWriter) =
       productSet.Where("UnitsInStock > 0")
          .OrderBy("UnitsInStock")
          .Take(5)
-         .Select((fun (r : IDataRecord) -> (r.GetString(0), r.GetInt16(1))), "ProductName, UnitsInStock")
+         .Select((fun r -> (r.GetString(0), r.GetInt16(1))), "ProductName, UnitsInStock")
          .AsEnumerable();
 
    member this.NamesOfOutOfStockProducts() =
          
       productSet.Where("UnitsInStock = 0")
-         .Select((fun (r : IDataRecord) -> r.GetString(0)), "ProductName")
+         .Select((fun r -> r.GetString(0)), "ProductName")
          .AsEnumerable()
    
    member this.GetSpecificProduct() =
