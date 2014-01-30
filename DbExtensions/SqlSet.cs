@@ -220,10 +220,12 @@ namespace DbExtensions {
                .SELECT(selectFormat ?? "*", args)
                .FROM(this.tableName);
 
-         } else if (super) {
+         } else if (super || selectFormat != null) {
+
             query = CreateSuperQuery(query, selectFormat, args);
 
          } else if (clone) {
+
             query = query.Clone();
          }
 
