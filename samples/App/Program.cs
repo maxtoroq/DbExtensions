@@ -8,13 +8,14 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using DbExtensions;
 
 namespace Samples {
 
    class Program {
 
-      readonly string solutionPath = Path.Combine("..", "..", "..");
+      readonly string samplesPath = Path.Combine("..", "..", "..");
 
       static void Main() {
          new Program().Run();
@@ -108,19 +109,21 @@ namespace Samples {
 
       string[] GetSamplesLanguages() {
 
+         string appDir = Directory.GetCurrentDirectory().Split(Path.DirectorySeparatorChar).Reverse().Skip(2).First();
+
          string[] projectsDir = Directory
-            .GetDirectories(this.solutionPath, @"samples.*", SearchOption.TopDirectoryOnly)
+            .GetDirectories(this.samplesPath, "*", SearchOption.TopDirectoryOnly)
             .Select(s => s.Split(Path.DirectorySeparatorChar).Last())
-            .Where(s => s.Contains('.'))
+            .Where(s => !s.Equals(appDir))
             .ToArray();
 
-         return projectsDir.Select(s => s.Split('.').Skip(1).First()).ToArray();
+         return projectsDir;
       }
 
       IEnumerable<object> GetSamples(string language, string connectionString, MappingSource mappingSource, TextWriter log) {
 
-         string projectDir = Path.Combine(this.solutionPath, "samples." + language);
-         string projectFile = Directory.GetFiles(projectDir, String.Format("*.{0}proj", language)).FirstOrDefault();
+         string projectDir = Path.Combine(this.samplesPath, language);
+         string projectFile = Directory.GetFiles(projectDir, String.Format("*.{0}proj", Regex.Replace(language, "[a-z]", ""))).FirstOrDefault();
 
          if (projectFile == null) 
             throw new InvalidOperationException("Project file not found.");

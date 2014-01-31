@@ -52,7 +52,7 @@
     <Compile Include="SqlSet.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DbExtensions\DbExtensions.csproj">
+    <ProjectReference Include="..\..\DbExtensions\DbExtensions.csproj">
       <Name>DbExtensions</Name>
       <Project>{00835184-82d5-4720-8750-f99a7209730a}</Project>
       <Private>True</Private>
