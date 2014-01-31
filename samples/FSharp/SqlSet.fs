@@ -10,7 +10,7 @@ open Samples.FSharp.Northwind
 type SqlSetSamples(conn : DbConnection, log : TextWriter) =
    
    let log = log
-   let productSet = conn.Set<Product>(new SqlBuilder("SELECT * FROM Products"), log)
+   let productSet = conn.From<Product>("Products", log)
 
    member this.AreThereAnyProducts() =
       productSet.Any()

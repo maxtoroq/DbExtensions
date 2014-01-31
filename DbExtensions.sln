@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbExtensions", "DbExtensions\DbExtensions.csproj", "{00835184-82D5-4720-8750-F99A7209730A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples", "samples\App\Samples.csproj", "{20DE9193-FF9E-4DFB-AC8A-51DB07988366}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.App", "samples\App\Samples.App.csproj", "{20DE9193-FF9E-4DFB-AC8A-51DB07988366}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.CSharp", "samples\CSharp\Samples.CSharp.csproj", "{51847777-C71E-40C7-9E55-A94F508DB7BE}"
 EndProject
@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B7A3B1
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{F7B3DECC-E6A5-4697-A9E3-8D421BCF3C84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,5 +63,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{20DE9193-FF9E-4DFB-AC8A-51DB07988366} = {F7B3DECC-E6A5-4697-A9E3-8D421BCF3C84}
+		{51847777-C71E-40C7-9E55-A94F508DB7BE} = {F7B3DECC-E6A5-4697-A9E3-8D421BCF3C84}
+		{23BD1933-85EC-4705-B1DD-F9CCB5F10437} = {F7B3DECC-E6A5-4697-A9E3-8D421BCF3C84}
+		{1DFDA809-54B7-44CD-98F6-877855898644} = {F7B3DECC-E6A5-4697-A9E3-8D421BCF3C84}
 	EndGlobalSection
 EndGlobal

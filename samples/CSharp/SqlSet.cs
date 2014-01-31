@@ -15,7 +15,7 @@ namespace Samples.CSharp {
       readonly SqlSet<Product> productSet;
 
       public SqlSetSamples(DbConnection conn, TextWriter log) {
-         this.productSet = conn.Set<Product>(new SqlBuilder("SELECT * FROM Products"), log);
+         this.productSet = conn.From<Product>("Products", log);
       }
 
       public bool AreThereAnyProducts() {

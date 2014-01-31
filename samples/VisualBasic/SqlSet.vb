@@ -13,7 +13,7 @@ Public Class SqlSetSamples
    ReadOnly productSet As SqlSet(Of Product)
 
    Public Sub New(ByVal conn As DbConnection, ByVal log As TextWriter)
-      Me.productSet = conn.Set(Of Product)(New SqlBuilder("SELECT * FROM Products"), log)
+      Me.productSet = conn.From(Of Product)("Products", log)
    End Sub
 
    Public Function AreThereAnyProducts() As Boolean
