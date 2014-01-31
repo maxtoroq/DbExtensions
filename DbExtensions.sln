@@ -5,13 +5,13 @@ VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbExtensions", "DbExtensions\DbExtensions.csproj", "{00835184-82D5-4720-8750-F99A7209730A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples", "Samples\Samples.csproj", "{20DE9193-FF9E-4DFB-AC8A-51DB07988366}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples", "samples\App\Samples.csproj", "{20DE9193-FF9E-4DFB-AC8A-51DB07988366}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.CSharp", "samples.cs\Samples.CSharp.csproj", "{51847777-C71E-40C7-9E55-A94F508DB7BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.CSharp", "samples\CSharp\Samples.CSharp.csproj", "{51847777-C71E-40C7-9E55-A94F508DB7BE}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Samples.VisualBasic", "samples.vb\Samples.VisualBasic.vbproj", "{1DFDA809-54B7-44CD-98F6-877855898644}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Samples.VisualBasic", "samples\VisualBasic\Samples.VisualBasic.vbproj", "{1DFDA809-54B7-44CD-98F6-877855898644}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Samples.FSharp", "samples.fs\Samples.FSharp.fsproj", "{23BD1933-85EC-4705-B1DD-F9CCB5F10437}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Samples.FSharp", "samples\FSharp\Samples.FSharp.fsproj", "{23BD1933-85EC-4705-B1DD-F9CCB5F10437}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbExtensions.net35", "DbExtensions\DbExtensions.net35.csproj", "{F71FDF8F-5A51-4B86-A828-CE9B150BBA74}"
 EndProject

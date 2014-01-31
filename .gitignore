@@ -7,5 +7,5 @@ packages
 NuGet.exe
 *.sl3
 *.[msl]df
-samples/x64
-samples/x86
+samples/App/x64
+samples/App/x86
