@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DbExtensions.Tests.Querying {
@@ -309,7 +307,7 @@ namespace DbExtensions.Tests.Querying {
       }
 
       bool SqlEquals(SqlSet set, SqlBuilder query) {
-         return String.Equals(Regex.Replace(set.ToString(), "dbex_set[0-9]+", "_"), query.ToString(), StringComparison.Ordinal);
+         return TestUtil.SqlEquals(set, query);
       }
    }
 }

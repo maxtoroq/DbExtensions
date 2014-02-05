@@ -50,12 +50,13 @@ namespace DbExtensions {
          get { return sqlCommands; }
       }
 
-      internal static SqlBuilder SELECT_(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias, Database db) {
+      internal static string ColumnList(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias, Database db) {
 
-         if (selectMembers == null)
+         if (selectMembers == null) {
             selectMembers = metaType.PersistentDataMembers.Where(m => !m.IsAssociation);
+         }
 
-         SqlBuilder query = new SqlBuilder();
+         var sb = new StringBuilder();
 
          string qualifier = (!String.IsNullOrEmpty(tableAlias)) ?
             db.QuoteIdentifier(tableAlias) + "." : null;
@@ -69,25 +70,34 @@ namespace DbExtensions {
             string columnAlias = !String.Equals(mappedName, memberName, StringComparison.Ordinal) ?
                memberName : null;
 
-            query.SELECT((qualifier ?? "") + db.QuoteIdentifier(enumerator.Current.MappedName));
+            if (sb.Length > 0) {
+               sb.Append(", ");
+            }
 
-            if (columnAlias != null)
-               query.Buffer.Append(" AS ").Append(db.QuoteIdentifier(memberName));
+            if (qualifier != null) {
+               sb.Append(qualifier);
+            }
+
+            sb.Append(db.QuoteIdentifier(enumerator.Current.MappedName));
+
+            if (columnAlias != null) {
+
+               sb.Append(" AS ")
+                  .Append(db.QuoteIdentifier(memberName));
+            }
          }
 
-         return query;
+         return sb.ToString();
       }
 
-      internal static SqlBuilder SELECT_FROM(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias, Database db) {
+      internal static string TableName(MetaType metaType, string tableAlias, Database db) {
 
          if (metaType.Table == null) throw new InvalidOperationException("metaType.Table cannot be null.");
-
-         SqlBuilder query = SELECT_(metaType, selectMembers, tableAlias, db);
 
          string alias = (!String.IsNullOrEmpty(tableAlias)) ?
             " " + db.QuoteIdentifier(tableAlias) : null;
 
-         return query.FROM(db.QuoteIdentifier(metaType.Table.TableName) + (alias ?? ""));
+         return db.QuoteIdentifier(metaType.Table.TableName) + (alias ?? "");
       }
 
       internal static void EnsureEntityType(MetaType metaType) {
@@ -101,7 +111,7 @@ namespace DbExtensions {
       }
 
       internal SqlTable(Database db, MetaType metaType, ISqlTable table)
-         : base(SELECT_FROM(metaType, null, null, db), metaType.Type, db, adoptQuery: true) {
+         : base(new string[2] { TableName(metaType, null, db), ColumnList(metaType, null, null, db) }, metaType.Type, db) {
 
          this.table = table;
 
@@ -480,7 +490,7 @@ namespace DbExtensions {
       }
 
       internal SqlTable(Database db, MetaType metaType)
-         : base(SqlTable.SELECT_FROM(metaType, null, null, db), db, adoptQuery: true) {
+         : base(new string[2] { SqlTable.TableName(metaType, null, db), SqlTable.ColumnList(metaType, null, null, db) }, db) {
 
          this.db = db;
          this.metaType = metaType;
@@ -1483,7 +1493,7 @@ namespace DbExtensions {
       /// <param name="tableAlias">The table alias.</param>
       /// <returns>The SELECT query.</returns>
       internal SqlBuilder SELECT_(IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
-         return SqlTable.SELECT_(metaType, selectMembers, tableAlias, db);
+         return new SqlBuilder().SELECT(SqlTable.ColumnList(metaType, selectMembers, tableAlias, db));
       }
 
       /// <summary>
@@ -1525,7 +1535,7 @@ namespace DbExtensions {
       /// <param name="tableAlias">The table alias.</param>
       /// <returns>The SELECT query.</returns>
       internal SqlBuilder SELECT_FROM(IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
-         return SqlTable.SELECT_FROM(metaType, selectMembers, tableAlias, db);
+         return SELECT_(selectMembers, tableAlias).FROM(SqlTable.TableName(metaType, tableAlias, db));
       }
 
       /// <summary>

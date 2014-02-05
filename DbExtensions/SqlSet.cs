@@ -29,7 +29,6 @@ namespace DbExtensions {
    /// <summary>
    /// Represents an immutable, connected SQL query.
    /// </summary>
-   [DebuggerDisplay("{definingQuery}")]
    public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       const string SetAliasPrefix = "dbex_set";
@@ -39,7 +38,7 @@ namespace DbExtensions {
       // definingQuery should NEVER be modified
 
       readonly SqlBuilder definingQuery;
-      readonly string tableName;
+      readonly string[] fromSelect;
       readonly Type resultType;
       readonly IConnectionContext context;
       int setIndex = 1;
@@ -173,25 +172,26 @@ namespace DbExtensions {
          this.resultType = resultType;
       }
 
-      internal SqlSet(string tableName, Type resultType, DbConnection connection, TextWriter logger = null) 
-         : this(tableName, resultType, new SimpleConnectionContext(connection, logger)) { }
+      internal SqlSet(string[] fromSelect, Type resultType, DbConnection connection, TextWriter logger = null)
+         : this(fromSelect, resultType, new SimpleConnectionContext(connection, logger)) { }
 
-      internal SqlSet(string tableName, Type resultType, IConnectionContext context) {
+      internal SqlSet(string[] fromSelect, Type resultType, IConnectionContext context) {
 
-         if (tableName == null) throw new ArgumentNullException("tableName");
-         if (tableName.Length == 0) throw new ArgumentException("tableName cannot be empty.", "tableName");
+         if (fromSelect == null) throw new ArgumentNullException("fromSelect");
+         if (fromSelect.Length != 2) throw new ArgumentException("fromSelect.Length must be 2.", "fromSelect");
 
-         this.tableName = tableName;
+         this.fromSelect = fromSelect;
          this.resultType = resultType;
          this.context = context;
       }
 
-      internal SqlSet(SqlSet set, string tableName, Type resultType = null) 
+      internal SqlSet(SqlSet set, string[] fromSelect, Type resultType = null) 
          : this(set) {
 
-         if (tableName == null) throw new ArgumentNullException("tableName");
+         if (fromSelect == null) throw new ArgumentNullException("fromSelect");
+         if (fromSelect.Length != 2) throw new ArgumentException("fromSelect.Length must be 2.", "fromSelect");
 
-         this.tableName = tableName;
+         this.fromSelect = fromSelect;
          this.resultType = resultType;
       }
 
@@ -217,8 +217,8 @@ namespace DbExtensions {
          if (query == null) {
             
             query = new SqlBuilder()
-               .SELECT(selectFormat ?? "*", args)
-               .FROM(this.tableName);
+               .SELECT(selectFormat ?? this.fromSelect[1] ?? "*", args)
+               .FROM(this.fromSelect[0]);
 
          } else if (super || selectFormat != null) {
 
@@ -542,16 +542,16 @@ namespace DbExtensions {
          return new SqlSet<TResult>(this, superQuery, mapper);
       }
 
-      internal virtual SqlSet CreateSet(string tableName) {
-         return new SqlSet(this, tableName);
+      internal virtual SqlSet CreateSet(string[] fromSelect) {
+         return new SqlSet(this, fromSelect);
       }
 
-      internal SqlSet CreateSet(string tableName, Type resultType) {
-         return new SqlSet(this, tableName, resultType);
+      internal SqlSet CreateSet(string[] fromSelect, Type resultType) {
+         return new SqlSet(this, fromSelect, resultType);
       }
 
-      internal SqlSet<TResult> CreateSet<TResult>(string tableName) {
-         return new SqlSet<TResult>(this, tableName);
+      internal SqlSet<TResult> CreateSet<TResult>(string[] fromSelect) {
+         return new SqlSet<TResult>(this, fromSelect);
       }
 
       internal SqlSet CreateSet(bool omitBufferedCalls, Type resultType = null) {
@@ -562,8 +562,8 @@ namespace DbExtensions {
             && this.definingQuery == null) {
                
             set = (resultType != null) ?
-               CreateSet(tableName, resultType)
-               : CreateSet(tableName);
+               CreateSet(this.fromSelect, resultType)
+               : CreateSet(this.fromSelect);
          }
 
          if (set == null) {
@@ -589,7 +589,7 @@ namespace DbExtensions {
          if (omitBufferedCalls
             && this.definingQuery == null) {
 
-            set = CreateSet<TResult>(tableName);
+            set = CreateSet<TResult>(this.fromSelect);
          }
 
          if (set == null) {
@@ -1317,22 +1317,22 @@ namespace DbExtensions {
          this.mapper = mapper;
       }
 
-      internal SqlSet(string tableName, DbConnection connection, TextWriter logger = null)
-         : base(tableName, typeof(TResult), new SimpleConnectionContext(connection, logger)) { }
+      internal SqlSet(string[] fromSelect, DbConnection connection, TextWriter logger = null)
+         : base(fromSelect, typeof(TResult), new SimpleConnectionContext(connection, logger)) { }
 
-      internal SqlSet(string tableName, IConnectionContext context)
-         : base(tableName, typeof(TResult), context) { }
+      internal SqlSet(string[] fromSelect, IConnectionContext context)
+         : base(fromSelect, typeof(TResult), context) { }
 
-      internal SqlSet(SqlSet<TResult> set, string tableName)
-         : base((SqlSet)set, tableName) {
+      internal SqlSet(SqlSet<TResult> set, string[] fromSelect)
+         : base((SqlSet)set, fromSelect) {
 
          if (set == null) throw new ArgumentNullException("set");
 
          this.mapper = set.mapper;
       }
 
-      internal SqlSet(SqlSet set, string tableName)
-         : base(set, tableName) { }
+      internal SqlSet(SqlSet set, string[] fromSelect)
+         : base(set, fromSelect) { }
 
       /// <summary>
       /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
@@ -1349,8 +1349,8 @@ namespace DbExtensions {
          return new SqlSet<T>(this, superQuery);
       }
 
-      internal override SqlSet CreateSet(string tableName) {
-         return new SqlSet<TResult>(this, tableName);
+      internal override SqlSet CreateSet(string[] fromSelect) {
+         return new SqlSet<TResult>(this, fromSelect);
       }
 
       /// <summary>
@@ -1631,7 +1631,7 @@ namespace DbExtensions {
       /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public static SqlSet From(this DbConnection connection, string tableName) {
-         return new SqlSet(tableName, (Type)null, connection);
+         return new SqlSet(new string[2] { tableName, null }, (Type)null, connection);
       }
 
       /// <summary>
@@ -1642,7 +1642,7 @@ namespace DbExtensions {
       /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public static SqlSet From(this DbConnection connection, string tableName, TextWriter logger) {
-         return new SqlSet(tableName, (Type)null, connection, logger);
+         return new SqlSet(new string[2] { tableName, null }, (Type)null, connection, logger);
       }
 
       /// <summary>
@@ -1653,7 +1653,7 @@ namespace DbExtensions {
       /// <param name="resultType">The type of objects to map the results to.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public static SqlSet From(this DbConnection connection, string tableName, Type resultType) {
-         return new SqlSet(tableName, resultType, connection);
+         return new SqlSet(new string[2] { tableName, null }, resultType, connection);
       }
 
       /// <summary>
@@ -1665,7 +1665,7 @@ namespace DbExtensions {
       /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public static SqlSet From(this DbConnection connection, string tableName, Type resultType, TextWriter logger) {
-         return new SqlSet(tableName, resultType, connection, logger);
+         return new SqlSet(new string[2] { tableName, null }, resultType, connection, logger);
       }
 
       /// <summary>
@@ -1676,7 +1676,7 @@ namespace DbExtensions {
       /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
       public static SqlSet<TResult> From<TResult>(this DbConnection connection, string tableName) {
-         return new SqlSet<TResult>(tableName, connection);
+         return new SqlSet<TResult>(new string[2] { tableName, null }, connection);
       }
 
       /// <summary>
@@ -1688,7 +1688,7 @@ namespace DbExtensions {
       /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
       public static SqlSet<TResult> From<TResult>(this DbConnection connection, string tableName, TextWriter logger) {
-         return new SqlSet<TResult>(tableName, connection, logger);
+         return new SqlSet<TResult>(new string[2] { tableName, null }, connection, logger);
       }
 
       /// <summary>
