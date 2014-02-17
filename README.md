@@ -153,9 +153,9 @@ versions 1.x, 2.x and 3.x remain available there.
 Resources
 ---------
 - [Documentation](https://github.com/maxtoroq/DbExtensions/wiki)
-- [Ask for help](https://github.com/maxtoroq/DbExtensions/issues/new)
+- [Ask for help](https://github.com/maxtoroq/DbExtensions/issues?labels=question&state=closed)
 - [Report an issue](https://github.com/maxtoroq/DbExtensions/issues)
-- [Roadmap](https://github.com/maxtoroq/DbExtensions/wiki/Roadmap)
+- [Roadmap](https://github.com/maxtoroq/DbExtensions/issues/milestones)
 
 <a href="https://github.com/maxtoroq/DbExtensions/wiki/Donate"><img src="http://maxtoroq.users.sourceforge.net/donate/paypal/btn_donate_SM.gif" alt="Donate"/></a>
 <a href="http://flattr.com/thing/1761218/DbExtensions" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a>
