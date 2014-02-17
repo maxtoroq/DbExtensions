@@ -154,7 +154,7 @@ Resources
 ---------
 - [Documentation](https://github.com/maxtoroq/DbExtensions/wiki)
 - [Ask for help](https://github.com/maxtoroq/DbExtensions/issues?labels=question&state=closed)
-- [Report an issue](https://github.com/maxtoroq/DbExtensions/issues)
+- [Report an issue](https://github.com/maxtoroq/DbExtensions/issues?state=open)
 - [Roadmap](https://github.com/maxtoroq/DbExtensions/issues/milestones)
 
 <a href="https://github.com/maxtoroq/DbExtensions/wiki/Donate"><img src="http://maxtoroq.users.sourceforge.net/donate/paypal/btn_donate_SM.gif" alt="Donate"/></a>
