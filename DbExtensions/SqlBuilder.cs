@@ -26,6 +26,14 @@ using System.Text;
 
 namespace DbExtensions {
 
+    /// <summary>
+    /// Represents the Sql Operator used in a Query.
+    /// </summary>
+    public enum SqlOperator
+    {
+        GT, GTE, LT, LTE, EQ, LIKE, IN, NOT_IN, NOT_EQ, IS, IS_NOT
+    }
+
    /// <summary>
    /// Represents a mutable SQL string.
    /// </summary>
@@ -88,6 +96,37 @@ namespace DbExtensions {
             return _IgnoredColumns != null
                && _IgnoredColumns.Count > 0;
          }
+      }
+
+
+      private static string OpToString(SqlOperator op)
+      {
+          switch (op)
+          {
+              case SqlOperator.GT:
+                  return " > ";
+              case SqlOperator.GTE:
+                  return " >= ";
+              case SqlOperator.LT:
+                  return " < ";
+              case SqlOperator.LTE:
+                  return " <= ";
+              case SqlOperator.EQ:
+                  return " = ";
+              case SqlOperator.LIKE:
+                  return " LIKE ";
+              case SqlOperator.IN:
+                  return " IN ";
+              case SqlOperator.NOT_IN:
+                  return " NOT IN ";
+              case SqlOperator.NOT_EQ:
+                  return " <> ";
+              case SqlOperator.IS:
+                  return " IS ";
+              case SqlOperator.IS_NOT:
+                  return " IS NOT ";
+          }
+          throw new Exception("Unknown Operator");
       }
 
       /// <summary>
@@ -813,6 +852,32 @@ namespace DbExtensions {
       /// <returns>A reference to this instance after the append operation has completed.</returns>
       public SqlBuilder WHERE(string format, params object[] args) {
          return AppendClause("WHERE", " AND ", format, args);
+      }
+
+      /// <summary>
+      /// Appends the WHERE clause using the provided <paramref name="column"/> string and its value.
+      /// </summary>
+      /// <param name="column">The column name string that represents the column of the WHERE clause.</param>
+      /// <param name="op">The operator used for the WHERE clause.</param>/// 
+      /// <param name="value">The value of the Column of the WHERE clause body.</param>
+      /// <returns>A reference to this instance after the append operation has completed.</returns>
+      public SqlBuilder WHERE(string column, SqlOperator op, object value)
+      {
+          var format = " " + column + " " + OpToString(op) + " ( {0} ) ";
+          return AppendClause("WHERE", " AND ", format, new object[] { value });
+      }
+
+      /// <summary>
+      /// Appends the WHERE clause using the provided <paramref name="column"/> string and its value.
+      /// </summary>
+      /// <param name="column">The column name string that represents the column of the WHERE clause.</param>
+      /// <param name="op">The operator used for the WHERE clause.</param>/// 
+      /// <param name="subquery">The subquery of the WHERE clause.</param>
+      /// <returns>A reference to this instance after the append operation has completed.</returns>
+      public SqlBuilder WHERE(string column, SqlOperator op, SqlBuilder subquery )
+      {
+          var format = " " + column + " " + OpToString(op) + " ( {0} ) " ;
+          return AppendClause("WHERE", " AND ", format, new object[]{subquery});
       }
 
       /// <summary>
