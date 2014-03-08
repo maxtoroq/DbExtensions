@@ -9,14 +9,8 @@ namespace DbExtensions.Tests.Querying {
    [TestClass]
    public class SqlSetBehavior {
 
-      DbConnection conn;
-
-      [TestInitialize]
-      public void Initialize() {
-
-         this.conn = System.Data.SqlClient.SqlClientFactory.Instance
-            .CreateConnection(@"Data Source=(localdb)\v11.0;");
-      }
+      readonly DbConnection conn = System.Data.SqlClient.SqlClientFactory.Instance
+         .CreateSqlServerConnectionForTests();
 
       DbConnection MySqlConnection() {
          

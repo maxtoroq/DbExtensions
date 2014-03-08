@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DbExtensions.Tests.Mapping {
@@ -10,15 +8,9 @@ namespace DbExtensions.Tests.Mapping {
    [TestClass]
    public class PocoMappingBehavior {
 
-      DbConnection conn;
+      readonly DbConnection conn = System.Data.SqlClient.SqlClientFactory.Instance
+         .CreateSqlServerConnectionForTests();
 
-      [TestInitialize]
-      public void Initialize() {
-
-         this.conn = Database.GetProviderFactory("System.Data.SqlClient")
-            .CreateConnection(@"Data Source=(localdb)\v11.0;");
-      }
-      
       [TestMethod]
       public void Map_Property() {
 
