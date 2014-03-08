@@ -1270,6 +1270,39 @@ namespace DbExtensions {
       public static SqlBuilder DELETE_FROM(string format, params object[] args) {
          return ctor().DELETE_FROM(format, args);
       }
+
+      /// <summary>
+      /// Wraps an array parameter to be used with <see cref="SqlBuilder"/>.
+      /// </summary>
+      /// <param name="value">The array parameter.</param>
+      /// <returns>An object to use as parameter with <see cref="SqlBuilder"/>.</returns>
+      /// <remarks>
+      /// <para>
+      /// By default, <see cref="SqlBuilder"/> treats array parameters as a list of individual parameters.
+      /// For example:
+      /// </para>
+      /// <code>
+      /// var query = new SqlBuilder("SELECT {0} IN ({1})", "a", new string[] { "a", "b", "c" });
+      /// 
+      /// Console.WriteLine(query.ToString());
+      /// </code>
+      /// <para>
+      /// The above code outputs: <c>SELECT {0} IN ({1}, {2}, {3})</c>
+      /// </para>
+      /// <para>
+      /// Use this method if you need to workaround this behavior. A common scenario is working with binary 
+      /// data, usually represented by <see cref="T:Byte[]"/> parameters.
+      /// </para>
+      /// <para>
+      /// NOTE: Use only if you are explicitly specifying the format string, don't use with methods that
+      /// do not take a format string, like <see cref="SqlBuilder.VALUES(object[])"/>.
+      /// Also, don't use if you are already including the parameter inside an array for the default
+      /// list behavior.
+      /// </para>
+      /// </remarks>
+      public static object ArrayParam(Array value) {
+         return new object[1] { value };
+      }
    }
 
    static partial class Extensions {

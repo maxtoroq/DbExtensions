@@ -41,6 +41,17 @@ namespace DbExtensions.Tests.Querying {
       }
 
       [TestMethod]
+      public void Workaround_Array_Parameter_Expansion() {
+
+         var query = SQL
+            .UPDATE("images")
+            .SET("content = {0}", SQL.ArrayParam(new byte[] { 1, 2, 3 }));
+
+         Assert.AreEqual(1, query.ParameterValues.Count);
+         Assert.IsInstanceOfType(query.ParameterValues[0], typeof(byte[]));
+      }
+
+      [TestMethod]
       public void Use_Parameter_On_Limit_Clause() {
 
          var query = SQL
