@@ -65,7 +65,7 @@ Public Class SqlBuilderSamples
    ''' </remarks>
    Public Function ExtendRawSql() As SqlBuilder
 
-      Return SQL.ctor(
+      Return New SqlBuilder(
          "SELECT ProductID, ProductName" &
          "FROM Products") _
          .WHERE("CategoryID = {0}", 1)

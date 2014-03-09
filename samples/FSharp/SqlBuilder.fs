@@ -53,9 +53,9 @@ type SqlBuilderSamples() =
    /// </remarks>
    member this.ExtendRawSql() =
 
-      SQL.ctor(@"
+      (new SqlBuilder(@"
          SELECT ProductID, ProductName
-         FROM Products")
+         FROM Products"))
          .WHERE("CategoryID = {0}", 1);
 
    member this.ArrayArgument() =

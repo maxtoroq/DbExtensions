@@ -1084,6 +1084,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>A new <see cref="SqlBuilder"/>.</returns>
       /// <seealso cref="SqlBuilder()"/>
+      [Obsolete("Use SqlBuilder constructor instead.")]
       public static SqlBuilder ctor() {
          return new SqlBuilder();
       }
@@ -1097,6 +1098,7 @@ namespace DbExtensions {
       /// A new <see cref="SqlBuilder"/> initialized with <paramref name="sql"/>.
       /// </returns>
       /// <seealso cref="SqlBuilder(string)"/>
+      [Obsolete("Use SqlBuilder constructor instead.")]
       public static SqlBuilder ctor(string sql) {
          return new SqlBuilder(sql);
       }
@@ -1112,6 +1114,7 @@ namespace DbExtensions {
       /// <paramref name="format"/> and <paramref name="args"/>.
       /// </returns>
       /// <seealso cref="SqlBuilder(string, object[])"/>
+      [Obsolete("Use SqlBuilder constructor instead.")]
       public static SqlBuilder ctor(string format, params object[] args) {
          return new SqlBuilder(format, args);
       }
@@ -1126,7 +1129,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.WITH(string)"/>
       public static SqlBuilder WITH(string body) {
-         return ctor().WITH(body);
+         return new SqlBuilder().WITH(body);
       }
 
       /// <summary>
@@ -1141,7 +1144,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.WITH(string, object[])"/>
       public static SqlBuilder WITH(string format, params object[] args) {
-         return ctor().WITH(format, args);
+         return new SqlBuilder().WITH(format, args);
       }
 
       /// <summary>
@@ -1156,7 +1159,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.WITH(SqlBuilder, string)"/>
       public static SqlBuilder WITH(SqlBuilder subQuery, string alias) {
-         return ctor().WITH(subQuery, alias);
+         return new SqlBuilder().WITH(subQuery, alias);
       }
 
       /// <summary>
@@ -1169,7 +1172,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.SELECT(string)"/>
       public static SqlBuilder SELECT(string body) {
-         return ctor().SELECT(body);
+         return new SqlBuilder().SELECT(body);
       }
 
       /// <summary>
@@ -1184,7 +1187,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.SELECT(string, object[])"/>
       public static SqlBuilder SELECT(string format, params object[] args) {
-         return ctor().SELECT(format, args);
+         return new SqlBuilder().SELECT(format, args);
       }
 
       /// <summary>
@@ -1197,7 +1200,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.INSERT_INTO(string)"/>
       public static SqlBuilder INSERT_INTO(string body) {
-         return ctor().INSERT_INTO(body);
+         return new SqlBuilder().INSERT_INTO(body);
       }
 
       /// <summary>
@@ -1212,7 +1215,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.INSERT_INTO(string, object[])"/>
       public static SqlBuilder INSERT_INTO(string format, params object[] args) {
-         return ctor().INSERT_INTO(format, args);
+         return new SqlBuilder().INSERT_INTO(format, args);
       }
 
       /// <summary>
@@ -1225,7 +1228,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.UPDATE(string)"/>
       public static SqlBuilder UPDATE(string body) {
-         return ctor().UPDATE(body);
+         return new SqlBuilder().UPDATE(body);
       }
 
       /// <summary>
@@ -1240,7 +1243,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.UPDATE(string, object[])"/>
       public static SqlBuilder UPDATE(string format, params object[] args) {
-         return ctor().UPDATE(format, args);
+         return new SqlBuilder().UPDATE(format, args);
       }
 
       /// <summary>
@@ -1253,7 +1256,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.DELETE_FROM(string)"/>
       public static SqlBuilder DELETE_FROM(string body) {
-         return ctor().DELETE_FROM(body);
+         return new SqlBuilder().DELETE_FROM(body);
       }
 
       /// <summary>
@@ -1268,7 +1271,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.DELETE_FROM(string, object[])"/>
       public static SqlBuilder DELETE_FROM(string format, params object[] args) {
-         return ctor().DELETE_FROM(format, args);
+         return new SqlBuilder().DELETE_FROM(format, args);
       }
 
       /// <summary>
