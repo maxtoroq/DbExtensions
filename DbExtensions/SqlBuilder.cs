@@ -1294,8 +1294,16 @@ namespace DbExtensions {
       /// </para>
       /// <para>
       /// Use this method if you need to workaround this behavior. A common scenario is working with binary 
-      /// data, usually represented by <see cref="T:Byte[]"/> parameters.
+      /// data, usually represented by <see cref="Byte"/> array parameters. For example:
       /// </para>
+      /// <code>
+      /// byte[] imageData = GetImageData();
+      /// 
+      /// var update = SQL
+      ///    .UPDATE("images")
+      ///    .SET("content = {0}", SQL.ArrayParam(imageData))
+      ///    .WHERE("id = {0}", id);
+      /// </code>
       /// <para>
       /// NOTE: Use only if you are explicitly specifying the format string, don't use with methods that
       /// do not take a format string, like <see cref="SqlBuilder.VALUES(object[])"/>.
