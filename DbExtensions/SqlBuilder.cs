@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
@@ -1084,6 +1085,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>A new <see cref="SqlBuilder"/>.</returns>
       /// <seealso cref="SqlBuilder()"/>
+      [EditorBrowsable(EditorBrowsableState.Never)]
       [Obsolete("Use SqlBuilder constructor instead.")]
       public static SqlBuilder ctor() {
          return new SqlBuilder();
@@ -1098,6 +1100,7 @@ namespace DbExtensions {
       /// A new <see cref="SqlBuilder"/> initialized with <paramref name="sql"/>.
       /// </returns>
       /// <seealso cref="SqlBuilder(string)"/>
+      [EditorBrowsable(EditorBrowsableState.Never)]
       [Obsolete("Use SqlBuilder constructor instead.")]
       public static SqlBuilder ctor(string sql) {
          return new SqlBuilder(sql);
@@ -1114,6 +1117,7 @@ namespace DbExtensions {
       /// <paramref name="format"/> and <paramref name="args"/>.
       /// </returns>
       /// <seealso cref="SqlBuilder(string, object[])"/>
+      [EditorBrowsable(EditorBrowsableState.Never)]
       [Obsolete("Use SqlBuilder constructor instead.")]
       public static SqlBuilder ctor(string format, params object[] args) {
          return new SqlBuilder(format, args);
@@ -1314,6 +1318,32 @@ namespace DbExtensions {
       public static object ArrayParam(Array value) {
          return new object[1] { value };
       }
+
+      #region Object Members
+
+      /// <summary>
+      /// Determines whether the specified object instances are considered equal.
+      /// </summary>
+      /// <param name="objectA">The first object to compare.</param>
+      /// <param name="objectB">The second object to compare.</param>
+      /// <returns>true if the objects are considered equal; otherwise, false. If both objA and objB are null, the method returns true.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public static new bool Equals(object objectA, object objectB) {
+         return Object.Equals(objectA, objectB);
+      }
+
+      /// <summary>
+      /// Determines whether the specified System.Object instances are the same instance.
+      /// </summary>
+      /// <param name="objectA">The first object to compare.</param>
+      /// <param name="objectB">The second object to compare.</param>
+      /// <returns>true if objA is the same instance as objB or if both are null; otherwise, false.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public static new bool ReferenceEquals(object objectA, object objectB) {
+         return Object.ReferenceEquals(objectA, objectB);
+      }
+
+      #endregion
    }
 
    static partial class Extensions {
