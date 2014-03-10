@@ -1305,7 +1305,7 @@ namespace DbExtensions {
       /// 
       /// var update = SQL
       ///    .UPDATE("images")
-      ///    .SET("content = {0}", SQL.ArrayParam(imageData))
+      ///    .SET("content = {0}", SQL.Param(imageData))
       ///    .WHERE("id = {0}", id);
       /// </code>
       /// <para>
@@ -1315,7 +1315,7 @@ namespace DbExtensions {
       /// list behavior.
       /// </para>
       /// </remarks>
-      public static object ArrayParam(Array value) {
+      public static object Param(Array value) {
          return new object[1] { value };
       }
 

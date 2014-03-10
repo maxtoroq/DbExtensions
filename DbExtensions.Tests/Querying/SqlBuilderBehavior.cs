@@ -45,7 +45,7 @@ namespace DbExtensions.Tests.Querying {
 
          var query = SQL
             .UPDATE("images")
-            .SET("content = {0}", SQL.ArrayParam(new byte[] { 1, 2, 3 }));
+            .SET("content = {0}", SQL.Param(new byte[] { 1, 2, 3 }));
 
          Assert.AreEqual(1, query.ParameterValues.Count);
          Assert.IsInstanceOfType(query.ParameterValues[0], typeof(byte[]));
