@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
@@ -1084,6 +1085,8 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>A new <see cref="SqlBuilder"/>.</returns>
       /// <seealso cref="SqlBuilder()"/>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Use SqlBuilder constructor instead.")]
       public static SqlBuilder ctor() {
          return new SqlBuilder();
       }
@@ -1097,6 +1100,8 @@ namespace DbExtensions {
       /// A new <see cref="SqlBuilder"/> initialized with <paramref name="sql"/>.
       /// </returns>
       /// <seealso cref="SqlBuilder(string)"/>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Use SqlBuilder constructor instead.")]
       public static SqlBuilder ctor(string sql) {
          return new SqlBuilder(sql);
       }
@@ -1112,6 +1117,8 @@ namespace DbExtensions {
       /// <paramref name="format"/> and <paramref name="args"/>.
       /// </returns>
       /// <seealso cref="SqlBuilder(string, object[])"/>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      [Obsolete("Use SqlBuilder constructor instead.")]
       public static SqlBuilder ctor(string format, params object[] args) {
          return new SqlBuilder(format, args);
       }
@@ -1126,7 +1133,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.WITH(string)"/>
       public static SqlBuilder WITH(string body) {
-         return ctor().WITH(body);
+         return new SqlBuilder().WITH(body);
       }
 
       /// <summary>
@@ -1141,7 +1148,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.WITH(string, object[])"/>
       public static SqlBuilder WITH(string format, params object[] args) {
-         return ctor().WITH(format, args);
+         return new SqlBuilder().WITH(format, args);
       }
 
       /// <summary>
@@ -1156,7 +1163,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.WITH(SqlBuilder, string)"/>
       public static SqlBuilder WITH(SqlBuilder subQuery, string alias) {
-         return ctor().WITH(subQuery, alias);
+         return new SqlBuilder().WITH(subQuery, alias);
       }
 
       /// <summary>
@@ -1169,7 +1176,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.SELECT(string)"/>
       public static SqlBuilder SELECT(string body) {
-         return ctor().SELECT(body);
+         return new SqlBuilder().SELECT(body);
       }
 
       /// <summary>
@@ -1184,7 +1191,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.SELECT(string, object[])"/>
       public static SqlBuilder SELECT(string format, params object[] args) {
-         return ctor().SELECT(format, args);
+         return new SqlBuilder().SELECT(format, args);
       }
 
       /// <summary>
@@ -1197,7 +1204,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.INSERT_INTO(string)"/>
       public static SqlBuilder INSERT_INTO(string body) {
-         return ctor().INSERT_INTO(body);
+         return new SqlBuilder().INSERT_INTO(body);
       }
 
       /// <summary>
@@ -1212,7 +1219,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.INSERT_INTO(string, object[])"/>
       public static SqlBuilder INSERT_INTO(string format, params object[] args) {
-         return ctor().INSERT_INTO(format, args);
+         return new SqlBuilder().INSERT_INTO(format, args);
       }
 
       /// <summary>
@@ -1225,7 +1232,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.UPDATE(string)"/>
       public static SqlBuilder UPDATE(string body) {
-         return ctor().UPDATE(body);
+         return new SqlBuilder().UPDATE(body);
       }
 
       /// <summary>
@@ -1240,7 +1247,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.UPDATE(string, object[])"/>
       public static SqlBuilder UPDATE(string format, params object[] args) {
-         return ctor().UPDATE(format, args);
+         return new SqlBuilder().UPDATE(format, args);
       }
 
       /// <summary>
@@ -1253,7 +1260,7 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.DELETE_FROM(string)"/>
       public static SqlBuilder DELETE_FROM(string body) {
-         return ctor().DELETE_FROM(body);
+         return new SqlBuilder().DELETE_FROM(body);
       }
 
       /// <summary>
@@ -1268,8 +1275,75 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="SqlBuilder.DELETE_FROM(string, object[])"/>
       public static SqlBuilder DELETE_FROM(string format, params object[] args) {
-         return ctor().DELETE_FROM(format, args);
+         return new SqlBuilder().DELETE_FROM(format, args);
       }
+
+      /// <summary>
+      /// Wraps an array parameter to be used with <see cref="SqlBuilder"/>.
+      /// </summary>
+      /// <param name="value">The array parameter.</param>
+      /// <returns>An object to use as parameter with <see cref="SqlBuilder"/>.</returns>
+      /// <remarks>
+      /// <para>
+      /// By default, <see cref="SqlBuilder"/> treats array parameters as a list of individual parameters.
+      /// For example:
+      /// </para>
+      /// <code>
+      /// var query = new SqlBuilder("SELECT {0} IN ({1})", "a", new string[] { "a", "b", "c" });
+      /// 
+      /// Console.WriteLine(query.ToString());
+      /// </code>
+      /// <para>
+      /// The above code outputs: <c>SELECT {0} IN ({1}, {2}, {3})</c>
+      /// </para>
+      /// <para>
+      /// Use this method if you need to workaround this behavior. A common scenario is working with binary 
+      /// data, usually represented by <see cref="Byte"/> array parameters. For example:
+      /// </para>
+      /// <code>
+      /// byte[] imageData = GetImageData();
+      /// 
+      /// var update = SQL
+      ///    .UPDATE("images")
+      ///    .SET("content = {0}", SQL.Param(imageData))
+      ///    .WHERE("id = {0}", id);
+      /// </code>
+      /// <para>
+      /// NOTE: Use only if you are explicitly specifying the format string, don't use with methods that
+      /// do not take a format string, like <see cref="SqlBuilder.VALUES(object[])"/>.
+      /// Also, don't use if you are already including the parameter inside an array for the default
+      /// list behavior.
+      /// </para>
+      /// </remarks>
+      public static object Param(Array value) {
+         return new object[1] { value };
+      }
+
+      #region Object Members
+
+      /// <summary>
+      /// Determines whether the specified object instances are considered equal.
+      /// </summary>
+      /// <param name="objectA">The first object to compare.</param>
+      /// <param name="objectB">The second object to compare.</param>
+      /// <returns>true if the objects are considered equal; otherwise, false. If both objA and objB are null, the method returns true.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public static new bool Equals(object objectA, object objectB) {
+         return Object.Equals(objectA, objectB);
+      }
+
+      /// <summary>
+      /// Determines whether the specified System.Object instances are the same instance.
+      /// </summary>
+      /// <param name="objectA">The first object to compare.</param>
+      /// <param name="objectB">The second object to compare.</param>
+      /// <returns>true if objA is the same instance as objB or if both are null; otherwise, false.</returns>
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public static new bool ReferenceEquals(object objectA, object objectB) {
+         return Object.ReferenceEquals(objectA, objectB);
+      }
+
+      #endregion
    }
 
    static partial class Extensions {

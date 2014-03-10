@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DbExtensions.Tests.Querying {
@@ -11,14 +9,8 @@ namespace DbExtensions.Tests.Querying {
    [TestClass]
    public class SqlSetBehavior {
 
-      DbConnection conn;
-
-      [TestInitialize]
-      public void Initialize() {
-
-         this.conn = System.Data.SqlClient.SqlClientFactory.Instance
-            .CreateConnection(@"Data Source=(localdb)\v11.0;");
-      }
+      readonly DbConnection conn = System.Data.SqlClient.SqlClientFactory.Instance
+         .CreateSqlServerConnectionForTests();
 
       DbConnection MySqlConnection() {
          
@@ -309,7 +301,7 @@ namespace DbExtensions.Tests.Querying {
       }
 
       bool SqlEquals(SqlSet set, SqlBuilder query) {
-         return String.Equals(Regex.Replace(set.ToString(), "dbex_set[0-9]+", "_"), query.ToString(), StringComparison.Ordinal);
+         return TestUtil.SqlEquals(set, query);
       }
    }
 }

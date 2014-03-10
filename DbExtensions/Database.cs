@@ -566,7 +566,7 @@ namespace DbExtensions {
       /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public SqlSet From(string tableName) {
-         return new SqlSet(tableName, (Type)null, this);
+         return new SqlSet(new string[2] { tableName, null }, (Type)null, this);
       }
 
       /// <summary>
@@ -576,7 +576,7 @@ namespace DbExtensions {
       /// <param name="resultType">The type of objects to map the results to.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public SqlSet From(string tableName, Type resultType) {
-         return new SqlSet(tableName, resultType, this);
+         return new SqlSet(new string[2] { tableName, null }, resultType, this);
       }
 
       /// <summary>
@@ -586,7 +586,7 @@ namespace DbExtensions {
       /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
       public SqlSet<TResult> From<TResult>(string tableName) {
-         return new SqlSet<TResult>(tableName, this);
+         return new SqlSet<TResult>(new string[2] { tableName, null }, this);
       }
 
       /// <summary>

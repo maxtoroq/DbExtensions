@@ -46,6 +46,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -66,6 +67,8 @@
     <Compile Include="Querying\SqlBuilderBehavior.cs" />
     <Compile Include="Querying\SqlSetBehaviorForSqlServer.cs" />
     <Compile Include="Querying\SqlSetBehavior.cs" />
+    <Compile Include="Querying\SqlTableBehavior.cs" />
+    <Compile Include="TestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DbExtensions\DbExtensions.csproj">

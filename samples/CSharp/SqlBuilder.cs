@@ -63,7 +63,7 @@ namespace Samples.CSharp {
       /// </remarks>
       public SqlBuilder ExtendRawSql() {
 
-         return SQL.ctor(@"
+         return new SqlBuilder(@"
              SELECT ProductID, ProductName
              FROM Products")
             .WHERE("CategoryID = {0}", 1);
