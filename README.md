@@ -157,5 +157,5 @@ Resources
 - [Report an issue](https://github.com/maxtoroq/DbExtensions/issues?state=open)
 - [Roadmap](https://github.com/maxtoroq/DbExtensions/issues/milestones)
 
-<a href="https://github.com/maxtoroq/DbExtensions/wiki/Donate"><img src="http://maxtoroq.users.sourceforge.net/donate/paypal/btn_donate_SM.gif" alt="Donate"/></a>
-<a href="http://flattr.com/thing/1761218/DbExtensions" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a>
+<a href="https://github.com/maxtoroq/DbExtensions/wiki/Donate"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" alt="Donate"/></a>
+<a href="http://flattr.com/thing/1761218/DbExtensions" target="_blank"><img src="https://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a>
