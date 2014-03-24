@@ -1,5 +1,5 @@
 The SQL framework for .NET
-=============================================================================== 
+==========================
 DbExtensions consists of 4 components that can be used together 
 or separately: 
 
@@ -9,6 +9,12 @@ or separately:
 4. CRUD operations: `Database`, `SqlTable`
 
 The key features of this library are the granularity of its components and code aesthetics.
+
+Get it now! using NuGet
+-----------------------
+```powershell
+Install-Package DbExtensions
+```
 
 Querying with SqlSet
 --------------------
@@ -136,26 +142,11 @@ DbExtensions doesn't provide the following functionality:
 - Change tracking
 - Unit of work
 
-Limitations
------------
-- For SQL Server and SQL Server Compact, `SqlSet.Skip()` uses OFFSET, available
-  in SQL Server 2012 and SQL Server Compact 4
-
-Source code and releases
-------------------------
-Code hosted on [GitHub](https://github.com/maxtoroq/DbExtensions). 
-Releases available on [GitHub](https://github.com/maxtoroq/DbExtensions/releases)
-and [NuGet](http://www.nuget.org/packages/DbExtensions).
-
-This project was originally hosted on [SourceForge](https://sourceforge.net/projects/dbextensions/), source code and releases for
-versions 1.x, 2.x and 3.x remain available there.
-
 Resources
 ---------
 - [Documentation](https://github.com/maxtoroq/DbExtensions/wiki)
 - [Ask for help](https://github.com/maxtoroq/DbExtensions/issues?labels=question&state=closed)
 - [Report an issue](https://github.com/maxtoroq/DbExtensions/issues?state=open)
-- [Roadmap](https://github.com/maxtoroq/DbExtensions/issues/milestones)
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://github.com/maxtoroq/DbExtensions/wiki/Donate)
 [![Flattr this](https://api.flattr.com/button/flattr-badge-large.png)](http://flattr.com/thing/1761218/DbExtensions)
