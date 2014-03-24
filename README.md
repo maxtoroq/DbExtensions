@@ -13,9 +13,9 @@ The key features of this library are the granularity of its components and code 
 Querying with SqlSet
 --------------------
 ```csharp
-DbConnection conn = Database.CreateConnection("name=Northwind");
+var db = new Database("name=Northwind");
 
-SqlSet<Product> products = conn.From<Product>("Products");
+SqlSet<Product> products = db.From<Product>("Products");
 SqlSet<Product> productsToReorder = products.Where("UnitsInStock < {0}", 10);
 
 if (productsToReorder.Any()) {
@@ -86,7 +86,7 @@ var query = SQL
    .WHERE()
    ._If(categoryId.HasValue, "p.CategoryID = {0}", categoryId);
 
-IEnumerable<Product> products = conn.Map<Product>(query);
+IEnumerable<Product> products = db.Map<Product>(query);
 ```
 With `SqlBuilder` you have complete control of the executing SQL.
 
