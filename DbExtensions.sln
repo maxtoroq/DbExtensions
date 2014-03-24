@@ -15,7 +15,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Samples.FSharp", "samples\F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbExtensions.net35", "src\DbExtensions\DbExtensions.net35.csproj", "{F71FDF8F-5A51-4B86-A828-CE9B150BBA74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbExtensions.Tests", "DbExtensions.Tests\DbExtensions.Tests.csproj", "{602464F1-7A5E-47CF-B6A3-3CCAAC7036C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbExtensions.Tests", "tests\DbExtensions.Tests\DbExtensions.Tests.csproj", "{602464F1-7A5E-47CF-B6A3-3CCAAC7036C6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B7A3B19E-1377-4ACA-8EDB-17819504755F}"
 	ProjectSection(SolutionItems) = preProject
