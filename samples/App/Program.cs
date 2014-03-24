@@ -15,7 +15,7 @@ namespace Samples {
 
    class Program {
 
-      readonly string samplesPath = Path.Combine("..", "..", "..");
+      readonly string samplesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..");
 
       static void Main() {
          new Program().Run();
@@ -109,7 +109,11 @@ namespace Samples {
 
       string[] GetSamplesLanguages() {
 
-         string appDir = Directory.GetCurrentDirectory().Split(Path.DirectorySeparatorChar).Reverse().Skip(2).First();
+         string appDir = AppDomain.CurrentDomain.BaseDirectory
+            .Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries)
+            .Reverse()
+            .Skip(2)
+            .First();
 
          string[] projectsDir = Directory
             .GetDirectories(this.samplesPath, "*", SearchOption.TopDirectoryOnly)
