@@ -28,7 +28,7 @@ true to recursively execute INSERT commands for the *entity*'s one-to-many assoc
 
 See Also
 --------
-[SqlTable<TEntity> Class][2]  
+[SqlTable&lt;TEntity> Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

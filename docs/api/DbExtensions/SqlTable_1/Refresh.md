@@ -23,7 +23,7 @@ The entity to refresh.
 
 See Also
 --------
-[SqlTable<TEntity> Class][2]  
+[SqlTable&lt;TEntity> Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

@@ -1,6 +1,6 @@
 Extensions.GetNullableChar Method (IDataRecord, String)
 =======================================================
-Gets the value of the specified column as a [Nullable<T>][1] of [Char][2].
+Gets the value of the specified column as a [Nullable&lt;T>][1] of [Char][2].
 
 **Namespace:** [DbExtensions][3]  
 **Assembly:** DbExtensions (in DbExtensions.dll)

@@ -22,11 +22,11 @@ The list of columns to base the sort on.
 
 ### Return Value
 Type: [SqlSet][3]&lt;[TResult][3]>  
-A new [SqlSet<TResult>][3] whose elements are sorted according to *columnList*.
+A new [SqlSet&lt;TResult>][3] whose elements are sorted according to *columnList*.
 
 See Also
 --------
-[SqlSet<TResult> Class][3]  
+[SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

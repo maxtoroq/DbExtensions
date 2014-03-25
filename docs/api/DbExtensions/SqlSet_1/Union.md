@@ -18,15 +18,15 @@ public SqlSet<TResult> Union(
 
 #### *otherSet*
 Type: [DbExtensions.SqlSet][2]&lt;[TResult][2]>  
-A [SqlSet<TResult>][2] whose distinct elements form the second set for the union.
+A [SqlSet&lt;TResult>][2] whose distinct elements form the second set for the union.
 
 ### Return Value
 Type: [SqlSet][2]&lt;[TResult][2]>  
-A new [SqlSet<TResult>][2] that contains the elements from both sets, excluding duplicates.
+A new [SqlSet&lt;TResult>][2] that contains the elements from both sets, excluding duplicates.
 
 See Also
 --------
-[SqlSet<TResult> Class][2]  
+[SqlSet&lt;TResult> Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

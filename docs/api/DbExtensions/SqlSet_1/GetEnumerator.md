@@ -14,11 +14,11 @@ public IEnumerator<TResult> GetEnumerator()
 
 ### Return Value
 Type: [IEnumerator][2]&lt;[TResult][3]>  
-A [IEnumerator<T>][2] for the set.
+A [IEnumerator&lt;T>][2] for the set.
 
 See Also
 --------
-[SqlSet<TResult> Class][3]  
+[SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

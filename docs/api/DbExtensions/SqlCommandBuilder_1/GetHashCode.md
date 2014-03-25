@@ -18,7 +18,7 @@ The hash function for the current object.
 
 See Also
 --------
-[SqlCommandBuilder<TEntity> Class][3]  
+[SqlCommandBuilder&lt;TEntity> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

@@ -1,6 +1,6 @@
 SqlSet&lt;TResult> Constructor (SqlBuilder, Func&lt;IDataRecord, TResult>, DbConnection, TextWriter)
 ====================================================================================================
-Initializes a new instance of the [SqlSet<TResult>][1] class using the provided defining query, mapper, connection and logger.
+Initializes a new instance of the [SqlSet&lt;TResult>][1] class using the provided defining query, mapper, connection and logger.
 
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -38,7 +38,7 @@ A [TextWriter][7] used to log when queries are executed.
 
 See Also
 --------
-[SqlSet<TResult> Class][1]  
+[SqlSet&lt;TResult> Class][1]  
 [DbExtensions Namespace][2]  
 
 [1]: README.md

@@ -14,7 +14,7 @@ public IEnumerator<Object> GetEnumerator()
 
 ### Return Value
 Type: [IEnumerator][2]&lt;[Object][3]>  
-A [IEnumerator<T>][2] for the set.
+A [IEnumerator&lt;T>][2] for the set.
 
 See Also
 --------

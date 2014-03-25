@@ -21,11 +21,11 @@ The type to cast the elements of the set to.
 
 ### Return Value
 Type: [SqlSet][2]&lt;**T**>  
-A new [SqlSet<TResult>][2] that contains each element of the current set cast to the specified type.
+A new [SqlSet&lt;TResult>][2] that contains each element of the current set cast to the specified type.
 
 See Also
 --------
-[SqlSet<TResult> Class][2]  
+[SqlSet&lt;TResult> Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

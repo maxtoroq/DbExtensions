@@ -1,6 +1,6 @@
 SqlTable.SQL Property
 =====================
-Gets a [SqlCommandBuilder<TEntity>][1] object for the current table.
+Gets a [SqlCommandBuilder&lt;TEntity>][1] object for the current table.
 
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions (in DbExtensions.dll)

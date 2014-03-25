@@ -47,7 +47,7 @@ See Also
 --------
 [Extensions Class][9]  
 [DbExtensions Namespace][1]  
-[Extensions.Map<TResult>(IDbCommand, Func<IDataRecord, TResult>)][10]  
+[Extensions.Map&lt;TResult>(IDbCommand, Func&lt;IDataRecord, TResult>)][10]  
 
 [1]: ../README.md
 [2]: http://msdn.microsoft.com/en-us/library/c790zwhc

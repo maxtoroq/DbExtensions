@@ -34,7 +34,7 @@ The type that *columnList* maps to.
 
 ### Return Value
 Type: [SqlSet][4]&lt;**TResult**>  
-A new [SqlSet<TResult>][4].
+A new [SqlSet&lt;TResult>][4].
 
 See Also
 --------

@@ -39,7 +39,7 @@ The type that *mapper* returns.
 
 ### Return Value
 Type: [SqlSet][6]&lt;**TResult**>  
-A new [SqlSet<TResult>][6].
+A new [SqlSet&lt;TResult>][6].
 
 See Also
 --------

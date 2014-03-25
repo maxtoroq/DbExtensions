@@ -18,7 +18,7 @@ All TResult objects in the set.
 
 See Also
 --------
-[SqlSet<TResult> Class][3]  
+[SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

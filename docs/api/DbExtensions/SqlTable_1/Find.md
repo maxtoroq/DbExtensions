@@ -26,7 +26,7 @@ Type: [TEntity][3]
 
 See Also
 --------
-[SqlTable<TEntity> Class][3]  
+[SqlTable&lt;TEntity> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

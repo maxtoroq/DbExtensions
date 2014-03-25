@@ -39,7 +39,7 @@ Exception                      | Condition
 
 See Also
 --------
-[SqlSet<TResult> Class][4]  
+[SqlSet&lt;TResult> Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

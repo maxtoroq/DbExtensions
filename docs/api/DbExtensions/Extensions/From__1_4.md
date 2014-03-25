@@ -1,6 +1,6 @@
 Extensions.From&lt;TResult> Method (DbConnection, String)
 =========================================================
-Creates and returns a new [SqlSet<TResult>][1] using the provided table name.
+Creates and returns a new [SqlSet&lt;TResult>][1] using the provided table name.
 
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -34,7 +34,7 @@ The type of objects to map the results to.
 
 ### Return Value
 Type: [SqlSet][1]&lt;**TResult**>  
-A new [SqlSet<TResult>][1] object.
+A new [SqlSet&lt;TResult>][1] object.
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [DbConnection][3]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][5] or [Extension Methods (C# Programming Guide)][6].
 

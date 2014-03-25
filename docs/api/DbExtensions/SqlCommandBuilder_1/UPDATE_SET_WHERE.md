@@ -26,7 +26,7 @@ The UPDATE command for *entity*.
 
 See Also
 --------
-[SqlCommandBuilder<TEntity> Class][3]  
+[SqlCommandBuilder&lt;TEntity> Class][3]  
 [DbExtensions Namespace][2]  
 
 [1]: ../ConcurrencyConflictPolicy/README.md

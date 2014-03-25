@@ -28,7 +28,7 @@ The [ConcurrencyConflictPolicy][3] that specifies how to validate the affected r
 
 See Also
 --------
-[SqlTable<TEntity> Class][4]  
+[SqlTable&lt;TEntity> Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

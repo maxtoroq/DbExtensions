@@ -26,7 +26,7 @@ true if the primary key value exists in the database; otherwise false.
 
 See Also
 --------
-[SqlTable<TEntity> Class][2]  
+[SqlTable&lt;TEntity> Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

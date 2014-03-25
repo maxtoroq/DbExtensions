@@ -40,7 +40,7 @@ See Also
 --------
 [Database Class][6]  
 [DbExtensions Namespace][1]  
-[Extensions.Map<TResult>(IDbCommand, Func<IDataRecord, TResult>, TextWriter)][7]  
+[Extensions.Map&lt;TResult>(IDbCommand, Func&lt;IDataRecord, TResult>, TextWriter)][7]  
 
 [1]: ../README.md
 [2]: ../SqlBuilder/README.md

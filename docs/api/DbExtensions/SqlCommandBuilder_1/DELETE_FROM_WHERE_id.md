@@ -26,7 +26,7 @@ The DELETE command the entity whose primary key matches the *id* parameter.
 
 See Also
 --------
-[SqlCommandBuilder<TEntity> Class][4]  
+[SqlCommandBuilder&lt;TEntity> Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

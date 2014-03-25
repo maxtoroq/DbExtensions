@@ -23,7 +23,7 @@ The entities whose UPDATE commands are to be executed.
 
 See Also
 --------
-[SqlTable<TEntity> Class][4]  
+[SqlTable&lt;TEntity> Class][4]  
 [DbExtensions Namespace][2]  
 
 [1]: ../ConcurrencyConflictPolicy/README.md

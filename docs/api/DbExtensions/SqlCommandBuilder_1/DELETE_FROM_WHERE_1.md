@@ -31,7 +31,7 @@ The DELETE command for *entity*.
 
 See Also
 --------
-[SqlCommandBuilder<TEntity> Class][2]  
+[SqlCommandBuilder&lt;TEntity> Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

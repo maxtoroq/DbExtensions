@@ -1,6 +1,6 @@
 SqlSet&lt;TResult> Constructor (SqlBuilder, Func&lt;IDataRecord, TResult>, DbConnection)
 ========================================================================================
-Initializes a new instance of the [SqlSet<TResult>][1] class using the provided defining query, mapper and connection.
+Initializes a new instance of the [SqlSet&lt;TResult>][1] class using the provided defining query, mapper and connection.
 
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -33,7 +33,7 @@ The database connection.
 
 See Also
 --------
-[SqlSet<TResult> Class][1]  
+[SqlSet&lt;TResult> Class][1]  
 [DbExtensions Namespace][2]  
 
 [1]: README.md

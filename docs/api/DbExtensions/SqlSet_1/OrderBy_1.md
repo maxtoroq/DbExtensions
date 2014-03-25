@@ -27,11 +27,11 @@ The parameters to apply to the *columnList*.
 
 ### Return Value
 Type: [SqlSet][4]&lt;[TResult][4]>  
-A new [SqlSet<TResult>][4] whose elements are sorted according to *columnList*.
+A new [SqlSet&lt;TResult>][4] whose elements are sorted according to *columnList*.
 
 See Also
 --------
-[SqlSet<TResult> Class][4]  
+[SqlSet&lt;TResult> Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

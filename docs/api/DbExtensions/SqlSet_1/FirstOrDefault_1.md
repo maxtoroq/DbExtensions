@@ -26,7 +26,7 @@ Type: [TResult][3]
 
 See Also
 --------
-[SqlSet<TResult> Class][3]  
+[SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

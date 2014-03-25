@@ -28,7 +28,7 @@ The [ConcurrencyConflictPolicy][4] that specifies what columns to check for in t
 
 See Also
 --------
-[SqlTable<TEntity> Class][3]  
+[SqlTable&lt;TEntity> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

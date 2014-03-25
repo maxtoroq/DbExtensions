@@ -35,7 +35,7 @@ See Also
 --------
 [Database Class][4]  
 [DbExtensions Namespace][1]  
-[Extensions.Map<TResult>(IDbCommand, TextWriter)][5]  
+[Extensions.Map&lt;TResult>(IDbCommand, TextWriter)][5]  
 
 [1]: ../README.md
 [2]: ../SqlBuilder/README.md

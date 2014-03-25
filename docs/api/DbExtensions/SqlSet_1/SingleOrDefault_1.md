@@ -26,7 +26,7 @@ The single element of the set that satisfies the condition, or a default value i
 
 See Also
 --------
-[SqlSet<TResult> Class][3]  
+[SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

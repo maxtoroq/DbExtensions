@@ -1,6 +1,6 @@
 SqlCommandBuilder&lt;TEntity> Class
 ===================================
-Generates SQL commands for entities mapped by [SqlTable][1] and [SqlTable<TEntity>][2]. This class cannot be instantiated.
+Generates SQL commands for entities mapped by [SqlTable][1] and [SqlTable&lt;TEntity>][2]. This class cannot be instantiated.
 
 
 Inheritance Hierarchy
@@ -55,7 +55,7 @@ Name                                                       | Description
 See Also
 --------
 [DbExtensions Namespace][4]  
-[SqlTable<TEntity>.SQL][25]  
+[SqlTable&lt;TEntity>.SQL][25]  
 [SqlTable.SQL][26]  
 
 [1]: ../SqlTable/README.md

@@ -47,7 +47,7 @@ See Also
 --------
 [Extensions Class][8]  
 [DbExtensions Namespace][1]  
-[Extensions.Map<TResult>(IDbCommand, TextWriter)][9]  
+[Extensions.Map&lt;TResult>(IDbCommand, TextWriter)][9]  
 
 [1]: ../README.md
 [2]: http://msdn.microsoft.com/en-us/library/c790zwhc

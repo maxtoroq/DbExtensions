@@ -29,7 +29,7 @@ The type that *columnList* maps to.
 
 ### Return Value
 Type: [SqlSet][3]&lt;**TResult**>  
-A new [SqlSet<TResult>][3].
+A new [SqlSet&lt;TResult>][3].
 
 See Also
 --------

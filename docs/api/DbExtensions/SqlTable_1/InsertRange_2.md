@@ -23,7 +23,7 @@ The entities whose INSERT commands are to be executed.
 
 See Also
 --------
-[SqlTable<TEntity> Class][2]  
+[SqlTable&lt;TEntity> Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

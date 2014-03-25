@@ -22,11 +22,11 @@ A SQL expression to test each row for a condition.
 
 ### Return Value
 Type: [SqlSet][3]&lt;[TResult][3]>  
-A new [SqlSet<TResult>][3] that contains elements from the current set that satisfy the condition.
+A new [SqlSet&lt;TResult>][3] that contains elements from the current set that satisfy the condition.
 
 See Also
 --------
-[SqlSet<TResult> Class][3]  
+[SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

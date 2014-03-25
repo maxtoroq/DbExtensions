@@ -22,11 +22,11 @@ The number of elements to skip before returning the remaining elements.
 
 ### Return Value
 Type: [SqlSet][3]&lt;[TResult][3]>  
-A new [SqlSet<TResult>][3] that contains the elements that occur after the specified index in the current set.
+A new [SqlSet&lt;TResult>][3] that contains the elements that occur after the specified index in the current set.
 
 See Also
 --------
-[SqlSet<TResult> Class][3]  
+[SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

@@ -1,6 +1,6 @@
 Database.Set&lt;TResult> Method (SqlBuilder)
 ============================================
-Creates and returns a new [SqlSet<TResult>][1] using the provided defining query.
+Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining query.
 
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -30,7 +30,7 @@ The type of objects to map the results to.
 
 ### Return Value
 Type: [SqlSet][1]&lt;**TResult**>  
-A new [SqlSet<TResult>][1] object.
+A new [SqlSet&lt;TResult>][1] object.
 
 See Also
 --------

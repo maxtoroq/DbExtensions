@@ -24,7 +24,7 @@ The entity whose members are to be set to their default values.
 
 See Also
 --------
-[SqlTable<TEntity> Class][2]  
+[SqlTable&lt;TEntity> Class][2]  
 [DbExtensions Namespace][1]  
 [DbConnection.GetSchema(String, String[])][3]  
 

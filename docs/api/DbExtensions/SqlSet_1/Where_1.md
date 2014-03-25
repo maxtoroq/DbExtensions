@@ -27,11 +27,11 @@ The parameters to apply to the *predicate*.
 
 ### Return Value
 Type: [SqlSet][4]&lt;[TResult][4]>  
-A new [SqlSet<TResult>][4] that contains elements from the current set that satisfy the condition.
+A new [SqlSet&lt;TResult>][4] that contains elements from the current set that satisfy the condition.
 
 See Also
 --------
-[SqlSet<TResult> Class][4]  
+[SqlSet&lt;TResult> Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

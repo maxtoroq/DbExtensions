@@ -26,7 +26,7 @@ True if the specified object is equal to the current object; otherwise, false.
 
 See Also
 --------
-[SqlCommandBuilder<TEntity> Class][4]  
+[SqlCommandBuilder&lt;TEntity> Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

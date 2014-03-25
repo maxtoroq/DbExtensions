@@ -18,7 +18,7 @@ A string representation of the object.
 
 See Also
 --------
-[SqlCommandBuilder<TEntity> Class][3]  
+[SqlCommandBuilder&lt;TEntity> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

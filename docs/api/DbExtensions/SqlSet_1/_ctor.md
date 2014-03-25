@@ -1,6 +1,6 @@
 SqlSet&lt;TResult> Constructor (SqlBuilder)
 ===========================================
-Initializes a new instance of the [SqlSet<TResult>][1] class using the provided defining query.
+Initializes a new instance of the [SqlSet&lt;TResult>][1] class using the provided defining query.
 
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -23,7 +23,7 @@ The SQL query that will be the source of data for the set.
 
 See Also
 --------
-[SqlSet<TResult> Class][1]  
+[SqlSet&lt;TResult> Class][1]  
 [DbExtensions Namespace][2]  
 
 [1]: README.md

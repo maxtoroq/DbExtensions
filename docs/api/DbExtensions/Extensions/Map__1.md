@@ -42,7 +42,7 @@ See Also
 --------
 [Extensions Class][7]  
 [DbExtensions Namespace][1]  
-[Extensions.Map<TResult>(IDbCommand)][8]  
+[Extensions.Map&lt;TResult>(IDbCommand)][8]  
 
 [1]: ../README.md
 [2]: http://msdn.microsoft.com/en-us/library/c790zwhc

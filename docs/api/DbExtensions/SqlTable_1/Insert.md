@@ -23,7 +23,7 @@ The object whose INSERT command is to be executed. This parameter is named entit
 
 See Also
 --------
-[SqlTable<TEntity> Class][2]  
+[SqlTable&lt;TEntity> Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

@@ -1,6 +1,6 @@
 SqlTable.Cast&lt;TEntity> Method
 ================================
-Casts the current [SqlTable][1] to the generic [SqlTable<TEntity>][2] instance.
+Casts the current [SqlTable][1] to the generic [SqlTable&lt;TEntity>][2] instance.
 
 **Namespace:** [DbExtensions][3]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -22,7 +22,7 @@ The type of the entity.
 
 ### Return Value
 Type: [SqlTable][2]&lt;**TEntity**>  
-The [SqlTable<TEntity>][2] instance for TEntity.
+The [SqlTable&lt;TEntity>][2] instance for TEntity.
 
 Exceptions
 ----------

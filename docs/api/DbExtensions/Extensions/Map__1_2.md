@@ -52,7 +52,7 @@ See Also
 --------
 [Extensions Class][10]  
 [DbExtensions Namespace][1]  
-[Extensions.Map<TResult>(IDbCommand, Func<IDataRecord, TResult>, TextWriter)][11]  
+[Extensions.Map&lt;TResult>(IDbCommand, Func&lt;IDataRecord, TResult>, TextWriter)][11]  
 
 [1]: ../README.md
 [2]: http://msdn.microsoft.com/en-us/library/c790zwhc

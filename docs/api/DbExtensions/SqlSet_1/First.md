@@ -26,7 +26,7 @@ Exception                      | Condition
 
 See Also
 --------
-[SqlSet<TResult> Class][2]  
+[SqlSet&lt;TResult> Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
