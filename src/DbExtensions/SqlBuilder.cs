@@ -1081,49 +1081,6 @@ namespace DbExtensions {
    public static class SQL {
 
       /// <summary>
-      /// Creates and returns a new <see cref="SqlBuilder"/>.
-      /// </summary>
-      /// <returns>A new <see cref="SqlBuilder"/>.</returns>
-      /// <seealso cref="SqlBuilder()"/>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Use SqlBuilder constructor instead.")]
-      public static SqlBuilder ctor() {
-         return new SqlBuilder();
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlBuilder"/> initialized with
-      /// <paramref name="sql"/>.
-      /// </summary>
-      /// <param name="sql">The SQL string.</param>
-      /// <returns>
-      /// A new <see cref="SqlBuilder"/> initialized with <paramref name="sql"/>.
-      /// </returns>
-      /// <seealso cref="SqlBuilder(string)"/>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Use SqlBuilder constructor instead.")]
-      public static SqlBuilder ctor(string sql) {
-         return new SqlBuilder(sql);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlBuilder"/> initialized with
-      /// <paramref name="format"/> and <paramref name="args"/>.
-      /// </summary>
-      /// <param name="format">The SQL format string.</param>
-      /// <param name="args">The array of parameters.</param>
-      /// <returns>
-      /// A new <see cref="SqlBuilder"/> initialized with
-      /// <paramref name="format"/> and <paramref name="args"/>.
-      /// </returns>
-      /// <seealso cref="SqlBuilder(string, object[])"/>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Use SqlBuilder constructor instead.")]
-      public static SqlBuilder ctor(string format, params object[] args) {
-         return new SqlBuilder(format, args);
-      }
-
-      /// <summary>
       /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
       /// appending the WITH clause using the provided <paramref name="body"/>.
       /// </summary>

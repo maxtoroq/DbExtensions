@@ -184,17 +184,6 @@ namespace DbExtensions {
          table.Insert(entity, deep);
       }
 
-      /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all its
-      /// one-to-many associations.
-      /// </summary>
-      /// <param name="entity">The entity whose INSERT command is to be executed.</param>
-      [Obsolete("Please use Insert(TEntity, Boolean) instead.")]
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public void InsertDeep(object entity) {
-         table.InsertDeep(entity);
-      }
-
       void ISqlTable.InsertDescendants(object entity) {
          table.InsertDescendants(entity);
       }
@@ -327,33 +316,6 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="id">The primary key value.</param>
-      [Obsolete("Please use DeleteKey(Object) instead.")]
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public void DeleteById(object id) {
-         table.DeleteById(id);
-      }
-
-      /// <summary>
-      /// Executes a DELETE command for the entity
-      /// whose primary key matches the <paramref name="id"/> parameter,
-      /// using the provided <paramref name="conflictPolicy"/>.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
-      /// <param name="conflictPolicy">
-      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
-      /// </param>
-      [Obsolete("Please use DeleteKey(Object, ConcurrencyConflictPolicy) instead.")]
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
-         table.DeleteById(id, conflictPolicy);
-      }
-
-      /// <summary>
-      /// Executes a DELETE command for the entity
-      /// whose primary key matches the <paramref name="id"/> parameter,
-      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
       public void DeleteKey(object id) {
          table.DeleteKey(id);
       }
@@ -443,17 +405,6 @@ namespace DbExtensions {
       /// <returns>true if the primary key value exists in the database; otherwise false.</returns>
       public bool ContainsKey(object id) {
          return table.ContainsKey(id);
-      }
-
-      /// <summary>
-      /// Sets all mapped members of <paramref name="entity"/> to their default database values.
-      /// </summary>
-      /// <param name="entity">The entity whose members are to be set to their default values.</param>
-      /// <seealso cref="DbConnection.GetSchema(string, string[])"/>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("This method will be removed in the next major version.")]
-      public void Initialize(object entity) {
-         table.Initialize(entity);
       }
 
       /// <summary>
@@ -616,17 +567,6 @@ namespace DbExtensions {
 
             tx.Commit();
          }
-      }
-
-      /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all its
-      /// one-to-many associations.
-      /// </summary>
-      /// <param name="entity">The entity whose INSERT command is to be executed.</param>
-      [Obsolete("Please use Insert(TEntity, Boolean) instead.")]
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public void InsertDeep(TEntity entity) {
-         Insert(entity, deep: true);
       }
 
       void InsertDescendants(TEntity entity) {
@@ -920,33 +860,6 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="id">The primary key value.</param>
-      [Obsolete("Please use DeleteKey(Object) instead.")]
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public void DeleteById(object id) {
-         DeleteKey(id);
-      }
-
-      /// <summary>
-      /// Executes a DELETE command for the entity
-      /// whose primary key matches the <paramref name="id"/> parameter,
-      /// using the provided <paramref name="conflictPolicy"/>.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
-      /// <param name="conflictPolicy">
-      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
-      /// </param>
-      [Obsolete("Please use DeleteKey(Object, ConcurrencyConflictPolicy) instead.")]
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
-         DeleteKey(id, conflictPolicy);
-      }
-
-      /// <summary>
-      /// Executes a DELETE command for the entity
-      /// whose primary key matches the <paramref name="id"/> parameter,
-      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
       public void DeleteKey(object id) {
          DeleteKey(id, this.db.Configuration.DeleteConflictPolicy);
       }
@@ -1155,69 +1068,6 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Sets all mapped members of <paramref name="entity"/> to their default database values.
-      /// </summary>
-      /// <param name="entity">The entity whose members are to be set to their default values.</param>
-      /// <seealso cref="DbConnection.GetSchema(string, string[])"/>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("This method will be removed in the next major version.")]
-      public void Initialize(TEntity entity) {
-
-         if (entity == null) throw new ArgumentNullException("entity");
-
-         DbConnection conn = this.db.Connection;
-         string tableName = metaType.Table.TableName;
-         const string collectionName = "Columns";
-
-         using (this.db.EnsureConnectionOpen()) {
-
-            DataTable schema = conn.GetSchema(collectionName, new string[4] { conn.Database, null, tableName, null });
-
-            if (schema.Rows.Count == 0)
-               // MySQL Connector/NET
-               schema = conn.GetSchema(collectionName, new string[4] { null, conn.Database, tableName, null });
-
-            if (schema.Rows.Count == 0)
-               // SQL Server Compact
-               schema = conn.GetSchema(collectionName, new string[4] { null, null, tableName, null });
-
-            if (schema.Rows.Count > 0) {
-
-               SqlBuilder query = new SqlBuilder();
-
-               foreach (DataRow row in schema.Rows) {
-
-                  string defaultExpr = (row["COLUMN_DEFAULT"] ?? "").ToString();
-
-                  if (!String.IsNullOrEmpty(defaultExpr)) {
-
-                     string columnName = (row["COLUMN_NAME"] ?? "").ToString();
-                     MetaDataMember member = (!String.IsNullOrEmpty(columnName)) ?
-                        metaType.PersistentDataMembers.Where(m => !m.IsAssociation && m.MappedName == columnName).SingleOrDefault() :
-                        null;
-
-                     if (member != null)
-                        query.SELECT(String.Concat(defaultExpr, " AS ", QuoteIdentifier(member.Name)));
-                  }
-               }
-
-               if (!query.IsEmpty) {
-
-                  PocoMapper mapper = CreatePocoMapper();
-
-                  object entityObj = (object)entity;
-
-                  this.db.Map<object>(query, r => {
-                     mapper.Load(ref entityObj, r);
-                     return null;
-
-                  }).SingleOrDefault();
-               }
-            }
-         }
-      }
-
-      /// <summary>
       /// Sets all mapped members of <paramref name="entity"/> to their most current persisted value.
       /// </summary>
       /// <param name="entity">The entity to refresh.</param>
@@ -1266,15 +1116,6 @@ namespace DbExtensions {
 
       void ISqlTable.Insert(object entity, bool deep) {
          Insert((TEntity)entity, deep);
-      }
-
-      void ISqlTable.InsertDeep(object entity) {
-
-#pragma warning disable 0618
-
-         InsertDeep((TEntity)entity);
-
-#pragma warning restore 0618
       }
 
       void ISqlTable.InsertDescendants(object entity) {
@@ -1341,24 +1182,6 @@ namespace DbExtensions {
          Delete((TEntity)entity, conflictPolicy);
       }
 
-      void ISqlTable.DeleteById(object id) {
-
-#pragma warning disable 0618
-
-         DeleteById(id);
-
-#pragma warning restore 0618
-      }
-
-      void ISqlTable.DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
-
-#pragma warning disable 0618
-
-         DeleteById(id, conflictPolicy);
-
-#pragma warning restore 0618
-      }
-
       void ISqlTable.DeleteKey(object id) {
          DeleteKey(id);
       }
@@ -1395,15 +1218,6 @@ namespace DbExtensions {
 
       bool ISqlTable.Contains(object entity, bool version) {
          return Contains((TEntity)entity, version);
-      }
-
-      void ISqlTable.Initialize(object entity) {
-
-#pragma warning disable 0618
-
-         Initialize((TEntity)entity);
-
-#pragma warning restore 0618
       }
 
       void ISqlTable.Refresh(object entity) {
@@ -1794,16 +1608,10 @@ namespace DbExtensions {
       void DeleteRange(params object[] entities);
       void DeleteRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy);
 
-      void DeleteById(object id); // deprecated
-      void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy); // deprecated
-      
       object Find(object id);
-      void Initialize(object entity); // deprecated
 
       void Insert(object entity);
       void Insert(object entity, bool deep);
-      
-      void InsertDeep(object entity); // deprecated
       void InsertDescendants(object entity); // internal
       
       void InsertRange(IEnumerable<object> entities);

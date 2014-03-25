@@ -610,24 +610,6 @@ namespace DbExtensions {
          return this.context.CreateCommand(sqlBuilder);
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete]
-      protected virtual IEnumerable Execute(DbCommand command) {
-
-         if (this.resultType == null) {
-#if NET35
-            throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
-#else
-            return command.Map(this.Log);
-#endif
-         }
-
-         return command.Map(resultType, this.Log);
-      }
-
       internal virtual IEnumerable Map() {
 
          SqlBuilder query = GetDefiningQuery(clone: false);
@@ -1353,19 +1335,6 @@ namespace DbExtensions {
          return new SqlSet<TResult>(this, fromSelect);
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete]
-      protected override IEnumerable Execute(DbCommand command) {
-
-         if (this.mapper != null)
-            return command.Map(this.mapper, this.Log);
-
-         return command.Map<TResult>(this.Log);
-      }
-
       internal override IEnumerable Map() {
 
          SqlBuilder query = GetDefiningQuery(clone: false);
@@ -1780,114 +1749,6 @@ namespace DbExtensions {
       /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
       public static SqlSet<TResult> From<TResult>(this DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, TextWriter logger) {
-         return new SqlSet<TResult>(definingQuery, mapper, connection, logger);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From(SqlBuilder) instead.")]
-      public static SqlSet Set(this DbConnection connection, SqlBuilder definingQuery) {
-         return new SqlSet(definingQuery, connection);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query and logger.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From(SqlBuilder, TextWriter) instead.")]
-      public static SqlSet Set(this DbConnection connection, SqlBuilder definingQuery, TextWriter logger) {
-         return new SqlSet(definingQuery, connection, logger);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query and result type.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From(SqlBuilder, Type) instead.")]
-      public static SqlSet Set(this DbConnection connection, SqlBuilder definingQuery, Type resultType) {
-         return new SqlSet(definingQuery, resultType, connection);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query, result type and logger.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From(SqlBuilder, Type, TextWriter) instead.")]
-      public static SqlSet Set(this DbConnection connection, SqlBuilder definingQuery, Type resultType, TextWriter logger) {
-         return new SqlSet(definingQuery, resultType, connection, logger);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From<TResult>(SqlBuilder) instead.")]
-      public static SqlSet<TResult> Set<TResult>(this DbConnection connection, SqlBuilder definingQuery) {
-         return new SqlSet<TResult>(definingQuery, connection);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and logger.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From<TResult>(SqlBuilder, TextWriter) instead.")]
-      public static SqlSet<TResult> Set<TResult>(this DbConnection connection, SqlBuilder definingQuery, TextWriter logger) {
-         return new SqlSet<TResult>(definingQuery, connection, logger);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and mapper.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From<TResult>(SqlBuilder, Func<IDataRecord, TResult>) instead.")]
-      public static SqlSet<TResult> Set<TResult>(this DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
-         return new SqlSet<TResult>(definingQuery, mapper, connection);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query, mapper and logger.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From<TResult>(SqlBuilder, Func<IDataRecord, TResult>, TextWriter) instead.")]
-      public static SqlSet<TResult> Set<TResult>(this DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, TextWriter logger) {
          return new SqlSet<TResult>(definingQuery, mapper, connection, logger);
       }
    }
