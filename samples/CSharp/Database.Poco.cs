@@ -1,32 +1,25 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using System.Xml.XPath;
 using DbExtensions;
 using Samples.CSharp.Northwind;
 
 namespace Samples.CSharp {
 
-   public class ExtensionMethodsSamples {
+   public class DatabasePocoSamples {
 
-      readonly DbConnection conn;
-      readonly TextWriter log;
+      readonly Database db;
 
-      public ExtensionMethodsSamples(DbConnection conn, TextWriter log) {
-         this.conn = conn;
-         this.log = log;
-      }
+      public DatabasePocoSamples(string connectionString, TextWriter log) {
 
-      public IEnumerable<Product> StaticQuery() { 
-      
-         return conn
-            .CreateCommand("SELECT * FROM Products WHERE ProductID = {0}", 1)
-            .Map<Product>(log);
+         this.db = new Database(connectionString) {
+            Configuration = { 
+               Log = log
+            }
+         };
       }
 
       public IEnumerable<Product> SelectWithManyToOne() {
@@ -40,7 +33,7 @@ namespace Samples.CSharp {
             .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID")
             .WHERE("p.ProductID < {0}", 3);
 
-         return conn.Map<Product>(query, log);
+         return db.Map<Product>(query);
       }
 
       public IEnumerable<EmployeeTerritory> SelectWithManyToOneNested() {
@@ -54,7 +47,7 @@ namespace Samples.CSharp {
             .LEFT_JOIN("Region r ON t.RegionID = r.RegionID")
             .WHERE("et.EmployeeID < {0}", 3);
 
-         return conn.Map<EmployeeTerritory>(query, log);
+         return db.Map<EmployeeTerritory>(query);
       }
 
       public IEnumerable AnnonymousType() {
@@ -64,10 +57,10 @@ namespace Samples.CSharp {
             .FROM("Products p")
             .WHERE("p.ProductID < {0}", 3);
 
-         return conn.Map(query, r => new {
+         return db.Map(query, r => new {
             ProductID = r.GetInt32(0),
             ProductName = r.GetStringOrNull(1)
-         }, log);
+         });
       }
 
       public IEnumerable<Product> MappingCalculatedColumn() {
@@ -78,7 +71,7 @@ namespace Samples.CSharp {
             .WHERE("p.ProductID < {0}", 3)
             .ORDER_BY("ValueInStock");
 
-         return conn.Map<Product>(query, log);
+         return db.Map<Product>(query);
       }
 
       public MappingToConstructorArgumentsSample MappingToConstructorArguments() {
@@ -88,7 +81,8 @@ namespace Samples.CSharp {
             ._("'http://example.com' AS Url$1")
             ._("15.5 AS Price$1, 'USD' AS Price$2");
 
-         return conn.Map<MappingToConstructorArgumentsSample>(query, log).Single();
+         return db.Map<MappingToConstructorArgumentsSample>(query)
+            .Single();
       }
 
       public MappingToConstructorArgumentsSample MappingToConstructorArgumentsNested() {
@@ -98,17 +92,8 @@ namespace Samples.CSharp {
             ._("'http://example.com' AS '2$1'")
             ._("15.5 AS '3$1', 'USD' AS '3$2'");
 
-         return conn.Map<MappingToConstructorArgumentsSample>(query, log).Single();
-      }
-
-      public bool Exists() {
-
-         bool result = conn.Exists(SQL
-            .SELECT("ProductID")
-            .FROM("Products")
-            .WHERE("ProductID = 1"));
-
-         return result;
+         return db.Map<MappingToConstructorArgumentsSample>(query)
+            .Single();
       }
 
       public void Xml() {
@@ -129,10 +114,11 @@ namespace Samples.CSharp {
             TypeAnnotation = XmlTypeAnnotation.XmlSchema
          };
 
-         using (XmlReader reader = conn.MapXml(query, settings, log)) {
-            using (XmlWriter writer = XmlWriter.Create(log, new XmlWriterSettings { Indent = true })) {
-               while (!reader.EOF)
+         using (XmlReader reader = db.MapXml(query, settings)) {
+            using (XmlWriter writer = XmlWriter.Create(db.Configuration.Log, new XmlWriterSettings { Indent = true })) {
+               while (!reader.EOF) {
                   writer.WriteNode(reader, defattr: true);
+               }
             }
          }
       }
@@ -148,7 +134,7 @@ namespace Samples.CSharp {
             .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID")
             .WHERE("p.ProductID < {0}", 3);
 
-         return conn.Map(query, log);
+         return db.Map(query);
       }
    }
 
@@ -162,22 +148,22 @@ namespace Samples.CSharp {
          this.Id = id;
       }
 
-      public MappingToConstructorArgumentsSample(int id, Uri url, Money? price) 
+      public MappingToConstructorArgumentsSample(int id, Uri url, Money? price)
          : this(id) {
-         
+
          this.Url = url;
          this.Price = price;
       }
+   }
 
-      public struct Money {
+   public struct Money {
 
-         public readonly decimal Amount;
-         public readonly string Currency;
+      public readonly decimal Amount;
+      public readonly string Currency;
 
-         public Money(decimal amount, string currency) {
-            this.Amount = amount;
-            this.Currency = currency;
-         }
+      public Money(decimal amount, string currency) {
+         this.Amount = amount;
+         this.Currency = currency;
       }
    }
 }

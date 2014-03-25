@@ -2,31 +2,32 @@
 Imports System.Collections.Generic
 Imports System.Diagnostics
 Imports System.IO
-Imports System.Reflection
 Imports System.Transactions
 Imports System.Data.Linq.Mapping
-Imports DbExtensions
 Imports Samples.VisualBasic.Northwind
 
-Public Class DatabaseSamples
-   Implements IDisposable
+Public Class DatabaseMappedSamples
 
    ReadOnly db As NorthwindDatabase
 
-   Public Sub New(ByVal connectionString As String, ByVal mapping As MetaModel, ByVal log As TextWriter)
+   Sub New(ByVal connectionString As String, ByVal mapping As MetaModel, ByVal log As TextWriter)
       Me.db = New NorthwindDatabase(connectionString, mapping)
       Me.db.Configuration.Log = log
    End Sub
 
-   Public Function Find() As Product
-      Return db.Products.Find(1)
-   End Function
-
-   Public Function PredicateOnly() As IEnumerable(Of Product)
+   Function PredicateOnly() As IEnumerable(Of Product)
       Return db.Products.Where("ProductID <= {0}", 7).AsEnumerable()
    End Function
 
-   Public Sub Refresh()
+   Function ContainsKey() As Boolean
+      Return db.Products.ContainsKey(1)
+   End Function
+
+   Function Find() As Product
+      Return db.Products.Find(1)
+   End Function
+
+   Sub Refresh()
 
       Dim product As Product = db.Products.Find(1)
 
@@ -40,31 +41,31 @@ Public Class DatabaseSamples
 
    End Sub
 
-   Public Sub Transactions_AdoNet()
+   Sub Transactions_AdoNet()
 
       Using tx = db.EnsureInTransaction()
-         '' Connection is automatically opened if not open
+         ' Connection is automatically opened if not open
 
          Transactions_DoWork()
 
          tx.Commit()
       End Using
-      '' Connection is closed if wasn't open
+      ' Connection is closed if wasn't open
 
    End Sub
 
-   Public Sub Transactions_TransactionScope()
+   Sub Transactions_TransactionScope()
 
       Using tx As New TransactionScope()
          Using db.EnsureConnectionOpen()
-            '' Open connection if not open
+            ' Open connection if not open
 
             Transactions_DoWork()
 
             tx.Complete()
          End Using
 
-         '' Connection is closed if wasn't open
+         ' Connection is closed if wasn't open
       End Using
    End Sub
 
@@ -83,14 +84,11 @@ Public Class DatabaseSamples
 
       db.Orders.Update(order)
 
+      ' The following line is not needed when cascade delete is configured on the database
       db.OrderDetails.DeleteRange(order.OrderDetails)
+
       db.Orders.Delete(order)
 
    End Sub
 
-   Public Sub Dispose() Implements IDisposable.Dispose
-      Me.db.Dispose()
-   End Sub
-
 End Class
-

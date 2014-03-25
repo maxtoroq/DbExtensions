@@ -23,7 +23,7 @@ using System.Xml;
 
 namespace DbExtensions {
 
-   static partial class Extensions {
+   public static partial class Extensions {
 
       /// <summary>
       /// Maps the results of the <paramref name="command"/> to XML.
@@ -67,54 +67,6 @@ namespace DbExtensions {
       /// <returns>An <see cref="XmlReader"/> object.</returns>
       public static XmlReader MapXml(this IDbCommand command, XmlMappingSettings settings, TextWriter logger) {
          return new XmlMappingReader(command.Map(r => r, logger).GetEnumerator(), settings, (XmlReaderSettings)null);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to XML.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query.</param>
-      /// <returns>An <see cref="XmlReader"/> object.</returns>
-      public static XmlReader MapXml(this DbConnection connection, SqlBuilder query) {
-         return MapXml(connection, query, (XmlMappingSettings)null, (TextWriter)null);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to XML.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>An <see cref="XmlReader"/> object.</returns>
-      public static XmlReader MapXml(this DbConnection connection, SqlBuilder query, TextWriter logger) {
-         return MapXml(connection, query, (XmlMappingSettings)null, logger);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to XML.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query.</param>
-      /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
-      /// <returns>An <see cref="XmlReader"/> object.</returns>
-      public static XmlReader MapXml(this DbConnection connection, SqlBuilder query, XmlMappingSettings settings) {
-         return MapXml(connection, query, settings, (TextWriter)null);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to XML.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query.</param>
-      /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>An <see cref="XmlReader"/> object.</returns>
-      public static XmlReader MapXml(this DbConnection connection, SqlBuilder query, XmlMappingSettings settings, TextWriter logger) {
-         return MapXml(q => connection.CreateCommand(q), query, settings, logger);
       }
 
       internal static XmlReader MapXml(Func<SqlBuilder, IDbCommand> queryToCommand, SqlBuilder query, XmlMappingSettings settings, TextWriter logger) {
@@ -182,7 +134,6 @@ namespace DbExtensions {
    /// Provides settings for SQL to XML mapping.
    /// </summary>
    /// <seealso cref="Extensions.MapXml(IDbCommand, XmlMappingSettings)"/>
-   /// <seealso cref="Extensions.MapXml(DbConnection, SqlBuilder, XmlMappingSettings)"/>
    /// <seealso cref="SqlSet.AsXml(XmlMappingSettings)"/>
    public class XmlMappingSettings {
 

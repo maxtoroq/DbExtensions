@@ -3,8 +3,6 @@
 open System
 open System.Collections
 open System.Collections.Generic
-open System.Data
-open System.Data.Common
 open System.IO
 open System.Linq
 open System.Xml
@@ -30,12 +28,12 @@ type MappingToConstructorArgumentsSample(id : int, url : Uri, price : Nullable<M
 
    new(id) = MappingToConstructorArgumentsSample(id, null, new Nullable<Money>())
 
-type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) = 
-   
-   member this.StaticQuery() =
-      conn
-         .CreateCommand("SELECT * FROM Products WHERE ProductID = {0}", 1)
-         .Map<Product>(log)
+type DatabasePocoSamples(connectionString : string, log : TextWriter) =
+
+   let db = 
+      let db1 = new Database(connectionString) 
+      db1.Configuration.Log <- log
+      db1
 
    member this.SelectWithManyToOne() =
       
@@ -49,7 +47,7 @@ type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) =
             .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID")
             .WHERE("p.ProductID < {0}", 3)
 
-      conn.Map<Product>(query, log)
+      db.Map<Product>(query)
    
    member this.SelectWithManyToOneNested() =
 
@@ -63,7 +61,7 @@ type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) =
             .LEFT_JOIN("Region r ON t.RegionID = r.RegionID")
             .WHERE("et.EmployeeID < {0}", 3)
 
-      conn.Map<EmployeeTerritory>(query, log)
+      db.Map<EmployeeTerritory>(query)
 
    member this.AnnonymousType() =
 
@@ -73,7 +71,7 @@ type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) =
             .FROM("Products p")
             .WHERE("p.ProductID < {0}", 3)
 
-      conn.Map(query, (fun r -> (r.GetInt32(0), r.GetStringOrNull(1))), log)
+      db.Map(query, (fun r -> (r.GetInt32(0), r.GetStringOrNull(1))))
 
    member this.MappingCalculatedColumn() =
 
@@ -84,7 +82,7 @@ type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) =
             .WHERE("p.ProductID < {0}", 3)
             .ORDER_BY("ValueInStock")
 
-      conn.Map<Product>(query, log)
+      db.Map<Product>(query)
    
    member this.MappingToConstructorArguments() =
 
@@ -94,7 +92,8 @@ type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) =
             .SELECT("'http://example.com' AS Url$1")
             .SELECT("15.5 AS Price$1, 'USD' AS Price$2")
 
-      conn.Map<MappingToConstructorArgumentsSample>(query, log).Single()
+      db.Map<MappingToConstructorArgumentsSample>(query)
+        .Single()
 
    member this.MappingToConstructorArgumentsNested() =
 
@@ -104,14 +103,8 @@ type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) =
             .SELECT("'http://example.com' AS '2$1'")
             .SELECT("15.5 AS '3$1', 'USD' AS '3$2'")
 
-      conn.Map<MappingToConstructorArgumentsSample>(query, log).Single()
-
-   member this.Exists() =
-
-      conn.Exists(SQL
-         .SELECT("ProductID")
-         .FROM("Products")
-         .WHERE("ProductID = 1"));
+      db.Map<MappingToConstructorArgumentsSample>(query)
+        .Single()
 
    member this.Xml() =
 
@@ -133,7 +126,7 @@ type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) =
             TypeAnnotation = XmlTypeAnnotation.XmlSchema
          )
 
-      using (conn.MapXml(query, settings, log)) ( fun reader ->
+      using (db.MapXml(query, settings)) ( fun reader ->
          using (XmlWriter.Create(log, new XmlWriterSettings(Indent = true))) ( fun writer ->
             while not reader.EOF do
                writer.WriteNode(reader, defattr = true)
@@ -152,4 +145,4 @@ type ExtensionMethodsSamples(conn : DbConnection, log : TextWriter) =
             .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID")
             .WHERE("p.ProductID < {0}", 3)
 
-      conn.Map(query, log)
+      db.Map(query)

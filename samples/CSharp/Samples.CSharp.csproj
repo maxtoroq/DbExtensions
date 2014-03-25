@@ -39,8 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database.cs" />
-    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Database.Poco.cs" />
+    <Compile Include="Database.Mapped.cs" />
     <Compile Include="Northwind\Category.cs" />
     <Compile Include="Northwind\Customer.cs" />
     <Compile Include="Northwind\CustomerCustomerDemo.cs" />

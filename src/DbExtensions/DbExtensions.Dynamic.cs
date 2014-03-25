@@ -15,16 +15,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Dynamic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace DbExtensions {
 
-   static partial class Extensions {
+   public static partial class Extensions {
 
       /// <summary>
       /// Maps the results of the <paramref name="command"/> to dynamic objects.
@@ -48,32 +45,6 @@ namespace DbExtensions {
          var mapper = new DynamicMapper(logger);
 
          return Map(command, r => (dynamic)mapper.Map(r), logger);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to dynamic objects.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query.</param>
-      /// <returns>The results of the query as dynamic objects.</returns>
-      public static IEnumerable<dynamic> Map(this DbConnection connection, SqlBuilder query) {
-         return Map(connection, query, (TextWriter)null);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to dynamic objects.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as dynamic objects.</returns>
-      public static IEnumerable<dynamic> Map(this DbConnection connection, SqlBuilder query, TextWriter logger) {
-
-         var mapper = new DynamicMapper(logger);
-
-         return Map<dynamic>(q => connection.CreateCommand(q), query, mapper, logger);
       }
    }
 

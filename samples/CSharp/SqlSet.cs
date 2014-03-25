@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
-using System.Linq;
-using System.Text;
 using DbExtensions;
 using Samples.CSharp.Northwind;
 
@@ -12,43 +10,50 @@ namespace Samples.CSharp {
    
    public class SqlSetSamples {
 
-      readonly SqlSet<Product> productSet;
+      readonly SqlSet<Product> products;
 
       public SqlSetSamples(DbConnection conn, TextWriter log) {
-         this.productSet = conn.From<Product>("Products", log);
+
+         var db = new Database(conn) {
+            Configuration = { 
+               Log = log
+            }
+         };
+
+         this.products = db.From<Product>("Products");
       }
 
       public bool AreThereAnyProducts() {
-         return productSet.Any();
+         return products.Any();
       }
 
       public bool DoAllProductsHaveUnitPrice() {
-         return productSet.All("NOT UnitPrice IS NULL");
+         return products.All("NOT UnitPrice IS NULL");
       }
 
       public bool DoSomeProductsAreOutOfStock() {
-         return productSet.Any("UnitsInStock = 0");
+         return products.Any("UnitsInStock = 0");
       }
 
       public int HowManyProductsAreOutOfStock() {
-         return productSet.Count("UnitsInStock = 0");
+         return products.Count("UnitsInStock = 0");
       }
 
       public Product FirstProduct() {
-         return productSet.First();
+         return products.First();
       }
 
       public Product SecondProduct() {
-         return productSet.Skip(1).First();
+         return products.Skip(1).First();
       }
 
       public Product FirstOutOfStockProduct() {
-         return productSet.First("UnitsInStock = 0");
+         return products.First("UnitsInStock = 0");
       }
 
       public IEnumerable Top5ProductsWithLowestStock() {
          
-         return productSet.Where("UnitsInStock > 0")
+         return products.Where("UnitsInStock > 0")
             .OrderBy("UnitsInStock")
             .Take(5)
             .Select(r => new { Name = r.GetString(0), UnitsInStock = r.GetInt16(1) }, "ProductName, UnitsInStock")
@@ -57,13 +62,13 @@ namespace Samples.CSharp {
 
       public IEnumerable<string> NamesOfOutOfStockProducts() {
          
-         return productSet.Where("UnitsInStock = 0")
+         return products.Where("UnitsInStock = 0")
             .Select(r => r.GetString(0), "ProductName")
             .AsEnumerable();
       }
 
       public Product GetSpecificProduct() {
-         return productSet.SingleOrDefault("ProductID = 5");
+         return products.SingleOrDefault("ProductID = 5");
       }
    }
 }

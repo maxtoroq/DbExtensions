@@ -1,33 +1,22 @@
 ﻿Imports System
 Imports System.Collections
 Imports System.Collections.Generic
-Imports System.Data.Common
 Imports System.IO
 Imports System.Linq
-Imports System.Reflection
 Imports System.Xml
 Imports DbExtensions
 Imports Samples.VisualBasic.Northwind
 
-Public Class ExtensionMethodsSamples
+Public Class DatabasePocoSamples
 
-   ReadOnly conn As DbConnection
-   ReadOnly log As TextWriter
+   ReadOnly db As Database
 
-   Public Sub New(ByVal conn As DbConnection, ByVal log As TextWriter)
-      Me.conn = conn
-      Me.log = log
+   Sub New(ByVal connectionString As String, ByVal log As TextWriter)
+      Me.db = New Database(connectionString)
+      Me.db.Configuration.Log = log
    End Sub
 
-   Public Function StaticQuery() As IEnumerable(Of Product)
-
-      Return conn _
-         .CreateCommand("SELECT * FROM Products WHERE ProductID = {0}", 1) _
-         .Map(Of Product)(log)
-
-   End Function
-
-   Public Function SelectWithManyToOne() As IEnumerable(Of Product)
+   Function SelectWithManyToOne() As IEnumerable(Of Product)
 
       Dim query = SQL _
          .SELECT("p.ProductID, p.ProductName, p.CategoryID, s.SupplierID, '' AS MissingProperty") _
@@ -38,11 +27,11 @@ Public Class ExtensionMethodsSamples
          .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID") _
          .WHERE("p.ProductID < {0}", 3)
 
-      Return conn.Map(Of Product)(query, log)
+      Return db.Map(Of Product)(query)
 
    End Function
 
-   Public Function SelectWithManyToOneNested() As IEnumerable(Of EmployeeTerritory)
+   Function SelectWithManyToOneNested() As IEnumerable(Of EmployeeTerritory)
 
       Dim query = SQL _
          .SELECT("et.EmployeeID, et.TerritoryID") _
@@ -53,26 +42,26 @@ Public Class ExtensionMethodsSamples
          .LEFT_JOIN("Region r ON t.RegionID = r.RegionID") _
          .WHERE("et.EmployeeID < {0}", 3)
 
-      Return conn.Map(Of EmployeeTerritory)(query, log)
+      Return db.Map(Of EmployeeTerritory)(query)
 
    End Function
 
-   Public Function AnnonymousType() As IEnumerable
+   Function AnnonymousType() As IEnumerable
 
       Dim query = SQL _
          .SELECT("p.ProductID, p.ProductName") _
          .FROM("Products p") _
          .WHERE("p.ProductID < {0}", 3)
 
-      Return conn.Map(query, Function(r) _
+      Return db.Map(query, Function(r) _
          New With {
             .ProductID = r.GetInt32(0),
             .ProductName = r.GetStringOrNull(1)
-         }, log)
+         })
 
    End Function
 
-   Public Function MappingCalculatedColumn() As IEnumerable(Of Product)
+   Function MappingCalculatedColumn() As IEnumerable(Of Product)
 
       Dim query = SQL _
          .SELECT("p.ProductID, (p.UnitPrice * p.UnitsInStock) AS ValueInStock") _
@@ -80,44 +69,33 @@ Public Class ExtensionMethodsSamples
          .WHERE("p.ProductID < {0}", 3) _
          .ORDER_BY("ValueInStock")
 
-      Return conn.Map(Of Product)(query, log)
+      Return db.Map(Of Product)(query)
 
    End Function
 
-   Public Function MappingToConstructorArguments() As MappingToConstructorArgumentsSample
+   Function MappingToConstructorArguments() As MappingToConstructorArgumentsSample
 
       Dim query = SQL _
          .SELECT("1 AS '1'") _
          .SELECT("'http://example.com' AS Url$1") _
          .SELECT("15.5 AS Price$1, 'USD' AS Price$2")
 
-      Return conn.Map(Of MappingToConstructorArgumentsSample)(query, log).Single()
+      Return db.Map(Of MappingToConstructorArgumentsSample)(query).Single()
 
    End Function
 
-   Public Function MappingToConstructorArgumentsNested() As MappingToConstructorArgumentsSample
+   Function MappingToConstructorArgumentsNested() As MappingToConstructorArgumentsSample
 
       Dim query = SQL _
          .SELECT("1 AS '1'") _
          .SELECT("'http://example.com' AS '2$1'") _
          .SELECT("15.5 AS '3$1', 'USD' AS '3$2'")
 
-      Return conn.Map(Of MappingToConstructorArgumentsSample)(query, log).Single()
+      Return db.Map(Of MappingToConstructorArgumentsSample)(query).Single()
 
    End Function
 
-   Public Function Exists() As Boolean
-
-      Dim result = conn.Exists(SQL _
-         .SELECT("ProductID") _
-         .FROM("Products") _
-         .WHERE("ProductID = 1"))
-
-      Return result
-
-   End Function
-
-   Public Sub Xml()
+   Sub Xml()
 
       Dim query = SQL _
          .SELECT("p.ProductID, p.ProductName") _
@@ -135,10 +113,10 @@ Public Class ExtensionMethodsSamples
          .TypeAnnotation = XmlTypeAnnotation.XmlSchema
       }
 
-      Dim reader = conn.MapXml(query, settings, log)
+      Dim reader = db.MapXml(query, settings)
 
       Using reader
-         Dim writer = XmlWriter.Create(log, New XmlWriterSettings With {.Indent = True})
+         Dim writer = XmlWriter.Create(db.Configuration.Log, New XmlWriterSettings With {.Indent = True})
 
          Using writer
             While (Not reader.EOF)
@@ -149,7 +127,7 @@ Public Class ExtensionMethodsSamples
 
    End Sub
 
-   Public Function Dynamic() As IEnumerable(Of Object)
+   Function Dynamic() As IEnumerable(Of Object)
 
       Dim query = SQL _
          .SELECT("p.ProductID, p.ProductName, p.CategoryID, s.SupplierID") _
@@ -160,37 +138,39 @@ Public Class ExtensionMethodsSamples
          .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID") _
          .WHERE("p.ProductID < {0}", 3)
 
-      Return conn.Map(query, log)
+      Return db.Map(query)
 
    End Function
+
 End Class
 
 Public Class MappingToConstructorArgumentsSample
 
-   Public Property Id As Integer
-   Public Property Url As Uri
-   Public Property Price As Nullable(Of Money)
+   Property Id As Integer
+   Property Url As Uri
+   Property Price As Nullable(Of Money)
 
-   Public Sub New(id As Integer)
+   Sub New(id As Integer)
       Me.Id = id
    End Sub
 
-   Public Sub New(id As Integer, url As Uri, price As Nullable(Of Money))
+   Sub New(id As Integer, url As Uri, price As Nullable(Of Money))
       Me.New(id)
 
       Me.Url = url
       Me.Price = price
    End Sub
 
-   Public Structure Money
-      Public ReadOnly Amount As Decimal
-      Public ReadOnly Currency As String
-
-      Public Sub New(amount As Decimal, currency As String)
-         Me.Amount = amount
-         Me.Currency = currency
-      End Sub
-   End Structure
-
 End Class
 
+Public Structure Money
+
+   ReadOnly Amount As Decimal
+   ReadOnly Currency As String
+
+   Sub New(amount As Decimal, currency As String)
+      Me.Amount = amount
+      Me.Currency = currency
+   End Sub
+
+End Structure

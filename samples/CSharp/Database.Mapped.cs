@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Data.Linq.Mapping;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Transactions;
-using DbExtensions;
 using Samples.CSharp.Northwind;
 
 namespace Samples.CSharp {
 
-   public class DatabaseSamples : IDisposable {
+   public class DatabaseMappedSamples {
 
       readonly NorthwindDatabase db;
 
-      public DatabaseSamples(string connectionString, MetaModel mapping, TextWriter log) {
+      public DatabaseMappedSamples(string connectionString, MetaModel mapping, TextWriter log) {
 
          this.db = new NorthwindDatabase(connectionString, mapping) {
             Configuration = { 
@@ -27,10 +25,12 @@ namespace Samples.CSharp {
          return db.Products.Where("ProductID <= {0}", 7).AsEnumerable();
       }
 
-      public Product Find() {
+      public bool ContainsKey() {
+         return db.Products.ContainsKey(1);
+      }
 
-         Product product = db.Products.Find(1);
-         return product;
+      public Product Find() {
+         return db.Products.Find(1);
       }
 
       public void Refresh() {
@@ -45,7 +45,7 @@ namespace Samples.CSharp {
 
          Debug.Assert(product.ProductName == "Chai");
       }
-
+      
       public void Transactions_AdoNet() {
 
          using (var tx = db.EnsureInTransaction()) {
@@ -72,7 +72,7 @@ namespace Samples.CSharp {
          }
       }
 
-      private void Transactions_DoWork() {
+      void Transactions_DoWork() {
 
          var order = new Order {
             CustomerID = "ALFKI",
@@ -88,12 +88,10 @@ namespace Samples.CSharp {
 
          db.Orders.Update(order);
 
+         // The following line is not needed when cascade delete is configured on the database
          db.OrderDetails.DeleteRange(order.OrderDetails);
-         db.Orders.Delete(order);
-      }
 
-      public void Dispose() {
-         this.db.Dispose();
+         db.Orders.Delete(order);
       }
    }
 }

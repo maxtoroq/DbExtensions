@@ -657,7 +657,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>true if the sequence contains any elements; otherwise, false.</returns>
       public bool Any() {
-         return this.Connection.Exists(CreateCommand(Extensions.ExistsQuery(GetDefiningQuery(clone: false))), this.Log);
+         return this.context.ExistsImpl(GetDefiningQuery(clone: false));
       }
 
       /// <summary>
@@ -727,7 +727,7 @@ namespace DbExtensions {
       /// <returns>The number of elements in the set.</returns>
       /// <exception cref="System.OverflowException">The number of elements is larger than <see cref="Int32.MaxValue"/>.</exception>      
       public int Count() {
-         return this.Connection.Count(CreateCommand(Extensions.CountQuery(GetDefiningQuery(clone: false))), this.Log);
+         return this.context.CountImpl(GetDefiningQuery(clone: false));
       }
 
       /// <summary>
@@ -829,7 +829,7 @@ namespace DbExtensions {
       /// <exception cref="System.OverflowException">The number of elements is larger than <see cref="Int64.MaxValue"/>.</exception>      
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount() {
-         return this.Connection.LongCount(CreateCommand(Extensions.CountQuery(GetDefiningQuery(clone: false))), this.Log);
+         return this.context.LongCountImpl(GetDefiningQuery(clone: false));
       }
 
       /// <summary>
@@ -1593,163 +1593,47 @@ namespace DbExtensions {
 
    public static partial class Extensions {
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided table name.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, string tableName) {
-         return new SqlSet(new string[2] { tableName, null }, (Type)null, connection);
+      internal static int CountImpl(this IConnectionContext context, SqlBuilder query) {
+         return Count(context.CreateCommand(CountQuery(query)), context.Log);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided table name.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, string tableName, TextWriter logger) {
-         return new SqlSet(new string[2] { tableName, null }, (Type)null, connection, logger);
+      internal static long LongCountImpl(this IConnectionContext context, SqlBuilder query) {
+         return LongCount(context.CreateCommand(CountQuery(query)), context.Log);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided table name.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, string tableName, Type resultType) {
-         return new SqlSet(new string[2] { tableName, null }, resultType, connection);
+      static SqlBuilder CountQuery(SqlBuilder query) {
+
+         return new SqlBuilder()
+            .SELECT("COUNT(*)")
+            .FROM("({0}) dbex_count", query);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided table name.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, string tableName, Type resultType, TextWriter logger) {
-         return new SqlSet(new string[2] { tableName, null }, resultType, connection, logger);
+      static int Count(IDbCommand command, TextWriter logger) {
+         return Convert.ToInt32(CountExecute(command, logger), CultureInfo.InvariantCulture);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided table name.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      public static SqlSet<TResult> From<TResult>(this DbConnection connection, string tableName) {
-         return new SqlSet<TResult>(new string[2] { tableName, null }, connection);
+      static long LongCount(IDbCommand command, TextWriter logger) {
+         return Convert.ToInt64(CountExecute(command, logger), CultureInfo.InvariantCulture);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided table name.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      public static SqlSet<TResult> From<TResult>(this DbConnection connection, string tableName, TextWriter logger) {
-         return new SqlSet<TResult>(new string[2] { tableName, null }, connection, logger);
+      static object CountExecute(IDbCommand command, TextWriter logger) {
+         return command.Map(r => r[0], logger).SingleOrDefault() ?? 0;
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, SqlBuilder definingQuery) {
-         return new SqlSet(definingQuery, connection);
+      internal static bool ExistsImpl(this IConnectionContext context, SqlBuilder query) {
+         return Exists(context.CreateCommand(ExistsQuery(query)), context.Log);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query and logger.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, SqlBuilder definingQuery, TextWriter logger) {
-         return new SqlSet(definingQuery, connection, logger);
+      static SqlBuilder ExistsQuery(SqlBuilder query) {
+
+         return new SqlBuilder()
+            .SELECT("(CASE WHEN EXISTS ({0}) THEN 1 ELSE 0 END)", query);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query and result type.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, SqlBuilder definingQuery, Type resultType) {
-         return new SqlSet(definingQuery, resultType, connection);
-      }
+      static bool Exists(IDbCommand command, TextWriter logger) {
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query, result type and logger.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, SqlBuilder definingQuery, Type resultType, TextWriter logger) {
-         return new SqlSet(definingQuery, resultType, connection, logger);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      public static SqlSet<TResult> From<TResult>(this DbConnection connection, SqlBuilder definingQuery) {
-         return new SqlSet<TResult>(definingQuery, connection);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and logger.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      public static SqlSet<TResult> From<TResult>(this DbConnection connection, SqlBuilder definingQuery, TextWriter logger) {
-         return new SqlSet<TResult>(definingQuery, connection, logger);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and mapper.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      public static SqlSet<TResult> From<TResult>(this DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
-         return new SqlSet<TResult>(definingQuery, mapper, connection);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query, mapper and logger.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      public static SqlSet<TResult> From<TResult>(this DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, TextWriter logger) {
-         return new SqlSet<TResult>(definingQuery, mapper, connection, logger);
+         return command.Map(r => Convert.ToInt32(r[0], CultureInfo.InvariantCulture) != 0, logger)
+            .SingleOrDefault();
       }
    }
 

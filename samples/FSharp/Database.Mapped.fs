@@ -1,14 +1,15 @@
 ﻿namespace Samples.FSharp
 
 open System
-open System.IO
+open System.Collections
+open System.Collections.Generic
 open System.Data.Linq.Mapping
-open System.Diagnostics;
-open System.Transactions;
-open DbExtensions
+open System.Diagnostics
+open System.IO
+open System.Transactions
 open Samples.FSharp.Northwind
 
-type DatabaseSamples(connectionString : string, mapping : MetaModel, log : TextWriter) =
+type DatabaseMappedSamples(connectionString : string, mapping : MetaModel, log : TextWriter) =
 
    let db = 
       let db1 = new NorthwindDatabase(connectionString, mapping) 
@@ -18,10 +19,11 @@ type DatabaseSamples(connectionString : string, mapping : MetaModel, log : TextW
    member this.PredicateOnly() =
       db.Products.Where("ProductID <= {0}", 7).AsEnumerable()
 
-   member this.Find() =
+   member this.ContainsKey() =
+      db.Products.ContainsKey(1)
 
-      let product = db.Products.Find(1)
-      product
+   member this.Find() =
+      db.Products.Find(1)
 
    member this.Refresh() =
 
@@ -71,8 +73,7 @@ type DatabaseSamples(connectionString : string, mapping : MetaModel, log : TextW
 
       db.Orders.Update(order)
 
+      // The following line is not needed when cascade delete is configured on the database
       db.OrderDetails.DeleteRange(order.OrderDetails);
-      db.Orders.Delete(order)
 
-   interface IDisposable with
-      override this.Dispose() = db.Dispose()
+      db.Orders.Delete(order)

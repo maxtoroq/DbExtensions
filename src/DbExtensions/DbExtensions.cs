@@ -300,105 +300,6 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Creates and executes a <see cref="DbCommand"/> whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter.
-      /// </summary>
-      /// <param name="connection">The connection to which the command is executed against.</param>
-      /// <param name="commandText">The command text.</param>
-      /// <returns>The number of affected records.</returns>
-      public static int Execute(this DbConnection connection, string commandText) {
-         return Execute(connection, commandText, (object[])null);
-      }
-
-      /// <summary>
-      /// Creates and executes a <see cref="DbCommand"/> using the provided <paramref name="commandText"/> as a composite format string 
-      /// (as used on <see cref="String.Format(String, Object[])"/>), 
-      /// where the format items are replaced with appropiate parameter names, and the objects in the
-      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection.
-      /// </summary>
-      /// <param name="connection">The connection to which the command is executed against.</param>
-      /// <param name="commandText">The command text.</param>
-      /// <param name="parameters">The parameters to apply to the command text.</param>
-      /// <returns>The number of affected records.</returns>
-      public static int Execute(this DbConnection connection, string commandText, params object[] parameters) {
-         return Execute(connection, CreateCommand(connection, commandText, parameters), (TextWriter)null);
-      }
-
-      internal static int Execute(this IDbConnection connection, IDbCommand command, TextWriter logger) {
-
-         using (connection.EnsureOpen()) {
-            int aff = command.ExecuteNonQuery();
-
-            if (logger != null)
-               logger.WriteLine(command.ToTraceString(aff));
-
-            return aff;
-         }
-      }
-
-      /// <summary>
-      /// Creates and executes a <see cref="DbCommand"/> (whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter) in a new or existing transaction, and
-      /// validates that the affected records value is equal to one before comitting.
-      /// </summary>
-      /// <param name="connection">The connection to which the command is executed against.</param>
-      /// <param name="commandText">The command text.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
-      public static int AffectOne(this DbConnection connection, string commandText) {
-         return CreateCommand(connection, commandText).AffectOne();
-      }
-
-      /// <summary>
-      /// Creates and executes a <see cref="DbCommand"/> (using the provided <paramref name="commandText"/> 
-      /// as a composite format string, as used on <see cref="String.Format(String, Object[])"/>, 
-      /// where the format items are replaced with appropiate parameter names, and the objects in the
-      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection)
-      /// in a new or existing transaction, and validates that the affected records value is equal to one before comitting.
-      /// </summary>
-      /// <param name="connection">The connection to which the command is executed against.</param>
-      /// <param name="commandText">The command text.</param>
-      /// <param name="parameters">The parameters to apply to the command text.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
-      public static int AffectOne(this DbConnection connection, string commandText, params object[] parameters) {
-         return CreateCommand(connection, commandText, parameters).AffectOne();
-      }
-
-      /// <summary>
-      /// Creates and executes a <see cref="DbCommand"/> (whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter) in a new or existing transaction, and
-      /// validates that the affected records value is less or equal to one before comitting.
-      /// </summary>
-      /// <param name="connection">The connection to which the command is executed against.</param>
-      /// <param name="commandText">The non-query command to execute.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
-      public static int AffectOneOrNone(this DbConnection connection, string commandText) {
-         return CreateCommand(connection, commandText).AffectOneOrNone();
-      }
-
-      /// <summary>
-      /// Creates and executes a <see cref="DbCommand"/> (using the provided <paramref name="commandText"/> 
-      /// as a composite format string, as used on <see cref="String.Format(String, Object[])"/>, 
-      /// where the format items are replaced with appropiate parameter names, and the objects in the
-      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection)
-      /// in a new or existing transaction, and validates that the affected records value is less or equal to one before comitting.
-      /// </summary>
-      /// <param name="connection">The connection to which the command is executed against.</param>
-      /// <param name="commandText">The non-query command to execute.</param>
-      /// <param name="parameters">The parameters to apply to the command text.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
-      public static int AffectOneOrNone(this DbConnection connection, string commandText, params object[] parameters) {
-         return CreateCommand(connection, commandText, parameters).AffectOneOrNone();
-      }
-
-      /// <summary>
       /// Executes the <paramref name="command"/> in a new or existing transaction, and
       /// validates the affected records value before comitting.
       /// </summary>
@@ -1163,7 +1064,7 @@ namespace DbExtensions {
          return CreateConnection(out providerName);
       }
 
-      internal static DbConnection CreateConnection(out string providerName) {
+      static DbConnection CreateConnection(out string providerName) {
 
          string defaultConnection = ConfigurationManager.AppSettings[DbExtensions_DefaultConnectionName];
 
@@ -1192,7 +1093,7 @@ namespace DbExtensions {
          return CreateConnection(connectionString, out providerName);
       }
 
-      internal static DbConnection CreateConnection(string connectionString, out string providerName) {
+      static DbConnection CreateConnection(string connectionString, out string providerName) {
 
          if (connectionString == null) throw new ArgumentNullException("connectionString");
 

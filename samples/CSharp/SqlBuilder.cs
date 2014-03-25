@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using DbExtensions;
 
 namespace Samples.CSharp {
@@ -24,7 +21,7 @@ namespace Samples.CSharp {
          return DynamicSql(null, null);
       }
 
-      private SqlBuilder DynamicSql(int? categoryId, int? supplierId) {
+      SqlBuilder DynamicSql(int? categoryId, int? supplierId) {
 
          return SQL
             .SELECT("p.ProductID, p.ProductName")

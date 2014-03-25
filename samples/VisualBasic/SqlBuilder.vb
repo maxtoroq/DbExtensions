@@ -1,24 +1,21 @@
 ﻿Imports System
-Imports System.Collections.Generic
-Imports System.IO
-Imports System.Reflection
 Imports DbExtensions
 
 Public Class SqlBuilderSamples
 
-   Public Function DynamicSql_1() As SqlBuilder
+   Function DynamicSql_1() As SqlBuilder
       Return DynamicSql(2, 3)
    End Function
 
-   Public Function DynamicSql_2() As SqlBuilder
+   Function DynamicSql_2() As SqlBuilder
       Return DynamicSql(Nothing, 3)
    End Function
 
-   Public Function DynamicSql_3() As SqlBuilder
+   Function DynamicSql_3() As SqlBuilder
       Return DynamicSql(2, Nothing)
    End Function
 
-   Public Function DynamicSql_4() As SqlBuilder
+   Function DynamicSql_4() As SqlBuilder
       Return DynamicSql(Nothing, Nothing)
    End Function
 
@@ -34,8 +31,7 @@ Public Class SqlBuilderSamples
 
    End Function
 
-
-   Public Function [Or]() As SqlBuilder
+   Function [Or]() As SqlBuilder
 
       Dim parameters()() As Integer = {New Integer() {1, 2}, New Integer() {3, 4}}
 
@@ -48,7 +44,7 @@ Public Class SqlBuilderSamples
 
    End Function
 
-   Public Function Subquery() As SqlBuilder
+   Function Subquery() As SqlBuilder
 
       Return SQL _
          .SELECT("o.OrderID, o.CustomerID, ({0}) AS TotalItems", SQL _
@@ -63,7 +59,7 @@ Public Class SqlBuilderSamples
    ''' If there's a large chunk of the query that is static you can pass it to the
    ''' constructor and extend it from there.
    ''' </remarks>
-   Public Function ExtendRawSql() As SqlBuilder
+   Function ExtendRawSql() As SqlBuilder
 
       Return New SqlBuilder(
          "SELECT ProductID, ProductName" &
@@ -72,7 +68,7 @@ Public Class SqlBuilderSamples
 
    End Function
 
-   Public Function ArrayArgument() As SqlBuilder
+   Function ArrayArgument() As SqlBuilder
 
       Dim range = New Integer() {1, 2, 3}
 
@@ -88,7 +84,7 @@ Public Class SqlBuilderSamples
 
    End Function
 
-   Public Function Insert() As SqlBuilder
+   Function Insert() As SqlBuilder
 
       Return SQL _
          .INSERT_INTO("Products(ProductName, UnitPrice, CategoryID)") _
@@ -96,7 +92,7 @@ Public Class SqlBuilderSamples
 
    End Function
 
-   Public Function Update() As SqlBuilder
+   Function Update() As SqlBuilder
 
       Return SQL _
          .UPDATE("Products") _
@@ -105,7 +101,7 @@ Public Class SqlBuilderSamples
 
    End Function
 
-   Public Function UpdateWithSubquery() As SqlBuilder
+   Function UpdateWithSubquery() As SqlBuilder
 
       Return SQL _
          .UPDATE("Products p") _
@@ -117,7 +113,7 @@ Public Class SqlBuilderSamples
 
    End Function
 
-   Public Function Delete() As SqlBuilder
+   Function Delete() As SqlBuilder
 
       Return SQL _
          .DELETE_FROM("Products") _
@@ -131,7 +127,7 @@ Public Class SqlBuilderSamples
    ''' WHERE (((Products.Discontinued)=0))
    ''' </summary>
    ''' <remarks>Northwind.Alphabetical list of products</remarks>
-   Public Function AlphabeticalListOfProducts() As SqlBuilder
+   Function AlphabeticalListOfProducts() As SqlBuilder
 
       Return SQL _
          .SELECT("Products.*, Categories.CategoryName") _
@@ -148,7 +144,7 @@ Public Class SqlBuilderSamples
    ''' FROM Suppliers
    ''' </summary>
    ''' <remarks>Northwind.Customer and Suppliers by City</remarks>
-   Public Function CustomersAndSuppliersByCity() As SqlBuilder
+   Function CustomersAndSuppliersByCity() As SqlBuilder
 
       Return SQL _
          .SELECT("City, CompanyName, ContactName, 'Customers' AS Relationship") _
@@ -165,7 +161,7 @@ Public Class SqlBuilderSamples
    ''' WHERE Products.UnitPrice > (SELECT AVG(UnitPrice) From Products)
    ''' </summary>
    ''' <remarks>Northwind.Products Above Average Price</remarks>
-   Public Function ProductsAboveAveragePrice() As SqlBuilder
+   Function ProductsAboveAveragePrice() As SqlBuilder
 
       Return SQL _
          .SELECT("Products.ProductName, Products.UnitPrice") _
@@ -187,7 +183,7 @@ Public Class SqlBuilderSamples
    ''' GROUP BY Categories.CategoryName, Products.ProductName
    ''' </summary>
    ''' <remarks>Northwind.Product Sales for 1997</remarks>
-   Public Function ProductSalesFor1997() As SqlBuilder
+   Function ProductSalesFor1997() As SqlBuilder
 
       Return SQL _
          .SELECT("Categories.CategoryName, Products.ProductName, Sum(CONVERT(money,(""Order Details"".UnitPrice*Quantity*(1-Discount)/100))*100) AS ProductSales") _
@@ -199,4 +195,3 @@ Public Class SqlBuilderSamples
    End Function
 
 End Class
-

@@ -14,8 +14,9 @@ namespace DbExtensions.Tests.Mapping {
       [TestMethod, ExpectedException(typeof(ArgumentException))]
       public void Constructor_Parameters_Not_Allowed() {
 
-         var value = conn.Map(SQL
+         var value = conn.CreateCommand(SQL
             .SELECT("'foo' AS '1'"))
+            .Map()
             .Single();
       }
    }

@@ -46,10 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Northwind.fs" />
-    <Compile Include="Database.fs" />
-    <Compile Include="ExtensionMethods.fs" />
     <Compile Include="SqlBuilder.fs" />
     <Compile Include="SqlSet.fs" />
+    <Compile Include="Database.Mapped.fs" />
+    <Compile Include="Database.Poco.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DbExtensions\DbExtensions.csproj">

@@ -1554,6 +1554,8 @@ namespace DbExtensions {
             .WHERE(QuoteIdentifier(metaType.IdentityMembers[0].MappedName) + " = {0}", id);
       }
 
+      #region Object Members
+
       /// <summary>
       /// Returns whether the specified object is equal to the current object.
       /// </summary>
@@ -1591,6 +1593,8 @@ namespace DbExtensions {
       public override string ToString() {
          return base.ToString();
       }
+
+      #endregion
    }
 
    interface ISqlTable {

@@ -303,7 +303,7 @@ namespace DbExtensions {
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <returns>The number of affected records.</returns>
       public int Execute(SqlBuilder nonQuery) {
-         return this.Connection.Execute(CreateCommand(nonQuery), this.Log);
+         return Execute(CreateCommand(nonQuery));
       }
 
       /// <summary>
@@ -313,7 +313,7 @@ namespace DbExtensions {
       /// <param name="commandText">The command text.</param>
       /// <returns>The number of affected records.</returns>
       public int Execute(string commandText) {
-         return Execute(commandText, (object[])null);
+         return Execute(CreateCommand(commandText));
       }
 
       /// <summary>
@@ -326,7 +326,19 @@ namespace DbExtensions {
       /// <param name="parameters">The parameters to apply to the command text.</param>
       /// <returns>The number of affected records.</returns>
       public int Execute(string commandText, params object[] parameters) {
-         return this.Connection.Execute(CreateCommand(commandText, parameters), this.Log);
+         return Execute(CreateCommand(commandText, parameters));
+      }
+
+      int Execute(IDbCommand command) {
+
+         using (EnsureConnectionOpen()) {
+            
+            int aff = command.ExecuteNonQuery();
+
+            LogLine(command.ToTraceString(aff));
+
+            return aff;
+         }
       }
 
       /// <summary>
@@ -482,7 +494,7 @@ namespace DbExtensions {
       /// <param name="query">The query whose existance is to be checked.</param>
       /// <returns>true if <paramref name="query"/> contains any rows; otherwise, false.</returns>
       public bool Exists(SqlBuilder query) {
-         return this.Connection.Exists(CreateCommand(Extensions.ExistsQuery(query)), this.Log);
+         return this.ExistsImpl(query);
       }
 
       /// <summary>
@@ -490,9 +502,8 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="query">The query whose count is to be computed.</param>
       /// <returns>The number of results the <paramref name="query"/> would return.</returns>
-      /// <seealso cref="Extensions.Count(DbConnection, SqlBuilder)"/>
       public int Count(SqlBuilder query) {
-         return this.Connection.Count(CreateCommand(Extensions.CountQuery(query)), this.Log);
+         return this.CountImpl(query);
       }
 
       /// <summary>
@@ -500,10 +511,9 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="query">The query whose count is to be computed.</param>
       /// <returns>The number of results the <paramref name="query"/> would return.</returns>
-      /// <seealso cref="Extensions.LongCount(DbConnection, SqlBuilder)"/>
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount(SqlBuilder query) {
-         return this.Connection.LongCount(CreateCommand(Extensions.CountQuery(query)), this.Log);
+         return this.LongCountImpl(query);
       }
 
       // Sets
@@ -737,8 +747,9 @@ namespace DbExtensions {
 
       internal void LogLine(string message) {
 
-         if (this.Log != null)
+         if (this.Log != null) {
             this.Log.WriteLine(message);
+         }
       }
 
       MetaType GetMetaType(Type entityType) {
