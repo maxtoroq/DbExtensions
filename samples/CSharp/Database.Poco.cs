@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using DbExtensions;
+using DbExtensions.Xml;
 using Samples.CSharp.Northwind;
 
 namespace Samples.CSharp {

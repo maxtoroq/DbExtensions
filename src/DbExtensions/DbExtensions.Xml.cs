@@ -21,9 +21,13 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 
-namespace DbExtensions {
+namespace DbExtensions.Xml {
 
-   public static partial class Extensions {
+   /// <summary>
+   /// Extends <see cref="IDbCommand"/>, <see cref="SqlSet"/> and <see cref="Database"/>
+   /// with methods for mapping the result of SQL queries to XML.
+   /// </summary>
+   public static class XmlExtensions {
 
       /// <summary>
       /// Maps the results of the <paramref name="command"/> to XML.
@@ -69,7 +73,7 @@ namespace DbExtensions {
          return new XmlMappingReader(command.Map(r => r, logger).GetEnumerator(), settings, (XmlReaderSettings)null);
       }
 
-      internal static XmlReader MapXml(Func<SqlBuilder, IDbCommand> queryToCommand, SqlBuilder query, XmlMappingSettings settings, TextWriter logger) {
+      static XmlReader MapXml(Func<SqlBuilder, IDbCommand> queryToCommand, SqlBuilder query, XmlMappingSettings settings, TextWriter logger) {
 
          if (query.HasIgnoredColumns) {
 
@@ -84,57 +88,56 @@ namespace DbExtensions {
 
          return MapXml(queryToCommand(query), settings, logger);
       }
-   }
-
-   partial class SqlSet {
 
       /// <summary>
       /// Returns an <see cref="XmlReader"/> object that provides an XML view of the set's data. 
       /// </summary>
+      /// <param name="set">The set.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
-      public XmlReader AsXml() {
-         return AsXml((XmlMappingSettings)null);
+      public static XmlReader AsXml(this SqlSet set) {
+         return AsXml(set, (XmlMappingSettings)null);
       }
 
       /// <summary>
       /// Returns an <see cref="XmlReader"/> object that provides an XML view of the set's data. 
       /// </summary>
+      /// <param name="set">The set.</param>
       /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
-      public XmlReader AsXml(XmlMappingSettings settings) {
-         return Extensions.MapXml(q => CreateCommand(q), GetDefiningQuery(), settings, this.Log);
-      }
-   }
-
-   partial class Database {
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to XML.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="query">The query.</param>
-      /// <returns>An <see cref="XmlReader"/> object.</returns>
-      public XmlReader MapXml(SqlBuilder query) {
-         return MapXml(query, (XmlMappingSettings)null);
+      public static XmlReader AsXml(this SqlSet set, XmlMappingSettings settings) {
+         return MapXml(q => set.CreateCommand(q), set.GetDefiningQuery(), settings, set.Log);
       }
 
       /// <summary>
       /// Maps the results of the <paramref name="query"/> to XML.
       /// The query is deferred-executed.
       /// </summary>
+      /// <param name="database">The database.</param>
+      /// <param name="query">The query.</param>
+      /// <returns>An <see cref="XmlReader"/> object.</returns>
+      public static XmlReader MapXml(this Database database, SqlBuilder query) {
+         return MapXml(database, query, (XmlMappingSettings)null);
+      }
+
+      /// <summary>
+      /// Maps the results of the <paramref name="query"/> to XML.
+      /// The query is deferred-executed.
+      /// </summary>
+      /// <param name="database">The database.</param>
       /// <param name="query">The query.</param>
       /// <param name="settings">An <see cref="XmlMappingSettings"/> object that customizes the mapping.</param>
       /// <returns>An <see cref="XmlReader"/> object.</returns>
-      public XmlReader MapXml(SqlBuilder query, XmlMappingSettings settings) {
-         return Extensions.MapXml(q => CreateCommand(q), query, settings, this.Log);
+      public static XmlReader MapXml(this Database database, SqlBuilder query, XmlMappingSettings settings) {
+         return MapXml(q => database.CreateCommand(q), query, settings, database.Configuration.Log);
       }
    }
 
    /// <summary>
    /// Provides settings for SQL to XML mapping.
    /// </summary>
-   /// <seealso cref="Extensions.MapXml(IDbCommand, XmlMappingSettings)"/>
-   /// <seealso cref="SqlSet.AsXml(XmlMappingSettings)"/>
+   /// <seealso cref="XmlExtensions.MapXml(IDbCommand, XmlMappingSettings)"/>
+   /// <seealso cref="XmlExtensions.MapXml(Database, SqlBuilder, XmlMappingSettings)"/>
+   /// <seealso cref="XmlExtensions.AsXml(SqlSet, XmlMappingSettings)"/>
    public class XmlMappingSettings {
 
       internal static readonly XmlMappingSettings Defaults = new XmlMappingSettings(defaultsCtor: true);

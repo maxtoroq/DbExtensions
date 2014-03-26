@@ -5,6 +5,7 @@ Imports System.IO
 Imports System.Linq
 Imports System.Xml
 Imports DbExtensions
+Imports DbExtensions.Xml
 Imports Samples.VisualBasic.Northwind
 
 Public Class DatabasePocoSamples

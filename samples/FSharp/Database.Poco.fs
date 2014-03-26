@@ -7,6 +7,7 @@ open System.IO
 open System.Linq
 open System.Xml
 open DbExtensions
+open DbExtensions.Xml
 open Samples.FSharp.Northwind
 
 type Money =
