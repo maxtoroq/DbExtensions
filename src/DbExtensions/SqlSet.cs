@@ -85,18 +85,8 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <param name="connection">The database connection.</param>
-      public SqlSet(SqlBuilder definingQuery, DbConnection connection) 
-         : this(definingQuery, connection, (TextWriter)null) { }
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="SqlSet"/> class
-      /// using the provided defining query, connection and logger.
-      /// </summary>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="connection">The database connection.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      public SqlSet(SqlBuilder definingQuery, DbConnection connection, TextWriter logger)
-         : this(definingQuery, (Type)null, connection, logger) { }
+      public SqlSet(SqlBuilder definingQuery, DbConnection connection)
+         : this(definingQuery, (Type)null, connection) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlSet"/> class
@@ -114,22 +104,11 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <param name="resultType">The type of objects to map the results to.</param>
       /// <param name="connection">The database connection.</param>
-      public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection) 
-         : this(definingQuery, resultType, connection, (TextWriter)null) { }
+      public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection)
+         : this(definingQuery, resultType, connection, adoptQuery: false) { }
 
-      /// <summary>
-      /// Initializes a new instance of the <see cref="SqlSet"/> class
-      /// using the provided defining query, result type, connection and logger.
-      /// </summary>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <param name="connection">The database connection.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection, TextWriter logger)
-         : this(definingQuery, resultType, connection, logger, adoptQuery: false) { }
-
-      internal SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection, TextWriter logger, bool adoptQuery) 
-         : this(definingQuery, resultType, new SimpleConnectionContext(connection, logger), adoptQuery) { }
+      internal SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection, bool adoptQuery) 
+         : this(definingQuery, resultType, new SimpleConnectionContext(connection), adoptQuery) { }
 
       internal SqlSet(SqlBuilder definingQuery, Type resultType, IConnectionContext context, bool adoptQuery) {
 
@@ -171,9 +150,6 @@ namespace DbExtensions {
 
          this.resultType = resultType;
       }
-
-      internal SqlSet(string[] fromSelect, Type resultType, DbConnection connection, TextWriter logger = null)
-         : this(fromSelect, resultType, new SimpleConnectionContext(connection, logger)) { }
 
       internal SqlSet(string[] fromSelect, Type resultType, IConnectionContext context) {
 
@@ -1221,16 +1197,6 @@ namespace DbExtensions {
       public SqlSet(SqlBuilder definingQuery, DbConnection connection) 
          : base(definingQuery, typeof(TResult), connection) { }
 
-      /// <summary>
-      /// Initializes a new instance of the <see cref="SqlSet&lt;TResult>"/> class
-      /// using the provided defining query, connection and logger.
-      /// </summary>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="connection">The database connection.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      public SqlSet(SqlBuilder definingQuery, DbConnection connection, TextWriter logger)
-         : base(definingQuery, typeof(TResult), connection, logger) { }
-
       internal SqlSet(SqlBuilder definingQuery, IConnectionContext context, bool adoptQuery)
          : base(definingQuery, typeof(TResult), context, adoptQuery) { }
 
@@ -1250,19 +1216,8 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
       /// <param name="connection">The database connection.</param>
-      public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, DbConnection connection) 
-         : this(definingQuery, mapper, connection, (TextWriter)null) { }
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="SqlSet&lt;TResult>"/> class
-      /// using the provided defining query, mapper, connection and logger.
-      /// </summary>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <param name="connection">The database connection.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, DbConnection connection, TextWriter logger)
-         : base(definingQuery, typeof(TResult), connection, logger) {
+      public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, DbConnection connection)
+         : base(definingQuery, typeof(TResult), connection) {
 
          if (mapper == null) throw new ArgumentNullException("mapper");
 
@@ -1298,9 +1253,6 @@ namespace DbExtensions {
 
          this.mapper = mapper;
       }
-
-      internal SqlSet(string[] fromSelect, DbConnection connection, TextWriter logger = null)
-         : base(fromSelect, typeof(TResult), new SimpleConnectionContext(connection, logger)) { }
 
       internal SqlSet(string[] fromSelect, IConnectionContext context)
          : base(fromSelect, typeof(TResult), context) { }
