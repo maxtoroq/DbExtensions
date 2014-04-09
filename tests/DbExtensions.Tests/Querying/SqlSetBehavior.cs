@@ -296,6 +296,16 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
+      [TestMethod]
+      public void Dont_Require_Type_For_Select() {
+
+         dynamic value = db.From(SQL.SELECT("'a' AS foo, 'b' AS bar"))
+            .Select("foo")
+            .Single();
+
+         Assert.AreEqual("a", value.foo);
+      }
+
       bool SqlEquals(SqlSet set, SqlBuilder query) {
          return TestUtil.SqlEquals(set, query);
       }

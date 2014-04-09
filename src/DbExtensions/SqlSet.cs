@@ -939,6 +939,28 @@ namespace DbExtensions {
       }
 
       /// <summary>
+      /// Projects each element of the set into a new form.
+      /// </summary>
+      /// <param name="columnList">The list of columns to select.</param>
+      /// <returns>A new <see cref="SqlSet"/>.</returns>
+      public SqlSet Select(string columnList) {
+         return Select(columnList, null);
+      }
+
+      /// <summary>
+      /// Projects each element of the set into a new form.
+      /// </summary>
+      /// <param name="columnList">The list of columns to select.</param>
+      /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
+      /// <returns>A new <see cref="SqlSet"/>.</returns>
+      public SqlSet Select(string columnList, params object[] parameters) {
+
+         SqlBuilder query = GetDefiningQuery(selectFormat: columnList, args: parameters);
+
+         return CreateSet(query);
+      }
+
+      /// <summary>
       /// The single element of the set.
       /// </summary>
       /// <returns>The single element of the set.</returns>
@@ -1618,6 +1640,8 @@ namespace DbExtensions {
       SqlSet<TResult> Select<TResult>(string columnList, params object[] parameters);
       SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string columnList);
       SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string columnList, params object[] parameters);
+      SqlSet Select(string columnList);
+      SqlSet Select(string columnList, params object[] parameters);
       SqlSet Select(Type resultType, string columnList);
       SqlSet Select(Type resultType, string columnList, params object[] parameters);
       TSource Single();
