@@ -953,7 +953,7 @@ namespace DbExtensions {
 
             MetaDataMember idMember = this.metaType.IdentityMembers[0];
 
-            object[] ids = entities.Select(e => idMember.MemberAccessor.GetBoxedValue(e)).ToArray();
+            object[] ids = entities.Select(e => this.SQL.GetMemberValue(e, idMember)).ToArray();
 
             SqlBuilder sql = this.SQL
                .DELETE_FROM()
@@ -1026,7 +1026,7 @@ namespace DbExtensions {
 
          IDictionary<string, object> predicateValues = predicateMembers.ToDictionary(
             m => m.MappedName,
-            m => m.MemberAccessor.GetBoxedValue(entity)
+            m => this.SQL.GetMemberValue(entity, m)
          );
 
          return Contains(predicateMembers, predicateValues);
@@ -1083,7 +1083,7 @@ namespace DbExtensions {
 
          IDictionary<string, object> predicateValues = metaType.IdentityMembers.ToDictionary(
             m => m.MappedName,
-            m => m.MemberAccessor.GetBoxedValue(entity)
+            m => this.SQL.GetMemberValue(entity, m)
          );
 
          SqlBuilder query = this.SQL.SELECT_FROM(refreshMembers);
@@ -1370,7 +1370,7 @@ namespace DbExtensions {
              where !m.IsAssociation && !m.IsDbGenerated
              select m).ToArray();
 
-         object[] parameters = insertingMembers.Select(m => m.MemberAccessor.GetBoxedValue(entity)).ToArray();
+         object[] parameters = insertingMembers.Select(m => GetMemberValue(entity, m)).ToArray();
 
          var sb = new StringBuilder()
             .Append("INSERT INTO ")
@@ -1443,7 +1443,7 @@ namespace DbExtensions {
 
          IDictionary<string, object> predicateValues = predicateMembers.ToDictionary(
             m => m.MappedName,
-            m => m.MemberAccessor.GetBoxedValue(entity)
+            m => GetMemberValue(entity, m)
          );
 
          var parametersBuffer = new List<object>(updatingMembers.Length + predicateMembers.Length);
@@ -1458,7 +1458,7 @@ namespace DbExtensions {
             if (i > 0) sb.Append(", ");
 
             MetaDataMember member = updatingMembers[i];
-            object value = member.MemberAccessor.GetBoxedValue(entity);
+            object value = GetMemberValue(entity, member);
 
             sb.Append(QuoteIdentifier(member.MappedName))
                .Append(" = {")
@@ -1521,7 +1521,7 @@ namespace DbExtensions {
 
          IDictionary<string, object> predicateValues = predicateMembers.ToDictionary(
             m => m.MappedName,
-            m => m.MemberAccessor.GetBoxedValue(entity)
+            m => GetMemberValue(entity, m)
          );
 
          var parametersBuffer = new List<object>();
@@ -1552,6 +1552,23 @@ namespace DbExtensions {
 
          return DELETE_FROM()
             .WHERE(QuoteIdentifier(metaType.IdentityMembers[0].MappedName) + " = {0}", id);
+      }
+
+      internal object GetMemberValue(TEntity entity, MetaDataMember member) {
+
+         object value = member.MemberAccessor.GetBoxedValue(entity);
+
+         if (value != null
+            && member.DbType != null
+            && (member.Type.IsEnum || (member.Type.IsGenericType 
+               && member.Type.GetGenericTypeDefinition() == typeof(Nullable<>)
+               && Nullable.GetUnderlyingType(member.Type).IsEnum))
+            && member.DbType.IndexOf("char", StringComparison.OrdinalIgnoreCase) > 0) {
+
+            value = Convert.ToString(value, CultureInfo.InvariantCulture);
+         }
+
+         return value;
       }
 
       #region Object Members

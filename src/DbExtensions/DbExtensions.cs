@@ -1975,10 +1975,19 @@ namespace DbExtensions {
 
       static Func<PocoNode, object, object> GetConversionFunction(object value, PocoNode node) {
 
-         if (node.UnderlyingType == typeof(bool)
-            && value.GetType() == typeof(string)) {
+         if (node.UnderlyingType == typeof(bool)) {
 
-            return ConvertToBoolean;
+            if (value.GetType() == typeof(string)) {
+               return ConvertToBoolean;
+            }
+
+         } else if (node.UnderlyingType.IsEnum) {
+
+            if (value.GetType() == typeof(string)) {
+               return ParseEnum;
+            }
+
+            return CastToEnum;
          }
 
          return ConvertTo;
@@ -1986,6 +1995,14 @@ namespace DbExtensions {
 
       static object ConvertToBoolean(PocoNode node, object value) {
          return Convert.ToBoolean(Convert.ToInt64(value, CultureInfo.InvariantCulture));
+      }
+
+      static object CastToEnum(PocoNode node, object value) {
+         return Enum.ToObject(node.UnderlyingType, value);
+      }
+
+      static object ParseEnum(PocoNode node, object value) {
+         return Enum.Parse(node.UnderlyingType, Convert.ToString(value, CultureInfo.InvariantCulture));
       }
 
       static object ConvertTo(PocoNode node, object value) {
