@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using DbExtensions;
-using DbExtensions.Xml;
 using Samples.CSharp.Northwind;
 
 namespace Samples.CSharp {
@@ -95,33 +94,6 @@ namespace Samples.CSharp {
 
          return db.Map<MappingToConstructorArgumentsSample>(query)
             .Single();
-      }
-
-      public void Xml() {
-
-         var query = SQL
-            .SELECT("p.ProductID, p.ProductName")
-            ._("c.CategoryID AS Category$CategoryID")
-            ._("c.CategoryName AS Category$CategoryName")
-            ._("p.UnitPrice")
-            .FROM("Products p")
-            .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID")
-            .WHERE("ProductID < {0}", 3);
-
-         var settings = new XmlMappingSettings {
-            CollectionName = new XmlQualifiedName("Products", "http://example.com/ns/Store"),
-            ItemName = "Product",
-            NullHandling = XmlNullHandling.IncludeNilAttribute,
-            TypeAnnotation = XmlTypeAnnotation.XmlSchema
-         };
-
-         using (XmlReader reader = db.MapXml(query, settings)) {
-            using (XmlWriter writer = XmlWriter.Create(db.Configuration.Log, new XmlWriterSettings { Indent = true })) {
-               while (!reader.EOF) {
-                  writer.WriteNode(reader, defattr: true);
-               }
-            }
-         }
       }
 
       public IEnumerable<dynamic> Dynamic() {

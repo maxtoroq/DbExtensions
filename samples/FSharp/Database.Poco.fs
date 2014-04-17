@@ -7,7 +7,6 @@ open System.IO
 open System.Linq
 open System.Xml
 open DbExtensions
-open DbExtensions.Xml
 open Samples.FSharp.Northwind
 
 type Money =
@@ -106,33 +105,6 @@ type DatabasePocoSamples(connectionString : string, log : TextWriter) =
 
       db.Map<MappingToConstructorArgumentsSample>(query)
         .Single()
-
-   member this.Xml() =
-
-      let query = 
-         SQL
-            .SELECT("p.ProductID, p.ProductName")
-            .SELECT("c.CategoryID AS Category$CategoryID")
-            .SELECT("c.CategoryName AS Category$CategoryName")
-            .SELECT("p.UnitPrice")
-            .FROM("Products p")
-            .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID")
-            .WHERE("ProductID < {0}", 3)
-
-      let settings = 
-         new XmlMappingSettings(
-            CollectionName = new XmlQualifiedName("Products", "http://example.com/ns/Store"),
-            ItemName = "Product",
-            NullHandling = XmlNullHandling.IncludeNilAttribute,
-            TypeAnnotation = XmlTypeAnnotation.XmlSchema
-         )
-
-      using (db.MapXml(query, settings)) ( fun reader ->
-         using (XmlWriter.Create(log, new XmlWriterSettings(Indent = true))) ( fun writer ->
-            while not reader.EOF do
-               writer.WriteNode(reader, defattr = true)
-         )
-      )
 
    member this.Dynamic() =
 

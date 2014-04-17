@@ -5,7 +5,6 @@ Imports System.IO
 Imports System.Linq
 Imports System.Xml
 Imports DbExtensions
-Imports DbExtensions.Xml
 Imports Samples.VisualBasic.Northwind
 
 Public Class DatabasePocoSamples
@@ -95,38 +94,6 @@ Public Class DatabasePocoSamples
       Return db.Map(Of MappingToConstructorArgumentsSample)(query).Single()
 
    End Function
-
-   Sub Xml()
-
-      Dim query = SQL _
-         .SELECT("p.ProductID, p.ProductName") _
-         .SELECT("c.CategoryID AS Category$CategoryID") _
-         .SELECT("c.CategoryName AS Category$CategoryName") _
-         .SELECT("p.UnitPrice") _
-         .FROM("Products p") _
-         .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID") _
-         .WHERE("ProductID < {0}", 3)
-
-      Dim settings = New XmlMappingSettings With {
-         .CollectionName = New XmlQualifiedName("Products", "http://example.com/ns/Store"), _
-         .ItemName = "Product", _
-         .NullHandling = XmlNullHandling.IncludeNilAttribute, _
-         .TypeAnnotation = XmlTypeAnnotation.XmlSchema
-      }
-
-      Dim reader = db.MapXml(query, settings)
-
-      Using reader
-         Dim writer = XmlWriter.Create(db.Configuration.Log, New XmlWriterSettings With {.Indent = True})
-
-         Using writer
-            While (Not reader.EOF)
-               writer.WriteNode(reader, defattr:=True)
-            End While
-         End Using
-      End Using
-
-   End Sub
 
    Function Dynamic() As IEnumerable(Of Object)
 
