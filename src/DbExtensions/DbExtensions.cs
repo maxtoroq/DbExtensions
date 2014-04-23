@@ -1267,6 +1267,11 @@ namespace DbExtensions {
                }
             }
 
+            if (reader.IsClosed) {
+               // see Node.Load
+               return false;
+            }
+
             if (reader.Read()) {
                
                try {
