@@ -1089,7 +1089,7 @@ namespace DbExtensions {
          SqlBuilder query = this.SQL.SELECT_FROM(refreshMembers);
          query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
 
-         PocoMapper mapper = CreatePocoMapper();
+         PocoMapper mapper = this.db.CreatePocoMapper(metaType.Type);
 
          object entityObj = (object)entity;
 
@@ -1098,10 +1098,6 @@ namespace DbExtensions {
             return null;
 
          }).SingleOrDefault();
-      }
-
-      PocoMapper CreatePocoMapper() {
-         return new PocoMapper(metaType.Type, this.db.Configuration.Log);
       }
 
       #region ISqlTable Members
@@ -1612,6 +1608,210 @@ namespace DbExtensions {
       }
 
       #endregion
+   }
+
+   public static partial class Extensions {
+
+      /// <summary>
+      /// Specifies the related objects to include in the query results.
+      /// </summary>
+      /// <param name="source">The source set.</param>
+      /// <param name="path">Dot-separated list of related objects to return in the query results.</param>
+      /// <returns>A new <see cref="SqlSet"/> with the defined query path.</returns>
+      /// <remarks>
+      /// This method can only be used on sets created by <see cref="Database"/>.
+      /// </remarks>
+      public static SqlSet Include(this SqlSet source, string path) {
+
+         if (source == null) throw new ArgumentNullException("source");
+         if (path == null) throw new ArgumentNullException("path");
+
+         Database db = source.context as Database;
+
+         if (db == null) {
+            throw new InvalidOperationException("Include can only be used on sets created by Database.");
+         }
+
+         Type resultType = source.resultType;
+
+         if (resultType == null) {
+            throw new InvalidOperationException("Include operation is not supported on untyped sets.");
+         }
+
+         MetaType metaType = db.GetMetaType(resultType);
+
+         if (metaType == null) {
+            throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture, "Mapping information was not found for '{0}'.", resultType.FullName));
+         }
+
+         return IncludeImpl.Expand(source, path, metaType, db);
+      }
+
+      /// <summary>
+      /// Specifies the related objects to include in the query results.
+      /// </summary>
+      /// <typeparam name="TResult">The type of the elements in the <paramref name="source"/> set.</typeparam>
+      /// <param name="source">The source set.</param>
+      /// <param name="path">Dot-separated list of related objects to return in the query results.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> with the defined query path.</returns>
+      /// <remarks>
+      /// This method can only be used on sets created by <see cref="Database"/>.
+      /// </remarks>
+      [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Need to keep result type same as input type.")]
+      public static SqlSet<TResult> Include<TResult>(this SqlSet<TResult> source, string path) {
+         return (SqlSet<TResult>)Include((SqlSet)source, path);
+      }
+
+      static class IncludeImpl {
+
+         public static SqlSet Expand(SqlSet source, string path, MetaType metaType, Database db) {
+
+            const string leftAlias = "dbex_l";
+            const string rightAlias = "dbex_r";
+
+            var query = new SqlBuilder()
+               .SELECT(leftAlias + ".*");
+
+            var associations = new List<MetaAssociation>();
+
+            string[] parts = path.Split('.');
+            Func<int, string> rAliasFn = i => rightAlias + (i + 1);
+
+            MetaType currentType = metaType;
+            MetaAssociation manyAssoc = null;
+
+            for (int i = 0; i < parts.Length; i++) {
+
+               string p = parts[i];
+               string rAlias = rAliasFn(i);
+
+               MetaDataMember member = currentType.PersistentDataMembers.SingleOrDefault(m => m.Name == p);
+
+               if (member == null) {
+                  throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "Couldn't find '{0}' on '{1}'.", p, currentType.Type.FullName), "path");
+               }
+
+               if (!member.IsAssociation) {
+                  throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "'{0}' is not an association property.", p), "path");
+               }
+
+               MetaAssociation association = member.Association;
+
+               if (association.IsMany) {
+
+                  if (i != parts.Length - 1) {
+                     throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "One-to-many associations can only be specified in the last segment of an include path ('{0}').", path), "path");
+                  }
+
+                  manyAssoc = association;
+                  break;
+               }
+
+               associations.Add(association);
+
+               query.SELECT(String.Join(", ", association.OtherType.PersistentDataMembers
+                  .Where(m => !m.IsAssociation)
+                  .Select(m => String.Format(CultureInfo.InvariantCulture, "{0}.{1} AS {2}${3}", rAlias, db.QuoteIdentifier(m.MappedName), String.Join("$", associations.Select(a => a.ThisMember.Name).ToArray()), m.Name))
+                  .ToArray()));
+
+               currentType = association.OtherType;
+            }
+
+            if (associations.Count == 0) {
+               query = source.GetDefiningQuery();
+
+            } else {
+
+               query.FROM(source.GetDefiningQuery(), leftAlias);
+
+               for (int i = 0; i < associations.Count; i++) {
+
+                  MetaAssociation association = associations[i];
+                  string lAlias = (i == 0) ? leftAlias : rAliasFn(i - 1);
+                  string rAlias = rAliasFn(i);
+
+                  var joinPredicate = new StringBuilder();
+
+                  for (int j = 0; j < association.ThisKey.Count; j++) {
+
+                     if (j > 0) {
+                        joinPredicate.Append(" AND ");
+                     }
+
+                     MetaDataMember thisMember = association.ThisKey[j];
+                     MetaDataMember otherMember = association.OtherKey[j];
+
+                     joinPredicate.AppendFormat(CultureInfo.InvariantCulture, "{0}.{1} = {2}.{3}", lAlias, db.QuoteIdentifier(thisMember.Name), rAlias, db.QuoteIdentifier(otherMember.MappedName));
+                  }
+
+                  query.LEFT_JOIN(String.Format(CultureInfo.InvariantCulture, "{0} {1} ON ({2})", db.QuoteIdentifier(association.OtherType.Table.TableName), rAlias, joinPredicate.ToString()));
+               }
+            }
+
+            SqlSet newSet = source.CreateSet(query);
+
+            if (manyAssoc != null) {
+               AddManyInclude(newSet, parts, manyAssoc, db);
+            }
+
+            return newSet;
+         }
+
+         static void AddManyInclude(SqlSet set, string[] path, MetaAssociation association, Database db) {
+
+            if (set.ManyIncludes == null) {
+               set.ManyIncludes = new Dictionary<string[], CollectionLoader>();
+            }
+
+            set.ManyIncludes.Add(path, new CollectionLoader {
+               Load = GetMany,
+               State = new CollectionLoaderState {
+                  Table = db.Table(association.OtherType),
+                  Association = association
+               }
+            });
+         }
+
+         static IEnumerable GetMany(object container, object state) {
+
+            var loaderState = (CollectionLoaderState)state;
+
+            MetaAssociation association = loaderState.Association;
+            SqlTable table = loaderState.Table;
+
+            var predicateValues = new Dictionary<string, object>();
+
+            for (int i = 0; i < association.OtherKey.Count; i++) {
+               predicateValues.Add(association.OtherKey[i].MappedName, table.SQL.GetMemberValue(container, association.ThisKey[i]));
+            }
+
+            var parameters = new List<object>();
+            string whereFragment = table.SQL.BuildPredicateFragment(predicateValues, parameters);
+
+            IEnumerable children = table.Where(whereFragment, parameters.ToArray()).AsEnumerable();
+
+            MetaDataMember otherMember = association.OtherMember;
+
+            foreach (object child in children) {
+
+               if (otherMember != null
+                  && !otherMember.Association.IsMany) {
+
+                  object childObj = child;
+
+                  otherMember.MemberAccessor.SetBoxedValue(ref childObj, container);
+               }
+
+               yield return child;
+            }
+         }
+
+         class CollectionLoaderState {
+
+            public SqlTable Table;
+            public MetaAssociation Association;
+         }
+      }
    }
 
    interface ISqlTable {

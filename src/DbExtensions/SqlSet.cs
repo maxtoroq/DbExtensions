@@ -29,7 +29,7 @@ namespace DbExtensions {
    /// <summary>
    /// Represents an immutable, connected SQL query.
    /// </summary>
-   public partial class SqlSet : ISqlSet<SqlSet, object> {
+   public class SqlSet : ISqlSet<SqlSet, object> {
 
       const string SetAliasPrefix = "dbex_set";
       static readonly object padlock = new object();
@@ -39,21 +39,16 @@ namespace DbExtensions {
 
       readonly SqlBuilder definingQuery;
       readonly string[] fromSelect;
-      readonly Type resultType;
-      readonly IConnectionContext context;
+      internal readonly Type resultType;
+      internal readonly IConnectionContext context;
+
       int setIndex = 1;
 
-      SqlFragment whereBuffer;
-      SqlFragment orderByBuffer;
-      int? skipBuffer;
-      int? takeBuffer;
-
-      /// <summary>
-      /// The database connection.
-      /// </summary>
-      private DbConnection Connection { 
-         get { return context.Connection; } 
-      }
+      SqlFragment _WhereBuffer;
+      SqlFragment _OrderByBuffer;
+      int? _SkipBuffer;
+      int? _TakeBuffer;
+      IDictionary<string[], CollectionLoader> _ManyIncludes;
 
       /// <summary>
       /// A <see cref="TextWriter"/> used to log when queries are executed.
@@ -64,10 +59,68 @@ namespace DbExtensions {
 
       private bool HasBufferedCalls {
          get {
-            return whereBuffer != null
-               || orderByBuffer != null
-               || skipBuffer.HasValue
-               || takeBuffer.HasValue;
+            return _WhereBuffer != null
+               || _OrderByBuffer != null
+               || _SkipBuffer.HasValue
+               || _TakeBuffer.HasValue;
+         }
+      }
+
+      private SqlFragment WhereBuffer {
+         get { return _WhereBuffer; }
+         set {
+            if (value != null
+               && _WhereBuffer != null) {
+
+               throw new InvalidOperationException();
+            }
+            _WhereBuffer = value;
+         }
+      }
+
+      private SqlFragment OrderByBuffer {
+         get { return _OrderByBuffer; }
+         set {
+            if (value != null
+               && _OrderByBuffer != null) {
+
+               throw new InvalidOperationException();
+            }
+            _OrderByBuffer = value;
+         }
+      }
+
+      private int? SkipBuffer {
+         get { return _SkipBuffer; }
+         set {
+            if (value != null
+               && _SkipBuffer != null) {
+
+               throw new InvalidOperationException();
+            }
+            _SkipBuffer = value;
+         }
+      }
+
+      private int? TakeBuffer {
+         get { return _TakeBuffer; }
+         set {
+            if (value != null
+               && _TakeBuffer != null) {
+
+               throw new InvalidOperationException();
+            }
+            _TakeBuffer = value;
+         }
+      }
+
+      internal IDictionary<string[], CollectionLoader> ManyIncludes {
+         get { return _ManyIncludes; }
+         set {
+            if (_ManyIncludes != null) {
+               throw new InvalidOperationException();
+            }
+            _ManyIncludes = value;
          }
       }
 
@@ -122,13 +175,20 @@ namespace DbExtensions {
          this.context = context;
       }
 
-      internal SqlSet(SqlSet set) {
+      /// <summary>
+      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
+      /// </summary>
+      protected SqlSet(SqlSet set) {
 
          if (set == null) throw new ArgumentNullException("set");
 
          this.resultType = set.resultType;
          this.setIndex += set.setIndex;
          this.context = set.context;
+
+         if (set.ManyIncludes != null) {
+            this.ManyIncludes = new Dictionary<string[], CollectionLoader>(set.ManyIncludes);
+         }
       }
 
       /// <summary>
@@ -168,7 +228,10 @@ namespace DbExtensions {
          if (fromSelect.Length != 2) throw new ArgumentException("fromSelect.Length must be 2.", "fromSelect");
 
          this.fromSelect = fromSelect;
-         this.resultType = resultType;
+
+         if (resultType != null) {
+            this.resultType = resultType; 
+         }
       }
 
       /// <summary>
@@ -210,10 +273,10 @@ namespace DbExtensions {
 
       void CopyBufferState(SqlSet otherSet) {
 
-         otherSet.whereBuffer = this.whereBuffer;
-         otherSet.orderByBuffer = this.orderByBuffer;
-         otherSet.skipBuffer = this.skipBuffer;
-         otherSet.takeBuffer = this.takeBuffer;
+         otherSet.WhereBuffer = this.WhereBuffer;
+         otherSet.OrderByBuffer = this.OrderByBuffer;
+         otherSet.SkipBuffer = this.SkipBuffer;
+         otherSet.TakeBuffer = this.TakeBuffer;
       }
 
       SqlBuilder BuildQuery(string selectFormat = null, object[] args = null) {
@@ -235,10 +298,15 @@ namespace DbExtensions {
 
       SqlBuilder BuildQuery_Default(string selectFormat = null, object[] args = null) {
 
-         bool hasWhere = this.whereBuffer != null;
-         bool hasOrderBy = this.orderByBuffer != null;
-         bool hasSkip = this.skipBuffer.HasValue;
-         bool hasTake = this.takeBuffer.HasValue;
+         SqlFragment whereBuffer = this.WhereBuffer;
+         SqlFragment orderByBuffer = this.OrderByBuffer;
+         int? skipBuffer = this.SkipBuffer;
+         int? takeBuffer = this.TakeBuffer;
+
+         bool hasWhere = whereBuffer != null;
+         bool hasOrderBy = orderByBuffer != null;
+         bool hasSkip = skipBuffer.HasValue;
+         bool hasTake = takeBuffer.HasValue;
 
          SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: selectFormat, args: args);
 
@@ -248,19 +316,19 @@ namespace DbExtensions {
             || hasSkip) {
 
             if (hasWhere) {
-               query.WHERE(this.whereBuffer.Format, this.whereBuffer.Args);
+               query.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
             if (hasOrderBy) {
-               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+               query.ORDER_BY(orderByBuffer.Format, orderByBuffer.Args);
             }
 
             if (hasTake) {
-               query.LIMIT(this.takeBuffer.Value);
+               query.LIMIT(takeBuffer.Value);
             }
 
             if (hasSkip) {
-               query.OFFSET(this.skipBuffer.Value);
+               query.OFFSET(skipBuffer.Value);
             }
          }
 
@@ -269,10 +337,15 @@ namespace DbExtensions {
 
       SqlBuilder BuildQuery_SqlServer(string selectFormat = null, object[] args = null) {
 
-         bool hasWhere = this.whereBuffer != null;
-         bool hasOrderBy = this.orderByBuffer != null;
-         bool hasSkip = this.skipBuffer.HasValue;
-         bool hasTake = this.takeBuffer.HasValue;
+         SqlFragment whereBuffer = this.WhereBuffer;
+         SqlFragment orderByBuffer = this.OrderByBuffer;
+         int? skipBuffer = this.SkipBuffer;
+         int? takeBuffer = this.TakeBuffer;
+
+         bool hasWhere = whereBuffer != null;
+         bool hasOrderBy = orderByBuffer != null;
+         bool hasSkip = skipBuffer.HasValue;
+         bool hasTake = takeBuffer.HasValue;
 
          SqlBuilder definingQuery = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: selectFormat, args: args);
 
@@ -281,11 +354,11 @@ namespace DbExtensions {
             SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: selectFormat, args: args);
 
             if (hasWhere) {
-               query.WHERE(this.whereBuffer.Format, this.whereBuffer.Args);
+               query.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
             if (hasOrderBy) {
-               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+               query.ORDER_BY(orderByBuffer.Format, orderByBuffer.Args);
 
             } else {
 
@@ -293,10 +366,10 @@ namespace DbExtensions {
                query.ORDER_BY("1");
             }
 
-            query.OFFSET("{0} ROWS", this.skipBuffer.Value);
+            query.OFFSET("{0} ROWS", skipBuffer.Value);
 
             if (hasTake) {
-               query.AppendClause("FETCH", null, "NEXT {0} ROWS ONLY", new object[] { this.takeBuffer.Value });
+               query.AppendClause("FETCH", null, "NEXT {0} ROWS ONLY", new object[] { takeBuffer.Value });
             }
 
             return query;
@@ -304,14 +377,14 @@ namespace DbExtensions {
 
          if (hasTake) {
 
-            SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: "TOP({0}) *", args: new object[] { this.takeBuffer.Value });
+            SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: "TOP({0}) *", args: new object[] { takeBuffer.Value });
 
             if (hasWhere) {
-               query.WHERE(this.whereBuffer.Format, this.whereBuffer.Args);
+               query.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
             if (hasOrderBy) {
-               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+               query.ORDER_BY(orderByBuffer.Format, orderByBuffer.Args);
             }
 
             if (selectFormat != null) {
@@ -327,12 +400,12 @@ namespace DbExtensions {
             SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: selectFormat, args: args);
 
             if (hasWhere) {
-               query.WHERE(this.whereBuffer.Format, this.whereBuffer.Args);
+               query.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
             if (hasOrderBy) {
 
-               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+               query.ORDER_BY(orderByBuffer.Format, orderByBuffer.Args);
 
                // The ORDER BY clause is invalid in subqueries, unless TOP, OFFSET or FOR XML is also specified.
 
@@ -347,10 +420,15 @@ namespace DbExtensions {
 
       SqlBuilder BuildQuery_Oracle(string selectFormat = null, object[] args = null) {
 
-         bool hasWhere = this.whereBuffer != null;
-         bool hasOrderBy = this.orderByBuffer != null;
-         bool hasSkip = this.skipBuffer.HasValue;
-         bool hasTake = this.takeBuffer.HasValue;
+         SqlFragment whereBuffer = this.WhereBuffer;
+         SqlFragment orderByBuffer = this.OrderByBuffer;
+         int? skipBuffer = this.SkipBuffer;
+         int? takeBuffer = this.TakeBuffer;
+
+         bool hasWhere = whereBuffer != null;
+         bool hasOrderBy = orderByBuffer != null;
+         bool hasSkip = skipBuffer.HasValue;
+         bool hasTake = takeBuffer.HasValue;
 
          SqlBuilder definingQuery = GetDefiningQuery(omitBufferedCalls: true, selectFormat: selectFormat, args: args);
 
@@ -361,15 +439,15 @@ namespace DbExtensions {
             string innerQueryAlias = queryAlias + "_1";
             const string rowNumberAlias = "dbex_rn";
 
-            int start = (hasSkip) ? this.skipBuffer.Value : 0;
-            int? end = (hasTake) ? start + this.takeBuffer.Value : default(int?);
+            int start = (hasSkip) ? skipBuffer.Value : 0;
+            int? end = (hasTake) ? start + takeBuffer.Value : default(int?);
 
             var innerQuery = new SqlBuilder();
 
             if (hasOrderBy) {
 
                innerQuery
-                  .SELECT(String.Concat("ROW_NUMBER() OVER (ORDER BY ", this.orderByBuffer.Format, ") AS ", rowNumberAlias), this.orderByBuffer.Args);
+                  .SELECT(String.Concat("ROW_NUMBER() OVER (ORDER BY ", orderByBuffer.Format, ") AS ", rowNumberAlias), orderByBuffer.Args);
             
             } else {
 
@@ -382,7 +460,7 @@ namespace DbExtensions {
                .FROM(definingQuery, innerQueryAlias);
 
             if (hasWhere) {
-               innerQuery.WHERE(this.whereBuffer.Format, this.whereBuffer.Args);
+               innerQuery.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
             var query = new SqlBuilder()
@@ -409,11 +487,11 @@ namespace DbExtensions {
             SqlBuilder query = definingQuery;
 
             if (hasWhere) {
-               query.WHERE(this.whereBuffer.Format, this.whereBuffer.Args);
+               query.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
             if (hasOrderBy) {
-               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args); 
+               query.ORDER_BY(orderByBuffer.Format, orderByBuffer.Args); 
             }
 
             return query;
@@ -424,7 +502,8 @@ namespace DbExtensions {
 
       SqlDialect GetConnectionDialect() {
 
-         Type connType = this.Connection.GetType();
+         DbConnection conn = this.context.Connection;
+         Type connType = conn.GetType();
 
          SqlDialect dialect;
 
@@ -432,8 +511,8 @@ namespace DbExtensions {
             lock (padlock) {
                if (!connectionDialect.TryGetValue(connType, out dialect)) {
 
-                  dialect = IsSqlServer() ? SqlDialect.SqlServer
-                     : IsOracle() ? SqlDialect.Oracle
+                  dialect = IsSqlServer(conn) ? SqlDialect.SqlServer
+                     : IsOracle(conn) ? SqlDialect.Oracle
                      : SqlDialect.Default;
 
                   connectionDialect[connType] = dialect;
@@ -444,13 +523,13 @@ namespace DbExtensions {
          return dialect;
       }
 
-      bool IsSqlServer() {
-         return this.Connection is System.Data.SqlClient.SqlConnection
-            || this.Connection.GetType().Namespace.Equals("System.Data.SqlServerCe", StringComparison.Ordinal);
+      static bool IsSqlServer(DbConnection conn) {
+         return conn is System.Data.SqlClient.SqlConnection
+            || conn.GetType().Namespace.Equals("System.Data.SqlServerCe", StringComparison.Ordinal);
       }
 
-      bool IsOracle() {
-         return this.Connection.GetType().Namespace.Equals("System.Data.OracleClient", StringComparison.Ordinal);
+      static bool IsOracle(DbConnection conn) {
+         return conn.GetType().Namespace.Equals("System.Data.OracleClient", StringComparison.Ordinal);
       }
 
       /// <summary>
@@ -493,7 +572,7 @@ namespace DbExtensions {
       /// <summary>
       /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
       /// </summary>
-      protected virtual SqlSet CreateSet(SqlBuilder superQuery) {
+      protected internal virtual SqlSet CreateSet(SqlBuilder superQuery) {
          return new SqlSet(this, superQuery);
       }
 
@@ -586,20 +665,37 @@ namespace DbExtensions {
          return this.context.CreateCommand(sqlBuilder);
       }
 
-      internal virtual IEnumerable Map() {
+      internal virtual IEnumerable Map(bool singleResult) {
 
          SqlBuilder query = GetDefiningQuery(clone: false);
 
          if (this.resultType != null) {
-            return Extensions.Map<object>(q => CreateCommand(query), query, new PocoMapper(this.resultType, this.Log), this.Log);
-
-         } else {
-#if NET35
-            throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
-#else
-            return Extensions.Map<dynamic>(q => CreateCommand(query), query, new DynamicMapper(this.Log), this.Log);
-#endif
+            return Extensions.Map<object>(q => CreateCommand(query), query, CreatePocoMapper(singleResult), this.Log);
          }
+
+#if NET35
+         throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
+#else
+         return Extensions.Map<dynamic>(
+            q => CreateCommand(query),
+            query,
+            new DynamicMapper { 
+               Log = this.Log,
+               ManyIncludes = this.ManyIncludes,
+               SingleResult = singleResult
+            },
+            this.Log
+         );
+#endif
+      }
+
+      internal PocoMapper CreatePocoMapper(bool singleResult) {
+
+         return new PocoMapper(this.resultType) {
+            Log = this.Log,
+            ManyIncludes = this.ManyIncludes,
+            SingleResult = singleResult
+         };
       }
 
       #region ISqlSet<SqlSet,object> Members
@@ -660,8 +756,12 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>All elements in the set.</returns>
       public IEnumerable<object> AsEnumerable() {
+         return AsEnumerable(singleResult: false);
+      }
 
-         IEnumerable enumerable = Map();
+      IEnumerable<object> AsEnumerable(bool singleResult) {
+         
+         IEnumerable enumerable = Map(singleResult);
 
          return enumerable as IEnumerable<object>
             ?? enumerable.Cast<object>();
@@ -733,7 +833,7 @@ namespace DbExtensions {
       /// <returns>The first element in the set.</returns>
       /// <exception cref="System.InvalidOperationException">The set is empty.</exception>
       public object First() {
-         return Take(1).AsEnumerable().First();
+         return Take(1).AsEnumerable(singleResult: true).First();
       }
 
       /// <summary>
@@ -762,7 +862,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>A default value if the set is empty; otherwise, the first element.</returns>
       public object FirstOrDefault() {
-         return Take(1).AsEnumerable().FirstOrDefault();
+         return Take(1).AsEnumerable(singleResult: true).FirstOrDefault();
       }
 
       /// <summary>
@@ -847,19 +947,19 @@ namespace DbExtensions {
       /// <returns>A new <see cref="SqlSet"/> whose elements are sorted according to <paramref name="columnList"/>.</returns>
       public SqlSet OrderBy(string columnList, params object[] parameters) {
 
-         bool omitBufferedCalls = this.orderByBuffer == null
-            && this.skipBuffer == null
-            && this.takeBuffer == null;
+         bool omitBufferedCalls = this.OrderByBuffer == null
+            && this.SkipBuffer == null
+            && this.TakeBuffer == null;
 
          SqlSet set = CreateSet(omitBufferedCalls);
 
          if (!omitBufferedCalls) {
-            set.whereBuffer = null;
+            set.WhereBuffer = null;
          }
 
-         set.orderByBuffer = new SqlFragment(columnList, parameters);
-         set.skipBuffer = null;
-         set.takeBuffer = null;
+         set._OrderByBuffer = new SqlFragment(columnList, parameters);
+         set.SkipBuffer = null;
+         set.TakeBuffer = null;
 
          return set;
       }
@@ -966,7 +1066,7 @@ namespace DbExtensions {
       /// <returns>The single element of the set.</returns>
       /// <exception cref="System.InvalidOperationException">The set contains more than one element.-or-The set is empty.</exception>      
       public object Single() {
-         return AsEnumerable().Single();
+         return AsEnumerable(singleResult: true).Single();
       }
 
       /// <summary>
@@ -996,7 +1096,7 @@ namespace DbExtensions {
       /// <returns>The single element of the set, or a default value if the set contains no elements.</returns>
       /// <exception cref="System.InvalidOperationException">The set contains more than one element.</exception>
       public object SingleOrDefault() {
-         return AsEnumerable().SingleOrDefault();
+         return AsEnumerable(singleResult: true).SingleOrDefault();
       }
 
       /// <summary>
@@ -1025,18 +1125,18 @@ namespace DbExtensions {
       /// <returns>A new <see cref="SqlSet"/> that contains the elements that occur after the specified index in the current set.</returns>
       public SqlSet Skip(int count) {
 
-         bool omitBufferedCalls = this.skipBuffer == null
-            && this.takeBuffer == null;
+         bool omitBufferedCalls = this.SkipBuffer == null
+            && this.TakeBuffer == null;
 
          SqlSet set = CreateSet(omitBufferedCalls);
 
          if (!omitBufferedCalls) {
-            set.whereBuffer = null;
-            set.orderByBuffer = null;
+            set.WhereBuffer = null;
+            set.OrderByBuffer = null;
          }
 
-         set.skipBuffer = count;
-         set.takeBuffer = null;
+         set._SkipBuffer = count;
+         set.TakeBuffer = null;
 
          return set;
       }
@@ -1048,17 +1148,17 @@ namespace DbExtensions {
       /// <returns>A new <see cref="SqlSet"/> that contains the specified number of elements from the start of the current set.</returns>
       public SqlSet Take(int count) {
 
-         bool omitBufferedCalls = this.takeBuffer == null;
+         bool omitBufferedCalls = this.TakeBuffer == null;
 
          SqlSet set = CreateSet(omitBufferedCalls);
 
          if (!omitBufferedCalls) {
-            set.whereBuffer = null;
-            set.orderByBuffer = null;
-            set.skipBuffer = null;
+            set.WhereBuffer = null;
+            set.OrderByBuffer = null;
+            set.SkipBuffer = null;
          }
 
-         set.takeBuffer = count;
+         set._TakeBuffer = count;
 
          return set;
       }
@@ -1097,17 +1197,17 @@ namespace DbExtensions {
       /// <returns>A new <see cref="SqlSet"/> that contains elements from the current set that satisfy the condition.</returns>
       public SqlSet Where(string predicate, params object[] parameters) {
 
-         bool omitBufferedCalls = this.whereBuffer == null 
-            && this.orderByBuffer == null 
-            && this.skipBuffer == null
-            && this.takeBuffer == null;
+         bool omitBufferedCalls = this.WhereBuffer == null 
+            && this.OrderByBuffer == null 
+            && this.SkipBuffer == null
+            && this.TakeBuffer == null;
 
          SqlSet set = CreateSet(omitBufferedCalls);
          
-         set.whereBuffer = new SqlFragment(predicate, parameters);
-         set.orderByBuffer = null;
-         set.skipBuffer = null;
-         set.takeBuffer = null;
+         set._WhereBuffer = new SqlFragment(predicate, parameters);
+         set.OrderByBuffer = null;
+         set.SkipBuffer = null;
+         set.TakeBuffer = null;
 
          return set;
       }
@@ -1293,7 +1393,7 @@ namespace DbExtensions {
       /// <summary>
       /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
       /// </summary>
-      protected override SqlSet CreateSet(SqlBuilder superQuery) {
+      protected internal override SqlSet CreateSet(SqlBuilder superQuery) {
          return new SqlSet<TResult>(this, superQuery);
       }
 
@@ -1309,16 +1409,15 @@ namespace DbExtensions {
          return new SqlSet<TResult>(this, fromSelect);
       }
 
-      internal override IEnumerable Map() {
+      internal override IEnumerable Map(bool singleResult) {
 
          SqlBuilder query = GetDefiningQuery(clone: false);
 
          if (this.mapper != null) {
             return CreateCommand(query).Map(this.mapper, this.Log);
-
-         } else {
-            return Extensions.Map<TResult>(q => CreateCommand(q), query, new PocoMapper(typeof(TResult), this.Log), this.Log);
          }
+
+         return Extensions.Map<TResult>(q => CreateCommand(q), query, CreatePocoMapper(singleResult), this.Log);
       }
 
       #region ISqlSet<SqlSet<TResult>,TResult> Members
@@ -1328,7 +1427,11 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>All <typeparamref name="TResult"/> objects in the set.</returns>
       public new IEnumerable<TResult> AsEnumerable() {
-         return (IEnumerable<TResult>)Map();
+         return AsEnumerable(singleResult: false);
+      }
+
+      IEnumerable<TResult> AsEnumerable(bool singleResult) {
+         return (IEnumerable<TResult>)Map(singleResult);
       }
 
       /// <summary>
@@ -1357,7 +1460,7 @@ namespace DbExtensions {
       /// <returns>The first element in the set.</returns>
       /// <exception cref="System.InvalidOperationException">The set is empty.</exception>
       public new TResult First() {
-         return Take(1).AsEnumerable().First();
+         return Take(1).AsEnumerable(singleResult: true).First();
       }
 
       /// <summary>
@@ -1386,7 +1489,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>A default value if the set is empty; otherwise, the first element.</returns>
       public new TResult FirstOrDefault() {
-         return Take(1).AsEnumerable().FirstOrDefault();
+         return Take(1).AsEnumerable(singleResult: true).FirstOrDefault();
       }
 
       /// <summary>
@@ -1447,7 +1550,7 @@ namespace DbExtensions {
       /// <returns>The single element of the set.</returns>
       /// <exception cref="System.InvalidOperationException">The set contains more than one element.-or-The set is empty.</exception>      
       public new TResult Single() {
-         return AsEnumerable().Single();
+         return AsEnumerable(singleResult: true).Single();
       }
 
       /// <summary>
@@ -1477,7 +1580,7 @@ namespace DbExtensions {
       /// <returns>The single element of the set, or a default value if the set contains no elements.</returns>
       /// <exception cref="System.InvalidOperationException">The set contains more than one element.</exception>
       public new TResult SingleOrDefault() {
-         return AsEnumerable().SingleOrDefault();
+         return AsEnumerable(singleResult: true).SingleOrDefault();
       }
 
       /// <summary>

@@ -459,7 +459,7 @@ namespace DbExtensions {
       /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, TextWriter)"/>
       public IEnumerable<TResult> Map<TResult>(SqlBuilder query) {
-         return Extensions.Map<TResult>(q => CreateCommand(q), query, new PocoMapper(typeof(TResult), this.Log), this.Log);
+         return Extensions.Map<TResult>(q => CreateCommand(q), query, CreatePocoMapper(typeof(TResult)), this.Log);
       }
 
       /// <summary>
@@ -485,7 +485,14 @@ namespace DbExtensions {
       /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
       /// <seealso cref="Extensions.Map(IDbCommand, Type, TextWriter)"/>
       public IEnumerable<object> Map(Type resultType, SqlBuilder query) {
-         return Extensions.Map<object>(q => CreateCommand(q), query, new PocoMapper(resultType, this.Log), this.Log);
+         return Extensions.Map<object>(q => CreateCommand(q), query, CreatePocoMapper(resultType), this.Log);
+      }
+
+      internal PocoMapper CreatePocoMapper(Type type) {
+
+         return new PocoMapper(type) { 
+            Log = this.Log
+         };
       }
 
       /// <summary>
@@ -752,7 +759,7 @@ namespace DbExtensions {
          }
       }
 
-      MetaType GetMetaType(Type entityType) {
+      internal MetaType GetMetaType(Type entityType) {
 
          if (entityType == null) throw new ArgumentNullException("entityType");
 

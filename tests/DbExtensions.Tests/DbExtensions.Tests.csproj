@@ -69,6 +69,7 @@
     <Compile Include="Querying\SqlBuilderBehavior.cs" />
     <Compile Include="Querying\SqlSetBehaviorForSqlServer.cs" />
     <Compile Include="Querying\SqlSetBehavior.cs" />
+    <Compile Include="Querying\SqlSetIncludeBehavior.cs" />
     <Compile Include="Querying\SqlTableBehavior.cs" />
     <Compile Include="TestUtil.cs" />
   </ItemGroup>

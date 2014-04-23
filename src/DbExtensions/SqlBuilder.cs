@@ -1337,19 +1337,11 @@ namespace DbExtensions {
 
       internal static IEnumerable<TResult> Map<TResult>(Func<SqlBuilder, IDbCommand> queryToCommand, SqlBuilder query, Mapper mapper, TextWriter logger) {
 
-         mapper.SetIgnoredColumns(query);
+         if (query.HasIgnoredColumns) {
+            mapper.IgnoredColumns = new HashSet<int>(query.IgnoredColumns);
+         }
 
          return Map<TResult>(queryToCommand(query), r => (TResult)mapper.Map(r), logger);
-      }
-   }
-
-   partial class Mapper {
-
-      internal void SetIgnoredColumns(SqlBuilder query) { 
-         
-         if (query.HasIgnoredColumns) {
-            this.ignoredColumns = new HashSet<int>(query.IgnoredColumns);
-         }
       }
    }
 }

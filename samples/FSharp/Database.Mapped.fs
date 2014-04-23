@@ -4,9 +4,9 @@ open System
 open System.Collections
 open System.Collections.Generic
 open System.Data.Linq.Mapping
-open System.Diagnostics
 open System.IO
 open System.Transactions
+open DbExtensions
 open Samples.FSharp.Northwind
 
 type DatabaseMappedSamples(connectionString : string, mapping : MetaModel, log : TextWriter) =
@@ -16,26 +16,32 @@ type DatabaseMappedSamples(connectionString : string, mapping : MetaModel, log :
       db1.Configuration.Log <- log
       db1
 
-   member this.PredicateOnly() =
-      db.Products.Where("ProductID <= {0}", 7).AsEnumerable()
+   member this.IncludeManyToOne() =
+         
+      db.Products
+         .Include("Category")
+         .Include("Supplier")
+         .Take(3)
+         .AsEnumerable()
+
+   member this.IncludeManyToOneNested() =
+
+      db.EmployeeTerritories
+         .Include("Territory.Region")
+         .Take(3)
+         .AsEnumerable()
+
+   member this.IncludeOneToMany() =
+
+      db.Regions
+         .Include("Territories")
+         .First()
 
    member this.ContainsKey() =
       db.Products.ContainsKey(1)
 
    member this.Find() =
       db.Products.Find(1)
-
-   member this.Refresh() =
-
-      let product = db.Products.Find(1)
-
-      Debug.Assert(product.ProductName = "Chai")
-
-      product.ProductName <- "xxx"
-
-      db.Products.Refresh(product)
-
-      Debug.Assert(product.ProductName = "Chai")
 
    member this.Transactions_AdoNet() =
 

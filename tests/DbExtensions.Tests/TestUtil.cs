@@ -15,7 +15,7 @@ namespace DbExtensions.Tests {
       }
 
       public static DbConnection CreateSqlServerConnectionForTests_Northwind(this DbProviderFactory factory) {
-         return factory.CreateConnection(@"Data Source=(localdb)\v11.0; AttachDbFileName="+ Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\samples\App\bin\Debug\Northwind\Northwind.mdf")) + "; Integrated Security=true");
+         return factory.CreateConnection(@"Data Source=(localdb)\v11.0; AttachDbFileName=" + Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\samples\App\bin\Debug\Northwind\Northwind.mdf")) + "; Integrated Security=true; MultipleActiveResultSets=true");
       }
 
       public static bool SqlEquals(SqlSet set, SqlBuilder query) {

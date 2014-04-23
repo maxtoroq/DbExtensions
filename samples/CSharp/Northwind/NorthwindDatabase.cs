@@ -21,6 +21,18 @@ namespace Samples.CSharp.Northwind {
          get { return Table<OrderDetail>(); }
       }
 
+      public SqlTable<Employee> Employees {
+         get { return Table<Employee>(); }
+      }
+
+      public SqlTable<EmployeeTerritory> EmployeeTerritories {
+         get { return Table<EmployeeTerritory>(); }
+      }
+
+      public SqlTable<Region> Regions {
+         get { return Table<Region>(); }
+      }
+
       public NorthwindDatabase(string connectionString) 
          : base(connectionString) { }
 

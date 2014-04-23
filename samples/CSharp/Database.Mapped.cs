@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
-using System.Diagnostics;
 using System.IO;
 using System.Transactions;
+using DbExtensions;
 using Samples.CSharp.Northwind;
 
 namespace Samples.CSharp {
@@ -21,8 +21,28 @@ namespace Samples.CSharp {
          };
       }
 
-      public IEnumerable<Product> PredicateOnly() {
-         return db.Products.Where("ProductID <= {0}", 7).AsEnumerable();
+      public IEnumerable<Product> IncludeManyToOne() {
+         
+         return db.Products
+            .Include("Category")
+            .Include("Supplier")
+            .Take(3)
+            .AsEnumerable();
+      }
+
+      public IEnumerable<EmployeeTerritory> IncludeManyToOneNested() {
+
+         return db.EmployeeTerritories
+            .Include("Territory.Region")
+            .Take(3)
+            .AsEnumerable();
+      }
+
+      public Region IncludeOneToMany() {
+
+         return db.Regions
+            .Include("Territories")
+            .First();
       }
 
       public bool ContainsKey() {
@@ -32,20 +52,7 @@ namespace Samples.CSharp {
       public Product Find() {
          return db.Products.Find(1);
       }
-
-      public void Refresh() {
-
-         Product product = db.Products.Find(1);
-
-         Debug.Assert(product.ProductName == "Chai");
-
-         product.ProductName = "xxx";
-
-         db.Products.Refresh(product);
-
-         Debug.Assert(product.ProductName == "Chai");
-      }
-      
+     
       public void Transactions_AdoNet() {
 
          using (var tx = db.EnsureInTransaction()) {

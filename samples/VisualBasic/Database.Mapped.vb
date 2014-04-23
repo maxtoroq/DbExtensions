@@ -1,9 +1,9 @@
 ﻿Imports System
 Imports System.Collections.Generic
-Imports System.Diagnostics
 Imports System.IO
 Imports System.Transactions
 Imports System.Data.Linq.Mapping
+Imports DbExtensions
 Imports Samples.VisualBasic.Northwind
 
 Public Class DatabaseMappedSamples
@@ -15,8 +15,31 @@ Public Class DatabaseMappedSamples
       Me.db.Configuration.Log = log
    End Sub
 
-   Function PredicateOnly() As IEnumerable(Of Product)
-      Return db.Products.Where("ProductID <= {0}", 7).AsEnumerable()
+   Public Function IncludeManyToOne() As IEnumerable(Of Product)
+
+      Return db.Products _
+         .Include("Category") _
+         .Include("Supplier") _
+         .Take(3) _
+         .AsEnumerable()
+
+   End Function
+
+   Public Function IncludeManyToOneNested() As IEnumerable(Of EmployeeTerritory)
+
+      Return db.EmployeeTerritories _
+         .Include("Territory.Region") _
+         .Take(3) _
+         .AsEnumerable()
+
+   End Function
+
+   Public Function IncludeOneToMany() As Region
+
+      Return db.Regions _
+         .Include("Territories") _
+         .First()
+
    End Function
 
    Function ContainsKey() As Boolean
@@ -26,20 +49,6 @@ Public Class DatabaseMappedSamples
    Function Find() As Product
       Return db.Products.Find(1)
    End Function
-
-   Sub Refresh()
-
-      Dim product As Product = db.Products.Find(1)
-
-      Debug.Assert((product.ProductName = "Chai"))
-
-      product.ProductName = "xxx"
-
-      db.Products.Refresh(product)
-
-      Debug.Assert((product.ProductName = "Chai"))
-
-   End Sub
 
    Sub Transactions_AdoNet()
 

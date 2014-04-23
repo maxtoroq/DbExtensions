@@ -42,7 +42,9 @@ namespace DbExtensions {
       /// <returns>The results of the query as dynamic objects.</returns>
       public static IEnumerable<dynamic> Map(this IDbCommand command, TextWriter logger) {
 
-         var mapper = new DynamicMapper(logger);
+         var mapper = new DynamicMapper { 
+            Log = logger
+         };
 
          return Map(command, r => (dynamic)mapper.Map(r), logger);
       }
@@ -59,16 +61,15 @@ namespace DbExtensions {
       /// <seealso cref="Extensions.Map(IDbCommand, TextWriter)"/>
       public IEnumerable<dynamic> Map(SqlBuilder query) {
 
-         var mapper = new DynamicMapper(this.Log);
+         var mapper = new DynamicMapper { 
+            Log = this.Log
+         };
 
          return Extensions.Map<dynamic>(q => CreateCommand(q), query, mapper, this.Log);
       }
    }
 
    class DynamicMapper : Mapper {
-
-      public DynamicMapper(TextWriter logger) 
-         : base(logger) { }
 
       protected override Node CreateRootNode() {
          return DynamicNode.Root();
@@ -89,29 +90,27 @@ namespace DbExtensions {
       protected override Node CreateParameterNode(int columnOrdinal, ParameterInfo paramInfo) {
          throw new NotImplementedException();
       }
+
+      protected override CollectionNode CreateCollectionNode(Node container, string propertyName) {
+         throw new NotSupportedException();
+      }
    }
 
    class DynamicNode : Node {
 
       static readonly string _TypeName = typeof(ExpandoObject).FullName;
 
-      readonly string PropertyName;
+      readonly string _PropertyName;
 
       bool _IsComplex;
-      List<Node> _Properties;
       int _ColumnOrdinal;
-      Dictionary<uint, Node> _ConstructorParameters;
 
       public override bool IsComplex {
          get { return _IsComplex; }
       }
 
-      public override List<Node> Properties {
-         get { return _Properties; }
-      }
-
-      public override Dictionary<uint, Node> ConstructorParameters {
-         get { return _ConstructorParameters; }
+      public override string PropertyName {
+         get { return _PropertyName; }
       }
 
       public override int ColumnOrdinal {
@@ -126,8 +125,6 @@ namespace DbExtensions {
 
          var node = new DynamicNode() {
             _IsComplex = true,
-            _ConstructorParameters = new Dictionary<uint, Node>(),
-            _Properties = new List<Node>(),
          };
 
          return node;
@@ -137,8 +134,6 @@ namespace DbExtensions {
 
          var node = new DynamicNode(propertyName) {
             _IsComplex = true,
-            _ConstructorParameters = new Dictionary<uint, Node>(),
-            _Properties = new List<Node>()
          };
 
          return node;
@@ -166,10 +161,10 @@ namespace DbExtensions {
          if (UInt32.TryParse(propertyName, out nameAsNumber))
             throw new ArgumentException("Cannot use constructor mapping, by using numeric column names, unless you specify the type of the object you want to map to.", "propertyName");
 
-         this.PropertyName = propertyName;
+         this._PropertyName = propertyName;
       }
 
-      public override object Create(IDataRecord record, TextWriter logger) {
+      public override object Create(IDataRecord record, MappingContext context) {
          return new ExpandoObject();
       }
 
@@ -185,7 +180,7 @@ namespace DbExtensions {
          return null;
       }
 
-      protected override void Set(ref object instance, object value, TextWriter logger) {
+      protected override void Set(ref object instance, object value, MappingContext context) {
          ((IDictionary<string, object>)instance)[PropertyName] = value;
       }
 
