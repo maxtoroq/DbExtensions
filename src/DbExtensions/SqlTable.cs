@@ -452,10 +452,6 @@ namespace DbExtensions {
          return this.db.QuoteIdentifier(unquotedIdentifier);
       }
 
-      string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
-         return this.SQL.BuildPredicateFragment(predicateValues, parametersBuffer);
-      }
-
       void EnsureEntityType() {
          SqlTable.EnsureEntityType(metaType);
       }
@@ -471,26 +467,7 @@ namespace DbExtensions {
       /// or null if the <paramref name="id"/> does not exist.
       /// </returns>
       public TEntity Find(object id) {
-
-         if (id == null) throw new ArgumentNullException("id");
-
-         if (metaType.IdentityMembers.Count == 0) {
-            throw new InvalidOperationException("The entity has no identity members defined.");
-
-         } else if (metaType.IdentityMembers.Count > 1) {
-            throw new InvalidOperationException("Cannot call this method when the entity has more than one identity member.");
-         }
-
-         var predicateValues = new Dictionary<string, object> { 
-            { metaType.IdentityMembers[0].MappedName, id }
-         };
-
-         SqlBuilder query = this.SQL.SELECT_FROM();
-         query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
-
-         TEntity entity = this.db.Map<TEntity>(query).SingleOrDefault();
-
-         return entity;
+         return Extensions.Find(this, id);
       }
 
       /// <summary>
@@ -1054,7 +1031,7 @@ namespace DbExtensions {
 
          IDictionary<string, object> predicateValues =
             Enumerable.Range(0, predicateMembers.Length)
-               .ToDictionary(i => predicateMembers[i].MappedName, i => keyValues[i]);
+               .ToDictionary(i => predicateMembers[i].MappedName, i => this.SQL.ConvertMemberValue(predicateMembers[i], keyValues[i]));
 
          return Contains(predicateMembers, predicateValues);
       }
@@ -1062,7 +1039,7 @@ namespace DbExtensions {
       bool Contains(MetaDataMember[] predicateMembers, IDictionary<string, object> predicateValues) {
 
          SqlBuilder query = this.SQL.SELECT_FROM(new[] { predicateMembers[0] });
-         query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
+         query.WHERE(this.SQL.BuildPredicateFragment(predicateValues, query.ParameterValues));
 
          return this.db.Exists(query);
       }
@@ -1081,13 +1058,8 @@ namespace DbExtensions {
 
          EnsureEntityType();
 
-         IDictionary<string, object> predicateValues = metaType.IdentityMembers.ToDictionary(
-            m => m.MappedName,
-            m => this.SQL.GetMemberValue(entity, m)
-         );
-
          SqlBuilder query = this.SQL.SELECT_FROM(refreshMembers);
-         query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
+         query.WHERE(this.SQL.BuildPredicateFragment(entity, metaType.IdentityMembers, query.ParameterValues));
 
          PocoMapper mapper = this.db.CreatePocoMapper(metaType.Type);
 
@@ -1242,6 +1214,16 @@ namespace DbExtensions {
 
       string QuoteIdentifier(string unquotedIdentifier) {
          return this.db.QuoteIdentifier(unquotedIdentifier);
+      }
+
+      internal string BuildPredicateFragment(TEntity entity, ICollection<MetaDataMember> predicateMembers, ICollection<object> parametersBuffer) {
+
+         var predicateValues = predicateMembers.ToDictionary(
+            m => m.MappedName,
+            m => GetMemberValue(entity, m)
+         );
+
+         return BuildPredicateFragment(predicateValues, parametersBuffer);
       }
 
       internal string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
@@ -1437,11 +1419,6 @@ namespace DbExtensions {
              where m.IsPrimaryKey || (m.IsVersion && conflictPolicy == ConcurrencyConflictPolicy.UseVersion)
              select m).ToArray();
 
-         IDictionary<string, object> predicateValues = predicateMembers.ToDictionary(
-            m => m.MappedName,
-            m => GetMemberValue(entity, m)
-         );
-
          var parametersBuffer = new List<object>(updatingMembers.Length + predicateMembers.Length);
 
          var sb = new StringBuilder()
@@ -1466,7 +1443,7 @@ namespace DbExtensions {
 
          sb.AppendLine()
             .Append("WHERE ")
-            .Append(BuildPredicateFragment(predicateValues, parametersBuffer));
+            .Append(BuildPredicateFragment(entity, predicateMembers, parametersBuffer));
 
          return new SqlBuilder(sb.ToString(), parametersBuffer.ToArray());
       }
@@ -1515,11 +1492,6 @@ namespace DbExtensions {
              where m.IsPrimaryKey || (m.IsVersion && conflictPolicy == ConcurrencyConflictPolicy.UseVersion)
              select m).ToArray();
 
-         IDictionary<string, object> predicateValues = predicateMembers.ToDictionary(
-            m => m.MappedName,
-            m => GetMemberValue(entity, m)
-         );
-
          var parametersBuffer = new List<object>();
 
          var sb = new StringBuilder()
@@ -1527,7 +1499,7 @@ namespace DbExtensions {
             .Append(QuoteIdentifier(metaType.Table.TableName))
             .AppendLine()
             .Append("WHERE (")
-            .Append(BuildPredicateFragment(predicateValues, parametersBuffer))
+            .Append(BuildPredicateFragment(entity, predicateMembers, parametersBuffer))
             .Append(")");
 
          return new SqlBuilder(sb.ToString(), parametersBuffer.ToArray());
@@ -1554,9 +1526,14 @@ namespace DbExtensions {
 
          object value = member.MemberAccessor.GetBoxedValue(entity);
 
+         return ConvertMemberValue(member, value);
+      }
+
+      internal object ConvertMemberValue(MetaDataMember member, object value) {
+
          if (value != null
             && member.DbType != null
-            && (member.Type.IsEnum || (member.Type.IsGenericType 
+            && (member.Type.IsEnum || (member.Type.IsGenericType
                && member.Type.GetGenericTypeDefinition() == typeof(Nullable<>)
                && Nullable.GetUnderlyingType(member.Type).IsEnum))
             && member.DbType.IndexOf("char", StringComparison.OrdinalIgnoreCase) > 0) {
@@ -1613,13 +1590,90 @@ namespace DbExtensions {
    public static partial class Extensions {
 
       /// <summary>
+      /// Gets the entity whose primary key matches the <paramref name="id"/> parameter.
+      /// </summary>
+      /// <param name="source">The source set.</param>
+      /// <param name="id">The primary key value.</param>
+      /// <returns>
+      /// The entity whose primary key matches the <paramref name="id"/> parameter, 
+      /// or null if the <paramref name="id"/> does not exist.
+      /// </returns>
+      /// <remarks>
+      /// This method can only be used on mapped sets created by <see cref="Database"/>.
+      /// </remarks>
+      public static object Find(this SqlSet source, object id) {
+         return FindImpl(source, id).SingleOrDefault();
+      }
+
+      /// <summary>
+      /// Gets the entity whose primary key matches the <paramref name="id"/> parameter.
+      /// </summary>
+      /// <typeparam name="TResult">The type of the elements in the <paramref name="source"/> set.</typeparam>
+      /// <param name="source">The source set.</param>
+      /// <param name="id">The primary key value.</param>
+      /// <returns>
+      /// The entity whose primary key matches the <paramref name="id"/> parameter, 
+      /// or null if the <paramref name="id"/> does not exist.
+      /// </returns>
+      /// <remarks>
+      /// This method can only be used on mapped sets created by <see cref="Database"/>.
+      /// </remarks>
+      [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Need to keep result type same as input type.")]
+      public static TResult Find<TResult>(this SqlSet<TResult> source, object id) {
+         return ((SqlSet<TResult>)FindImpl(source, id)).SingleOrDefault();
+      }
+
+      static SqlSet FindImpl(SqlSet source, object id) {
+
+         if (source == null) throw new ArgumentNullException("source");
+         if (id == null) throw new ArgumentNullException("id");
+
+         Database db = source.context as Database;
+
+         if (db == null) {
+            throw new InvalidOperationException("Find can only be used on sets created by Database.");
+         }
+
+         Type resultType = source.resultType;
+
+         if (resultType == null) {
+            throw new InvalidOperationException("Find operation is not supported on untyped sets.");
+         }
+
+         MetaType metaType = db.GetMetaType(resultType);
+
+         if (metaType == null) {
+            throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture, "Mapping information was not found for '{0}'.", resultType.FullName));
+         }
+
+         if (metaType.IdentityMembers.Count == 0) {
+            throw new InvalidOperationException("The entity has no identity members defined.");
+
+         } else if (metaType.IdentityMembers.Count > 1) {
+            throw new InvalidOperationException("Cannot call this method when the entity has more than one identity member.");
+         }
+
+         SqlTable table = db.Table(metaType);
+         MetaDataMember idMember = metaType.IdentityMembers[0];
+
+         var predicateValues = new Dictionary<string, object> { 
+            { idMember.MappedName, table.SQL.ConvertMemberValue(idMember, id) }
+         };
+
+         var parameters = new List<object>(predicateValues.Count);
+         string predicate = table.SQL.BuildPredicateFragment(predicateValues, parameters);
+         
+         return source.Where(predicate, parameters.ToArray());
+      }
+
+      /// <summary>
       /// Specifies the related objects to include in the query results.
       /// </summary>
       /// <param name="source">The source set.</param>
       /// <param name="path">Dot-separated list of related objects to return in the query results.</param>
       /// <returns>A new <see cref="SqlSet"/> with the defined query path.</returns>
       /// <remarks>
-      /// This method can only be used on sets created by <see cref="Database"/>.
+      /// This method can only be used on mapped sets created by <see cref="Database"/>.
       /// </remarks>
       public static SqlSet Include(this SqlSet source, string path) {
 
@@ -1655,7 +1709,7 @@ namespace DbExtensions {
       /// <param name="path">Dot-separated list of related objects to return in the query results.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> with the defined query path.</returns>
       /// <remarks>
-      /// This method can only be used on sets created by <see cref="Database"/>.
+      /// This method can only be used on mapped sets created by <see cref="Database"/>.
       /// </remarks>
       [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Need to keep result type same as input type.")]
       public static SqlSet<TResult> Include<TResult>(this SqlSet<TResult> source, string path) {
