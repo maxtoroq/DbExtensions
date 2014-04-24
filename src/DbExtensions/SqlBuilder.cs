@@ -284,7 +284,18 @@ namespace DbExtensions {
       /// <param name="sql">A <see cref="SqlBuilder"/>.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
       public SqlBuilder Append(SqlBuilder sql) {
-         return Append("{0}", sql);
+
+         this.Buffer.Append(MakeAbsolutePlaceholders(sql));
+
+         for (int i = 0; i < sql.ParameterValues.Count; i++) {
+            this.ParameterValues.Add(sql.ParameterValues[i]);
+         }
+
+         return this;
+      }
+
+      string MakeAbsolutePlaceholders(SqlBuilder sql) {
+         return String.Format(CultureInfo.InvariantCulture, sql.ToString(), Enumerable.Range(0, sql.ParameterValues.Count).Select(x => Placeholder(this.ParameterValues.Count + x)).ToArray());
       }
 
       /// <summary>
@@ -296,59 +307,68 @@ namespace DbExtensions {
       public SqlBuilder Append(string format, params object[] args) {
 
          if (args == null || args.Length == 0) {
+
             this.Buffer.Append(format);
-         } else {
-            List<string> fargs = new List<string>();
-            List<object> oargs = new List<object>();
-
-            int fi = this.ParameterValues.Count;
-
-            for (int i = 0; i < args.Length; i++) {
-               object obj = args[i];
-
-               if (obj != null) {
-                  Array arr = obj as Array;
-
-                  if (arr != null && arr.Length > 0) {
-                     fargs.Add(String.Join(", ", Enumerable.Range(0, arr.Length).Select(x => String.Concat("{", fi++, "}")).ToArray()));
-                     foreach (object item in arr) oargs.Add(item);
-                     continue;
-
-                  } else {
-                     SqlBuilder sqlb = obj as SqlBuilder;
-
-                     if (sqlb != null) {
-                        StringBuilder sqlfrag = new StringBuilder()
-                           .AppendLine()
-                           .AppendFormat(CultureInfo.InvariantCulture, sqlb.ToString(), Enumerable.Range(0, sqlb.ParameterValues.Count).Select(x => String.Concat("{", fi++, "}")).ToArray())
-                           .Replace(Environment.NewLine, Environment.NewLine + "\t");
-
-                        fargs.Add(sqlfrag.ToString());
-                        oargs.AddRange(sqlb.ParameterValues);
-                        continue;
-                     }
-                  }
-               }
-
-               fargs.Add(String.Concat("{", fi++, "}"));
-               oargs.Add(obj);
-            }
-
-            if (format == null) {
-
-               string[] templArgs = Enumerable.Range(0, fargs.Count)
-                  .Select(i => String.Concat("{", i, "}")).ToArray();
-
-               format = String.Join(" ", templArgs);
-            }
-
-            this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, fargs.Cast<object>().ToArray());
-
-            foreach (object item in oargs)
-               this.ParameterValues.Add(item);
+            return this;
          }
 
+         var fargs = new List<string>();
+
+         for (int i = 0; i < args.Length; i++) {
+
+            object obj = args[i];
+
+            if (obj != null) {
+
+               Array arr = obj as Array;
+
+               if (arr != null && arr.Length > 0) {
+
+                  fargs.Add(String.Join(", ", Enumerable.Range(0, arr.Length).Select(x => Placeholder(this.ParameterValues.Count + x)).ToArray()));
+
+                  for (int j = 0; j < arr.Length; j++) {
+                     this.ParameterValues.Add(arr.GetValue(j));
+                  }
+                     
+                  continue;
+
+               } else {
+
+                  var sqlb = obj as SqlBuilder;
+
+                  if (sqlb != null) {
+
+                     var sqlfrag = new StringBuilder()
+                        .AppendLine()
+                        .Append(MakeAbsolutePlaceholders(sqlb))
+                        .Replace(Environment.NewLine, Environment.NewLine + "\t");
+
+                     fargs.Add(sqlfrag.ToString());
+
+                     for (int j = 0; j < sqlb.ParameterValues.Count; j++) {
+                        this.ParameterValues.Add(sqlb.ParameterValues[j]);
+                     }
+
+                     continue;
+                  }
+               }
+            }
+
+            fargs.Add(Placeholder(this.ParameterValues.Count));
+            this.ParameterValues.Add(obj);
+         }
+
+         if (format == null) {
+            format = String.Join(" ", Enumerable.Range(0, fargs.Count).Select(i => Placeholder(i)).ToArray());
+         }
+
+         this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, fargs.Cast<object>().ToArray());
+
          return this;
+      }
+
+      static string Placeholder(int index) {
+         return String.Concat("{", index.ToString(CultureInfo.InvariantCulture), "}");
       }
 
       /// <summary>
