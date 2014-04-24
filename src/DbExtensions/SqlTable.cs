@@ -1771,8 +1771,10 @@ namespace DbExtensions {
                currentType = association.OtherType;
             }
 
+            SqlSet newSet;
+
             if (associations.Count == 0) {
-               query = source.GetDefiningQuery();
+               newSet = source.CreateSet(omitBufferedCalls: true);
 
             } else {
 
@@ -1800,9 +1802,9 @@ namespace DbExtensions {
 
                   query.LEFT_JOIN(String.Format(CultureInfo.InvariantCulture, "{0} {1} ON ({2})", db.QuoteIdentifier(association.OtherType.Table.TableName), rAlias, joinPredicate.ToString()));
                }
-            }
 
-            SqlSet newSet = source.CreateSet(query);
+               newSet = source.CreateSet(query);
+            }
 
             if (manyAssoc != null) {
                AddManyInclude(newSet, parts, manyAssoc, db);

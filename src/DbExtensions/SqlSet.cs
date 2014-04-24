@@ -158,27 +158,28 @@ namespace DbExtensions {
       /// <param name="resultType">The type of objects to map the results to.</param>
       /// <param name="connection">The database connection.</param>
       public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection)
-         : this(definingQuery, resultType, connection, adoptQuery: false) { }
+         : this(definingQuery, resultType, new SimpleConnectionContext(connection)) { }
 
-      internal SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection, bool adoptQuery) 
-         : this(definingQuery, resultType, new SimpleConnectionContext(connection), adoptQuery) { }
-
-      internal SqlSet(SqlBuilder definingQuery, Type resultType, IConnectionContext context, bool adoptQuery) {
+      internal SqlSet(SqlBuilder definingQuery, Type resultType, IConnectionContext context) {
 
          if (definingQuery == null) throw new ArgumentNullException("definingQuery");
 
-         this.definingQuery = (adoptQuery) ?
-            definingQuery
-            : definingQuery.Clone();
-
+         this.definingQuery = definingQuery.Clone();
          this.resultType = resultType;
          this.context = context;
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected SqlSet(SqlSet set) {
+      internal SqlSet(string[] fromSelect, Type resultType, IConnectionContext context) {
+
+         if (fromSelect == null) throw new ArgumentNullException("fromSelect");
+         if (fromSelect.Length != 2) throw new ArgumentException("fromSelect.Length must be 2.", "fromSelect");
+
+         this.fromSelect = fromSelect;
+         this.resultType = resultType;
+         this.context = context;
+      }
+
+      internal SqlSet(SqlSet set) {
 
          if (set == null) throw new ArgumentNullException("set");
 
@@ -191,34 +192,16 @@ namespace DbExtensions {
          }
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected SqlSet(SqlSet set, SqlBuilder superQuery) 
+      internal SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType = null) 
          : this(set) {
 
          if (superQuery == null) throw new ArgumentNullException("superQuery");
 
          this.definingQuery = superQuery;
-      }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType)
-         : this(set, superQuery) {
-
-         this.resultType = resultType;
-      }
-
-      internal SqlSet(string[] fromSelect, Type resultType, IConnectionContext context) {
-
-         if (fromSelect == null) throw new ArgumentNullException("fromSelect");
-         if (fromSelect.Length != 2) throw new ArgumentException("fromSelect.Length must be 2.", "fromSelect");
-
-         this.fromSelect = fromSelect;
-         this.resultType = resultType;
-         this.context = context;
+         if (resultType != null) {
+            this.resultType = resultType;
+         }
       }
 
       internal SqlSet(SqlSet set, string[] fromSelect, Type resultType = null) 
@@ -532,17 +515,11 @@ namespace DbExtensions {
          return conn.GetType().Namespace.Equals("System.Data.OracleClient", StringComparison.Ordinal);
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected SqlBuilder CreateSuperQuery() {
+      internal SqlBuilder CreateSuperQuery() {
          return CreateSuperQuery(null, null);
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected SqlBuilder CreateSuperQuery(string selectFormat, params object[] args) {
+      internal SqlBuilder CreateSuperQuery(string selectFormat, params object[] args) {
          return CreateSuperQuery(GetDefiningQuery(clone: false), selectFormat, args);
       }
 
@@ -569,40 +546,16 @@ namespace DbExtensions {
          return this.setIndex++;
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected internal virtual SqlSet CreateSet(SqlBuilder superQuery) {
-         return new SqlSet(this, superQuery);
-      }
-
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected virtual SqlSet CreateSet(SqlBuilder superQuery, Type resultType) {
+      internal virtual SqlSet CreateSet(SqlBuilder superQuery, Type resultType = null) {
          return new SqlSet(this, superQuery, resultType);
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected virtual SqlSet<TResult> CreateSet<TResult>(SqlBuilder superQuery) {
-         return new SqlSet<TResult>(this, superQuery);
-      }
-
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected virtual SqlSet<TResult> CreateSet<TResult>(SqlBuilder superQuery, Func<IDataRecord, TResult> mapper) {
-         return new SqlSet<TResult>(this, superQuery, mapper);
-      }
-
-      internal virtual SqlSet CreateSet(string[] fromSelect) {
-         return new SqlSet(this, fromSelect);
-      }
-
-      internal SqlSet CreateSet(string[] fromSelect, Type resultType) {
+      internal virtual SqlSet CreateSet(string[] fromSelect, Type resultType = null) {
          return new SqlSet(this, fromSelect, resultType);
+      }
+
+      internal SqlSet<TResult> CreateSet<TResult>(SqlBuilder superQuery, Func<IDataRecord, TResult> mapper = null) {
+         return new SqlSet<TResult>(this, superQuery, mapper);
       }
 
       internal SqlSet<TResult> CreateSet<TResult>(string[] fromSelect) {
@@ -616,9 +569,7 @@ namespace DbExtensions {
          if (omitBufferedCalls
             && this.definingQuery == null) {
                
-            set = (resultType != null) ?
-               CreateSet(this.fromSelect, resultType)
-               : CreateSet(this.fromSelect);
+            set = CreateSet(this.fromSelect, resultType);
          }
 
          if (set == null) {
@@ -627,9 +578,7 @@ namespace DbExtensions {
                omitBufferedCalls: omitBufferedCalls
             );
 
-            set = (resultType != null) ?
-               CreateSet(query, resultType)
-               : CreateSet(query);
+            set = CreateSet(query, resultType);
          }
          
          CopyBufferState(set);
@@ -1319,8 +1268,8 @@ namespace DbExtensions {
       public SqlSet(SqlBuilder definingQuery, DbConnection connection) 
          : base(definingQuery, typeof(TResult), connection) { }
 
-      internal SqlSet(SqlBuilder definingQuery, IConnectionContext context, bool adoptQuery)
-         : base(definingQuery, typeof(TResult), context, adoptQuery) { }
+      internal SqlSet(SqlBuilder definingQuery, IConnectionContext context)
+         : base(definingQuery, typeof(TResult), context) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlSet&lt;TResult>"/> class
@@ -1346,30 +1295,8 @@ namespace DbExtensions {
          this.mapper = mapper;
       }
 
-      internal SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, IConnectionContext context, bool adoptQuery) 
-         : base(definingQuery, typeof(TResult), context, adoptQuery) {
-
-         if (mapper == null) throw new ArgumentNullException("mapper");
-
-         this.mapper = mapper;
-      }
-
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected SqlSet(SqlSet<TResult> set, SqlBuilder superQuery) 
-         : base((SqlSet)set, superQuery) {
-
-         if (set == null) throw new ArgumentNullException("set");
-
-         this.mapper = set.mapper;
-      }
-
-      internal SqlSet(SqlSet set, SqlBuilder superQuery)
-         : base(set, superQuery, typeof(TResult)) { }
-
-      internal SqlSet(SqlSet set, SqlBuilder superQuery, Func<IDataRecord, TResult> mapper)
-         : base(set, superQuery, typeof(TResult)) {
+      internal SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, IConnectionContext context) 
+         : base(definingQuery, typeof(TResult), context) {
 
          if (mapper == null) throw new ArgumentNullException("mapper");
 
@@ -1379,6 +1306,14 @@ namespace DbExtensions {
       internal SqlSet(string[] fromSelect, IConnectionContext context)
          : base(fromSelect, typeof(TResult), context) { }
 
+      internal SqlSet(SqlSet<TResult> set, SqlBuilder superQuery) 
+         : base((SqlSet)set, superQuery) {
+
+         if (set == null) throw new ArgumentNullException("set");
+
+         this.mapper = set.mapper;
+      }
+
       internal SqlSet(SqlSet<TResult> set, string[] fromSelect)
          : base((SqlSet)set, fromSelect) {
 
@@ -1387,25 +1322,32 @@ namespace DbExtensions {
          this.mapper = set.mapper;
       }
 
-      internal SqlSet(SqlSet set, string[] fromSelect)
-         : base(set, fromSelect) { }
+      internal SqlSet(SqlSet set, SqlBuilder superQuery, Func<IDataRecord, TResult> mapper = null)
+         : base(set, superQuery, typeof(TResult)) {
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected internal override SqlSet CreateSet(SqlBuilder superQuery) {
+         if (mapper != null) {
+            this.mapper = mapper;
+         }
+      }
+
+      internal SqlSet(SqlSet set, string[] fromSelect)
+         : base(set, fromSelect, typeof(TResult)) { }
+
+      internal override SqlSet CreateSet(SqlBuilder superQuery, Type resultType = null) {
+
+         if (resultType != null) {
+            return base.CreateSet(superQuery, resultType);
+         }
+
          return new SqlSet<TResult>(this, superQuery);
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected override SqlSet<T> CreateSet<T>(SqlBuilder superQuery) {
-         // TODO: This method is apparently not needed since it calls the same constructor as the base method
-         return new SqlSet<T>(this, superQuery);
-      }
+      internal override SqlSet CreateSet(string[] fromSelect, Type resultType = null) {
 
-      internal override SqlSet CreateSet(string[] fromSelect) {
+         if (resultType != null) {
+            return base.CreateSet(fromSelect, resultType);
+         }
+
          return new SqlSet<TResult>(this, fromSelect);
       }
 

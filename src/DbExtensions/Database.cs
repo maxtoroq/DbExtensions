@@ -612,7 +612,7 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public SqlSet From(SqlBuilder definingQuery) {
-         return new SqlSet(definingQuery, (Type)null, this, adoptQuery: false);
+         return new SqlSet(definingQuery, (Type)null, this);
       }
 
       /// <summary>
@@ -622,7 +622,7 @@ namespace DbExtensions {
       /// <param name="resultType">The type of objects to map the results to.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public SqlSet From(SqlBuilder definingQuery, Type resultType) {
-         return new SqlSet(definingQuery, resultType, this, adoptQuery: false);
+         return new SqlSet(definingQuery, resultType, this);
       }
 
       /// <summary>
@@ -632,7 +632,7 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
       public SqlSet<TResult> From<TResult>(SqlBuilder definingQuery) {
-         return new SqlSet<TResult>(definingQuery, this, adoptQuery: false);
+         return new SqlSet<TResult>(definingQuery, this);
       }
 
       /// <summary>
@@ -643,7 +643,7 @@ namespace DbExtensions {
       /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
       public SqlSet<TResult> From<TResult>(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
-         return new SqlSet<TResult>(definingQuery, mapper, this, adoptQuery: false);
+         return new SqlSet<TResult>(definingQuery, mapper, this);
       }
 
       // Misc
