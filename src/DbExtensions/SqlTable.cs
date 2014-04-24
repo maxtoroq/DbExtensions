@@ -548,6 +548,44 @@ namespace DbExtensions {
 
       void InsertDescendants(TEntity entity) {
 
+         InsertOneToOne(entity);
+         InsertOneToMany(entity);
+      }
+
+      void InsertOneToOne(TEntity entity) {
+
+         MetaAssociation[] oneToOne = metaType.Associations
+            .Where(a => !a.IsMany && a.ThisKeyIsPrimaryKey && a.OtherKeyIsPrimaryKey)
+            .ToArray();
+
+         for (int i = 0; i < oneToOne.Length; i++) {
+
+            MetaAssociation assoc = oneToOne[i];
+
+            object child = assoc.ThisMember.MemberAccessor.GetBoxedValue(entity);
+
+            if (child == null) {
+               continue;
+            }
+
+            for (int j = 0; j < assoc.ThisKey.Count; j++) {
+
+               MetaDataMember thisKey = assoc.ThisKey[j];
+               MetaDataMember otherKey = assoc.OtherKey[j];
+
+               object thisKeyVal = thisKey.MemberAccessor.GetBoxedValue(entity);
+
+               otherKey.MemberAccessor.SetBoxedValue(ref child, thisKeyVal);
+            }
+
+            SqlTable otherTable = this.db.Table(assoc.OtherType);
+
+            otherTable.Insert(child, deep: true);
+         }
+      }
+
+      void InsertOneToMany(TEntity entity) {
+
          MetaAssociation[] oneToMany = metaType.Associations.Where(a => a.IsMany).ToArray();
 
          for (int i = 0; i < oneToMany.Length; i++) {
