@@ -87,7 +87,7 @@ Public Class DatabaseMappedSamples
       order.OrderDetails.Add(New OrderDetail With {.ProductID = 77, .Quantity = 1})
       order.OrderDetails.Add(New OrderDetail With {.ProductID = 41, .Quantity = 2})
 
-      db.Orders.Insert(order)
+      db.Orders.Add(order)
 
       order.Freight = 10
 

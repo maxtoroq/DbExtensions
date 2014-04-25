@@ -51,7 +51,7 @@ namespace DbExtensions.Tests.Mapping {
                ProductName = ""
             };
 
-            table.Insert(item);
+            table.Add(item);
 
             Assert.AreEqual(1, table.Count("ProductID = {0} AND CategoryID = {1}", item.ProductID, item.CategoryID));
 
@@ -73,7 +73,7 @@ namespace DbExtensions.Tests.Mapping {
                ProductName = ""
             };
 
-            table.Insert(item);
+            table.Add(item);
 
             Assert.AreEqual(1, table.Count("ProductID = {0} AND CategoryID = {1}", item.ProductID, item.CategoryID));
 
@@ -118,7 +118,7 @@ namespace DbExtensions.Tests.Mapping {
                CategoryName = Enum.CategoryEnum.Foo
             };
 
-            table.Insert(item);
+            table.Add(item);
 
             Assert.AreEqual(1, table.Count("CategoryID = {0} AND CategoryName = {1}", item.CategoryID, item.CategoryName.ToString()));
 
@@ -145,7 +145,7 @@ namespace DbExtensions.Tests.Mapping {
                CategoryName = Enum.CategoryEnum.Foo
             };
 
-            table.Insert(item);
+            table.Add(item);
 
             Assert.AreEqual(1, table.Count("CategoryID = {0} AND CategoryName = {1}", item.CategoryID, item.CategoryName.ToString()));
 

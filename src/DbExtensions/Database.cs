@@ -1038,8 +1038,8 @@ namespace DbExtensions {
       /// otherwise, false. The default is true.
       /// </summary>
       /// <remarks>
-      /// This setting affects the behavior of <see cref="SqlTable&lt;TEntity>.Insert(TEntity)"/> and
-      /// <see cref="SqlTable&lt;TEntity>.InsertRange(TEntity[])"/>.
+      /// This setting affects the behavior of <see cref="SqlTable&lt;TEntity>.Add(TEntity)"/> and
+      /// <see cref="SqlTable&lt;TEntity>.AddRange(TEntity[])"/>.
       /// </remarks>
       public bool EnableInsertRecursion { get; set; }
 

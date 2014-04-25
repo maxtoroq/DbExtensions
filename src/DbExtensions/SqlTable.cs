@@ -169,22 +169,12 @@ namespace DbExtensions {
       /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
       /// need to have a primary key.
       /// </param>
-      public void Insert(object entity) {
-         table.Insert(entity);
+      public void Add(object entity) {
+         table.Add(entity);
       }
 
-      void ISqlTable.InsertDescendants(object entity) {
-         table.InsertDescendants(entity);
-      }
-
-      /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
-      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
-      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      public void InsertRange(IEnumerable<object> entities) {
-         table.InsertRange(entities);
+      void ISqlTable.AddDescendants(object entity) {
+         table.AddDescendants(entity);
       }
 
       /// <summary>
@@ -193,8 +183,18 @@ namespace DbExtensions {
       /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      public void InsertRange(params object[] entities) {
-         table.InsertRange(entities);
+      public void AddRange(IEnumerable<object> entities) {
+         table.AddRange(entities);
+      }
+
+      /// <summary>
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
+      /// </summary>
+      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
+      public void AddRange(params object[] entities) {
+         table.AddRange(entities);
       }
 
       /// <summary>
@@ -455,7 +455,7 @@ namespace DbExtensions {
       /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
       /// need to have a primary key.
       /// </param>
-      public void Insert(TEntity entity) {
+      public void Add(TEntity entity) {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
@@ -544,7 +544,7 @@ namespace DbExtensions {
 
             SqlTable otherTable = this.db.Table(assoc.OtherType);
 
-            otherTable.Insert(child);
+            otherTable.Add(child);
          }
       }
 
@@ -579,13 +579,13 @@ namespace DbExtensions {
 
             SqlTable otherTable = this.db.Table(assoc.OtherType);
 
-            otherTable.InsertRange(many);
+            otherTable.AddRange(many);
 
             for (int j = 0; j < many.Length; j++) {
 
                object child = many[j];
 
-               ((ISqlTable)otherTable).InsertDescendants(child);
+               ((ISqlTable)otherTable).AddDescendants(child);
             }
          }
       }
@@ -596,11 +596,11 @@ namespace DbExtensions {
       /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      public void InsertRange(IEnumerable<TEntity> entities) {
+      public void AddRange(IEnumerable<TEntity> entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
-         InsertRange(entities.ToArray());
+         AddRange(entities.ToArray());
       }
 
       /// <summary>
@@ -609,7 +609,7 @@ namespace DbExtensions {
       /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      public void InsertRange(params TEntity[] entities) {
+      public void AddRange(params TEntity[] entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
@@ -619,7 +619,7 @@ namespace DbExtensions {
             return;
 
          if (entities.Length == 1) {
-            Insert(entities[0]);
+            Add(entities[0]);
             return;
          }
 
@@ -653,7 +653,7 @@ namespace DbExtensions {
             using (var tx = this.db.EnsureInTransaction()) {
 
                for (int i = 0; i < entities.Length; i++)
-                  Insert(entities[i]);
+                  Add(entities[i]);
 
                tx.Commit();
             }
@@ -1064,23 +1064,23 @@ namespace DbExtensions {
          return Find(id);
       }
 
-      void ISqlTable.Insert(object entity) {
-         Insert((TEntity)entity);
+      void ISqlTable.Add(object entity) {
+         Add((TEntity)entity);
       }
 
-      void ISqlTable.InsertDescendants(object entity) {
+      void ISqlTable.AddDescendants(object entity) {
          InsertDescendants((TEntity)entity);
       }
 
-      void ISqlTable.InsertRange(IEnumerable<object> entities) {
-         InsertRange((IEnumerable<TEntity>)entities);
+      void ISqlTable.AddRange(IEnumerable<object> entities) {
+         AddRange((IEnumerable<TEntity>)entities);
       }
 
-      void ISqlTable.InsertRange(params object[] entities) {
+      void ISqlTable.AddRange(params object[] entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
-         InsertRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
+         AddRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
       }
 
       void ISqlTable.Update(object entity) {
@@ -1858,10 +1858,10 @@ namespace DbExtensions {
 
       object Find(object id);
 
-      void Insert(object entity);
-      void InsertDescendants(object entity); // internal
-      void InsertRange(IEnumerable<object> entities);
-      void InsertRange(params object[] entities);
+      void Add(object entity);
+      void AddDescendants(object entity); // internal
+      void AddRange(IEnumerable<object> entities);
+      void AddRange(params object[] entities);
 
       void Refresh(object entity);
 

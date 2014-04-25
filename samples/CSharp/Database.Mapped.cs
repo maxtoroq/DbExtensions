@@ -89,7 +89,7 @@ namespace Samples.CSharp {
             }
          };
 
-         db.Orders.Insert(order);
+         db.Orders.Add(order);
 
          order.Freight = 10m;
 

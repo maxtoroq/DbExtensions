@@ -73,7 +73,7 @@ type DatabaseMappedSamples(connectionString : string, mapping : MetaModel, log :
       order.OrderDetails.Add(new OrderDetail(ProductID = 77, Quantity = 1s))
       order.OrderDetails.Add(new OrderDetail(ProductID = 41, Quantity = 2s))
 
-      db.Orders.Insert(order)
+      db.Orders.Add(order)
 
       order.Freight <- new Nullable<decimal>(10m)
 
