@@ -293,8 +293,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="entity">The entity whose DELETE command is to be executed.</param>
-      public void Delete(object entity) {
-         table.Delete(entity);
+      public void Remove(object entity) {
+         table.Remove(entity);
       }
 
       /// <summary>
@@ -306,8 +306,8 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
       /// predicate, and how to validate the affected records value.
       /// </param>
-      public void Delete(object entity, ConcurrencyConflictPolicy conflictPolicy) {
-         table.Delete(entity, conflictPolicy);
+      public void Remove(object entity, ConcurrencyConflictPolicy conflictPolicy) {
+         table.Remove(entity, conflictPolicy);
       }
 
       /// <summary>
@@ -316,8 +316,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="id">The primary key value.</param>
-      public void DeleteKey(object id) {
-         table.DeleteKey(id);
+      public void RemoveKey(object id) {
+         table.RemoveKey(id);
       }
 
       /// <summary>
@@ -329,8 +329,8 @@ namespace DbExtensions {
       /// <param name="conflictPolicy">
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
       /// </param>
-      public void DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
-         table.DeleteKey(id, conflictPolicy);
+      public void RemoveKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
+         table.RemoveKey(id, conflictPolicy);
       }
 
       /// <summary>
@@ -338,8 +338,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
-      public void DeleteRange(IEnumerable<object> entities) {
-         table.DeleteRange(entities);
+      public void RemoveRange(IEnumerable<object> entities) {
+         table.RemoveRange(entities);
       }
 
       /// <summary>
@@ -351,8 +351,8 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
       /// predicate, and how to validate the affected records value.
       /// </param>
-      public void DeleteRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
-         table.DeleteRange(entities, conflictPolicy);
+      public void RemoveRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
+         table.RemoveRange(entities, conflictPolicy);
       }
 
       /// <summary>
@@ -360,8 +360,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
-      public void DeleteRange(params object[] entities) {
-         table.DeleteRange(entities);
+      public void RemoveRange(params object[] entities) {
+         table.RemoveRange(entities);
       }
 
       /// <summary>
@@ -373,8 +373,8 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
       /// predicate, and how to validate the affected records value.
       /// </param>
-      public void DeleteRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
-         table.DeleteRange(entities, conflictPolicy);
+      public void RemoveRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
+         table.RemoveRange(entities, conflictPolicy);
       }
 
       /// <summary>
@@ -847,8 +847,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="entity">The entity whose DELETE command is to be executed.</param>
-      public void Delete(TEntity entity) {
-         Delete(entity, this.db.Configuration.DeleteConflictPolicy);
+      public void Remove(TEntity entity) {
+         Remove(entity, this.db.Configuration.DeleteConflictPolicy);
       }
 
       /// <summary>
@@ -860,7 +860,7 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
       /// predicate, and how to validate the affected records value.
       /// </param>
-      public void Delete(TEntity entity, ConcurrencyConflictPolicy conflictPolicy) {
+      public void Remove(TEntity entity, ConcurrencyConflictPolicy conflictPolicy) {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
@@ -875,8 +875,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="id">The primary key value.</param>
-      public void DeleteKey(object id) {
-         DeleteKey(id, this.db.Configuration.DeleteConflictPolicy);
+      public void RemoveKey(object id) {
+         RemoveKey(id, this.db.Configuration.DeleteConflictPolicy);
       }
 
       /// <summary>
@@ -888,7 +888,7 @@ namespace DbExtensions {
       /// <param name="conflictPolicy">
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
       /// </param>
-      public void DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
+      public void RemoveKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
          this.db.Affect(this.SQL.DELETE_FROM_WHERE_id(id), 1, GetAffectedRecordsPolicy(conflictPolicy));
       }
 
@@ -897,11 +897,11 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
-      public void DeleteRange(IEnumerable<TEntity> entities) {
+      public void RemoveRange(IEnumerable<TEntity> entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
-         DeleteRange(entities.ToArray());
+         RemoveRange(entities.ToArray());
       }
 
       /// <summary>
@@ -913,11 +913,11 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
       /// predicate, and how to validate the affected records value.
       /// </param>
-      public void DeleteRange(IEnumerable<TEntity> entities, ConcurrencyConflictPolicy conflictPolicy) {
+      public void RemoveRange(IEnumerable<TEntity> entities, ConcurrencyConflictPolicy conflictPolicy) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
-         DeleteRange(entities.ToArray(), conflictPolicy);
+         RemoveRange(entities.ToArray(), conflictPolicy);
       }
 
       /// <summary>
@@ -925,8 +925,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
-      public void DeleteRange(params TEntity[] entities) {
-         DeleteRange(entities, this.db.Configuration.DeleteConflictPolicy);
+      public void RemoveRange(params TEntity[] entities) {
+         RemoveRange(entities, this.db.Configuration.DeleteConflictPolicy);
       }
 
       /// <summary>
@@ -938,7 +938,7 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
       /// predicate, and how to validate the affected records value.
       /// </param>
-      public void DeleteRange(TEntity[] entities, ConcurrencyConflictPolicy conflictPolicy) {
+      public void RemoveRange(TEntity[] entities, ConcurrencyConflictPolicy conflictPolicy) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
@@ -948,7 +948,7 @@ namespace DbExtensions {
             return;
 
          if (entities.Length == 1) {
-            Delete(entities[0], conflictPolicy);
+            Remove(entities[0], conflictPolicy);
             return;
          }
 
@@ -987,7 +987,7 @@ namespace DbExtensions {
             using (var tx = this.db.EnsureInTransaction()) {
 
                for (int i = 0; i < entities.Length; i++)
-                  Delete(entities[i], conflictPolicy);
+                  Remove(entities[i], conflictPolicy);
 
                tx.Commit();
             }
@@ -1180,42 +1180,42 @@ namespace DbExtensions {
          UpdateRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray(), conflictPolicy);
       }
 
-      void ISqlTable.Delete(object entity) {
-         Delete((TEntity)entity);
+      void ISqlTable.Remove(object entity) {
+         Remove((TEntity)entity);
       }
 
-      void ISqlTable.Delete(object entity, ConcurrencyConflictPolicy conflictPolicy) {
-         Delete((TEntity)entity, conflictPolicy);
+      void ISqlTable.Remove(object entity, ConcurrencyConflictPolicy conflictPolicy) {
+         Remove((TEntity)entity, conflictPolicy);
       }
 
-      void ISqlTable.DeleteKey(object id) {
-         DeleteKey(id);
+      void ISqlTable.RemoveKey(object id) {
+         RemoveKey(id);
       }
 
-      void ISqlTable.DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
-         DeleteKey(id, conflictPolicy);
+      void ISqlTable.RemoveKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
+         RemoveKey(id, conflictPolicy);
       }
 
-      void ISqlTable.DeleteRange(IEnumerable<object> entities) {
-         DeleteRange((IEnumerable<TEntity>)entities);
+      void ISqlTable.RemoveRange(IEnumerable<object> entities) {
+         RemoveRange((IEnumerable<TEntity>)entities);
       }
 
-      void ISqlTable.DeleteRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
-         DeleteRange((IEnumerable<TEntity>)entities, conflictPolicy);
+      void ISqlTable.RemoveRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
+         RemoveRange((IEnumerable<TEntity>)entities, conflictPolicy);
       }
 
-      void ISqlTable.DeleteRange(params object[] entities) { 
+      void ISqlTable.RemoveRange(params object[] entities) { 
 
          if (entities == null) throw new ArgumentNullException("entities");
 
-         DeleteRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
+         RemoveRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
       }
 
-      void ISqlTable.DeleteRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
+      void ISqlTable.RemoveRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
-         DeleteRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray(), conflictPolicy);
+         RemoveRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray(), conflictPolicy);
       }
 
       bool ISqlTable.Contains(object entity) {
@@ -1914,14 +1914,14 @@ namespace DbExtensions {
       bool Contains(object entity, bool version);
       bool ContainsKey(object id);
       
-      void Delete(object entity);
-      void Delete(object entity, ConcurrencyConflictPolicy conflictPolicy);
-      void DeleteKey(object id);
-      void DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy);
-      void DeleteRange(IEnumerable<object> entities);
-      void DeleteRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy);
-      void DeleteRange(params object[] entities);
-      void DeleteRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy);
+      void Remove(object entity);
+      void Remove(object entity, ConcurrencyConflictPolicy conflictPolicy);
+      void RemoveKey(object id);
+      void RemoveKey(object id, ConcurrencyConflictPolicy conflictPolicy);
+      void RemoveRange(IEnumerable<object> entities);
+      void RemoveRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy);
+      void RemoveRange(params object[] entities);
+      void RemoveRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy);
 
       object Find(object id);
 

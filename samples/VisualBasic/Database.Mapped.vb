@@ -94,9 +94,9 @@ Public Class DatabaseMappedSamples
       db.Orders.Update(order)
 
       ' The following line is not needed when cascade delete is configured on the database
-      db.OrderDetails.DeleteRange(order.OrderDetails)
+      db.OrderDetails.RemoveRange(order.OrderDetails)
 
-      db.Orders.Delete(order)
+      db.Orders.Remove(order)
 
    End Sub
 

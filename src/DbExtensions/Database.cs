@@ -1019,7 +1019,7 @@ namespace DbExtensions {
 
       /// <summary>
       /// Gets or sets the default policy to use when calling
-      /// <see cref="SqlTable&lt;TEntity>.Delete(TEntity)"/>.
+      /// <see cref="SqlTable&lt;TEntity>.Remove(TEntity)"/>.
       /// The default value is <see cref="ConcurrencyConflictPolicy.IgnoreVersionAndLowerAffectedRecords"/>.
       /// </summary>
       public ConcurrencyConflictPolicy DeleteConflictPolicy { get; set; }
