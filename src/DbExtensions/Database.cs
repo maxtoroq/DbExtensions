@@ -149,6 +149,7 @@ namespace DbExtensions {
          this.config.LastInsertIdCommand = "SELECT @@identity";
          this.config.DeleteConflictPolicy = ConcurrencyConflictPolicy.IgnoreVersionAndLowerAffectedRecords;
          this.config.EnableBatchCommands = true;
+         this.config.EnableInsertRecursion = true;
 
          if (providerName != null) {
             string identityKey = String.Format(CultureInfo.InvariantCulture, "DbExtensions:{0}:LastInsertIdCommand", providerName);
@@ -1031,6 +1032,16 @@ namespace DbExtensions {
       /// invariant name (e.g. DbExtensions:System.Data.SqlClient:EnableBatchCommands).
       /// </summary>
       public bool EnableBatchCommands { get; set; }
+
+      /// <summary>
+      /// true to recursively execute INSERT commands for the entity's one-to-one and one-to-many associations;
+      /// otherwise, false. The default is true.
+      /// </summary>
+      /// <remarks>
+      /// This setting affects the behavior of <see cref="SqlTable&lt;TEntity>.Insert(TEntity)"/> and
+      /// <see cref="SqlTable&lt;TEntity>.InsertRange(TEntity[])"/>.
+      /// </remarks>
+      public bool EnableInsertRecursion { get; set; }
 
       internal DatabaseConfiguration(MetaModel mapping) {
          this.mapping = mapping;

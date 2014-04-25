@@ -160,7 +160,9 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Executes an INSERT command for the specified <paramref name="entity"/>.
+      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entity">
       /// The object whose INSERT command is to be executed. This parameter is named entity for consistency
@@ -171,25 +173,14 @@ namespace DbExtensions {
          table.Insert(entity);
       }
 
-      /// <summary>
-      /// Executes an INSERT command for the specified <paramref name="entity"/>.
-      /// </summary>
-      /// <param name="entity">
-      /// The object whose INSERT command is to be executed. This parameter is named entity for consistency
-      /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
-      /// need to have a primary key.
-      /// </param>
-      /// <param name="deep">true to recursively execute INSERT commands for the <paramref name="entity"/>'s one-to-many associations; otherwise, false.</param>
-      public void Insert(object entity, bool deep) {
-         table.Insert(entity, deep);
-      }
-
       void ISqlTable.InsertDescendants(object entity) {
          table.InsertDescendants(entity);
       }
 
       /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
       public void InsertRange(IEnumerable<object> entities) {
@@ -197,29 +188,13 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      /// <param name="deep">true to recursively execute INSERT commands for each entity's one-to-many associations; otherwise, false.</param>
-      public void InsertRange(IEnumerable<object> entities, bool deep) {
-         table.InsertRange(entities, deep);
-      }
-
-      /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
       public void InsertRange(params object[] entities) {
          table.InsertRange(entities);
-      }
-
-      /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      /// <param name="deep">true to recursively execute INSERT commands for each entity's one-to-many associations; otherwise, false.</param>
-      public void InsertRange(object[] entities, bool deep) {
-         table.InsertRange(entities, deep);
       }
 
       /// <summary>
@@ -471,7 +446,9 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Executes an INSERT command for the specified <paramref name="entity"/>.
+      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entity">
       /// The object whose INSERT command is to be executed. This parameter is named entity for consistency
@@ -479,19 +456,6 @@ namespace DbExtensions {
       /// need to have a primary key.
       /// </param>
       public void Insert(TEntity entity) {
-         Insert(entity, deep: false);
-      }
-
-      /// <summary>
-      /// Executes an INSERT command for the specified <paramref name="entity"/>.
-      /// </summary>
-      /// <param name="entity">
-      /// The object whose INSERT command is to be executed. This parameter is named entity for consistency
-      /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
-      /// need to have a primary key.
-      /// </param>
-      /// <param name="deep">true to recursively execute INSERT commands for the <paramref name="entity"/>'s one-to-many associations; otherwise, false.</param>
-      public void Insert(TEntity entity, bool deep) {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
@@ -539,7 +503,7 @@ namespace DbExtensions {
                Refresh(entity, syncMembers);
             }
 
-            if (deep)
+            if (this.db.Configuration.EnableInsertRecursion)
                InsertDescendants(entity);
 
             tx.Commit();
@@ -580,7 +544,7 @@ namespace DbExtensions {
 
             SqlTable otherTable = this.db.Table(assoc.OtherType);
 
-            otherTable.Insert(child, deep: true);
+            otherTable.Insert(child);
          }
       }
 
@@ -627,7 +591,9 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
       public void InsertRange(IEnumerable<TEntity> entities) {
@@ -638,31 +604,12 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      /// <param name="deep">true to recursively execute INSERT commands for each entity's one-to-many associations; otherwise, false.</param>
-      public void InsertRange(IEnumerable<TEntity> entities, bool deep) {
-
-         if (entities == null) throw new ArgumentNullException("entities");
-
-         InsertRange(entities.ToArray(), deep);
-      }
-
-      /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
       public void InsertRange(params TEntity[] entities) {
-         InsertRange(entities, deep: false);
-      }
-
-      /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      /// <param name="deep">true to recursively execute INSERT commands for each entity's one-to-many associations; otherwise, false.</param>
-      public void InsertRange(TEntity[] entities, bool deep) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
@@ -672,7 +619,7 @@ namespace DbExtensions {
             return;
 
          if (entities.Length == 1) {
-            Insert(entities[0], deep);
+            Insert(entities[0]);
             return;
          }
 
@@ -692,9 +639,10 @@ namespace DbExtensions {
                
                this.db.Affect(batchInsert, entities.Length, AffectedRecordsPolicy.MustMatchAffecting);
 
-               if (deep) {
+               if (this.db.Configuration.EnableInsertRecursion) {
+
                   for (int i = 0; i < entities.Length; i++)
-                     InsertDescendants(entities[i]);
+                     InsertDescendants(entities[i]); 
                }
 
                tx.Commit();
@@ -705,7 +653,7 @@ namespace DbExtensions {
             using (var tx = this.db.EnsureInTransaction()) {
 
                for (int i = 0; i < entities.Length; i++)
-                  Insert(entities[i], deep);
+                  Insert(entities[i]);
 
                tx.Commit();
             }
@@ -1120,10 +1068,6 @@ namespace DbExtensions {
          Insert((TEntity)entity);
       }
 
-      void ISqlTable.Insert(object entity, bool deep) {
-         Insert((TEntity)entity, deep);
-      }
-
       void ISqlTable.InsertDescendants(object entity) {
          InsertDescendants((TEntity)entity);
       }
@@ -1132,22 +1076,11 @@ namespace DbExtensions {
          InsertRange((IEnumerable<TEntity>)entities);
       }
 
-      void ISqlTable.InsertRange(IEnumerable<object> entities, bool deep) {
-         InsertRange((IEnumerable<TEntity>)entities, deep);
-      }
-
       void ISqlTable.InsertRange(params object[] entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
          InsertRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
-      }
-
-      void ISqlTable.InsertRange(object[] entities, bool deep) {
-
-         if (entities == null) throw new ArgumentNullException("entities");
-
-         InsertRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray(), deep);
       }
 
       void ISqlTable.Update(object entity) {
@@ -1926,13 +1859,9 @@ namespace DbExtensions {
       object Find(object id);
 
       void Insert(object entity);
-      void Insert(object entity, bool deep);
       void InsertDescendants(object entity); // internal
-      
       void InsertRange(IEnumerable<object> entities);
-      void InsertRange(IEnumerable<object> entities, bool deep);
       void InsertRange(params object[] entities);
-      void InsertRange(object[] entities, bool deep);
 
       void Refresh(object entity);
 
