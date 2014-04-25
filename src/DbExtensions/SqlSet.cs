@@ -1157,24 +1157,6 @@ namespace DbExtensions {
          return set;
       }
 
-      /// <summary>
-      /// Produces the set union of the current set with <paramref name="otherSet"/>.
-      /// </summary>
-      /// <param name="otherSet">A <see cref="SqlSet"/> whose distinct elements form the second set for the union.</param>
-      /// <returns>A new <see cref="SqlSet"/> that contains the elements from both sets, excluding duplicates.</returns>
-      public SqlSet Union(SqlSet otherSet) {
-
-         if (otherSet == null) throw new ArgumentNullException("otherSet");
-
-         // TODO: check result compatibility?
-
-         var superQuery = CreateSuperQuery()
-            .UNION()
-            .Append(otherSet.CreateSuperQuery());
-
-         return CreateSet(superQuery);
-      }
-
       #endregion
 
       #region Object Members
@@ -1594,15 +1576,6 @@ namespace DbExtensions {
          return (SqlSet<TResult>)base.Where(predicate, parameters);
       }
 
-      /// <summary>
-      /// Produces the set union of the current set with <paramref name="otherSet"/>.
-      /// </summary>
-      /// <param name="otherSet">A <see cref="SqlSet&lt;TResult>"/> whose distinct elements form the second set for the union.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> that contains the elements from both sets, excluding duplicates.</returns>
-      public SqlSet<TResult> Union(SqlSet<TResult> otherSet) {
-         return (SqlSet<TResult>)base.Union(otherSet);
-      }
-
       #endregion
    }
 
@@ -1697,7 +1670,6 @@ namespace DbExtensions {
       List<TSource> ToList();
       TSqlSet Where(string predicate);
       TSqlSet Where(string predicate, params object[] parameters);
-      TSqlSet Union(TSqlSet otherSet);
    }
 
    interface IConnectionContext {
