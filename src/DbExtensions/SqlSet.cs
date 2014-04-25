@@ -622,9 +622,6 @@ namespace DbExtensions {
             return Extensions.Map<object>(q => CreateCommand(query), query, CreatePocoMapper(singleResult), this.Log);
          }
 
-#if NET35
-         throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
-#else
          return Extensions.Map<dynamic>(
             q => CreateCommand(query),
             query,
@@ -635,7 +632,6 @@ namespace DbExtensions {
             },
             this.Log
          );
-#endif
       }
 
       internal PocoMapper CreatePocoMapper(bool singleResult) {
