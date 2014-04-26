@@ -1,0 +1,3 @@
+[submodule "submodules/sandcastle-md"]
+	path = submodules/sandcastle-md
+	url = https://github.com/maxtoroq/sandcastle-md.git

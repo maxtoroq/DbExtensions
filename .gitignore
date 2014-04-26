@@ -5,6 +5,7 @@
 *.user
 packages
 NuGet.exe
+build/docs/output
 *.sl3
 *.[msl]df
 samples/App/x64
