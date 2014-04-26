@@ -1,14 +1,7 @@
 The SQL framework for .NET
 ==========================
-DbExtensions consists of 4 components that can be used together 
-or separately: 
-
-1. A set of extension methods that simplifies raw ADO.NET programming
-2. A POCO query API: `SqlSet`
-3. An API for building SQL queries: `SqlBuilder`
-4. CRUD operations: `Database`, `SqlTable`
-
-The key features of this library are the granularity of its components and code aesthetics.
+DbExtensions is a data-access API with a strong focus on **query composition, granularity and code aesthetics**.
+It supports both POCO and dynamic (untyped) mapping.
 
 Get it now! using NuGet
 -----------------------
@@ -127,20 +120,20 @@ Features
 - Attributes or XML mapping for inserts, updates and deletes, using [System.Data.Linq.Mapping](http://msdn.microsoft.com/library/system.data.linq.mapping) (LINQ to SQL mapping)
 - Generic and non-generic APIs (for when the type of the entity is not known at build time)
 - Automatic connection management (no need to explicitly open connection, but you are allowed to)
+- Eager loading
 - Optimistic concurrency (using version column)
-- Batch and deep commands (e.g. recursively insert entity and all one-to-many associations)
-- Query results as XML
+- Batch commands
 - Profiling
-- Provider-independent (tested against SQLite, SQL Server Compact, SQL Server and MySQL)
+- Provider-independent (tested against SQL Server, SQL Server Compact, MySQL and SQLite)
 
 Not included
 ------------------------
 DbExtensions doesn't provide the following functionality:
 
+- Unit of work
+- Change tracking
 - Identity map
 - Lazy loading
-- Change tracking
-- Unit of work
 
 Resources
 ---------

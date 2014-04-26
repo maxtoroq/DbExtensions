@@ -29,7 +29,7 @@ namespace DbExtensions {
 
    /// <summary>
    /// A non-generic version of <see cref="SqlTable&lt;TEntity>"/> which can be used when the type of the entity is not known at build time.
-   /// This class cannot be instantiated.
+   /// This class cannot be instantiated, to get an instance use the <see cref="Database.Table(Type)"/> method.
    /// </summary>
    /// <seealso cref="Database.Table(Type)"/>
    [DebuggerDisplay("{metaType.Name}")]
@@ -395,8 +395,8 @@ namespace DbExtensions {
 
    /// <summary>
    /// A <see cref="SqlSet&lt;TEntity>"/> that provides additional methods for CRUD (Create, Read, Update, Delete)
-   /// operations for <typeparamref name="TEntity"/>, mapped using the <see cref="N:System.Data.Linq.Mapping"/> API. 
-   /// This class cannot be instantiated.
+   /// operations for entities mapped using the <see cref="N:System.Data.Linq.Mapping"/> API. 
+   /// This class cannot be instantiated, to get an instance use the <see cref="Database.Table&lt;TEntity>"/> method.
    /// </summary>
    /// <typeparam name="TEntity">The type of the entity.</typeparam>
    /// <seealso cref="Database.Table&lt;TEntity>()"/>

@@ -28,9 +28,17 @@ using System.Reflection;
 namespace DbExtensions {
 
    /// <summary>
-   /// Creates and executes CRUD (Create, Read, Update, Delete) commands for entities mapped using the
-   /// <see cref="N:System.Data.Linq.Mapping"/> API.
+   /// Provides simple data access using <see cref="SqlSet"/>, <see cref="SqlBuilder"/> and <see cref="SqlTable&lt;TEntity>"/>.
    /// </summary>
+   /// <remarks>
+   /// <see cref="Database"/> is the entry point of the <see cref="N:DbExtensions"/> API.
+   /// Some components such as <see cref="SqlSet"/> and <see cref="SqlBuilder"/> can be used without <see cref="Database"/>.
+   /// <see cref="SqlTable&lt;TEntity>"/> on the other hand depends on <see cref="Database"/>.
+   /// These components can greatly simplify data access, but you can still use <see cref="Database"/> by providing
+   /// commands in <see cref="String"/> form.
+   /// <see cref="Database"/> also serves as a state keeper that can be used to execute multiple commands using
+   /// the same connection, transaction, configuration, profiling, etc.
+   /// </remarks>
    public partial class Database : IDisposable, IConnectionContext {
 
       static readonly MethodInfo tableMethod = typeof(Database).GetMethods(BindingFlags.Public | BindingFlags.Instance)
