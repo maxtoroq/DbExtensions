@@ -158,8 +158,9 @@ namespace DbExtensions {
 
          uint nameAsNumber;
 
-         if (UInt32.TryParse(propertyName, out nameAsNumber))
+         if (UInt32.TryParse(propertyName, out nameAsNumber)) {
             throw new ArgumentException("Cannot use constructor mapping, by using numeric column names, unless you specify the type of the object you want to map to.", "propertyName");
+         }
 
          this._PropertyName = propertyName;
       }
@@ -174,8 +175,9 @@ namespace DbExtensions {
 
          object value;
 
-         if (dictionary.TryGetValue(PropertyName, out value))
+         if (dictionary.TryGetValue(PropertyName, out value)) {
             return value;
+         }
 
          return null;
       }

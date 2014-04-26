@@ -107,16 +107,19 @@ namespace DbExtensions {
 
          SqlBuilder sql = new SqlBuilder();
 
-         if (values.Length == 0)
+         if (values.Length == 0) {
             return sql;
+         }
 
-         if (separator == null)
+         if (separator == null) {
             separator = "";
+         }
 
          SqlBuilder first = values[0];
 
-         if (first != null)
+         if (first != null) {
             sql.Append(first);
+         }
 
          for (int i = 1; i < values.Length; i++) {
 
@@ -124,8 +127,9 @@ namespace DbExtensions {
 
             SqlBuilder val = values[i];
 
-            if (val != null)
+            if (val != null) {
                sql.Append(val);
+            }
          }
 
          return sql;
@@ -148,23 +152,27 @@ namespace DbExtensions {
 
          SqlBuilder sql = new SqlBuilder();
 
-         if (separator == null)
+         if (separator == null) {
             separator = "";
+         }
 
          using (IEnumerator<SqlBuilder> enumerator = values.GetEnumerator()) {
 
-            if (!enumerator.MoveNext())
+            if (!enumerator.MoveNext()) {
                return sql;
+            }
 
-            if (enumerator.Current != null)
+            if (enumerator.Current != null) {
                sql.Append(enumerator.Current);
+            }
 
             while (enumerator.MoveNext()) {
 
                sql.Append(separator);
 
-               if (enumerator.Current != null)
+               if (enumerator.Current != null) {
                   sql.Append(enumerator.Current);
+               }
             }
          }
 
@@ -214,8 +222,9 @@ namespace DbExtensions {
          if (separator == null
             || !String.Equals(clauseName, this.CurrentClause, StringComparison.OrdinalIgnoreCase)) {
 
-            if (!this.IsEmpty)
+            if (!this.IsEmpty) {
                this.Buffer.AppendLine();
+            }
 
             if (clauseName != null) {
                this.Buffer.Append(clauseName);
@@ -592,8 +601,9 @@ namespace DbExtensions {
             formatEnd = formatSplit[1];
          }
 
-         if (parametersFactory == null)
+         if (parametersFactory == null) {
             parametersFactory = (item) => null;
+         }
 
          string currentSeparator = this.NextSeparator ?? this.CurrentSeparator;
 
@@ -1087,8 +1097,9 @@ namespace DbExtensions {
       /// <returns>A reference to this instance after the append operation has completed.</returns>
       public SqlBuilder VALUES(params object[] args) {
 
-         if (args == null || args.Length == 0)
+         if (args == null || args.Length == 0) {
             throw new ArgumentException("args cannot be empty", "args");
+         }
 
          return AppendClause("VALUES", null, "({0})", new object[] { args });
       }

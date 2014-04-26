@@ -74,16 +74,19 @@ namespace DbExtensions {
 
          DbProviderFactory factory = getDbProviderFactory(connection);
 
-         if (factory != null)
+         if (factory != null) {
             return factory;
+         }
 
          // In .NET 4.5 Odbc and OleDb do not override DbConnection.DbProviderFactory
 
-         if (connection is System.Data.Odbc.OdbcConnection)
+         if (connection is System.Data.Odbc.OdbcConnection) {
             return System.Data.Odbc.OdbcFactory.Instance;
+         }
 
-         if (connection is System.Data.OleDb.OleDbConnection)
+         if (connection is System.Data.OleDb.OleDbConnection) {
             return System.Data.OleDb.OleDbFactory.Instance;
+         }
 
          Type type = connection.GetType();
          string ns = type.Namespace;
@@ -91,10 +94,12 @@ namespace DbExtensions {
          
          Type factoryType = type.Assembly.GetType(ns + "." + factoryName, throwOnError: false);
 
-         if (factoryType == null)
+         if (factoryType == null) {
             return null;
+         }
 
-         return (DbProviderFactory)factoryType.GetField("Instance", BindingFlags.Static | BindingFlags.Public).GetValue(null);
+         return (DbProviderFactory)factoryType.GetField("Instance", BindingFlags.Static | BindingFlags.Public)
+            .GetValue(null);
       }
 
       /// <summary>
@@ -352,8 +357,9 @@ namespace DbExtensions {
          if (command == null) throw new ArgumentNullException("command");
          if (command.Connection == null) throw new ArgumentException("DbCommand.Connection cannot be null", "command");
 
-         if ((int)affectedMode < 0 || (int)affectedMode > 2)
+         if ((int)affectedMode < 0 || (int)affectedMode > 2) {
             affectedMode = AffectedRecordsPolicy.MustMatchAffecting;
+         }
 
          logger = logger ?? TextWriter.Null;
 
@@ -399,8 +405,9 @@ namespace DbExtensions {
                      errorMessage = String.Format(CultureInfo.InvariantCulture, "The number of affected records should be {0} or lower, the actual number is {1}.", affectingRecords, affectedRecords);
                   }
 
-                  if (errorMessage != null) 
+                  if (errorMessage != null) {
                      throw new DBConcurrencyException(errorMessage);
+                  }
                }
             
             } catch {
@@ -424,8 +431,10 @@ namespace DbExtensions {
             return affectedRecords;
 
          } finally {
-            if (txScope != null)
+
+            if (txScope != null) {
                txScope.Dispose();
+            }
 
             connMng.Dispose();
          }
@@ -577,6 +586,7 @@ namespace DbExtensions {
             IDbDataParameter param = command.Parameters[i] as IDbDataParameter;
 
             if (param != null) {
+
                sb.AppendLine()
                   .AppendFormat(CultureInfo.InvariantCulture, "-- {0}: {1} {2} (Size = {3}) [{4}]", param.ParameterName, param.Direction, param.DbType, param.Size, param.Value);
             }
@@ -1007,14 +1017,19 @@ namespace DbExtensions {
             this.conn = conn;
             this.prevStateWasClosed = (conn.State == ConnectionState.Closed);
 
-            if (this.prevStateWasClosed)
+            if (this.prevStateWasClosed) {
                this.conn.Open();
+            }
          }
 
          public void Dispose() {
 
-            if (conn != null && prevStateWasClosed && conn.State != ConnectionState.Closed)
+            if (conn != null
+               && prevStateWasClosed
+               && conn.State != ConnectionState.Closed) {
+               
                conn.Close();
+            }
          }
       }
 
@@ -1043,7 +1058,9 @@ namespace DbExtensions {
          DbProviderFactory factory;
 
          if (!factories.TryGetValue(providerInvariantName, out factory)) {
+
             lock (padlock) {
+
                if (!factories.TryGetValue(providerInvariantName, out factory)) {
 
                   factory = DbProviderFactories.GetFactory(providerInvariantName);
@@ -1148,14 +1165,17 @@ namespace DbExtensions {
    /// non-query command.
    /// </summary>
    public enum AffectedRecordsPolicy { 
+
       /// <summary>
       /// The affected records value must be equal as the affecting records value.
       /// </summary>
       MustMatchAffecting = 0,
+
       /// <summary>
       /// The affected records value must be equal or lower than the affecting records value.
       /// </summary>
       AllowLower = 1,
+
       /// <summary>
       /// The affected records value is ignored.
       /// </summary>
@@ -1186,8 +1206,9 @@ namespace DbExtensions {
 
          IEnumerator<TResult> e = enumerator;
 
-         if (e == null)
+         if (e == null) {
             throw new InvalidOperationException("Cannot enumerate more than once.");
+         }
 
          enumerator = null;
 
@@ -1199,9 +1220,10 @@ namespace DbExtensions {
       }
 
       public void Dispose() {
-         
-         if (enumerator != null)
+
+         if (enumerator != null) {
             enumerator.Dispose();
+         }
       }
 
       #region Nested Types
@@ -1223,8 +1245,9 @@ namespace DbExtensions {
 
             IDbConnection conn = command.Connection;
 
-            if (conn == null)
+            if (conn == null) {
                throw new ArgumentException("command.Connection cannot be null", "command");
+            }
 
             prevStateWasClosed = (conn.State == ConnectionState.Closed);
 
@@ -1241,26 +1264,31 @@ namespace DbExtensions {
 
             if (reader == null) {
 
-               if (prevStateWasClosed)
+               if (prevStateWasClosed) {
                   command.Connection.Open();
+               }
 
                try {
                   reader = command.ExecuteReader();
-                  
-                  if (logger != null) 
+
+                  if (logger != null) {
                      logger.WriteLine(command.ToTraceString(reader.RecordsAffected));
+                  }
                
                } catch {
 
                   try {
+
                      if (logger != null) {
                         logger.WriteLine("-- ERROR: The following command produced an error");
                         logger.WriteLine(command.ToTraceString());
                      }
 
                   } finally {
-                     if (prevStateWasClosed) 
+
+                     if (prevStateWasClosed) {
                         EnsureConnectionClosed();
+                     }
                   }
 
                   throw;
@@ -1278,8 +1306,10 @@ namespace DbExtensions {
                   current = mapper(reader);
 
                } catch {
-                  if (prevStateWasClosed) 
+
+                  if (prevStateWasClosed) {
                      EnsureConnectionClosed();
+                  }
                   
                   throw;
                }
@@ -1287,8 +1317,9 @@ namespace DbExtensions {
                return true;
             }
 
-            if (prevStateWasClosed) 
+            if (prevStateWasClosed) {
                EnsureConnectionClosed();
+            }
 
             return false;
          }
@@ -1298,20 +1329,23 @@ namespace DbExtensions {
          }
 
          public void Dispose() {
-            
-            if (reader != null) 
-               reader.Dispose();
 
-            if (prevStateWasClosed)
+            if (reader != null) {
+               reader.Dispose();
+            }
+
+            if (prevStateWasClosed) {
                EnsureConnectionClosed();
+            }
          }
 
          void EnsureConnectionClosed() {
 
             IDbConnection conn = command.Connection;
 
-            if (conn.State != ConnectionState.Closed)
+            if (conn.State != ConnectionState.Closed) {
                conn.Close();
+            }
          }
       }
 
@@ -1460,8 +1494,9 @@ namespace DbExtensions {
                   var message = new StringBuilder();
                   message.AppendFormat(CultureInfo.InvariantCulture, "Already specified an argument for parameter '{0}'", param.Name);
 
-                  if (pair.Key.ColumnOrdinal.HasValue)
+                  if (pair.Key.ColumnOrdinal.HasValue) {
                      message.AppendFormat(CultureInfo.InvariantCulture, " ('{0}')", record.GetName(pair.Key.ColumnOrdinal.Value));
+                  }
 
                   message.Append(".");
 
@@ -1696,16 +1731,18 @@ namespace DbExtensions {
 
       public object Map(IDataRecord record, MappingContext context) {
 
-         if (this.IsComplex)
+         if (this.IsComplex) {
             return MapComplex(record, context);
+         }
 
          return MapSimple(record, context);
       }
 
       protected virtual object MapComplex(IDataRecord record, MappingContext context) {
 
-         if (AllColumnsNull(record))
+         if (AllColumnsNull(record)) {
             return null;
+         }
 
          object value = Create(record, context);
          Load(ref value, record, context);
@@ -1859,8 +1896,9 @@ namespace DbExtensions {
 
          PropertyInfo property = GetProperty(((PocoNode)container).UnderlyingType, propertyName);
 
-         if (property == null)
+         if (property == null) {
             return null;
+         }
 
          return PocoNode.Simple(columnOrdinal, property);
       }
@@ -1869,8 +1907,9 @@ namespace DbExtensions {
 
          PropertyInfo property = GetProperty(((PocoNode)container).UnderlyingType, propertyName);
 
-         if (property == null)
+         if (property == null) {
             return null;
+         }
 
          return PocoNode.Complex(property);
       }
@@ -1904,8 +1943,9 @@ namespace DbExtensions {
 
          PropertyInfo property = declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-         if (property == null)
+         if (property == null) {
             return property;
+         }
 
          if (!property.CanWrite) {
 
@@ -2023,8 +2063,9 @@ namespace DbExtensions {
 
       public override object Create(IDataRecord record, MappingContext context) {
 
-         if (this.Constructor == null)
+         if (this.Constructor == null) {
             return Activator.CreateInstance(this.Type);
+         }
 
          object[] args = this.ConstructorParameters.Select(m => m.Value.Map(record, context)).ToArray();
 
@@ -2045,7 +2086,9 @@ namespace DbExtensions {
 
                object value = args[i];
 
-               if (value == null) continue;
+               if (value == null) {
+                  continue;
+               }
 
                PocoNode paramNode = (PocoNode)this.ConstructorParameters.ElementAt(i).Value;
 
@@ -2068,8 +2111,9 @@ namespace DbExtensions {
                }
             }
 
-            if (convertSet)
+            if (convertSet) {
                return Create(record, context);
+            }
 
             throw;
          }

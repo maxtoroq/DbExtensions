@@ -142,10 +142,12 @@ namespace DbExtensions {
       void Initialize(string providerName, MetaModel mapping) {
 
          if (mapping == null) {
+
             Type thisType = GetType();
 
-            if (thisType != typeof(Database))
+            if (thisType != typeof(Database)) {
                mapping = new AttributeMappingSource().GetModel(thisType);
+            }
          }
 
          this.config = new DatabaseConfiguration(mapping);
@@ -160,20 +162,24 @@ namespace DbExtensions {
          this.config.EnableInsertRecursion = true;
 
          if (providerName != null) {
+
             string identityKey = String.Format(CultureInfo.InvariantCulture, "DbExtensions:{0}:LastInsertIdCommand", providerName);
             string identitySetting = ConfigurationManager.AppSettings[identityKey];
 
-            if (identitySetting != null)
+            if (identitySetting != null) {
                this.config.LastInsertIdCommand = identitySetting;
+            }
 
             string batchKey = String.Format(CultureInfo.InvariantCulture, "DbExtensions:{0}:EnableBatchCommands", providerName);
             string batchSetting = ConfigurationManager.AppSettings[batchKey];
             
             if (batchSetting != null) {
+
                bool batch;
 
-               if (!Boolean.TryParse(batchSetting, out batch))
+               if (!Boolean.TryParse(batchSetting, out batch)) {
                   throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture, "The {0} appication setting must be a valid boolean.", batchSetting));
+               }
 
                this.config.EnableBatchCommands = batch; 
             }
@@ -668,8 +674,9 @@ namespace DbExtensions {
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Operation is expensive.")]
       public virtual object LastInsertId() {
 
-         if (String.IsNullOrEmpty(this.config.LastInsertIdCommand))
+         if (String.IsNullOrEmpty(this.config.LastInsertIdCommand)) {
             throw new InvalidOperationException("LastInsertIdCommand cannot be null.");
+         }
 
          DbCommand command = CreateCommand(this.config.LastInsertIdCommand);
 
@@ -743,8 +750,9 @@ namespace DbExtensions {
          DbCommand command = this.cb.CreateCommand(this.Connection, commandText, parameters);
          DbTransaction transaction = this.Transaction;
 
-         if (transaction != null)
+         if (transaction != null) {
             command.Transaction = transaction;
+         }
 
          return command;
       }
@@ -772,8 +780,9 @@ namespace DbExtensions {
 
          if (entityType == null) throw new ArgumentNullException("entityType");
 
-         if (this.config.Mapping == null)
+         if (this.config.Mapping == null) {
             throw new InvalidOperationException("There's no MetaModel associated, the operation is not available.");
+         }
 
          return this.config.Mapping.GetMetaType(entityType);
       }
@@ -900,8 +909,9 @@ namespace DbExtensions {
 
             try {
 
-               if (System.Transactions.Transaction.Current != null)
+               if (System.Transactions.Transaction.Current != null) {
                   this.txScope = new System.Transactions.TransactionScope();
+               }
 
                if (this.txScope == null 
                   && this.txAdo == null) {
@@ -940,8 +950,9 @@ namespace DbExtensions {
 
          public void Rollback() {
 
-            if (txScope != null)
+            if (txScope != null) {
                return;
+            }
 
             if (txBeganHere) {
 
@@ -981,8 +992,9 @@ namespace DbExtensions {
 
          void RemoveTxFromDao() {
 
-            if (db.Transaction != null && Object.ReferenceEquals(db.Transaction, txAdo))
+            if (db.Transaction != null && Object.ReferenceEquals(db.Transaction, txAdo)) {
                db.Transaction = null;
+            }
          }
       }
 
@@ -1062,16 +1074,19 @@ namespace DbExtensions {
    /// or when trying to UPDATE/DELETE a row that no longer exists.
    /// </summary>
    public enum ConcurrencyConflictPolicy {
+
       /// <summary>
       /// Include version column check in the UPDATE/DELETE statement predicate.
       /// </summary>
       UseVersion = 0,
+
       /// <summary>
       /// The predicate for the UPDATE/DELETE statement should not contain
       /// any version column checks to avoid version conflicts. 
       /// Note that a conflict can still ocurr if the row no longer exists.
       /// </summary>
       IgnoreVersion = 1,
+
       /// <summary>
       /// The predicate for the UPDATE/DELETE statement should not contain
       /// any version column checks to avoid version conflicts. 

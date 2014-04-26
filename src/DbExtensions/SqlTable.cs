@@ -95,7 +95,8 @@ namespace DbExtensions {
          if (metaType.Table == null) throw new InvalidOperationException("metaType.Table cannot be null.");
 
          string alias = (!String.IsNullOrEmpty(tableAlias)) ?
-            " " + db.QuoteIdentifier(tableAlias) : null;
+            " " + db.QuoteIdentifier(tableAlias) 
+            : null;
 
          return db.QuoteIdentifier(metaType.Table.TableName) + (alias ?? "");
       }
@@ -127,8 +128,9 @@ namespace DbExtensions {
       /// <exception cref="System.InvalidOperationException">The specified <typeparamref name="TEntity"/> is not valid for this instance.</exception>
       public new SqlTable<TEntity> Cast<TEntity>() where TEntity : class {
 
-         if (typeof(TEntity) != this.metaType.Type) 
+         if (typeof(TEntity) != this.metaType.Type) {
             throw new InvalidOperationException("The specified type parameter is not valid for this instance.");
+         }
 
          return (SqlTable<TEntity>)table;
       }
@@ -480,8 +482,9 @@ namespace DbExtensions {
 
                object id = this.db.LastInsertId();
 
-               if (Convert.IsDBNull(id) || id == null)
+               if (Convert.IsDBNull(id) || id == null) {
                   throw new DataException("The last insert id value cannot be null.");
+               }
 
                object convertedId;
 
@@ -503,8 +506,9 @@ namespace DbExtensions {
                Refresh(entity, syncMembers);
             }
 
-            if (this.db.Configuration.EnableInsertRecursion)
+            if (this.db.Configuration.EnableInsertRecursion) {
                InsertDescendants(entity);
+            }
 
             tx.Commit();
          }
@@ -615,8 +619,9 @@ namespace DbExtensions {
 
          entities = entities.Where(o => o != null).ToArray();
 
-         if (entities.Length == 0)
+         if (entities.Length == 0) {
             return;
+         }
 
          if (entities.Length == 1) {
             Add(entities[0]);
@@ -641,8 +646,9 @@ namespace DbExtensions {
 
                if (this.db.Configuration.EnableInsertRecursion) {
 
-                  for (int i = 0; i < entities.Length; i++)
-                     InsertDescendants(entities[i]); 
+                  for (int i = 0; i < entities.Length; i++) {
+                     InsertDescendants(entities[i]);
+                  }
                }
 
                tx.Commit();
@@ -652,8 +658,9 @@ namespace DbExtensions {
 
             using (var tx = this.db.EnsureInTransaction()) {
 
-               for (int i = 0; i < entities.Length; i++)
+               for (int i = 0; i < entities.Length; i++) {
                   Add(entities[i]);
+               }
 
                tx.Commit();
             }
@@ -695,8 +702,9 @@ namespace DbExtensions {
 
             this.db.Affect(updateSql, 1, affRec);
 
-            if (syncMembers.Length > 0)
+            if (syncMembers.Length > 0) {
                Refresh(entity, syncMembers);
+            }
          }
       }
 
@@ -752,8 +760,9 @@ namespace DbExtensions {
 
          entities = entities.Where(o => o != null).ToArray();
 
-         if (entities.Length == 0)
+         if (entities.Length == 0) {
             return;
+         }
 
          if (entities.Length == 1) {
             Update(entities[0], conflictPolicy);
@@ -782,8 +791,9 @@ namespace DbExtensions {
 
             using (var tx = this.db.EnsureInTransaction()) {
 
-               for (int i = 0; i < entities.Length; i++)
+               for (int i = 0; i < entities.Length; i++) {
                   Update(entities[i], conflictPolicy);
+               }
 
                tx.Commit();
             }
@@ -892,8 +902,9 @@ namespace DbExtensions {
 
          entities = entities.Where(o => o != null).ToArray();
 
-         if (entities.Length == 0)
+         if (entities.Length == 0) {
             return;
+         }
 
          if (entities.Length == 1) {
             Remove(entities[0], conflictPolicy);
@@ -934,8 +945,9 @@ namespace DbExtensions {
 
             using (var tx = this.db.EnsureInTransaction()) {
 
-               for (int i = 0; i < entities.Length; i++)
+               for (int i = 0; i < entities.Length; i++) {
                   Remove(entities[i], conflictPolicy);
+               }
 
                tx.Commit();
             }
@@ -1012,8 +1024,9 @@ namespace DbExtensions {
 
          MetaDataMember[] predicateMembers = metaType.IdentityMembers.ToArray();
 
-         if (keyValues.Length != predicateMembers.Length)
+         if (keyValues.Length != predicateMembers.Length) {
             throw new ArgumentException("The Length of keyValues must match the number of identity members.", "keyValues");
+         }
 
          IDictionary<string, object> predicateValues =
             Enumerable.Range(0, predicateMembers.Length)
@@ -1205,7 +1218,10 @@ namespace DbExtensions {
          var sb = new StringBuilder();
 
          foreach (var item in predicateValues) {
-            if (sb.Length > 0) sb.Append(" AND ");
+
+            if (sb.Length > 0) {
+               sb.Append(" AND ");
+            }
 
             sb.Append(QuoteIdentifier(item.Key));
 
@@ -1327,7 +1343,11 @@ namespace DbExtensions {
             .Append(" (");
 
          for (int i = 0; i < insertingMembers.Length; i++) {
-            if (i > 0) sb.Append(", ");
+
+            if (i > 0) {
+               sb.Append(", ");
+            }
+
             sb.Append(QuoteIdentifier(insertingMembers[i].MappedName));
          }
 
@@ -1335,7 +1355,11 @@ namespace DbExtensions {
             .Append("VALUES (");
 
          for (int i = 0; i < insertingMembers.Length; i++) {
-            if (i > 0) sb.Append(", ");
+
+            if (i > 0) {
+               sb.Append(", ");
+            }
+            
             sb.Append("{")
                .Append(i)
                .Append("}");
@@ -1399,7 +1423,10 @@ namespace DbExtensions {
             .Append("SET ");
 
          for (int i = 0; i < updatingMembers.Length; i++) {
-            if (i > 0) sb.Append(", ");
+
+            if (i > 0) {
+               sb.Append(", ");
+            }
 
             MetaDataMember member = updatingMembers[i];
             object value = GetMemberValue(entity, member);
@@ -1486,8 +1513,9 @@ namespace DbExtensions {
 
          EnsureEntityType();
 
-         if (metaType.IdentityMembers.Count > 1)
+         if (metaType.IdentityMembers.Count > 1) {
             throw new InvalidOperationException("Cannot call this method when the entity has more than one identity member.");
+         }
 
          return DELETE_FROM()
             .WHERE(QuoteIdentifier(metaType.IdentityMembers[0].MappedName) + " = {0}", id);
