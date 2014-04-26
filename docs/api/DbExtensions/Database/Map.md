@@ -35,4 +35,4 @@ See Also
 [3]: http://msdn.microsoft.com/en-us/library/9eekhta0
 [4]: http://msdn.microsoft.com/en-us/library/e5kfa45b
 [5]: README.md
-[6]: ../Extensions/Map_5.md
+[6]: ../Extensions/Map_1.md

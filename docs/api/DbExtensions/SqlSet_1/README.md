@@ -33,15 +33,12 @@ The **SqlSet<TResult>** type exposes the following members.
 Constructors
 ------------
 
-Name                                                                                          | Description                                                                                                                   
---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- 
-[SqlSet&lt;TResult>(SqlBuilder)][5]                                                           | Initializes a new instance of the **SqlSet<TResult>** class using the provided defining query.                                
-[SqlSet&lt;TResult>(SqlBuilder, DbConnection)][6]                                             | Initializes a new instance of the **SqlSet<TResult>** class using the provided defining query and connection.                 
-[SqlSet&lt;TResult>(SqlBuilder, Func&lt;IDataRecord, TResult>)][7]                            | Initializes a new instance of the **SqlSet<TResult>** class using the provided defining query and mapper.                     
-[SqlSet&lt;TResult>(SqlSet&lt;TResult>, SqlBuilder)][8]                                       | This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.                  
-[SqlSet&lt;TResult>(SqlBuilder, DbConnection, TextWriter)][9]                                 | Initializes a new instance of the **SqlSet<TResult>** class using the provided defining query, connection and logger.         
-[SqlSet&lt;TResult>(SqlBuilder, Func&lt;IDataRecord, TResult>, DbConnection)][10]             | Initializes a new instance of the **SqlSet<TResult>** class using the provided defining query, mapper and connection.         
-[SqlSet&lt;TResult>(SqlBuilder, Func&lt;IDataRecord, TResult>, DbConnection, TextWriter)][11] | Initializes a new instance of the **SqlSet<TResult>** class using the provided defining query, mapper, connection and logger. 
+Name                                                                             | Description                                                                                                           
+-------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- 
+[SqlSet&lt;TResult>(SqlBuilder)][5]                                              | Initializes a new instance of the **SqlSet<TResult>** class using the provided defining query.                        
+[SqlSet&lt;TResult>(SqlBuilder, DbConnection)][6]                                | Initializes a new instance of the **SqlSet<TResult>** class using the provided defining query and connection.         
+[SqlSet&lt;TResult>(SqlBuilder, Func&lt;IDataRecord, TResult>)][7]               | Initializes a new instance of the **SqlSet<TResult>** class using the provided defining query and mapper.             
+[SqlSet&lt;TResult>(SqlBuilder, Func&lt;IDataRecord, TResult>, DbConnection)][8] | Initializes a new instance of the **SqlSet<TResult>** class using the provided defining query, mapper and connection. 
 
 
 Methods
@@ -49,63 +46,63 @@ Methods
 
 Name                                                                      | Description                                                                                                                                                                                              
 ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
-[All(String)][12]                                                         | Determines whether all elements of the set satisfy a condition. (Inherited from [SqlSet][2].)                                                                                                            
-[All(String, Object[])][13]                                               | Determines whether all elements of the set satisfy a condition. (Inherited from [SqlSet][2].)                                                                                                            
-[Any()][14]                                                               | Determines whether the set contains any elements. (Inherited from [SqlSet][2].)                                                                                                                          
-[Any(String)][15]                                                         | Determines whether any element of the set satisfies a condition. (Inherited from [SqlSet][2].)                                                                                                           
-[Any(String, Object[])][16]                                               | Determines whether any element of the set satisfies a condition. (Inherited from [SqlSet][2].)                                                                                                           
-[AsEnumerable][17]                                                        | Gets all TResult objects in the set. The query is deferred-executed.                                                                                                                                     
-[AsXml()][18]                                                             | Returns an [XmlReader][19] object that provides an XML view of the set's data. (Inherited from [SqlSet][2].)                                                                                             
-[AsXml(XmlMappingSettings)][20]                                           | Returns an [XmlReader][19] object that provides an XML view of the set's data. (Inherited from [SqlSet][2].)                                                                                             
-[Cast(Type)][21]                                                          | Casts the elements of the set to the specified type.                                                                                                                                                     
-[Cast&lt;T>()][22]                                                        | Casts the elements of the set to the specified type.                                                                                                                                                     
-[Count()][23]                                                             | Returns the number of elements in the set. (Inherited from [SqlSet][2].)                                                                                                                                 
-[Count(String)][24]                                                       | Returns a number that represents how many elements in the set satisfy a condition. (Inherited from [SqlSet][2].)                                                                                         
-[Count(String, Object[])][25]                                             | Gets the number of elements in the set that matches the *predicate*. (Inherited from [SqlSet][2].)                                                                                                       
-[CreateSet(SqlBuilder)][26]                                               | This member supports the DbExtensions infrastructure and is not intended to be used directly from your code. (Overrides [SqlSet.CreateSet(SqlBuilder)][27].)                                             
-[CreateSet(SqlBuilder, Type)][28]                                         | This member supports the DbExtensions infrastructure and is not intended to be used directly from your code. (Inherited from [SqlSet][2].)                                                               
-[CreateSet&lt;T>(SqlBuilder)][29]                                         | This member supports the DbExtensions infrastructure and is not intended to be used directly from your code. (Overrides [SqlSet.CreateSet(SqlBuilder)][27].)                                             
-[CreateSet&lt;TResult>(SqlBuilder, Func&lt;IDataRecord, TResult>)][30]    | This member supports the DbExtensions infrastructure and is not intended to be used directly from your code. (Inherited from [SqlSet][2].)                                                               
-[CreateSuperQuery()][31]                                                  | This member supports the DbExtensions infrastructure and is not intended to be used directly from your code. (Inherited from [SqlSet][2].)                                                               
-[CreateSuperQuery(String, Object[])][32]                                  | This member supports the DbExtensions infrastructure and is not intended to be used directly from your code. (Inherited from [SqlSet][2].)                                                               
-[Equals][33]                                                              | Returns whether the specified set is equal to the current set. (Inherited from [SqlSet][2].)                                                                                                             
-[Execute][34]                                                             | **Obsolete.** This member supports the DbExtensions infrastructure and is not intended to be used directly from your code. (Overrides [SqlSet.Execute(DbCommand)][35].)                                  
-[First()][36]                                                             | Returns the first element of the set.                                                                                                                                                                    
-[First(String)][37]                                                       | Returns the first element in the set that satisfies a specified condition.                                                                                                                               
-[First(String, Object[])][38]                                             | Returns the first element in the set that satisfies a specified condition.                                                                                                                               
-[FirstOrDefault()][39]                                                    | Returns the first element of the set, or a default value if the set contains no elements.                                                                                                                
-[FirstOrDefault(String)][40]                                              | Returns the first element of the set that satisfies a condition or a default value if no such element is found.                                                                                          
-[FirstOrDefault(String, Object[])][41]                                    | Returns the first element of the set that satisfies a condition or a default value if no such element is found.                                                                                          
-[GetDefiningQuery][42]                                                    | Returns the SQL query that is the source of data for the set. (Inherited from [SqlSet][2].)                                                                                                              
-[GetEnumerator][43]                                                       | Returns an enumerator that iterates through the set.                                                                                                                                                     
-[GetHashCode][44]                                                         | Returns the hash function for the current set. (Inherited from [SqlSet][2].)                                                                                                                             
-[GetType][45]                                                             | Gets the type for the current set. (Inherited from [SqlSet][2].)                                                                                                                                         
-[LongCount()][46]                                                         | Returns an [Int64][47] that represents the total number of elements in the set. (Inherited from [SqlSet][2].)                                                                                            
-[LongCount(String)][48]                                                   | Returns an [Int64][47] that represents how many elements in the set satisfy a condition. (Inherited from [SqlSet][2].)                                                                                   
-[LongCount(String, Object[])][49]                                         | Returns an [Int64][47] that represents how many elements in the set satisfy a condition. (Inherited from [SqlSet][2].)                                                                                   
-[OrderBy(String)][50]                                                     | Sorts the elements of the set according to the *columnList*.                                                                                                                                             
-[OrderBy(String, Object[])][51]                                           | Sorts the elements of the set according to the *columnList*.                                                                                                                                             
-[Select(Type, String)][52]                                                | Projects each element of the set into a new form. (Inherited from [SqlSet][2].)                                                                                                                          
-[Select(Type, String, Object[])][53]                                      | Projects each element of the set into a new form. (Inherited from [SqlSet][2].)                                                                                                                          
-[Select&lt;TResult>(String)][54]                                          | Projects each element of the set into a new form. (Inherited from [SqlSet][2].)                                                                                                                          
-[Select&lt;TResult>(Func&lt;IDataRecord, TResult>, String)][55]           | Projects each element of the set into a new form. (Inherited from [SqlSet][2].)                                                                                                                          
-[Select&lt;TResult>(String, Object[])][56]                                | Projects each element of the set into a new form. (Inherited from [SqlSet][2].)                                                                                                                          
-[Select&lt;TResult>(Func&lt;IDataRecord, TResult>, String, Object[])][57] | Projects each element of the set into a new form. (Inherited from [SqlSet][2].)                                                                                                                          
-[Single()][58]                                                            | The single element of the set.                                                                                                                                                                           
-[Single(String)][59]                                                      | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  
-[Single(String, Object[])][60]                                            | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  
-[SingleOrDefault()][61]                                                   | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.                                               
-[SingleOrDefault(String)][62]                                             | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. 
-[SingleOrDefault(String, Object[])][63]                                   | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. 
-[Skip][64]                                                                | Bypasses a specified number of elements in the set and then returns the remaining elements.                                                                                                              
-[Take][65]                                                                | Returns a specified number of contiguous elements from the start of the set.                                                                                                                             
-[ToArray][66]                                                             | Creates an array from the set.                                                                                                                                                                           
-[ToList][67]                                                              | Creates a List&lt;TResult> from the set.                                                                                                                                                                 
-[ToString][68]                                                            | Returns the SQL query of the set. (Inherited from [SqlSet][2].)                                                                                                                                          
-[Union(SqlSet)][69]                                                       | Produces the set union of the current set with *otherSet*. (Inherited from [SqlSet][2].)                                                                                                                 
-[Union(SqlSet&lt;TResult>)][70]                                           | Produces the set union of the current set with *otherSet*.                                                                                                                                               
-[Where(String)][71]                                                       | Filters the set based on a predicate.                                                                                                                                                                    
-[Where(String, Object[])][72]                                             | Filters the set based on a predicate.                                                                                                                                                                    
+[All(String)][9]                                                          | Determines whether all elements of the set satisfy a condition. (Inherited from [SqlSet][2].)                                                                                                            
+[All(String, Object[])][10]                                               | Determines whether all elements of the set satisfy a condition. (Inherited from [SqlSet][2].)                                                                                                            
+[Any()][11]                                                               | Determines whether the set contains any elements. (Inherited from [SqlSet][2].)                                                                                                                          
+[Any(String)][12]                                                         | Determines whether any element of the set satisfies a condition. (Inherited from [SqlSet][2].)                                                                                                           
+[Any(String, Object[])][13]                                               | Determines whether any element of the set satisfies a condition. (Inherited from [SqlSet][2].)                                                                                                           
+[AsEnumerable][14]                                                        | Gets all TResult objects in the set. The query is deferred-executed.                                                                                                                                     
+[Cast(Type)][15]                                                          | Casts the elements of the set to the specified type.                                                                                                                                                     
+[Cast&lt;T>()][16]                                                        | Casts the elements of the set to the specified type.                                                                                                                                                     
+[Count()][17]                                                             | Returns the number of elements in the set. (Inherited from [SqlSet][2].)                                                                                                                                 
+[Count(String)][18]                                                       | Returns a number that represents how many elements in the set satisfy a condition. (Inherited from [SqlSet][2].)                                                                                         
+[Count(String, Object[])][19]                                             | Gets the number of elements in the set that matches the *predicate*. (Inherited from [SqlSet][2].)                                                                                                       
+[Equals][20]                                                              | Returns whether the specified set is equal to the current set. (Inherited from [SqlSet][2].)                                                                                                             
+[First()][21]                                                             | Returns the first element of the set.                                                                                                                                                                    
+[First(String)][22]                                                       | Returns the first element in the set that satisfies a specified condition.                                                                                                                               
+[First(String, Object[])][23]                                             | Returns the first element in the set that satisfies a specified condition.                                                                                                                               
+[FirstOrDefault()][24]                                                    | Returns the first element of the set, or a default value if the set contains no elements.                                                                                                                
+[FirstOrDefault(String)][25]                                              | Returns the first element of the set that satisfies a condition or a default value if no such element is found.                                                                                          
+[FirstOrDefault(String, Object[])][26]                                    | Returns the first element of the set that satisfies a condition or a default value if no such element is found.                                                                                          
+[GetDefiningQuery][27]                                                    | Returns the SQL query that is the source of data for the set. (Inherited from [SqlSet][2].)                                                                                                              
+[GetEnumerator][28]                                                       | Returns an enumerator that iterates through the set.                                                                                                                                                     
+[GetHashCode][29]                                                         | Returns the hash function for the current set. (Inherited from [SqlSet][2].)                                                                                                                             
+[GetType][30]                                                             | Gets the type for the current set. (Inherited from [SqlSet][2].)                                                                                                                                         
+[LongCount()][31]                                                         | Returns an [Int64][32] that represents the total number of elements in the set. (Inherited from [SqlSet][2].)                                                                                            
+[LongCount(String)][33]                                                   | Returns an [Int64][32] that represents how many elements in the set satisfy a condition. (Inherited from [SqlSet][2].)                                                                                   
+[LongCount(String, Object[])][34]                                         | Returns an [Int64][32] that represents how many elements in the set satisfy a condition. (Inherited from [SqlSet][2].)                                                                                   
+[OrderBy(String)][35]                                                     | Sorts the elements of the set according to the *columnList*.                                                                                                                                             
+[OrderBy(String, Object[])][36]                                           | Sorts the elements of the set according to the *columnList*.                                                                                                                                             
+[Select(Type, String)][37]                                                | Projects each element of the set into a new form. (Inherited from [SqlSet][2].)                                                                                                                          
+[Select(Type, String, Object[])][38]                                      | Projects each element of the set into a new form. (Inherited from [SqlSet][2].)                                                                                                                          
+[Select&lt;TResult>(String)][39]                                          | Projects each element of the set into a new form. (Inherited from [SqlSet][2].)                                                                                                                          
+[Select&lt;TResult>(Func&lt;IDataRecord, TResult>, String)][40]           | Projects each element of the set into a new form. (Inherited from [SqlSet][2].)                                                                                                                          
+[Select&lt;TResult>(String, Object[])][41]                                | Projects each element of the set into a new form. (Inherited from [SqlSet][2].)                                                                                                                          
+[Select&lt;TResult>(Func&lt;IDataRecord, TResult>, String, Object[])][42] | Projects each element of the set into a new form. (Inherited from [SqlSet][2].)                                                                                                                          
+[Single()][43]                                                            | The single element of the set.                                                                                                                                                                           
+[Single(String)][44]                                                      | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  
+[Single(String, Object[])][45]                                            | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  
+[SingleOrDefault()][46]                                                   | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.                                               
+[SingleOrDefault(String)][47]                                             | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. 
+[SingleOrDefault(String, Object[])][48]                                   | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. 
+[Skip][49]                                                                | Bypasses a specified number of elements in the set and then returns the remaining elements.                                                                                                              
+[Take][50]                                                                | Returns a specified number of contiguous elements from the start of the set.                                                                                                                             
+[ToArray][51]                                                             | Creates an array from the set.                                                                                                                                                                           
+[ToList][52]                                                              | Creates a List&lt;TResult> from the set.                                                                                                                                                                 
+[ToString][53]                                                            | Returns the SQL query of the set. (Inherited from [SqlSet][2].)                                                                                                                                          
+[Where(String)][54]                                                       | Filters the set based on a predicate.                                                                                                                                                                    
+[Where(String, Object[])][55]                                             | Filters the set based on a predicate.                                                                                                                                                                    
+
+
+Extension Methods
+-----------------
+
+Name                              | Description                                                                                               
+--------------------------------- | --------------------------------------------------------------------------------------------------------- 
+[Find(Object)][56]                | Overloaded. Gets the entity whose primary key matches the *id* parameter. (Defined by [Extensions][57].)  
+[Find&lt;TResult>(Object)][58]    | Overloaded. Gets the entity whose primary key matches the *id* parameter. (Defined by [Extensions][57].)  
+[Include(String)][59]             | Overloaded. Specifies the related objects to include in the query results. (Defined by [Extensions][57].) 
+[Include&lt;TResult>(String)][60] | Overloaded. Specifies the related objects to include in the query results. (Defined by [Extensions][57].) 
 
 
 See Also
@@ -118,69 +115,57 @@ See Also
 [4]: ../README.md
 [5]: _ctor.md
 [6]: _ctor_1.md
-[7]: _ctor_3.md
-[8]: _ctor_6.md
-[9]: _ctor_2.md
-[10]: _ctor_4.md
-[11]: _ctor_5.md
-[12]: ../SqlSet/All.md
-[13]: ../SqlSet/All_1.md
-[14]: ../SqlSet/Any.md
-[15]: ../SqlSet/Any_1.md
-[16]: ../SqlSet/Any_2.md
-[17]: AsEnumerable.md
-[18]: ../SqlSet/AsXml.md
-[19]: http://msdn.microsoft.com/en-us/library/b8a5e1s5
-[20]: ../SqlSet/AsXml_1.md
-[21]: Cast.md
-[22]: Cast__1.md
-[23]: ../SqlSet/Count.md
-[24]: ../SqlSet/Count_1.md
-[25]: ../SqlSet/Count_2.md
-[26]: CreateSet.md
-[27]: ../SqlSet/CreateSet.md
-[28]: ../SqlSet/CreateSet_1.md
-[29]: CreateSet__1.md
-[30]: ../SqlSet/CreateSet__1_1.md
-[31]: ../SqlSet/CreateSuperQuery.md
-[32]: ../SqlSet/CreateSuperQuery_1.md
-[33]: ../SqlSet/Equals.md
-[34]: Execute.md
-[35]: ../SqlSet/Execute.md
-[36]: First.md
-[37]: First_1.md
-[38]: First_2.md
-[39]: FirstOrDefault.md
-[40]: FirstOrDefault_1.md
-[41]: FirstOrDefault_2.md
-[42]: ../SqlSet/GetDefiningQuery.md
-[43]: GetEnumerator.md
-[44]: ../SqlSet/GetHashCode.md
-[45]: ../SqlSet/GetType.md
-[46]: ../SqlSet/LongCount.md
-[47]: http://msdn.microsoft.com/en-us/library/6yy583ek
-[48]: ../SqlSet/LongCount_1.md
-[49]: ../SqlSet/LongCount_2.md
-[50]: OrderBy.md
-[51]: OrderBy_1.md
-[52]: ../SqlSet/Select.md
-[53]: ../SqlSet/Select_1.md
-[54]: ../SqlSet/Select__1_2.md
-[55]: ../SqlSet/Select__1.md
-[56]: ../SqlSet/Select__1_3.md
-[57]: ../SqlSet/Select__1_1.md
-[58]: Single.md
-[59]: Single_1.md
-[60]: Single_2.md
-[61]: SingleOrDefault.md
-[62]: SingleOrDefault_1.md
-[63]: SingleOrDefault_2.md
-[64]: Skip.md
-[65]: Take.md
-[66]: ToArray.md
-[67]: ToList.md
-[68]: ../SqlSet/ToString.md
-[69]: ../SqlSet/Union.md
-[70]: Union.md
-[71]: Where.md
-[72]: Where_1.md
+[7]: _ctor_2.md
+[8]: _ctor_3.md
+[9]: ../SqlSet/All.md
+[10]: ../SqlSet/All_1.md
+[11]: ../SqlSet/Any.md
+[12]: ../SqlSet/Any_1.md
+[13]: ../SqlSet/Any_2.md
+[14]: AsEnumerable.md
+[15]: Cast.md
+[16]: Cast__1.md
+[17]: ../SqlSet/Count.md
+[18]: ../SqlSet/Count_1.md
+[19]: ../SqlSet/Count_2.md
+[20]: ../SqlSet/Equals.md
+[21]: First.md
+[22]: First_1.md
+[23]: First_2.md
+[24]: FirstOrDefault.md
+[25]: FirstOrDefault_1.md
+[26]: FirstOrDefault_2.md
+[27]: ../SqlSet/GetDefiningQuery.md
+[28]: GetEnumerator.md
+[29]: ../SqlSet/GetHashCode.md
+[30]: ../SqlSet/GetType.md
+[31]: ../SqlSet/LongCount.md
+[32]: http://msdn.microsoft.com/en-us/library/6yy583ek
+[33]: ../SqlSet/LongCount_1.md
+[34]: ../SqlSet/LongCount_2.md
+[35]: OrderBy.md
+[36]: OrderBy_1.md
+[37]: ../SqlSet/Select_2.md
+[38]: ../SqlSet/Select_3.md
+[39]: ../SqlSet/Select__1_2.md
+[40]: ../SqlSet/Select__1.md
+[41]: ../SqlSet/Select__1_3.md
+[42]: ../SqlSet/Select__1_1.md
+[43]: Single.md
+[44]: Single_1.md
+[45]: Single_2.md
+[46]: SingleOrDefault.md
+[47]: SingleOrDefault_1.md
+[48]: SingleOrDefault_2.md
+[49]: Skip.md
+[50]: Take.md
+[51]: ToArray.md
+[52]: ToList.md
+[53]: ../SqlSet/ToString.md
+[54]: Where.md
+[55]: Where_1.md
+[56]: ../Extensions/Find.md
+[57]: ../Extensions/README.md
+[58]: ../Extensions/Find__1.md
+[59]: ../Extensions/Include.md
+[60]: ../Extensions/Include__1.md

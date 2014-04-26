@@ -41,4 +41,4 @@ See Also
 [4]: http://msdn.microsoft.com/en-us/library/9eekhta0
 [5]: http://msdn.microsoft.com/en-us/library/e5kfa45b
 [6]: README.md
-[7]: ../Extensions/Map_7.md
+[7]: ../Extensions/Map_3.md
