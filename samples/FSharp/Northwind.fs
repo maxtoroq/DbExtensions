@@ -58,9 +58,6 @@ type Supplier() =
    [<Column>]
    member val Fax : string = null with get,set
 
-   [<Column(UpdateCheck = UpdateCheck.Never)>]
-   member val HomePage : string = null with get,set
-
 [<AllowNullLiteral>]
 [<Table(Name = "Products")>]
 type Product() =
@@ -368,6 +365,9 @@ type NorthwindDatabase =
    member this.Products = this.Table<Product>()
    member this.Orders = this.Table<Order>()
    member this.OrderDetails = this.Table<OrderDetail>()
+   member this.Employees = this.Table<Employee>()
+   member this.EmployeeTerritories = this.Table<EmployeeTerritory>()
+   member this.Regions = this.Table<Region>()
 
    new(connString : string, mapping : MetaModel) = {
       inherit Database(connString, mapping)

@@ -28,10 +28,8 @@ See Also
 --------
 [Database Class][4]  
 [DbExtensions Namespace][1]  
-[Extensions.LongCount(DbConnection, SqlBuilder)][5]  
 
 [1]: ../README.md
 [2]: ../SqlBuilder/README.md
 [3]: http://msdn.microsoft.com/en-us/library/6yy583ek
 [4]: README.md
-[5]: ../Extensions/LongCount.md

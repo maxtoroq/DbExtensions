@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -9,19 +8,16 @@ namespace DbExtensions.Tests.Querying {
    [TestClass]
    public class SqlSetBehavior {
 
-      readonly DbConnection conn = System.Data.SqlClient.SqlClientFactory.Instance
-         .CreateSqlServerConnectionForTests();
+      readonly Database db = new Database(System.Data.SqlClient.SqlClientFactory.Instance.CreateSqlServerConnectionForTests());
 
-      DbConnection MySqlConnection() {
-         
-         return MySql.Data.MySqlClient.MySqlClientFactory.Instance
-            .CreateConnection();
+      Database MySqlDatabase() {
+         return new Database(MySql.Data.MySqlClient.MySqlClientFactory.Instance.CreateConnection());
       }
 
       [TestMethod]
       public void AsEnumerable_Reference_Type() {
 
-         SqlSet<string> set = conn.From(SQL
+         SqlSet<string> set = db.From(SQL
             .SELECT("'a'")
             , r => r.GetString(0));
 
@@ -35,7 +31,7 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void AsEnumerable_Value_Type() {
 
-         SqlSet<int> set = conn.From(SQL
+         SqlSet<int> set = db.From(SQL
             .SELECT("0")
             , r => r.GetInt32(0));
 
@@ -49,9 +45,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Dont_Use_Subqueries_When_Methods_Are_Called_In_Order() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .Where("UnitsInStock > 0")
             .Skip(0)
             .Take(5);
@@ -69,9 +65,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Apply_Where_After_Where_Call() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .Where("UnitsInStock > 0")
             .Where("NOT UnitPrice IS NULL");
 
@@ -89,9 +85,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Apply_Where_After_OrderBy_Call() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .OrderBy("ProductID DESC")
             .Where("NOT UnitPrice IS NULL");
 
@@ -109,9 +105,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Apply_Where_After_Skip_Call() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .Skip(5)
             .Where("NOT UnitPrice IS NULL");
 
@@ -129,9 +125,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Apply_Where_After_Take_Call() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .Take(5)
             .Where("NOT UnitPrice IS NULL");
 
@@ -149,9 +145,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Apply_OrderBy_After_OrderBy_Call() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .OrderBy("ProductID DESC")
             .OrderBy("UnitPrice");
 
@@ -169,9 +165,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Apply_OrderBy_After_Skip_Call() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .Skip(5)
             .OrderBy("UnitPrice");
 
@@ -189,9 +185,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Apply_OrderBy_After_Take_Call() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .Take(5)
             .OrderBy("UnitPrice");
 
@@ -209,9 +205,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Apply_Skip_After_Skip_Call() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .Skip(5)
             .Skip(1);
 
@@ -229,9 +225,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Apply_Skip_After_Take_Call() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .Take(5)
             .Skip(1);
 
@@ -249,9 +245,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Apply_Take_After_Take_Call() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .Take(5)
             .Take(1);
 
@@ -269,9 +265,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Dont_Use_Subquery_For_Cast() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .Cast(typeof(object))
             .Where("NOT UnitPrice IS NULL");
 
@@ -286,9 +282,9 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Dont_Use_Subquery_For_Cast_Generic() {
 
-         DbConnection conn = MySqlConnection();
+         Database db = MySqlDatabase();
 
-         SqlSet set = conn.From("products")
+         SqlSet set = db.From("products")
             .Cast<object>()
             .Where("NOT UnitPrice IS NULL");
 
@@ -298,6 +294,16 @@ namespace DbExtensions.Tests.Querying {
             .WHERE("NOT UnitPrice IS NULL");
 
          Assert.IsTrue(SqlEquals(set, expected));
+      }
+
+      [TestMethod]
+      public void Dont_Require_Type_For_Select() {
+
+         dynamic value = db.From(SQL.SELECT("'a' AS foo, 'b' AS bar"))
+            .Select("foo")
+            .Single();
+
+         Assert.AreEqual("a", value.foo);
       }
 
       bool SqlEquals(SqlSet set, SqlBuilder query) {

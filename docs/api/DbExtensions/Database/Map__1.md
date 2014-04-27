@@ -41,4 +41,4 @@ See Also
 [2]: ../SqlBuilder/README.md
 [3]: http://msdn.microsoft.com/en-us/library/9eekhta0
 [4]: README.md
-[5]: ../Extensions/Map__1_7.md
+[5]: ../Extensions/Map__1_3.md

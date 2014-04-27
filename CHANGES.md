@@ -1,6 +1,27 @@
 ﻿Changes
 =======
 
+v5.0.0
+------
+- Added [#23](https://github.com/maxtoroq/DbExtensions/issues/23): Support Select in SqlSet without specifying a result type
+- Added [#17](https://github.com/maxtoroq/DbExtensions/issues/17): Support for Enum properties that map to text columns
+- Added [#15](https://github.com/maxtoroq/DbExtensions/issues/15): SqlSet.Include function for query expansion (eager loading)
+- Added SqlSet.Find extension method
+- Fixed [#18](https://github.com/maxtoroq/DbExtensions/issues/18): Insert one-to-one associations (SqlTable.Add)
+- Improved [#6](https://github.com/maxtoroq/DbExtensions/issues/6): SqlBuilder.Append(SqlBuilder) and SqlBuilder.JoinSql generate unnecessary extra whitespace
+
+BREAKING CHANGES:
+- Removed .NET 3.5 support
+- Removed members deprecated in v4.x
+- Removed DbConnection extension methods (use Database instead)
+- Removed XML mapping
+- Removed SqlSet constructors that take TextWriter (if you need profiling use Database)
+- Removed SqlSet.Union
+- Made all SqlSet's protected members internal
+- Renamed SqlTable's Delete, DeleteKey and DeleteRange to Remove, RemoveKey and RemoveRange
+- Removed Insert and InsertRange overloads with *deep* parameter, added DatabaseConfiguration.EnableInsertRecursion property to control recursion
+- Renamed SqlTable's Insert and InsertRange to Add and AddRange
+
 v4.4.0
 ------
 - Improved SqlTable, using subqueries only when necessary

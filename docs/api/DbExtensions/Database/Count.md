@@ -28,10 +28,8 @@ See Also
 --------
 [Database Class][4]  
 [DbExtensions Namespace][1]  
-[Extensions.Count(DbConnection, SqlBuilder)][5]  
 
 [1]: ../README.md
 [2]: ../SqlBuilder/README.md
 [3]: http://msdn.microsoft.com/en-us/library/td2s409d
 [4]: README.md
-[5]: ../Extensions/Count.md

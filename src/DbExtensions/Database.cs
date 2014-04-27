@@ -28,9 +28,17 @@ using System.Reflection;
 namespace DbExtensions {
 
    /// <summary>
-   /// Creates and executes CRUD (Create, Read, Update, Delete) commands for entities mapped using the
-   /// <see cref="N:System.Data.Linq.Mapping"/> API.
+   /// Provides simple data access using <see cref="SqlSet"/>, <see cref="SqlBuilder"/> and <see cref="SqlTable&lt;TEntity>"/>.
    /// </summary>
+   /// <remarks>
+   /// <see cref="Database"/> is the entry point of the <see cref="N:DbExtensions"/> API.
+   /// Some components such as <see cref="SqlSet"/> and <see cref="SqlBuilder"/> can be used without <see cref="Database"/>.
+   /// <see cref="SqlTable&lt;TEntity>"/> on the other hand depends on <see cref="Database"/>.
+   /// These components can greatly simplify data access, but you can still use <see cref="Database"/> by providing
+   /// commands in <see cref="String"/> form.
+   /// <see cref="Database"/> also serves as a state keeper that can be used to execute multiple commands using
+   /// the same connection, transaction, configuration, profiling, etc.
+   /// </remarks>
    public partial class Database : IDisposable, IConnectionContext {
 
       static readonly MethodInfo tableMethod = typeof(Database).GetMethods(BindingFlags.Public | BindingFlags.Instance)
@@ -134,10 +142,12 @@ namespace DbExtensions {
       void Initialize(string providerName, MetaModel mapping) {
 
          if (mapping == null) {
+
             Type thisType = GetType();
 
-            if (thisType != typeof(Database))
+            if (thisType != typeof(Database)) {
                mapping = new AttributeMappingSource().GetModel(thisType);
+            }
          }
 
          this.config = new DatabaseConfiguration(mapping);
@@ -149,22 +159,27 @@ namespace DbExtensions {
          this.config.LastInsertIdCommand = "SELECT @@identity";
          this.config.DeleteConflictPolicy = ConcurrencyConflictPolicy.IgnoreVersionAndLowerAffectedRecords;
          this.config.EnableBatchCommands = true;
+         this.config.EnableInsertRecursion = true;
 
          if (providerName != null) {
+
             string identityKey = String.Format(CultureInfo.InvariantCulture, "DbExtensions:{0}:LastInsertIdCommand", providerName);
             string identitySetting = ConfigurationManager.AppSettings[identityKey];
 
-            if (identitySetting != null)
+            if (identitySetting != null) {
                this.config.LastInsertIdCommand = identitySetting;
+            }
 
             string batchKey = String.Format(CultureInfo.InvariantCulture, "DbExtensions:{0}:EnableBatchCommands", providerName);
             string batchSetting = ConfigurationManager.AppSettings[batchKey];
             
             if (batchSetting != null) {
+
                bool batch;
 
-               if (!Boolean.TryParse(batchSetting, out batch))
+               if (!Boolean.TryParse(batchSetting, out batch)) {
                   throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture, "The {0} appication setting must be a valid boolean.", batchSetting));
+               }
 
                this.config.EnableBatchCommands = batch; 
             }
@@ -303,7 +318,7 @@ namespace DbExtensions {
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <returns>The number of affected records.</returns>
       public int Execute(SqlBuilder nonQuery) {
-         return this.Connection.Execute(CreateCommand(nonQuery), this.Log);
+         return Execute(CreateCommand(nonQuery));
       }
 
       /// <summary>
@@ -313,7 +328,7 @@ namespace DbExtensions {
       /// <param name="commandText">The command text.</param>
       /// <returns>The number of affected records.</returns>
       public int Execute(string commandText) {
-         return Execute(commandText, (object[])null);
+         return Execute(CreateCommand(commandText));
       }
 
       /// <summary>
@@ -326,7 +341,19 @@ namespace DbExtensions {
       /// <param name="parameters">The parameters to apply to the command text.</param>
       /// <returns>The number of affected records.</returns>
       public int Execute(string commandText, params object[] parameters) {
-         return this.Connection.Execute(CreateCommand(commandText, parameters), this.Log);
+         return Execute(CreateCommand(commandText, parameters));
+      }
+
+      int Execute(IDbCommand command) {
+
+         using (EnsureConnectionOpen()) {
+            
+            int aff = command.ExecuteNonQuery();
+
+            LogLine(command.ToTraceString(aff));
+
+            return aff;
+         }
       }
 
       /// <summary>
@@ -447,7 +474,7 @@ namespace DbExtensions {
       /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, TextWriter)"/>
       public IEnumerable<TResult> Map<TResult>(SqlBuilder query) {
-         return Extensions.Map<TResult>(q => CreateCommand(q), query, new PocoMapper(typeof(TResult), this.Log), this.Log);
+         return Extensions.Map<TResult>(q => CreateCommand(q), query, CreatePocoMapper(typeof(TResult)), this.Log);
       }
 
       /// <summary>
@@ -473,7 +500,14 @@ namespace DbExtensions {
       /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
       /// <seealso cref="Extensions.Map(IDbCommand, Type, TextWriter)"/>
       public IEnumerable<object> Map(Type resultType, SqlBuilder query) {
-         return Extensions.Map<object>(q => CreateCommand(q), query, new PocoMapper(resultType, this.Log), this.Log);
+         return Extensions.Map<object>(q => CreateCommand(q), query, CreatePocoMapper(resultType), this.Log);
+      }
+
+      internal PocoMapper CreatePocoMapper(Type type) {
+
+         return new PocoMapper(type) { 
+            Log = this.Log
+         };
       }
 
       /// <summary>
@@ -482,7 +516,7 @@ namespace DbExtensions {
       /// <param name="query">The query whose existance is to be checked.</param>
       /// <returns>true if <paramref name="query"/> contains any rows; otherwise, false.</returns>
       public bool Exists(SqlBuilder query) {
-         return this.Connection.Exists(CreateCommand(Extensions.ExistsQuery(query)), this.Log);
+         return this.ExistsImpl(query);
       }
 
       /// <summary>
@@ -490,9 +524,8 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="query">The query whose count is to be computed.</param>
       /// <returns>The number of results the <paramref name="query"/> would return.</returns>
-      /// <seealso cref="Extensions.Count(DbConnection, SqlBuilder)"/>
       public int Count(SqlBuilder query) {
-         return this.Connection.Count(CreateCommand(Extensions.CountQuery(query)), this.Log);
+         return this.CountImpl(query);
       }
 
       /// <summary>
@@ -500,10 +533,9 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="query">The query whose count is to be computed.</param>
       /// <returns>The number of results the <paramref name="query"/> would return.</returns>
-      /// <seealso cref="Extensions.LongCount(DbConnection, SqlBuilder)"/>
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount(SqlBuilder query) {
-         return this.Connection.LongCount(CreateCommand(Extensions.CountQuery(query)), this.Log);
+         return this.LongCountImpl(query);
       }
 
       // Sets
@@ -595,7 +627,7 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public SqlSet From(SqlBuilder definingQuery) {
-         return new SqlSet(definingQuery, (Type)null, this, adoptQuery: false);
+         return new SqlSet(definingQuery, (Type)null, this);
       }
 
       /// <summary>
@@ -605,7 +637,7 @@ namespace DbExtensions {
       /// <param name="resultType">The type of objects to map the results to.</param>
       /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public SqlSet From(SqlBuilder definingQuery, Type resultType) {
-         return new SqlSet(definingQuery, resultType, this, adoptQuery: false);
+         return new SqlSet(definingQuery, resultType, this);
       }
 
       /// <summary>
@@ -615,7 +647,7 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
       public SqlSet<TResult> From<TResult>(SqlBuilder definingQuery) {
-         return new SqlSet<TResult>(definingQuery, this, adoptQuery: false);
+         return new SqlSet<TResult>(definingQuery, this);
       }
 
       /// <summary>
@@ -626,94 +658,9 @@ namespace DbExtensions {
       /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
       public SqlSet<TResult> From<TResult>(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
-         return new SqlSet<TResult>(definingQuery, mapper, this, adoptQuery: false);
+         return new SqlSet<TResult>(definingQuery, mapper, this);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From<TResult>(SqlBuilder) instead.")]
-      public SqlSet<TResult> Set<TResult>(SqlBuilder definingQuery) {
-         return new SqlSet<TResult>(definingQuery, this, adoptQuery: false);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and mapper.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From<TResult>(SqlBuilder, Func<IDataRecord, TResult>) instead.")]
-      public SqlSet<TResult> Set<TResult>(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
-         return new SqlSet<TResult>(definingQuery, mapper, this, adoptQuery: false);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query.
-      /// </summary>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From(SqlBuilder) instead.")]
-      public SqlSet Set(SqlBuilder definingQuery) {
-         return new SqlSet(definingQuery, (Type)null, this, adoptQuery: false);
-      }
-
-      // CRUD
-
-      /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use Table<TEntity>().InsertRange or Table(Type).InsertRange instead.")]
-      public void InsertRange(IEnumerable<object> entities) {
-
-         if (entities == null) throw new ArgumentNullException("entities");
-
-         InsertRange(entities.ToArray());
-      }
-
-      /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use Table<TEntity>().InsertRange or Table(Type).InsertRange instead.")]
-      public void InsertRange(params object[] entities) {
-
-         if (entities == null) throw new ArgumentNullException("entities");
-
-         entities = entities.Where(o => o != null).ToArray();
-
-         if (entities.Length == 0)
-            return;
-
-         var byType = entities.GroupBy(e => GetMetaType(e.GetType())).ToArray();
-
-         if (byType.Length == 1) {
-            Table(entities[0].GetType()).InsertRange(entities);
-            return;
-         }
-
-         using (var tx = EnsureInTransaction()) {
-
-            for (int i = 0; i < byType.Length; i++) {
-               var grp = byType[i];
-
-               Table(grp.Key).InsertRange(grp.ToArray());
-            }
-
-            tx.Commit();
-         }
-      }
-      
       // Misc
 
       /// <summary>
@@ -727,8 +674,9 @@ namespace DbExtensions {
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Operation is expensive.")]
       public virtual object LastInsertId() {
 
-         if (String.IsNullOrEmpty(this.config.LastInsertIdCommand))
+         if (String.IsNullOrEmpty(this.config.LastInsertIdCommand)) {
             throw new InvalidOperationException("LastInsertIdCommand cannot be null.");
+         }
 
          DbCommand command = CreateCommand(this.config.LastInsertIdCommand);
 
@@ -802,8 +750,9 @@ namespace DbExtensions {
          DbCommand command = this.cb.CreateCommand(this.Connection, commandText, parameters);
          DbTransaction transaction = this.Transaction;
 
-         if (transaction != null)
+         if (transaction != null) {
             command.Transaction = transaction;
+         }
 
          return command;
       }
@@ -822,16 +771,18 @@ namespace DbExtensions {
 
       internal void LogLine(string message) {
 
-         if (this.Log != null)
+         if (this.Log != null) {
             this.Log.WriteLine(message);
+         }
       }
 
-      MetaType GetMetaType(Type entityType) {
+      internal MetaType GetMetaType(Type entityType) {
 
          if (entityType == null) throw new ArgumentNullException("entityType");
 
-         if (this.config.Mapping == null)
+         if (this.config.Mapping == null) {
             throw new InvalidOperationException("There's no MetaModel associated, the operation is not available.");
+         }
 
          return this.config.Mapping.GetMetaType(entityType);
       }
@@ -958,8 +909,9 @@ namespace DbExtensions {
 
             try {
 
-               if (System.Transactions.Transaction.Current != null)
+               if (System.Transactions.Transaction.Current != null) {
                   this.txScope = new System.Transactions.TransactionScope();
+               }
 
                if (this.txScope == null 
                   && this.txAdo == null) {
@@ -998,8 +950,9 @@ namespace DbExtensions {
 
          public void Rollback() {
 
-            if (txScope != null)
+            if (txScope != null) {
                return;
+            }
 
             if (txBeganHere) {
 
@@ -1039,8 +992,9 @@ namespace DbExtensions {
 
          void RemoveTxFromDao() {
 
-            if (db.Transaction != null && Object.ReferenceEquals(db.Transaction, txAdo))
+            if (db.Transaction != null && Object.ReferenceEquals(db.Transaction, txAdo)) {
                db.Transaction = null;
+            }
          }
       }
 
@@ -1086,7 +1040,7 @@ namespace DbExtensions {
 
       /// <summary>
       /// Gets or sets the default policy to use when calling
-      /// <see cref="SqlTable&lt;TEntity>.Delete(TEntity)"/>.
+      /// <see cref="SqlTable&lt;TEntity>.Remove(TEntity)"/>.
       /// The default value is <see cref="ConcurrencyConflictPolicy.IgnoreVersionAndLowerAffectedRecords"/>.
       /// </summary>
       public ConcurrencyConflictPolicy DeleteConflictPolicy { get; set; }
@@ -1099,6 +1053,16 @@ namespace DbExtensions {
       /// </summary>
       public bool EnableBatchCommands { get; set; }
 
+      /// <summary>
+      /// true to recursively execute INSERT commands for the entity's one-to-one and one-to-many associations;
+      /// otherwise, false. The default is true.
+      /// </summary>
+      /// <remarks>
+      /// This setting affects the behavior of <see cref="SqlTable&lt;TEntity>.Add(TEntity)"/> and
+      /// <see cref="SqlTable&lt;TEntity>.AddRange(TEntity[])"/>.
+      /// </remarks>
+      public bool EnableInsertRecursion { get; set; }
+
       internal DatabaseConfiguration(MetaModel mapping) {
          this.mapping = mapping;
       }
@@ -1110,16 +1074,19 @@ namespace DbExtensions {
    /// or when trying to UPDATE/DELETE a row that no longer exists.
    /// </summary>
    public enum ConcurrencyConflictPolicy {
+
       /// <summary>
       /// Include version column check in the UPDATE/DELETE statement predicate.
       /// </summary>
       UseVersion = 0,
+
       /// <summary>
       /// The predicate for the UPDATE/DELETE statement should not contain
       /// any version column checks to avoid version conflicts. 
       /// Note that a conflict can still ocurr if the row no longer exists.
       /// </summary>
       IgnoreVersion = 1,
+
       /// <summary>
       /// The predicate for the UPDATE/DELETE statement should not contain
       /// any version column checks to avoid version conflicts. 

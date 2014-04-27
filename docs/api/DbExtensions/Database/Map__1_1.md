@@ -48,4 +48,4 @@ See Also
 [4]: http://msdn.microsoft.com/en-us/library/93wb1heh
 [5]: http://msdn.microsoft.com/en-us/library/9eekhta0
 [6]: README.md
-[7]: ../Extensions/Map__1_6.md
+[7]: ../Extensions/Map__1_2.md

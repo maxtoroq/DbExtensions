@@ -107,16 +107,19 @@ namespace DbExtensions {
 
          SqlBuilder sql = new SqlBuilder();
 
-         if (values.Length == 0)
+         if (values.Length == 0) {
             return sql;
+         }
 
-         if (separator == null)
+         if (separator == null) {
             separator = "";
+         }
 
          SqlBuilder first = values[0];
 
-         if (first != null)
+         if (first != null) {
             sql.Append(first);
+         }
 
          for (int i = 1; i < values.Length; i++) {
 
@@ -124,8 +127,9 @@ namespace DbExtensions {
 
             SqlBuilder val = values[i];
 
-            if (val != null)
+            if (val != null) {
                sql.Append(val);
+            }
          }
 
          return sql;
@@ -148,23 +152,27 @@ namespace DbExtensions {
 
          SqlBuilder sql = new SqlBuilder();
 
-         if (separator == null)
+         if (separator == null) {
             separator = "";
+         }
 
          using (IEnumerator<SqlBuilder> enumerator = values.GetEnumerator()) {
 
-            if (!enumerator.MoveNext())
+            if (!enumerator.MoveNext()) {
                return sql;
+            }
 
-            if (enumerator.Current != null)
+            if (enumerator.Current != null) {
                sql.Append(enumerator.Current);
+            }
 
             while (enumerator.MoveNext()) {
 
                sql.Append(separator);
 
-               if (enumerator.Current != null)
+               if (enumerator.Current != null) {
                   sql.Append(enumerator.Current);
+               }
             }
          }
 
@@ -214,8 +222,9 @@ namespace DbExtensions {
          if (separator == null
             || !String.Equals(clauseName, this.CurrentClause, StringComparison.OrdinalIgnoreCase)) {
 
-            if (!this.IsEmpty)
+            if (!this.IsEmpty) {
                this.Buffer.AppendLine();
+            }
 
             if (clauseName != null) {
                this.Buffer.Append(clauseName);
@@ -284,7 +293,18 @@ namespace DbExtensions {
       /// <param name="sql">A <see cref="SqlBuilder"/>.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
       public SqlBuilder Append(SqlBuilder sql) {
-         return Append("{0}", sql);
+
+         this.Buffer.Append(MakeAbsolutePlaceholders(sql));
+
+         for (int i = 0; i < sql.ParameterValues.Count; i++) {
+            this.ParameterValues.Add(sql.ParameterValues[i]);
+         }
+
+         return this;
+      }
+
+      string MakeAbsolutePlaceholders(SqlBuilder sql) {
+         return String.Format(CultureInfo.InvariantCulture, sql.ToString(), Enumerable.Range(0, sql.ParameterValues.Count).Select(x => Placeholder(this.ParameterValues.Count + x)).ToArray());
       }
 
       /// <summary>
@@ -296,59 +316,68 @@ namespace DbExtensions {
       public SqlBuilder Append(string format, params object[] args) {
 
          if (args == null || args.Length == 0) {
+
             this.Buffer.Append(format);
-         } else {
-            List<string> fargs = new List<string>();
-            List<object> oargs = new List<object>();
-
-            int fi = this.ParameterValues.Count;
-
-            for (int i = 0; i < args.Length; i++) {
-               object obj = args[i];
-
-               if (obj != null) {
-                  Array arr = obj as Array;
-
-                  if (arr != null && arr.Length > 0) {
-                     fargs.Add(String.Join(", ", Enumerable.Range(0, arr.Length).Select(x => String.Concat("{", fi++, "}")).ToArray()));
-                     foreach (object item in arr) oargs.Add(item);
-                     continue;
-
-                  } else {
-                     SqlBuilder sqlb = obj as SqlBuilder;
-
-                     if (sqlb != null) {
-                        StringBuilder sqlfrag = new StringBuilder()
-                           .AppendLine()
-                           .AppendFormat(CultureInfo.InvariantCulture, sqlb.ToString(), Enumerable.Range(0, sqlb.ParameterValues.Count).Select(x => String.Concat("{", fi++, "}")).ToArray())
-                           .Replace(Environment.NewLine, Environment.NewLine + "\t");
-
-                        fargs.Add(sqlfrag.ToString());
-                        oargs.AddRange(sqlb.ParameterValues);
-                        continue;
-                     }
-                  }
-               }
-
-               fargs.Add(String.Concat("{", fi++, "}"));
-               oargs.Add(obj);
-            }
-
-            if (format == null) {
-
-               string[] templArgs = Enumerable.Range(0, fargs.Count)
-                  .Select(i => String.Concat("{", i, "}")).ToArray();
-
-               format = String.Join(" ", templArgs);
-            }
-
-            this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, fargs.Cast<object>().ToArray());
-
-            foreach (object item in oargs)
-               this.ParameterValues.Add(item);
+            return this;
          }
 
+         var fargs = new List<string>();
+
+         for (int i = 0; i < args.Length; i++) {
+
+            object obj = args[i];
+
+            if (obj != null) {
+
+               Array arr = obj as Array;
+
+               if (arr != null && arr.Length > 0) {
+
+                  fargs.Add(String.Join(", ", Enumerable.Range(0, arr.Length).Select(x => Placeholder(this.ParameterValues.Count + x)).ToArray()));
+
+                  for (int j = 0; j < arr.Length; j++) {
+                     this.ParameterValues.Add(arr.GetValue(j));
+                  }
+                     
+                  continue;
+
+               } else {
+
+                  var sqlb = obj as SqlBuilder;
+
+                  if (sqlb != null) {
+
+                     var sqlfrag = new StringBuilder()
+                        .AppendLine()
+                        .Append(MakeAbsolutePlaceholders(sqlb))
+                        .Replace(Environment.NewLine, Environment.NewLine + "\t");
+
+                     fargs.Add(sqlfrag.ToString());
+
+                     for (int j = 0; j < sqlb.ParameterValues.Count; j++) {
+                        this.ParameterValues.Add(sqlb.ParameterValues[j]);
+                     }
+
+                     continue;
+                  }
+               }
+            }
+
+            fargs.Add(Placeholder(this.ParameterValues.Count));
+            this.ParameterValues.Add(obj);
+         }
+
+         if (format == null) {
+            format = String.Join(" ", Enumerable.Range(0, fargs.Count).Select(i => Placeholder(i)).ToArray());
+         }
+
+         this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, fargs.Cast<object>().ToArray());
+
          return this;
+      }
+
+      static string Placeholder(int index) {
+         return String.Concat("{", index.ToString(CultureInfo.InvariantCulture), "}");
       }
 
       /// <summary>
@@ -572,8 +601,9 @@ namespace DbExtensions {
             formatEnd = formatSplit[1];
          }
 
-         if (parametersFactory == null)
+         if (parametersFactory == null) {
             parametersFactory = (item) => null;
+         }
 
          string currentSeparator = this.NextSeparator ?? this.CurrentSeparator;
 
@@ -1067,8 +1097,9 @@ namespace DbExtensions {
       /// <returns>A reference to this instance after the append operation has completed.</returns>
       public SqlBuilder VALUES(params object[] args) {
 
-         if (args == null || args.Length == 0)
+         if (args == null || args.Length == 0) {
             throw new ArgumentException("args cannot be empty", "args");
+         }
 
          return AppendClause("VALUES", null, "({0})", new object[] { args });
       }
@@ -1079,49 +1110,6 @@ namespace DbExtensions {
    /// instances.
    /// </summary>
    public static class SQL {
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlBuilder"/>.
-      /// </summary>
-      /// <returns>A new <see cref="SqlBuilder"/>.</returns>
-      /// <seealso cref="SqlBuilder()"/>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Use SqlBuilder constructor instead.")]
-      public static SqlBuilder ctor() {
-         return new SqlBuilder();
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlBuilder"/> initialized with
-      /// <paramref name="sql"/>.
-      /// </summary>
-      /// <param name="sql">The SQL string.</param>
-      /// <returns>
-      /// A new <see cref="SqlBuilder"/> initialized with <paramref name="sql"/>.
-      /// </returns>
-      /// <seealso cref="SqlBuilder(string)"/>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Use SqlBuilder constructor instead.")]
-      public static SqlBuilder ctor(string sql) {
-         return new SqlBuilder(sql);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlBuilder"/> initialized with
-      /// <paramref name="format"/> and <paramref name="args"/>.
-      /// </summary>
-      /// <param name="format">The SQL format string.</param>
-      /// <param name="args">The array of parameters.</param>
-      /// <returns>
-      /// A new <see cref="SqlBuilder"/> initialized with
-      /// <paramref name="format"/> and <paramref name="args"/>.
-      /// </returns>
-      /// <seealso cref="SqlBuilder(string, object[])"/>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Use SqlBuilder constructor instead.")]
-      public static SqlBuilder ctor(string format, params object[] args) {
-         return new SqlBuilder(format, args);
-      }
 
       /// <summary>
       /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
@@ -1346,339 +1334,7 @@ namespace DbExtensions {
       #endregion
    }
 
-   static partial class Extensions {
-
-      /// <summary>
-      /// Executes the <paramref name="nonQuery"/> command.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <returns>The number of affected records.</returns>
-      public static int Execute(this DbConnection connection, SqlBuilder nonQuery) {
-         return connection.Execute(CreateCommand(connection, nonQuery), (TextWriter)null);
-      }
-
-      /// <summary>
-      /// Executes the <paramref name="nonQuery"/> command.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The number of affected records.</returns>
-      public static int Execute(this DbConnection connection, SqlBuilder nonQuery, TextWriter logger) {
-         return connection.Execute(CreateCommand(connection, nonQuery), logger);
-      }
-
-      /// <summary>
-      /// Executes the <paramref name="nonQuery"/> command in a new or existing transaction, and
-      /// validates the affected records value before comitting.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <param name="affectingRecords">The number of records that the command must affect, otherwise the transaction is rolledback.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.Affect(IDbCommand, int)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to <paramref name="affectingRecords"/>.</exception>
-      public static int Affect(this DbConnection connection, SqlBuilder nonQuery, int affectingRecords) {
-         return nonQuery.ToCommand(connection).Affect(affectingRecords);
-      }
-
-      /// <summary>
-      /// Executes the <paramref name="nonQuery"/> command in a new or existing transaction, and
-      /// validates the affected records value before comitting.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <param name="affectingRecords">The number of records that the command must affect, otherwise the transaction is rolledback.</param>
-      /// <param name="affectedMode">The criteria for validating the affected records value.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.Affect(IDbCommand, int, AffectedRecordsPolicy)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not valid according to the <paramref name="affectingRecords"/> and <paramref name="affectedMode"/> parameters.</exception>
-      public static int Affect(this DbConnection connection, SqlBuilder nonQuery, int affectingRecords, AffectedRecordsPolicy affectedMode) {
-         return nonQuery.ToCommand(connection).Affect(affectingRecords, affectedMode);
-      }
-
-      /// <summary>
-      /// Executes the <paramref name="nonQuery"/> command in a new or existing transaction, and
-      /// validates the affected records value before comitting.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <param name="affectingRecords">The number of records that the command must affect, otherwise the transaction is rolledback.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> for logging the whole process.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.Affect(IDbCommand, int, TextWriter)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to <paramref name="affectingRecords"/>.</exception>      
-      public static int Affect(this DbConnection connection, SqlBuilder nonQuery, int affectingRecords, TextWriter logger) {
-         return nonQuery.ToCommand(connection).Affect(affectingRecords, logger);
-      }
-
-      /// <summary>
-      /// Executes the <paramref name="nonQuery"/> command in a new or existing transaction, and
-      /// validates the affected records value before comitting.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <param name="affectingRecords">The number of records that the command must affect, otherwise the transaction is rolledback.</param>
-      /// <param name="affectedMode">The criteria for validating the affected records value.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> for logging the whole process.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.Affect(IDbCommand, int, AffectedRecordsPolicy, TextWriter)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not valid according to the <paramref name="affectingRecords"/> and <paramref name="affectedMode"/> parameters.</exception>
-      public static int Affect(this DbConnection connection, SqlBuilder nonQuery, int affectingRecords, AffectedRecordsPolicy affectedMode, TextWriter logger) {
-         return nonQuery.ToCommand(connection).Affect(affectingRecords, affectedMode, logger);
-      }
-
-      /// <summary>
-      /// Executes the <paramref name="nonQuery"/> command in a new or existing transaction, and
-      /// validates that the affected records value is equal to one before comitting.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
-      public static int AffectOne(this DbConnection connection, SqlBuilder nonQuery) {
-         return Affect(connection, nonQuery, 1);
-      }
-
-      /// <summary>
-      /// Executes the <paramref name="nonQuery"/> command in a new or existing transaction, and
-      /// validates that the affected records value is equal to one before comitting.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> for logging the whole process.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.AffectOne(IDbCommand, TextWriter)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
-      public static int AffectOne(this DbConnection connection, SqlBuilder nonQuery, TextWriter logger) {
-         return Affect(connection, nonQuery, 1, logger);
-      }
-
-      /// <summary>
-      /// Executes the <paramref name="nonQuery"/> command in a new or existing transaction, and
-      /// validates that the affected records value is less or equal to one before comitting.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
-      public static int AffectOneOrNone(this DbConnection connection, SqlBuilder nonQuery) {
-         return Affect(connection, nonQuery, 1, AffectedRecordsPolicy.AllowLower);
-      }
-
-      /// <summary>
-      /// Executes the <paramref name="nonQuery"/> command in a new or existing transaction, and
-      /// validates that the affected records value is less or equal to one before comitting.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> for logging the whole process.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand, TextWriter)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>      
-      public static int AffectOneOrNone(this DbConnection connection, SqlBuilder nonQuery, TextWriter logger) {
-         return Affect(connection, nonQuery, 1, AffectedRecordsPolicy.AllowLower, logger);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to objects of type
-      /// specified by the <paramref name="resultType"/> parameter.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <param name="query">The query.</param>
-      /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
-      /// <seealso cref="Extensions.Map(IDbCommand, Type)"/>
-      public static IEnumerable<object> Map(this DbConnection connection, Type resultType, SqlBuilder query) {
-         return Map(connection, resultType, query, (TextWriter)null);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to objects of type
-      /// specified by the <paramref name="resultType"/> parameter.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <param name="query">The query.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
-      /// <seealso cref="Extensions.Map(IDbCommand, Type, TextWriter)"/>
-      public static IEnumerable<object> Map(this DbConnection connection, Type resultType, SqlBuilder query, TextWriter logger) {
-
-         var mapper = new PocoMapper(resultType, logger);
-
-         return Map<object>(q => q.ToCommand(connection), query, mapper, logger);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query.</param>
-      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
-      /// <seealso cref="Extensions.Map&lt;T>(IDbCommand)"/>
-      public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query) {
-         return Map<TResult>(connection, query, (TextWriter)null);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
-      /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, TextWriter)"/>
-      public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query, TextWriter logger) {
-         
-         var mapper = new PocoMapper(typeof(TResult), logger);
-
-         return Map<TResult>(q => q.ToCommand(connection), query, mapper, logger);
-      }
-
-      internal static IEnumerable<TResult> Map<TResult>(Func<SqlBuilder, IDbCommand> queryToCommand, SqlBuilder query, Mapper mapper, TextWriter logger) {
-
-         mapper.SetIgnoredColumns(query);
-
-         return Map<TResult>(queryToCommand(query), r => (TResult)mapper.Map(r), logger);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects,
-      /// using the provided <paramref name="mapper"/> delegate.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query.</param>
-      /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
-      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
-      /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>)"/>
-      public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query, Func<IDataRecord, TResult> mapper) {
-         return query.ToCommand(connection).Map<TResult>(mapper);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects,
-      /// using the provided <paramref name="mapper"/> delegate.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query.</param>
-      /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
-      /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>, TextWriter)"/>
-      public static IEnumerable<TResult> Map<TResult>(this DbConnection connection, SqlBuilder query, Func<IDataRecord, TResult> mapper, TextWriter logger) {
-         return query.ToCommand(connection).Map<TResult>(mapper, logger);
-      }
-
-      /// <summary>
-      /// Gets the number of results the <paramref name="query"/> would return.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query whose count is to be computed.</param>
-      /// <returns>The number of results the <paramref name="query"/> would return.</returns>
-      public static int Count(this DbConnection connection, SqlBuilder query) {
-         return Count(connection, query, (TextWriter)null);
-      }
-
-      /// <summary>
-      /// Gets the number of results the <paramref name="query"/> would return.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query whose count is to be computed.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The number of results the <paramref name="query"/> would return.</returns>
-      public static int Count(this DbConnection connection, SqlBuilder query, TextWriter logger) {
-         return Count(connection, CreateCommand(connection, CountQuery(query)), logger);
-      }
-
-      internal static int Count(this DbConnection connection, IDbCommand command, TextWriter logger) {
-         return Convert.ToInt32(CountImpl(command, logger), CultureInfo.InvariantCulture);
-      }
-
-      /// <summary>
-      /// Gets the number of results the <paramref name="query"/> would return.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query whose count is to be computed.</param>
-      /// <returns>The number of results the <paramref name="query"/> would return.</returns>
-      [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
-      public static long LongCount(this DbConnection connection, SqlBuilder query) {
-         return LongCount(connection, query, (TextWriter)null);
-      }
-
-      /// <summary>
-      /// Gets the number of results the <paramref name="query"/> would return.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query whose count is to be computed.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The number of results the <paramref name="query"/> would return.</returns>
-      [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
-      public static long LongCount(this DbConnection connection, SqlBuilder query, TextWriter logger) {
-         return LongCount(connection, CreateCommand(connection, CountQuery(query)), logger);
-      }
-
-      internal static long LongCount(this DbConnection connection, IDbCommand command, TextWriter logger) {
-         return Convert.ToInt64(CountImpl(command, logger), CultureInfo.InvariantCulture);
-      }
-
-      static object CountImpl(IDbCommand command, TextWriter logger) {
-         return command.Map(r => r[0], logger).SingleOrDefault() ?? 0;
-      }
-
-      internal static SqlBuilder CountQuery(SqlBuilder query) {
-
-         return new SqlBuilder()
-            .SELECT("COUNT(*)")
-            .FROM("({0}) dbex_count", query);
-      }
-
-      /// <summary>
-      /// Checks if <paramref name="query"/> would return at least one row.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query whose existance is to be checked.</param>
-      /// <returns>true if <paramref name="query"/> contains any rows; otherwise, false.</returns>
-      public static bool Exists(this DbConnection connection, SqlBuilder query) {
-         return Exists(connection, query, (TextWriter)null);
-      }
-
-      /// <summary>
-      /// Checks if <paramref name="query"/> would return at least one row.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query whose existance is to be checked.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>true if <paramref name="query"/> contains any rows; otherwise, false.</returns>
-      public static bool Exists(this DbConnection connection, SqlBuilder query, TextWriter logger) {
-
-         if (query == null) throw new ArgumentNullException("query");
-
-         return Exists(connection, CreateCommand(connection, ExistsQuery(query)), logger);
-      }
-
-      internal static bool Exists(this DbConnection connection, IDbCommand command, TextWriter logger) {
-
-         return command.Map(r => Convert.ToInt32(r[0], CultureInfo.InvariantCulture) != 0, logger)
-            .SingleOrDefault();
-      }
-
-      internal static SqlBuilder ExistsQuery(SqlBuilder query) {
-
-         return new SqlBuilder()
-            .SELECT("(CASE WHEN EXISTS ({0}) THEN 1 ELSE 0 END)", query);
-      }
+   public static partial class Extensions {
 
       /// <summary>
       /// Creates and returns a <see cref="DbCommand"/> object from the specified <paramref name="sqlBuilder"/>.
@@ -1709,15 +1365,14 @@ namespace DbExtensions {
       public static DbCommand CreateCommand(this DbConnection connection, SqlBuilder sqlBuilder) {
          return sqlBuilder.ToCommand(connection);
       }
-   }
 
-   partial class Mapper {
+      internal static IEnumerable<TResult> Map<TResult>(Func<SqlBuilder, IDbCommand> queryToCommand, SqlBuilder query, Mapper mapper, TextWriter logger) {
 
-      internal void SetIgnoredColumns(SqlBuilder query) { 
-         
          if (query.HasIgnoredColumns) {
-            this.ignoredColumns = new HashSet<int>(query.IgnoredColumns);
+            mapper.IgnoredColumns = new HashSet<int>(query.IgnoredColumns);
          }
+
+         return Map<TResult>(queryToCommand(query), r => (TResult)mapper.Map(r), logger);
       }
    }
 }

@@ -54,4 +54,4 @@ See Also
 [4]: ../AffectedRecordsPolicy/README.md
 [5]: http://msdn.microsoft.com/en-us/library/bsdf9tb2
 [6]: README.md
-[7]: ../Extensions/Affect_5.md
+[7]: ../Extensions/Affect_1.md

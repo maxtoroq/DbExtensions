@@ -29,7 +29,7 @@ namespace DbExtensions {
 
    /// <summary>
    /// A non-generic version of <see cref="SqlTable&lt;TEntity>"/> which can be used when the type of the entity is not known at build time.
-   /// This class cannot be instantiated.
+   /// This class cannot be instantiated, to get an instance use the <see cref="Database.Table(Type)"/> method.
    /// </summary>
    /// <seealso cref="Database.Table(Type)"/>
    [DebuggerDisplay("{metaType.Name}")]
@@ -95,7 +95,8 @@ namespace DbExtensions {
          if (metaType.Table == null) throw new InvalidOperationException("metaType.Table cannot be null.");
 
          string alias = (!String.IsNullOrEmpty(tableAlias)) ?
-            " " + db.QuoteIdentifier(tableAlias) : null;
+            " " + db.QuoteIdentifier(tableAlias) 
+            : null;
 
          return db.QuoteIdentifier(metaType.Table.TableName) + (alias ?? "");
       }
@@ -127,8 +128,9 @@ namespace DbExtensions {
       /// <exception cref="System.InvalidOperationException">The specified <typeparamref name="TEntity"/> is not valid for this instance.</exception>
       public new SqlTable<TEntity> Cast<TEntity>() where TEntity : class {
 
-         if (typeof(TEntity) != this.metaType.Type) 
+         if (typeof(TEntity) != this.metaType.Type) {
             throw new InvalidOperationException("The specified type parameter is not valid for this instance.");
+         }
 
          return (SqlTable<TEntity>)table;
       }
@@ -160,77 +162,41 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Executes an INSERT command for the specified <paramref name="entity"/>.
+      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entity">
       /// The object whose INSERT command is to be executed. This parameter is named entity for consistency
       /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
       /// need to have a primary key.
       /// </param>
-      public void Insert(object entity) {
-         table.Insert(entity);
+      public void Add(object entity) {
+         table.Add(entity);
+      }
+
+      void ISqlTable.AddDescendants(object entity) {
+         table.AddDescendants(entity);
       }
 
       /// <summary>
-      /// Executes an INSERT command for the specified <paramref name="entity"/>.
-      /// </summary>
-      /// <param name="entity">
-      /// The object whose INSERT command is to be executed. This parameter is named entity for consistency
-      /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
-      /// need to have a primary key.
-      /// </param>
-      /// <param name="deep">true to recursively execute INSERT commands for the <paramref name="entity"/>'s one-to-many associations; otherwise, false.</param>
-      public void Insert(object entity, bool deep) {
-         table.Insert(entity, deep);
-      }
-
-      /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all its
-      /// one-to-many associations.
-      /// </summary>
-      /// <param name="entity">The entity whose INSERT command is to be executed.</param>
-      [Obsolete("Please use Insert(TEntity, Boolean) instead.")]
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public void InsertDeep(object entity) {
-         table.InsertDeep(entity);
-      }
-
-      void ISqlTable.InsertDescendants(object entity) {
-         table.InsertDescendants(entity);
-      }
-
-      /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      public void InsertRange(IEnumerable<object> entities) {
-         table.InsertRange(entities);
+      public void AddRange(IEnumerable<object> entities) {
+         table.AddRange(entities);
       }
 
       /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      /// <param name="deep">true to recursively execute INSERT commands for each entity's one-to-many associations; otherwise, false.</param>
-      public void InsertRange(IEnumerable<object> entities, bool deep) {
-         table.InsertRange(entities, deep);
-      }
-
-      /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      public void InsertRange(params object[] entities) {
-         table.InsertRange(entities);
-      }
-
-      /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      /// <param name="deep">true to recursively execute INSERT commands for each entity's one-to-many associations; otherwise, false.</param>
-      public void InsertRange(object[] entities, bool deep) {
-         table.InsertRange(entities, deep);
+      public void AddRange(params object[] entities) {
+         table.AddRange(entities);
       }
 
       /// <summary>
@@ -304,8 +270,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="entity">The entity whose DELETE command is to be executed.</param>
-      public void Delete(object entity) {
-         table.Delete(entity);
+      public void Remove(object entity) {
+         table.Remove(entity);
       }
 
       /// <summary>
@@ -317,8 +283,8 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
       /// predicate, and how to validate the affected records value.
       /// </param>
-      public void Delete(object entity, ConcurrencyConflictPolicy conflictPolicy) {
-         table.Delete(entity, conflictPolicy);
+      public void Remove(object entity, ConcurrencyConflictPolicy conflictPolicy) {
+         table.Remove(entity, conflictPolicy);
       }
 
       /// <summary>
@@ -327,35 +293,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="id">The primary key value.</param>
-      [Obsolete("Please use DeleteKey(Object) instead.")]
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public void DeleteById(object id) {
-         table.DeleteById(id);
-      }
-
-      /// <summary>
-      /// Executes a DELETE command for the entity
-      /// whose primary key matches the <paramref name="id"/> parameter,
-      /// using the provided <paramref name="conflictPolicy"/>.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
-      /// <param name="conflictPolicy">
-      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
-      /// </param>
-      [Obsolete("Please use DeleteKey(Object, ConcurrencyConflictPolicy) instead.")]
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
-         table.DeleteById(id, conflictPolicy);
-      }
-
-      /// <summary>
-      /// Executes a DELETE command for the entity
-      /// whose primary key matches the <paramref name="id"/> parameter,
-      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
-      public void DeleteKey(object id) {
-         table.DeleteKey(id);
+      public void RemoveKey(object id) {
+         table.RemoveKey(id);
       }
 
       /// <summary>
@@ -367,8 +306,8 @@ namespace DbExtensions {
       /// <param name="conflictPolicy">
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
       /// </param>
-      public void DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
-         table.DeleteKey(id, conflictPolicy);
+      public void RemoveKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
+         table.RemoveKey(id, conflictPolicy);
       }
 
       /// <summary>
@@ -376,8 +315,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
-      public void DeleteRange(IEnumerable<object> entities) {
-         table.DeleteRange(entities);
+      public void RemoveRange(IEnumerable<object> entities) {
+         table.RemoveRange(entities);
       }
 
       /// <summary>
@@ -389,8 +328,8 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
       /// predicate, and how to validate the affected records value.
       /// </param>
-      public void DeleteRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
-         table.DeleteRange(entities, conflictPolicy);
+      public void RemoveRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
+         table.RemoveRange(entities, conflictPolicy);
       }
 
       /// <summary>
@@ -398,8 +337,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
-      public void DeleteRange(params object[] entities) {
-         table.DeleteRange(entities);
+      public void RemoveRange(params object[] entities) {
+         table.RemoveRange(entities);
       }
 
       /// <summary>
@@ -411,8 +350,8 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
       /// predicate, and how to validate the affected records value.
       /// </param>
-      public void DeleteRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
-         table.DeleteRange(entities, conflictPolicy);
+      public void RemoveRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
+         table.RemoveRange(entities, conflictPolicy);
       }
 
       /// <summary>
@@ -446,17 +385,6 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Sets all mapped members of <paramref name="entity"/> to their default database values.
-      /// </summary>
-      /// <param name="entity">The entity whose members are to be set to their default values.</param>
-      /// <seealso cref="DbConnection.GetSchema(string, string[])"/>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("This method will be removed in the next major version.")]
-      public void Initialize(object entity) {
-         table.Initialize(entity);
-      }
-
-      /// <summary>
       /// Sets all mapped members of <paramref name="entity"/> to their most current persisted value.
       /// </summary>
       /// <param name="entity">The entity to refresh.</param>
@@ -469,8 +397,8 @@ namespace DbExtensions {
 
    /// <summary>
    /// A <see cref="SqlSet&lt;TEntity>"/> that provides additional methods for CRUD (Create, Read, Update, Delete)
-   /// operations for <typeparamref name="TEntity"/>, mapped using the <see cref="N:System.Data.Linq.Mapping"/> API. 
-   /// This class cannot be instantiated.
+   /// operations for entities mapped using the <see cref="N:System.Data.Linq.Mapping"/> API. 
+   /// This class cannot be instantiated, to get an instance use the <see cref="Database.Table&lt;TEntity>"/> method.
    /// </summary>
    /// <typeparam name="TEntity">The type of the entity.</typeparam>
    /// <seealso cref="Database.Table&lt;TEntity>()"/>
@@ -501,10 +429,6 @@ namespace DbExtensions {
          return this.db.QuoteIdentifier(unquotedIdentifier);
       }
 
-      string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
-         return this.SQL.BuildPredicateFragment(predicateValues, parametersBuffer);
-      }
-
       void EnsureEntityType() {
          SqlTable.EnsureEntityType(metaType);
       }
@@ -520,50 +444,20 @@ namespace DbExtensions {
       /// or null if the <paramref name="id"/> does not exist.
       /// </returns>
       public TEntity Find(object id) {
-
-         if (id == null) throw new ArgumentNullException("id");
-
-         if (metaType.IdentityMembers.Count == 0) {
-            throw new InvalidOperationException("The entity has no identity members defined.");
-
-         } else if (metaType.IdentityMembers.Count > 1) {
-            throw new InvalidOperationException("Cannot call this method when the entity has more than one identity member.");
-         }
-
-         var predicateValues = new Dictionary<string, object> { 
-            { metaType.IdentityMembers[0].MappedName, id }
-         };
-
-         SqlBuilder query = this.SQL.SELECT_FROM();
-         query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
-
-         TEntity entity = this.db.Map<TEntity>(query).SingleOrDefault();
-
-         return entity;
+         return Extensions.Find(this, id);
       }
 
       /// <summary>
-      /// Executes an INSERT command for the specified <paramref name="entity"/>.
+      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entity">
       /// The object whose INSERT command is to be executed. This parameter is named entity for consistency
       /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
       /// need to have a primary key.
       /// </param>
-      public void Insert(TEntity entity) {
-         Insert(entity, deep: false);
-      }
-
-      /// <summary>
-      /// Executes an INSERT command for the specified <paramref name="entity"/>.
-      /// </summary>
-      /// <param name="entity">
-      /// The object whose INSERT command is to be executed. This parameter is named entity for consistency
-      /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
-      /// need to have a primary key.
-      /// </param>
-      /// <param name="deep">true to recursively execute INSERT commands for the <paramref name="entity"/>'s one-to-many associations; otherwise, false.</param>
-      public void Insert(TEntity entity, bool deep) {
+      public void Add(TEntity entity) {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
@@ -588,8 +482,9 @@ namespace DbExtensions {
 
                object id = this.db.LastInsertId();
 
-               if (Convert.IsDBNull(id) || id == null)
+               if (Convert.IsDBNull(id) || id == null) {
                   throw new DataException("The last insert id value cannot be null.");
+               }
 
                object convertedId;
 
@@ -611,25 +506,53 @@ namespace DbExtensions {
                Refresh(entity, syncMembers);
             }
 
-            if (deep)
+            if (this.db.Configuration.EnableInsertRecursion) {
                InsertDescendants(entity);
+            }
 
             tx.Commit();
          }
       }
 
-      /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all its
-      /// one-to-many associations.
-      /// </summary>
-      /// <param name="entity">The entity whose INSERT command is to be executed.</param>
-      [Obsolete("Please use Insert(TEntity, Boolean) instead.")]
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public void InsertDeep(TEntity entity) {
-         Insert(entity, deep: true);
+      void InsertDescendants(TEntity entity) {
+
+         InsertOneToOne(entity);
+         InsertOneToMany(entity);
       }
 
-      void InsertDescendants(TEntity entity) {
+      void InsertOneToOne(TEntity entity) {
+
+         MetaAssociation[] oneToOne = metaType.Associations
+            .Where(a => !a.IsMany && a.ThisKeyIsPrimaryKey && a.OtherKeyIsPrimaryKey)
+            .ToArray();
+
+         for (int i = 0; i < oneToOne.Length; i++) {
+
+            MetaAssociation assoc = oneToOne[i];
+
+            object child = assoc.ThisMember.MemberAccessor.GetBoxedValue(entity);
+
+            if (child == null) {
+               continue;
+            }
+
+            for (int j = 0; j < assoc.ThisKey.Count; j++) {
+
+               MetaDataMember thisKey = assoc.ThisKey[j];
+               MetaDataMember otherKey = assoc.OtherKey[j];
+
+               object thisKeyVal = thisKey.MemberAccessor.GetBoxedValue(entity);
+
+               otherKey.MemberAccessor.SetBoxedValue(ref child, thisKeyVal);
+            }
+
+            SqlTable otherTable = this.db.Table(assoc.OtherType);
+
+            otherTable.Add(child);
+         }
+      }
+
+      void InsertOneToMany(TEntity entity) {
 
          MetaAssociation[] oneToMany = metaType.Associations.Where(a => a.IsMany).ToArray();
 
@@ -660,64 +583,48 @@ namespace DbExtensions {
 
             SqlTable otherTable = this.db.Table(assoc.OtherType);
 
-            otherTable.InsertRange(many);
+            otherTable.AddRange(many);
 
             for (int j = 0; j < many.Length; j++) {
 
                object child = many[j];
 
-               ((ISqlTable)otherTable).InsertDescendants(child);
+               ((ISqlTable)otherTable).AddDescendants(child);
             }
          }
       }
 
       /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      public void InsertRange(IEnumerable<TEntity> entities) {
+      public void AddRange(IEnumerable<TEntity> entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
-         InsertRange(entities.ToArray());
+         AddRange(entities.ToArray());
       }
 
       /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
+      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      /// <param name="deep">true to recursively execute INSERT commands for each entity's one-to-many associations; otherwise, false.</param>
-      public void InsertRange(IEnumerable<TEntity> entities, bool deep) {
-
-         if (entities == null) throw new ArgumentNullException("entities");
-
-         InsertRange(entities.ToArray(), deep);
-      }
-
-      /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      public void InsertRange(params TEntity[] entities) {
-         InsertRange(entities, deep: false);
-      }
-
-      /// <summary>
-      /// Executes INSERT commands for the specified <paramref name="entities"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
-      /// <param name="deep">true to recursively execute INSERT commands for each entity's one-to-many associations; otherwise, false.</param>
-      public void InsertRange(TEntity[] entities, bool deep) {
+      public void AddRange(params TEntity[] entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
          entities = entities.Where(o => o != null).ToArray();
 
-         if (entities.Length == 0)
+         if (entities.Length == 0) {
             return;
+         }
 
          if (entities.Length == 1) {
-            Insert(entities[0], deep);
+            Add(entities[0]);
             return;
          }
 
@@ -737,9 +644,11 @@ namespace DbExtensions {
                
                this.db.Affect(batchInsert, entities.Length, AffectedRecordsPolicy.MustMatchAffecting);
 
-               if (deep) {
-                  for (int i = 0; i < entities.Length; i++)
+               if (this.db.Configuration.EnableInsertRecursion) {
+
+                  for (int i = 0; i < entities.Length; i++) {
                      InsertDescendants(entities[i]);
+                  }
                }
 
                tx.Commit();
@@ -749,8 +658,9 @@ namespace DbExtensions {
 
             using (var tx = this.db.EnsureInTransaction()) {
 
-               for (int i = 0; i < entities.Length; i++)
-                  Insert(entities[i], deep);
+               for (int i = 0; i < entities.Length; i++) {
+                  Add(entities[i]);
+               }
 
                tx.Commit();
             }
@@ -792,8 +702,9 @@ namespace DbExtensions {
 
             this.db.Affect(updateSql, 1, affRec);
 
-            if (syncMembers.Length > 0)
+            if (syncMembers.Length > 0) {
                Refresh(entity, syncMembers);
+            }
          }
       }
 
@@ -849,8 +760,9 @@ namespace DbExtensions {
 
          entities = entities.Where(o => o != null).ToArray();
 
-         if (entities.Length == 0)
+         if (entities.Length == 0) {
             return;
+         }
 
          if (entities.Length == 1) {
             Update(entities[0], conflictPolicy);
@@ -879,8 +791,9 @@ namespace DbExtensions {
 
             using (var tx = this.db.EnsureInTransaction()) {
 
-               for (int i = 0; i < entities.Length; i++)
+               for (int i = 0; i < entities.Length; i++) {
                   Update(entities[i], conflictPolicy);
+               }
 
                tx.Commit();
             }
@@ -892,8 +805,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="entity">The entity whose DELETE command is to be executed.</param>
-      public void Delete(TEntity entity) {
-         Delete(entity, this.db.Configuration.DeleteConflictPolicy);
+      public void Remove(TEntity entity) {
+         Remove(entity, this.db.Configuration.DeleteConflictPolicy);
       }
 
       /// <summary>
@@ -905,7 +818,7 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
       /// predicate, and how to validate the affected records value.
       /// </param>
-      public void Delete(TEntity entity, ConcurrencyConflictPolicy conflictPolicy) {
+      public void Remove(TEntity entity, ConcurrencyConflictPolicy conflictPolicy) {
 
          if (entity == null) throw new ArgumentNullException("entity");
 
@@ -920,10 +833,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="id">The primary key value.</param>
-      [Obsolete("Please use DeleteKey(Object) instead.")]
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public void DeleteById(object id) {
-         DeleteKey(id);
+      public void RemoveKey(object id) {
+         RemoveKey(id, this.db.Configuration.DeleteConflictPolicy);
       }
 
       /// <summary>
@@ -935,32 +846,7 @@ namespace DbExtensions {
       /// <param name="conflictPolicy">
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
       /// </param>
-      [Obsolete("Please use DeleteKey(Object, ConcurrencyConflictPolicy) instead.")]
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      public void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
-         DeleteKey(id, conflictPolicy);
-      }
-
-      /// <summary>
-      /// Executes a DELETE command for the entity
-      /// whose primary key matches the <paramref name="id"/> parameter,
-      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
-      public void DeleteKey(object id) {
-         DeleteKey(id, this.db.Configuration.DeleteConflictPolicy);
-      }
-
-      /// <summary>
-      /// Executes a DELETE command for the entity
-      /// whose primary key matches the <paramref name="id"/> parameter,
-      /// using the provided <paramref name="conflictPolicy"/>.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
-      /// <param name="conflictPolicy">
-      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
-      /// </param>
-      public void DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
+      public void RemoveKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
          this.db.Affect(this.SQL.DELETE_FROM_WHERE_id(id), 1, GetAffectedRecordsPolicy(conflictPolicy));
       }
 
@@ -969,11 +855,11 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
-      public void DeleteRange(IEnumerable<TEntity> entities) {
+      public void RemoveRange(IEnumerable<TEntity> entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
-         DeleteRange(entities.ToArray());
+         RemoveRange(entities.ToArray());
       }
 
       /// <summary>
@@ -985,11 +871,11 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
       /// predicate, and how to validate the affected records value.
       /// </param>
-      public void DeleteRange(IEnumerable<TEntity> entities, ConcurrencyConflictPolicy conflictPolicy) {
+      public void RemoveRange(IEnumerable<TEntity> entities, ConcurrencyConflictPolicy conflictPolicy) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
-         DeleteRange(entities.ToArray(), conflictPolicy);
+         RemoveRange(entities.ToArray(), conflictPolicy);
       }
 
       /// <summary>
@@ -997,8 +883,8 @@ namespace DbExtensions {
       /// using the default <see cref="ConcurrencyConflictPolicy"/>.
       /// </summary>
       /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
-      public void DeleteRange(params TEntity[] entities) {
-         DeleteRange(entities, this.db.Configuration.DeleteConflictPolicy);
+      public void RemoveRange(params TEntity[] entities) {
+         RemoveRange(entities, this.db.Configuration.DeleteConflictPolicy);
       }
 
       /// <summary>
@@ -1010,17 +896,18 @@ namespace DbExtensions {
       /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
       /// predicate, and how to validate the affected records value.
       /// </param>
-      public void DeleteRange(TEntity[] entities, ConcurrencyConflictPolicy conflictPolicy) {
+      public void RemoveRange(TEntity[] entities, ConcurrencyConflictPolicy conflictPolicy) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
          entities = entities.Where(o => o != null).ToArray();
 
-         if (entities.Length == 0)
+         if (entities.Length == 0) {
             return;
+         }
 
          if (entities.Length == 1) {
-            Delete(entities[0], conflictPolicy);
+            Remove(entities[0], conflictPolicy);
             return;
          }
 
@@ -1040,7 +927,7 @@ namespace DbExtensions {
 
             MetaDataMember idMember = this.metaType.IdentityMembers[0];
 
-            object[] ids = entities.Select(e => idMember.MemberAccessor.GetBoxedValue(e)).ToArray();
+            object[] ids = entities.Select(e => this.SQL.GetMemberValue(e, idMember)).ToArray();
 
             SqlBuilder sql = this.SQL
                .DELETE_FROM()
@@ -1058,8 +945,9 @@ namespace DbExtensions {
 
             using (var tx = this.db.EnsureInTransaction()) {
 
-               for (int i = 0; i < entities.Length; i++)
-                  Delete(entities[i], conflictPolicy);
+               for (int i = 0; i < entities.Length; i++) {
+                  Remove(entities[i], conflictPolicy);
+               }
 
                tx.Commit();
             }
@@ -1113,7 +1001,7 @@ namespace DbExtensions {
 
          IDictionary<string, object> predicateValues = predicateMembers.ToDictionary(
             m => m.MappedName,
-            m => m.MemberAccessor.GetBoxedValue(entity)
+            m => this.SQL.GetMemberValue(entity, m)
          );
 
          return Contains(predicateMembers, predicateValues);
@@ -1136,12 +1024,13 @@ namespace DbExtensions {
 
          MetaDataMember[] predicateMembers = metaType.IdentityMembers.ToArray();
 
-         if (keyValues.Length != predicateMembers.Length)
+         if (keyValues.Length != predicateMembers.Length) {
             throw new ArgumentException("The Length of keyValues must match the number of identity members.", "keyValues");
+         }
 
          IDictionary<string, object> predicateValues =
             Enumerable.Range(0, predicateMembers.Length)
-               .ToDictionary(i => predicateMembers[i].MappedName, i => keyValues[i]);
+               .ToDictionary(i => predicateMembers[i].MappedName, i => this.SQL.ConvertMemberValue(predicateMembers[i], keyValues[i]));
 
          return Contains(predicateMembers, predicateValues);
       }
@@ -1149,72 +1038,9 @@ namespace DbExtensions {
       bool Contains(MetaDataMember[] predicateMembers, IDictionary<string, object> predicateValues) {
 
          SqlBuilder query = this.SQL.SELECT_FROM(new[] { predicateMembers[0] });
-         query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
+         query.WHERE(this.SQL.BuildPredicateFragment(predicateValues, query.ParameterValues));
 
          return this.db.Exists(query);
-      }
-
-      /// <summary>
-      /// Sets all mapped members of <paramref name="entity"/> to their default database values.
-      /// </summary>
-      /// <param name="entity">The entity whose members are to be set to their default values.</param>
-      /// <seealso cref="DbConnection.GetSchema(string, string[])"/>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("This method will be removed in the next major version.")]
-      public void Initialize(TEntity entity) {
-
-         if (entity == null) throw new ArgumentNullException("entity");
-
-         DbConnection conn = this.db.Connection;
-         string tableName = metaType.Table.TableName;
-         const string collectionName = "Columns";
-
-         using (this.db.EnsureConnectionOpen()) {
-
-            DataTable schema = conn.GetSchema(collectionName, new string[4] { conn.Database, null, tableName, null });
-
-            if (schema.Rows.Count == 0)
-               // MySQL Connector/NET
-               schema = conn.GetSchema(collectionName, new string[4] { null, conn.Database, tableName, null });
-
-            if (schema.Rows.Count == 0)
-               // SQL Server Compact
-               schema = conn.GetSchema(collectionName, new string[4] { null, null, tableName, null });
-
-            if (schema.Rows.Count > 0) {
-
-               SqlBuilder query = new SqlBuilder();
-
-               foreach (DataRow row in schema.Rows) {
-
-                  string defaultExpr = (row["COLUMN_DEFAULT"] ?? "").ToString();
-
-                  if (!String.IsNullOrEmpty(defaultExpr)) {
-
-                     string columnName = (row["COLUMN_NAME"] ?? "").ToString();
-                     MetaDataMember member = (!String.IsNullOrEmpty(columnName)) ?
-                        metaType.PersistentDataMembers.Where(m => !m.IsAssociation && m.MappedName == columnName).SingleOrDefault() :
-                        null;
-
-                     if (member != null)
-                        query.SELECT(String.Concat(defaultExpr, " AS ", QuoteIdentifier(member.Name)));
-                  }
-               }
-
-               if (!query.IsEmpty) {
-
-                  PocoMapper mapper = CreatePocoMapper();
-
-                  object entityObj = (object)entity;
-
-                  this.db.Map<object>(query, r => {
-                     mapper.Load(ref entityObj, r);
-                     return null;
-
-                  }).SingleOrDefault();
-               }
-            }
-         }
       }
 
       /// <summary>
@@ -1231,15 +1057,10 @@ namespace DbExtensions {
 
          EnsureEntityType();
 
-         IDictionary<string, object> predicateValues = metaType.IdentityMembers.ToDictionary(
-            m => m.MappedName,
-            m => m.MemberAccessor.GetBoxedValue(entity)
-         );
-
          SqlBuilder query = this.SQL.SELECT_FROM(refreshMembers);
-         query.WHERE(BuildPredicateFragment(predicateValues, query.ParameterValues));
+         query.WHERE(this.SQL.BuildPredicateFragment(entity, metaType.IdentityMembers, query.ParameterValues));
 
-         PocoMapper mapper = CreatePocoMapper();
+         PocoMapper mapper = this.db.CreatePocoMapper(metaType.Type);
 
          object entityObj = (object)entity;
 
@@ -1250,57 +1071,29 @@ namespace DbExtensions {
          }).SingleOrDefault();
       }
 
-      PocoMapper CreatePocoMapper() {
-         return new PocoMapper(metaType.Type, this.db.Configuration.Log);
-      }
-
       #region ISqlTable Members
 
       object ISqlTable.Find(object id) {
          return Find(id);
       }
 
-      void ISqlTable.Insert(object entity) {
-         Insert((TEntity)entity);
+      void ISqlTable.Add(object entity) {
+         Add((TEntity)entity);
       }
 
-      void ISqlTable.Insert(object entity, bool deep) {
-         Insert((TEntity)entity, deep);
-      }
-
-      void ISqlTable.InsertDeep(object entity) {
-
-#pragma warning disable 0618
-
-         InsertDeep((TEntity)entity);
-
-#pragma warning restore 0618
-      }
-
-      void ISqlTable.InsertDescendants(object entity) {
+      void ISqlTable.AddDescendants(object entity) {
          InsertDescendants((TEntity)entity);
       }
 
-      void ISqlTable.InsertRange(IEnumerable<object> entities) {
-         InsertRange((IEnumerable<TEntity>)entities);
+      void ISqlTable.AddRange(IEnumerable<object> entities) {
+         AddRange((IEnumerable<TEntity>)entities);
       }
 
-      void ISqlTable.InsertRange(IEnumerable<object> entities, bool deep) {
-         InsertRange((IEnumerable<TEntity>)entities, deep);
-      }
-
-      void ISqlTable.InsertRange(params object[] entities) {
+      void ISqlTable.AddRange(params object[] entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
-         InsertRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
-      }
-
-      void ISqlTable.InsertRange(object[] entities, bool deep) {
-
-         if (entities == null) throw new ArgumentNullException("entities");
-
-         InsertRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray(), deep);
+         AddRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
       }
 
       void ISqlTable.Update(object entity) {
@@ -1333,60 +1126,42 @@ namespace DbExtensions {
          UpdateRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray(), conflictPolicy);
       }
 
-      void ISqlTable.Delete(object entity) {
-         Delete((TEntity)entity);
+      void ISqlTable.Remove(object entity) {
+         Remove((TEntity)entity);
       }
 
-      void ISqlTable.Delete(object entity, ConcurrencyConflictPolicy conflictPolicy) {
-         Delete((TEntity)entity, conflictPolicy);
+      void ISqlTable.Remove(object entity, ConcurrencyConflictPolicy conflictPolicy) {
+         Remove((TEntity)entity, conflictPolicy);
       }
 
-      void ISqlTable.DeleteById(object id) {
-
-#pragma warning disable 0618
-
-         DeleteById(id);
-
-#pragma warning restore 0618
+      void ISqlTable.RemoveKey(object id) {
+         RemoveKey(id);
       }
 
-      void ISqlTable.DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy) {
-
-#pragma warning disable 0618
-
-         DeleteById(id, conflictPolicy);
-
-#pragma warning restore 0618
+      void ISqlTable.RemoveKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
+         RemoveKey(id, conflictPolicy);
       }
 
-      void ISqlTable.DeleteKey(object id) {
-         DeleteKey(id);
+      void ISqlTable.RemoveRange(IEnumerable<object> entities) {
+         RemoveRange((IEnumerable<TEntity>)entities);
       }
 
-      void ISqlTable.DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
-         DeleteKey(id, conflictPolicy);
+      void ISqlTable.RemoveRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
+         RemoveRange((IEnumerable<TEntity>)entities, conflictPolicy);
       }
 
-      void ISqlTable.DeleteRange(IEnumerable<object> entities) {
-         DeleteRange((IEnumerable<TEntity>)entities);
-      }
-
-      void ISqlTable.DeleteRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
-         DeleteRange((IEnumerable<TEntity>)entities, conflictPolicy);
-      }
-
-      void ISqlTable.DeleteRange(params object[] entities) { 
+      void ISqlTable.RemoveRange(params object[] entities) { 
 
          if (entities == null) throw new ArgumentNullException("entities");
 
-         DeleteRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
+         RemoveRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
       }
 
-      void ISqlTable.DeleteRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
+      void ISqlTable.RemoveRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
 
          if (entities == null) throw new ArgumentNullException("entities");
 
-         DeleteRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray(), conflictPolicy);
+         RemoveRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray(), conflictPolicy);
       }
 
       bool ISqlTable.Contains(object entity) {
@@ -1395,15 +1170,6 @@ namespace DbExtensions {
 
       bool ISqlTable.Contains(object entity, bool version) {
          return Contains((TEntity)entity, version);
-      }
-
-      void ISqlTable.Initialize(object entity) {
-
-#pragma warning disable 0618
-
-         Initialize((TEntity)entity);
-
-#pragma warning restore 0618
       }
 
       void ISqlTable.Refresh(object entity) {
@@ -1434,6 +1200,16 @@ namespace DbExtensions {
          return this.db.QuoteIdentifier(unquotedIdentifier);
       }
 
+      internal string BuildPredicateFragment(TEntity entity, ICollection<MetaDataMember> predicateMembers, ICollection<object> parametersBuffer) {
+
+         var predicateValues = predicateMembers.ToDictionary(
+            m => m.MappedName,
+            m => GetMemberValue(entity, m)
+         );
+
+         return BuildPredicateFragment(predicateValues, parametersBuffer);
+      }
+
       internal string BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
 
          if (predicateValues == null || predicateValues.Count == 0) throw new ArgumentException("predicateValues cannot be empty", "predicateValues");
@@ -1442,7 +1218,10 @@ namespace DbExtensions {
          var sb = new StringBuilder();
 
          foreach (var item in predicateValues) {
-            if (sb.Length > 0) sb.Append(" AND ");
+
+            if (sb.Length > 0) {
+               sb.Append(" AND ");
+            }
 
             sb.Append(QuoteIdentifier(item.Key));
 
@@ -1556,7 +1335,7 @@ namespace DbExtensions {
              where !m.IsAssociation && !m.IsDbGenerated
              select m).ToArray();
 
-         object[] parameters = insertingMembers.Select(m => m.MemberAccessor.GetBoxedValue(entity)).ToArray();
+         object[] parameters = insertingMembers.Select(m => GetMemberValue(entity, m)).ToArray();
 
          var sb = new StringBuilder()
             .Append("INSERT INTO ")
@@ -1564,7 +1343,11 @@ namespace DbExtensions {
             .Append(" (");
 
          for (int i = 0; i < insertingMembers.Length; i++) {
-            if (i > 0) sb.Append(", ");
+
+            if (i > 0) {
+               sb.Append(", ");
+            }
+
             sb.Append(QuoteIdentifier(insertingMembers[i].MappedName));
          }
 
@@ -1572,7 +1355,11 @@ namespace DbExtensions {
             .Append("VALUES (");
 
          for (int i = 0; i < insertingMembers.Length; i++) {
-            if (i > 0) sb.Append(", ");
+
+            if (i > 0) {
+               sb.Append(", ");
+            }
+            
             sb.Append("{")
                .Append(i)
                .Append("}");
@@ -1627,11 +1414,6 @@ namespace DbExtensions {
              where m.IsPrimaryKey || (m.IsVersion && conflictPolicy == ConcurrencyConflictPolicy.UseVersion)
              select m).ToArray();
 
-         IDictionary<string, object> predicateValues = predicateMembers.ToDictionary(
-            m => m.MappedName,
-            m => m.MemberAccessor.GetBoxedValue(entity)
-         );
-
          var parametersBuffer = new List<object>(updatingMembers.Length + predicateMembers.Length);
 
          var sb = new StringBuilder()
@@ -1641,10 +1423,13 @@ namespace DbExtensions {
             .Append("SET ");
 
          for (int i = 0; i < updatingMembers.Length; i++) {
-            if (i > 0) sb.Append(", ");
+
+            if (i > 0) {
+               sb.Append(", ");
+            }
 
             MetaDataMember member = updatingMembers[i];
-            object value = member.MemberAccessor.GetBoxedValue(entity);
+            object value = GetMemberValue(entity, member);
 
             sb.Append(QuoteIdentifier(member.MappedName))
                .Append(" = {")
@@ -1656,7 +1441,7 @@ namespace DbExtensions {
 
          sb.AppendLine()
             .Append("WHERE ")
-            .Append(BuildPredicateFragment(predicateValues, parametersBuffer));
+            .Append(BuildPredicateFragment(entity, predicateMembers, parametersBuffer));
 
          return new SqlBuilder(sb.ToString(), parametersBuffer.ToArray());
       }
@@ -1705,11 +1490,6 @@ namespace DbExtensions {
              where m.IsPrimaryKey || (m.IsVersion && conflictPolicy == ConcurrencyConflictPolicy.UseVersion)
              select m).ToArray();
 
-         IDictionary<string, object> predicateValues = predicateMembers.ToDictionary(
-            m => m.MappedName,
-            m => m.MemberAccessor.GetBoxedValue(entity)
-         );
-
          var parametersBuffer = new List<object>();
 
          var sb = new StringBuilder()
@@ -1717,7 +1497,7 @@ namespace DbExtensions {
             .Append(QuoteIdentifier(metaType.Table.TableName))
             .AppendLine()
             .Append("WHERE (")
-            .Append(BuildPredicateFragment(predicateValues, parametersBuffer))
+            .Append(BuildPredicateFragment(entity, predicateMembers, parametersBuffer))
             .Append(")");
 
          return new SqlBuilder(sb.ToString(), parametersBuffer.ToArray());
@@ -1733,12 +1513,37 @@ namespace DbExtensions {
 
          EnsureEntityType();
 
-         if (metaType.IdentityMembers.Count > 1)
+         if (metaType.IdentityMembers.Count > 1) {
             throw new InvalidOperationException("Cannot call this method when the entity has more than one identity member.");
+         }
 
          return DELETE_FROM()
             .WHERE(QuoteIdentifier(metaType.IdentityMembers[0].MappedName) + " = {0}", id);
       }
+
+      internal object GetMemberValue(TEntity entity, MetaDataMember member) {
+
+         object value = member.MemberAccessor.GetBoxedValue(entity);
+
+         return ConvertMemberValue(member, value);
+      }
+
+      internal object ConvertMemberValue(MetaDataMember member, object value) {
+
+         if (value != null
+            && member.DbType != null
+            && (member.Type.IsEnum || (member.Type.IsGenericType
+               && member.Type.GetGenericTypeDefinition() == typeof(Nullable<>)
+               && Nullable.GetUnderlyingType(member.Type).IsEnum))
+            && member.DbType.IndexOf("char", StringComparison.OrdinalIgnoreCase) > 0) {
+
+            value = Convert.ToString(value, CultureInfo.InvariantCulture);
+         }
+
+         return value;
+      }
+
+      #region Object Members
 
       /// <summary>
       /// Returns whether the specified object is equal to the current object.
@@ -1777,6 +1582,291 @@ namespace DbExtensions {
       public override string ToString() {
          return base.ToString();
       }
+
+      #endregion
+   }
+
+   public static partial class Extensions {
+
+      /// <summary>
+      /// Gets the entity whose primary key matches the <paramref name="id"/> parameter.
+      /// </summary>
+      /// <param name="source">The source set.</param>
+      /// <param name="id">The primary key value.</param>
+      /// <returns>
+      /// The entity whose primary key matches the <paramref name="id"/> parameter, 
+      /// or null if the <paramref name="id"/> does not exist.
+      /// </returns>
+      /// <remarks>
+      /// This method can only be used on mapped sets created by <see cref="Database"/>.
+      /// </remarks>
+      public static object Find(this SqlSet source, object id) {
+         return FindImpl(source, id).SingleOrDefault();
+      }
+
+      /// <summary>
+      /// Gets the entity whose primary key matches the <paramref name="id"/> parameter.
+      /// </summary>
+      /// <typeparam name="TResult">The type of the elements in the <paramref name="source"/> set.</typeparam>
+      /// <param name="source">The source set.</param>
+      /// <param name="id">The primary key value.</param>
+      /// <returns>
+      /// The entity whose primary key matches the <paramref name="id"/> parameter, 
+      /// or null if the <paramref name="id"/> does not exist.
+      /// </returns>
+      /// <remarks>
+      /// This method can only be used on mapped sets created by <see cref="Database"/>.
+      /// </remarks>
+      [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Need to keep result type same as input type.")]
+      public static TResult Find<TResult>(this SqlSet<TResult> source, object id) {
+         return ((SqlSet<TResult>)FindImpl(source, id)).SingleOrDefault();
+      }
+
+      static SqlSet FindImpl(SqlSet source, object id) {
+
+         if (source == null) throw new ArgumentNullException("source");
+         if (id == null) throw new ArgumentNullException("id");
+
+         Database db = source.context as Database;
+
+         if (db == null) {
+            throw new InvalidOperationException("Find can only be used on sets created by Database.");
+         }
+
+         Type resultType = source.resultType;
+
+         if (resultType == null) {
+            throw new InvalidOperationException("Find operation is not supported on untyped sets.");
+         }
+
+         MetaType metaType = db.GetMetaType(resultType);
+
+         if (metaType == null) {
+            throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture, "Mapping information was not found for '{0}'.", resultType.FullName));
+         }
+
+         if (metaType.IdentityMembers.Count == 0) {
+            throw new InvalidOperationException("The entity has no identity members defined.");
+
+         } else if (metaType.IdentityMembers.Count > 1) {
+            throw new InvalidOperationException("Cannot call this method when the entity has more than one identity member.");
+         }
+
+         SqlTable table = db.Table(metaType);
+         MetaDataMember idMember = metaType.IdentityMembers[0];
+
+         var predicateValues = new Dictionary<string, object> { 
+            { idMember.MappedName, table.SQL.ConvertMemberValue(idMember, id) }
+         };
+
+         var parameters = new List<object>(predicateValues.Count);
+         string predicate = table.SQL.BuildPredicateFragment(predicateValues, parameters);
+         
+         return source.Where(predicate, parameters.ToArray());
+      }
+
+      /// <summary>
+      /// Specifies the related objects to include in the query results.
+      /// </summary>
+      /// <param name="source">The source set.</param>
+      /// <param name="path">Dot-separated list of related objects to return in the query results.</param>
+      /// <returns>A new <see cref="SqlSet"/> with the defined query path.</returns>
+      /// <remarks>
+      /// This method can only be used on mapped sets created by <see cref="Database"/>.
+      /// </remarks>
+      public static SqlSet Include(this SqlSet source, string path) {
+
+         if (source == null) throw new ArgumentNullException("source");
+         if (path == null) throw new ArgumentNullException("path");
+
+         Database db = source.context as Database;
+
+         if (db == null) {
+            throw new InvalidOperationException("Include can only be used on sets created by Database.");
+         }
+
+         Type resultType = source.resultType;
+
+         if (resultType == null) {
+            throw new InvalidOperationException("Include operation is not supported on untyped sets.");
+         }
+
+         MetaType metaType = db.GetMetaType(resultType);
+
+         if (metaType == null) {
+            throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture, "Mapping information was not found for '{0}'.", resultType.FullName));
+         }
+
+         return IncludeImpl.Expand(source, path, metaType, db);
+      }
+
+      /// <summary>
+      /// Specifies the related objects to include in the query results.
+      /// </summary>
+      /// <typeparam name="TResult">The type of the elements in the <paramref name="source"/> set.</typeparam>
+      /// <param name="source">The source set.</param>
+      /// <param name="path">Dot-separated list of related objects to return in the query results.</param>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> with the defined query path.</returns>
+      /// <remarks>
+      /// This method can only be used on mapped sets created by <see cref="Database"/>.
+      /// </remarks>
+      [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Need to keep result type same as input type.")]
+      public static SqlSet<TResult> Include<TResult>(this SqlSet<TResult> source, string path) {
+         return (SqlSet<TResult>)Include((SqlSet)source, path);
+      }
+
+      static class IncludeImpl {
+
+         public static SqlSet Expand(SqlSet source, string path, MetaType metaType, Database db) {
+
+            const string leftAlias = "dbex_l";
+            const string rightAlias = "dbex_r";
+
+            var query = new SqlBuilder()
+               .SELECT(leftAlias + ".*");
+
+            var associations = new List<MetaAssociation>();
+
+            string[] parts = path.Split('.');
+            Func<int, string> rAliasFn = i => rightAlias + (i + 1);
+
+            MetaType currentType = metaType;
+            MetaAssociation manyAssoc = null;
+
+            for (int i = 0; i < parts.Length; i++) {
+
+               string p = parts[i];
+               string rAlias = rAliasFn(i);
+
+               MetaDataMember member = currentType.PersistentDataMembers.SingleOrDefault(m => m.Name == p);
+
+               if (member == null) {
+                  throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "Couldn't find '{0}' on '{1}'.", p, currentType.Type.FullName), "path");
+               }
+
+               if (!member.IsAssociation) {
+                  throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "'{0}' is not an association property.", p), "path");
+               }
+
+               MetaAssociation association = member.Association;
+
+               if (association.IsMany) {
+
+                  if (i != parts.Length - 1) {
+                     throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "One-to-many associations can only be specified in the last segment of an include path ('{0}').", path), "path");
+                  }
+
+                  manyAssoc = association;
+                  break;
+               }
+
+               associations.Add(association);
+
+               query.SELECT(String.Join(", ", association.OtherType.PersistentDataMembers
+                  .Where(m => !m.IsAssociation)
+                  .Select(m => String.Format(CultureInfo.InvariantCulture, "{0}.{1} AS {2}${3}", rAlias, db.QuoteIdentifier(m.MappedName), String.Join("$", associations.Select(a => a.ThisMember.Name).ToArray()), m.Name))
+                  .ToArray()));
+
+               currentType = association.OtherType;
+            }
+
+            SqlSet newSet;
+
+            if (associations.Count == 0) {
+               newSet = source.CreateSet(omitBufferedCalls: true);
+
+            } else {
+
+               query.FROM(source.GetDefiningQuery(), leftAlias);
+
+               for (int i = 0; i < associations.Count; i++) {
+
+                  MetaAssociation association = associations[i];
+                  string lAlias = (i == 0) ? leftAlias : rAliasFn(i - 1);
+                  string rAlias = rAliasFn(i);
+
+                  var joinPredicate = new StringBuilder();
+
+                  for (int j = 0; j < association.ThisKey.Count; j++) {
+
+                     if (j > 0) {
+                        joinPredicate.Append(" AND ");
+                     }
+
+                     MetaDataMember thisMember = association.ThisKey[j];
+                     MetaDataMember otherMember = association.OtherKey[j];
+
+                     joinPredicate.AppendFormat(CultureInfo.InvariantCulture, "{0}.{1} = {2}.{3}", lAlias, db.QuoteIdentifier(thisMember.Name), rAlias, db.QuoteIdentifier(otherMember.MappedName));
+                  }
+
+                  query.LEFT_JOIN(String.Format(CultureInfo.InvariantCulture, "{0} {1} ON ({2})", db.QuoteIdentifier(association.OtherType.Table.TableName), rAlias, joinPredicate.ToString()));
+               }
+
+               newSet = source.CreateSet(query);
+            }
+
+            if (manyAssoc != null) {
+               AddManyInclude(newSet, parts, manyAssoc, db);
+            }
+
+            return newSet;
+         }
+
+         static void AddManyInclude(SqlSet set, string[] path, MetaAssociation association, Database db) {
+
+            if (set.ManyIncludes == null) {
+               set.ManyIncludes = new Dictionary<string[], CollectionLoader>();
+            }
+
+            set.ManyIncludes.Add(path, new CollectionLoader {
+               Load = GetMany,
+               State = new CollectionLoaderState {
+                  Table = db.Table(association.OtherType),
+                  Association = association
+               }
+            });
+         }
+
+         static IEnumerable GetMany(object container, object state) {
+
+            var loaderState = (CollectionLoaderState)state;
+
+            MetaAssociation association = loaderState.Association;
+            SqlTable table = loaderState.Table;
+
+            var predicateValues = new Dictionary<string, object>();
+
+            for (int i = 0; i < association.OtherKey.Count; i++) {
+               predicateValues.Add(association.OtherKey[i].MappedName, table.SQL.GetMemberValue(container, association.ThisKey[i]));
+            }
+
+            var parameters = new List<object>();
+            string whereFragment = table.SQL.BuildPredicateFragment(predicateValues, parameters);
+
+            IEnumerable children = table.Where(whereFragment, parameters.ToArray()).AsEnumerable();
+
+            MetaDataMember otherMember = association.OtherMember;
+
+            foreach (object child in children) {
+
+               if (otherMember != null
+                  && !otherMember.Association.IsMany) {
+
+                  object childObj = child;
+
+                  otherMember.MemberAccessor.SetBoxedValue(ref childObj, container);
+               }
+
+               yield return child;
+            }
+         }
+
+         class CollectionLoaderState {
+
+            public SqlTable Table;
+            public MetaAssociation Association;
+         }
+      }
    }
 
    interface ISqlTable {
@@ -1785,31 +1875,21 @@ namespace DbExtensions {
       bool Contains(object entity, bool version);
       bool ContainsKey(object id);
       
-      void Delete(object entity);
-      void Delete(object entity, ConcurrencyConflictPolicy conflictPolicy);
-      void DeleteKey(object id);
-      void DeleteKey(object id, ConcurrencyConflictPolicy conflictPolicy);
-      void DeleteRange(IEnumerable<object> entities);
-      void DeleteRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy);
-      void DeleteRange(params object[] entities);
-      void DeleteRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy);
+      void Remove(object entity);
+      void Remove(object entity, ConcurrencyConflictPolicy conflictPolicy);
+      void RemoveKey(object id);
+      void RemoveKey(object id, ConcurrencyConflictPolicy conflictPolicy);
+      void RemoveRange(IEnumerable<object> entities);
+      void RemoveRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy);
+      void RemoveRange(params object[] entities);
+      void RemoveRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy);
 
-      void DeleteById(object id); // deprecated
-      void DeleteById(object id, ConcurrencyConflictPolicy conflictPolicy); // deprecated
-      
       object Find(object id);
-      void Initialize(object entity); // deprecated
 
-      void Insert(object entity);
-      void Insert(object entity, bool deep);
-      
-      void InsertDeep(object entity); // deprecated
-      void InsertDescendants(object entity); // internal
-      
-      void InsertRange(IEnumerable<object> entities);
-      void InsertRange(IEnumerable<object> entities, bool deep);
-      void InsertRange(params object[] entities);
-      void InsertRange(object[] entities, bool deep);
+      void Add(object entity);
+      void AddDescendants(object entity); // internal
+      void AddRange(IEnumerable<object> entities);
+      void AddRange(params object[] entities);
 
       void Refresh(object entity);
 

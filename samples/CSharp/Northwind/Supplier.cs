@@ -43,9 +43,6 @@ namespace Samples.CSharp.Northwind {
       [Column]
       public string Fax { get; set; }
 
-      [Column(UpdateCheck = UpdateCheck.Never)]
-      public string HomePage { get; set; }
-
       [Association(OtherKey = "SupplierID")]
       public Collection<Product> Products { get; private set; }
 

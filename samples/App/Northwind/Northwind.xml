@@ -146,7 +146,6 @@
          <Column Member="Country"/>
          <Column Member="Phone"/>
          <Column Member="Fax"/>
-         <Column Member="HomePage" UpdateCheck="Never"/>
          <Association Member="Products" OtherKey="SupplierID"/>
       </Type>
    </Table>

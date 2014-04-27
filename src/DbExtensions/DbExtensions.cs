@@ -74,16 +74,19 @@ namespace DbExtensions {
 
          DbProviderFactory factory = getDbProviderFactory(connection);
 
-         if (factory != null)
+         if (factory != null) {
             return factory;
+         }
 
          // In .NET 4.5 Odbc and OleDb do not override DbConnection.DbProviderFactory
 
-         if (connection is System.Data.Odbc.OdbcConnection)
+         if (connection is System.Data.Odbc.OdbcConnection) {
             return System.Data.Odbc.OdbcFactory.Instance;
+         }
 
-         if (connection is System.Data.OleDb.OleDbConnection)
+         if (connection is System.Data.OleDb.OleDbConnection) {
             return System.Data.OleDb.OleDbFactory.Instance;
+         }
 
          Type type = connection.GetType();
          string ns = type.Namespace;
@@ -91,10 +94,12 @@ namespace DbExtensions {
          
          Type factoryType = type.Assembly.GetType(ns + "." + factoryName, throwOnError: false);
 
-         if (factoryType == null)
+         if (factoryType == null) {
             return null;
+         }
 
-         return (DbProviderFactory)factoryType.GetField("Instance", BindingFlags.Static | BindingFlags.Public).GetValue(null);
+         return (DbProviderFactory)factoryType.GetField("Instance", BindingFlags.Static | BindingFlags.Public)
+            .GetValue(null);
       }
 
       /// <summary>
@@ -300,105 +305,6 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Creates and executes a <see cref="DbCommand"/> whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter.
-      /// </summary>
-      /// <param name="connection">The connection to which the command is executed against.</param>
-      /// <param name="commandText">The command text.</param>
-      /// <returns>The number of affected records.</returns>
-      public static int Execute(this DbConnection connection, string commandText) {
-         return Execute(connection, commandText, (object[])null);
-      }
-
-      /// <summary>
-      /// Creates and executes a <see cref="DbCommand"/> using the provided <paramref name="commandText"/> as a composite format string 
-      /// (as used on <see cref="String.Format(String, Object[])"/>), 
-      /// where the format items are replaced with appropiate parameter names, and the objects in the
-      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection.
-      /// </summary>
-      /// <param name="connection">The connection to which the command is executed against.</param>
-      /// <param name="commandText">The command text.</param>
-      /// <param name="parameters">The parameters to apply to the command text.</param>
-      /// <returns>The number of affected records.</returns>
-      public static int Execute(this DbConnection connection, string commandText, params object[] parameters) {
-         return Execute(connection, CreateCommand(connection, commandText, parameters), (TextWriter)null);
-      }
-
-      internal static int Execute(this IDbConnection connection, IDbCommand command, TextWriter logger) {
-
-         using (connection.EnsureOpen()) {
-            int aff = command.ExecuteNonQuery();
-
-            if (logger != null)
-               logger.WriteLine(command.ToTraceString(aff));
-
-            return aff;
-         }
-      }
-
-      /// <summary>
-      /// Creates and executes a <see cref="DbCommand"/> (whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter) in a new or existing transaction, and
-      /// validates that the affected records value is equal to one before comitting.
-      /// </summary>
-      /// <param name="connection">The connection to which the command is executed against.</param>
-      /// <param name="commandText">The command text.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
-      public static int AffectOne(this DbConnection connection, string commandText) {
-         return CreateCommand(connection, commandText).AffectOne();
-      }
-
-      /// <summary>
-      /// Creates and executes a <see cref="DbCommand"/> (using the provided <paramref name="commandText"/> 
-      /// as a composite format string, as used on <see cref="String.Format(String, Object[])"/>, 
-      /// where the format items are replaced with appropiate parameter names, and the objects in the
-      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection)
-      /// in a new or existing transaction, and validates that the affected records value is equal to one before comitting.
-      /// </summary>
-      /// <param name="connection">The connection to which the command is executed against.</param>
-      /// <param name="commandText">The command text.</param>
-      /// <param name="parameters">The parameters to apply to the command text.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
-      public static int AffectOne(this DbConnection connection, string commandText, params object[] parameters) {
-         return CreateCommand(connection, commandText, parameters).AffectOne();
-      }
-
-      /// <summary>
-      /// Creates and executes a <see cref="DbCommand"/> (whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter) in a new or existing transaction, and
-      /// validates that the affected records value is less or equal to one before comitting.
-      /// </summary>
-      /// <param name="connection">The connection to which the command is executed against.</param>
-      /// <param name="commandText">The non-query command to execute.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
-      public static int AffectOneOrNone(this DbConnection connection, string commandText) {
-         return CreateCommand(connection, commandText).AffectOneOrNone();
-      }
-
-      /// <summary>
-      /// Creates and executes a <see cref="DbCommand"/> (using the provided <paramref name="commandText"/> 
-      /// as a composite format string, as used on <see cref="String.Format(String, Object[])"/>, 
-      /// where the format items are replaced with appropiate parameter names, and the objects in the
-      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection)
-      /// in a new or existing transaction, and validates that the affected records value is less or equal to one before comitting.
-      /// </summary>
-      /// <param name="connection">The connection to which the command is executed against.</param>
-      /// <param name="commandText">The non-query command to execute.</param>
-      /// <param name="parameters">The parameters to apply to the command text.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
-      public static int AffectOneOrNone(this DbConnection connection, string commandText, params object[] parameters) {
-         return CreateCommand(connection, commandText, parameters).AffectOneOrNone();
-      }
-
-      /// <summary>
       /// Executes the <paramref name="command"/> in a new or existing transaction, and
       /// validates the affected records value before comitting.
       /// </summary>
@@ -451,8 +357,9 @@ namespace DbExtensions {
          if (command == null) throw new ArgumentNullException("command");
          if (command.Connection == null) throw new ArgumentException("DbCommand.Connection cannot be null", "command");
 
-         if ((int)affectedMode < 0 || (int)affectedMode > 2)
+         if ((int)affectedMode < 0 || (int)affectedMode > 2) {
             affectedMode = AffectedRecordsPolicy.MustMatchAffecting;
+         }
 
          logger = logger ?? TextWriter.Null;
 
@@ -498,8 +405,9 @@ namespace DbExtensions {
                      errorMessage = String.Format(CultureInfo.InvariantCulture, "The number of affected records should be {0} or lower, the actual number is {1}.", affectingRecords, affectedRecords);
                   }
 
-                  if (errorMessage != null) 
+                  if (errorMessage != null) {
                      throw new DBConcurrencyException(errorMessage);
+                  }
                }
             
             } catch {
@@ -523,8 +431,10 @@ namespace DbExtensions {
             return affectedRecords;
 
          } finally {
-            if (txScope != null)
+
+            if (txScope != null) {
                txScope.Dispose();
+            }
 
             connMng.Dispose();
          }
@@ -599,7 +509,9 @@ namespace DbExtensions {
       /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
       public static IEnumerable<object> Map(this IDbCommand command, Type resultType, TextWriter logger) {
 
-         var mapper = new PocoMapper(resultType, logger);
+         var mapper = new PocoMapper(resultType) { 
+            Log = logger
+         };
 
          return Map(command, r => mapper.Map(r), logger);
       }
@@ -624,8 +536,10 @@ namespace DbExtensions {
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
       /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       public static IEnumerable<TResult> Map<TResult>(this IDbCommand command, TextWriter logger) {
-         
-         var mapper = new PocoMapper(typeof(TResult), logger);
+
+         var mapper = new PocoMapper(typeof(TResult)) { 
+            Log = logger
+         };
 
          return Map(command, r => (TResult)mapper.Map(r), logger);
       }
@@ -672,6 +586,7 @@ namespace DbExtensions {
             IDbDataParameter param = command.Parameters[i] as IDbDataParameter;
 
             if (param != null) {
+
                sb.AppendLine()
                   .AppendFormat(CultureInfo.InvariantCulture, "-- {0}: {1} {2} (Size = {3}) [{4}]", param.ParameterName, param.Direction, param.DbType, param.Size, param.Value);
             }
@@ -1102,14 +1017,19 @@ namespace DbExtensions {
             this.conn = conn;
             this.prevStateWasClosed = (conn.State == ConnectionState.Closed);
 
-            if (this.prevStateWasClosed)
+            if (this.prevStateWasClosed) {
                this.conn.Open();
+            }
          }
 
          public void Dispose() {
 
-            if (conn != null && prevStateWasClosed && conn.State != ConnectionState.Closed)
+            if (conn != null
+               && prevStateWasClosed
+               && conn.State != ConnectionState.Closed) {
+               
                conn.Close();
+            }
          }
       }
 
@@ -1138,7 +1058,9 @@ namespace DbExtensions {
          DbProviderFactory factory;
 
          if (!factories.TryGetValue(providerInvariantName, out factory)) {
+
             lock (padlock) {
+
                if (!factories.TryGetValue(providerInvariantName, out factory)) {
 
                   factory = DbProviderFactories.GetFactory(providerInvariantName);
@@ -1163,7 +1085,7 @@ namespace DbExtensions {
          return CreateConnection(out providerName);
       }
 
-      internal static DbConnection CreateConnection(out string providerName) {
+      static DbConnection CreateConnection(out string providerName) {
 
          string defaultConnection = ConfigurationManager.AppSettings[DbExtensions_DefaultConnectionName];
 
@@ -1192,7 +1114,7 @@ namespace DbExtensions {
          return CreateConnection(connectionString, out providerName);
       }
 
-      internal static DbConnection CreateConnection(string connectionString, out string providerName) {
+      static DbConnection CreateConnection(string connectionString, out string providerName) {
 
          if (connectionString == null) throw new ArgumentNullException("connectionString");
 
@@ -1243,14 +1165,17 @@ namespace DbExtensions {
    /// non-query command.
    /// </summary>
    public enum AffectedRecordsPolicy { 
+
       /// <summary>
       /// The affected records value must be equal as the affecting records value.
       /// </summary>
       MustMatchAffecting = 0,
+
       /// <summary>
       /// The affected records value must be equal or lower than the affecting records value.
       /// </summary>
       AllowLower = 1,
+
       /// <summary>
       /// The affected records value is ignored.
       /// </summary>
@@ -1281,8 +1206,9 @@ namespace DbExtensions {
 
          IEnumerator<TResult> e = enumerator;
 
-         if (e == null)
+         if (e == null) {
             throw new InvalidOperationException("Cannot enumerate more than once.");
+         }
 
          enumerator = null;
 
@@ -1294,9 +1220,10 @@ namespace DbExtensions {
       }
 
       public void Dispose() {
-         
-         if (enumerator != null)
+
+         if (enumerator != null) {
             enumerator.Dispose();
+         }
       }
 
       #region Nested Types
@@ -1318,8 +1245,9 @@ namespace DbExtensions {
 
             IDbConnection conn = command.Connection;
 
-            if (conn == null)
+            if (conn == null) {
                throw new ArgumentException("command.Connection cannot be null", "command");
+            }
 
             prevStateWasClosed = (conn.State == ConnectionState.Closed);
 
@@ -1336,30 +1264,40 @@ namespace DbExtensions {
 
             if (reader == null) {
 
-               if (prevStateWasClosed)
+               if (prevStateWasClosed) {
                   command.Connection.Open();
+               }
 
                try {
                   reader = command.ExecuteReader();
-                  
-                  if (logger != null) 
+
+                  if (logger != null) {
                      logger.WriteLine(command.ToTraceString(reader.RecordsAffected));
+                  }
                
                } catch {
 
                   try {
+
                      if (logger != null) {
                         logger.WriteLine("-- ERROR: The following command produced an error");
                         logger.WriteLine(command.ToTraceString());
                      }
 
                   } finally {
-                     if (prevStateWasClosed) 
+
+                     if (prevStateWasClosed) {
                         EnsureConnectionClosed();
+                     }
                   }
 
                   throw;
                }
+            }
+
+            if (reader.IsClosed) {
+               // see Node.Load
+               return false;
             }
 
             if (reader.Read()) {
@@ -1368,8 +1306,10 @@ namespace DbExtensions {
                   current = mapper(reader);
 
                } catch {
-                  if (prevStateWasClosed) 
+
+                  if (prevStateWasClosed) {
                      EnsureConnectionClosed();
+                  }
                   
                   throw;
                }
@@ -1377,8 +1317,9 @@ namespace DbExtensions {
                return true;
             }
 
-            if (prevStateWasClosed) 
+            if (prevStateWasClosed) {
                EnsureConnectionClosed();
+            }
 
             return false;
          }
@@ -1388,20 +1329,23 @@ namespace DbExtensions {
          }
 
          public void Dispose() {
-            
-            if (reader != null) 
-               reader.Dispose();
 
-            if (prevStateWasClosed)
+            if (reader != null) {
+               reader.Dispose();
+            }
+
+            if (prevStateWasClosed) {
                EnsureConnectionClosed();
+            }
          }
 
          void EnsureConnectionClosed() {
 
             IDbConnection conn = command.Connection;
 
-            if (conn.State != ConnectionState.Closed)
+            if (conn.State != ConnectionState.Closed) {
                conn.Close();
+            }
          }
       }
 
@@ -1412,6 +1356,7 @@ namespace DbExtensions {
 namespace DbExtensions {
 
    using System;
+   using System.Collections;
    using System.Collections.Generic;
    using System.Data;
    using System.Globalization;
@@ -1420,22 +1365,27 @@ namespace DbExtensions {
    using System.Reflection;
    using System.Text;
 
-   abstract partial class Mapper {
+   abstract class Mapper {
 
-      readonly TextWriter logger;
       Node rootNode;
-      HashSet<int> ignoredColumns;
+      IDictionary<CollectionNode, CollectionLoader> manyLoaders;
 
-      protected Mapper(TextWriter logger) {
-         this.logger = logger;
-      }
+      public TextWriter Log { get; set; }
+
+      public HashSet<int> IgnoredColumns { get; set; }
+
+      public IDictionary<string[], CollectionLoader> ManyIncludes { get; set; }
+
+      public bool SingleResult { get; set; }
+
+      protected Mapper() { }
 
       void ReadMapping(IDataRecord record, Node rootNode) {
 
          MapGroup[] groups =
             (from i in Enumerable.Range(0, record.FieldCount)
-             where this.ignoredColumns == null
-               || !this.ignoredColumns.Contains(i)
+             where this.IgnoredColumns == null
+               || !this.IgnoredColumns.Contains(i)
              let columnName = record.GetName(i)
              let path = columnName.Split('$')
              let property = (path.Length == 1) ? columnName : path[path.Length - 1]
@@ -1467,6 +1417,7 @@ namespace DbExtensions {
             Node property = CreateSimpleProperty(instance, pair.Value, pair.Key);
 
             if (property != null) {
+               property.Container = instance;
                instance.Properties.Add(property);
                continue;
             }
@@ -1478,11 +1429,8 @@ namespace DbExtensions {
 
             } else {
 
-               if (this.logger != null) {
-                  this.logger.WriteLine("-- WARNING: Couldn't find property '{0}' on type {1}. Ignoring column.",
-                     pair.Value,
-                     instance.TypeName
-                  );
+               if (this.Log != null) {
+                  this.Log.WriteLine("-- WARNING: Couldn't find property '{0}' on type '{1}'. Ignoring column.", pair.Value, instance.TypeName);
                }
             }
          }
@@ -1499,6 +1447,8 @@ namespace DbExtensions {
 
             if (property != null) {
 
+               property.Container = instance;
+               
                ReadMapping(record, groups, nextLevel, property);
 
                instance.Properties.Add(property);
@@ -1512,11 +1462,8 @@ namespace DbExtensions {
 
             } else {
 
-               if (this.logger != null) {
-                  this.logger.WriteLine("-- WARNING: Couldn't find property '{0}' on type {1}. Ignoring column(s).",
-                     nextLevel.Name,
-                     instance.TypeName
-                  );
+               if (this.Log != null) {
+                  this.Log.WriteLine("-- WARNING: Couldn't find property '{0}' on type '{1}'. Ignoring column(s).", nextLevel.Name, instance.TypeName);
                }
             }
          }
@@ -1545,10 +1492,11 @@ namespace DbExtensions {
                if (instance.ConstructorParameters.ContainsKey(pair.Key.ParameterIndex)) {
 
                   var message = new StringBuilder();
-                  message.AppendFormat(CultureInfo.InvariantCulture, "Already specified an argument for parameter {0}", param.Name);
+                  message.AppendFormat(CultureInfo.InvariantCulture, "Already specified an argument for parameter '{0}'", param.Name);
 
-                  if (pair.Key.ColumnOrdinal.HasValue)
+                  if (pair.Key.ColumnOrdinal.HasValue) {
                      message.AppendFormat(CultureInfo.InvariantCulture, " ('{0}')", record.GetName(pair.Key.ColumnOrdinal.Value));
+                  }
 
                   message.Append(".");
 
@@ -1560,15 +1508,67 @@ namespace DbExtensions {
                i++;
             }
          }
+
+         if (instance.IsComplex
+            && this.ManyIncludes != null) {
+
+            var includes = this.ManyIncludes
+               .Where(p => p.Key.Length == currentGroup.Depth + 1)
+               .Where(p => {
+
+                  if (instance.Container == null) {
+                     // root node
+                     return true;
+                  }
+
+                  string[] reversedBasePath = p.Key.Take(p.Key.Length - 1).Reverse().ToArray();
+
+                  Node container = instance;
+
+                  for (int i = 0; i < reversedBasePath.Length; i++) {
+
+                     if (container.PropertyName != reversedBasePath[i]) {
+                        return false;
+                     }
+
+                     container = container.Container;
+                  }
+
+                  return true;
+               })
+               .ToArray();
+
+            for (int i = 0; i < includes.Length; i++) {
+
+               var pair = includes[i];
+
+               string name = pair.Key[pair.Key.Length - 1];
+               
+               CollectionNode collection = CreateCollectionNode(instance, name);
+
+               if (collection != null) {
+
+                  instance.Collections.Add(collection);
+
+                  if (this.manyLoaders == null) {
+                     this.manyLoaders = new Dictionary<CollectionNode, CollectionLoader>();
+                  }
+
+                  this.manyLoaders.Add(collection, pair.Value);
+               }
+            }
+         }
       }
 
       public object Map(IDataRecord record) {
 
          Node node = GetRootNode(record);
 
-         object instance = node.Create(record, this.logger);
+         MappingContext context = CreateMappingContext();
 
-         node.Load(ref instance, record, this.logger);
+         object instance = node.Create(record, context);
+
+         node.Load(ref instance, record, context);
 
          return instance;
       }
@@ -1577,7 +1577,7 @@ namespace DbExtensions {
 
          Node node = GetRootNode(record);
 
-         node.Load(ref instance, record, this.logger);
+         node.Load(ref instance, record, CreateMappingContext());
       }
 
       Node GetRootNode(IDataRecord record) {
@@ -1590,6 +1590,15 @@ namespace DbExtensions {
          return this.rootNode;
       }
 
+      MappingContext CreateMappingContext() {
+
+         return new MappingContext { 
+            Log = this.Log,
+            ManyLoaders = this.manyLoaders,
+            SingleResult = this.SingleResult
+         };
+      }
+
       protected abstract Node CreateRootNode();
 
       protected abstract Node CreateSimpleProperty(Node container, string propertyName, int columnOrdinal);
@@ -1599,6 +1608,8 @@ namespace DbExtensions {
       protected abstract Node CreateParameterNode(ParameterInfo paramInfo);
 
       protected abstract Node CreateParameterNode(int columnOrdinal, ParameterInfo paramInfo);
+
+      protected abstract CollectionNode CreateCollectionNode(Node container, string propertyName);
 
       static ConstructorInfo GetConstructor(Node node, int parameterLength) {
 
@@ -1610,7 +1621,7 @@ namespace DbExtensions {
          if (constructors.Length == 0) {
             throw new InvalidOperationException(
                String.Format(CultureInfo.InvariantCulture,
-                  "Couldn't find public constructor with {0} parameter(s) for type {1}.",
+                  "Couldn't find a public constructor with {0} parameter(s) for type '{1}'.",
                   parameterLength,
                   node.TypeName
                )
@@ -1620,7 +1631,7 @@ namespace DbExtensions {
          if (constructors.Length > 1) {
             throw new InvalidOperationException(
                String.Format(CultureInfo.InvariantCulture,
-                  "Found more than one public constructor with {0} parameter(s) for type {1}. Please use another constructor.",
+                  "Found more than one public constructors with {0} parameter(s) for type '{1}'. Please use another constructor.",
                   parameterLength,
                   node.TypeName
                )
@@ -1664,30 +1675,77 @@ namespace DbExtensions {
 
    abstract class Node {
 
+      Dictionary<uint, Node> _ConstructorParameters;
+      List<Node> _Properties;
+      List<CollectionNode> _Collections;
+
       public abstract bool IsComplex { get; }
-      public abstract List<Node> Properties { get; }
-      
-      public ConstructorInfo Constructor { get; set; }
-      public abstract Dictionary<uint, Node> ConstructorParameters { get; }
-      
+      public abstract string PropertyName { get; }
       public abstract int ColumnOrdinal { get; }
       public abstract string TypeName { get; }
 
-      public object Map(IDataRecord record, TextWriter logger) {
+      public Node Container { get; internal set; }
+      public ConstructorInfo Constructor { get; internal set; }
 
-         if (this.IsComplex)
-            return MapComplex(record, logger);
-
-         return MapSimple(record, logger);
+      public Dictionary<uint, Node> ConstructorParameters {
+         get {
+            return _ConstructorParameters
+               ?? (_ConstructorParameters = new Dictionary<uint, Node>());
+         }
       }
 
-      protected virtual object MapComplex(IDataRecord record, TextWriter logger) {
+      public List<Node> Properties { 
+         get {
+            return _Properties
+               ?? (_Properties = new List<Node>());
+         } 
+      }
 
-         if (AllColumnsNull(record))
+      public List<CollectionNode> Collections {
+         get {
+            return _Collections
+               ?? (_Collections = new List<CollectionNode>());
+         }
+      }
+
+      public bool HasConstructorParameters {
+         get {
+            return _ConstructorParameters != null
+               && _ConstructorParameters.Count > 0;
+         }
+      }
+
+      public bool HasProperties {
+         get {
+            return _Properties != null
+               && _Properties.Count > 0;
+         }
+      }
+
+      public bool HasCollections {
+         get {
+            return _Collections != null
+               && _Collections.Count > 0;
+         }
+      }
+
+      public object Map(IDataRecord record, MappingContext context) {
+
+         if (this.IsComplex) {
+            return MapComplex(record, context);
+         }
+
+         return MapSimple(record, context);
+      }
+
+      protected virtual object MapComplex(IDataRecord record, MappingContext context) {
+
+         if (AllColumnsNull(record)) {
             return null;
+         }
 
-         object value = Create(record, logger);
-         Load(ref value, record, logger);
+         object value = Create(record, context);
+         Load(ref value, record, context);
 
          return value;
       }
@@ -1696,7 +1754,7 @@ namespace DbExtensions {
 
          if (this.IsComplex) {
 
-            return (this.ConstructorParameters.Count == 0
+            return (!this.HasConstructorParameters
                   || this.ConstructorParameters
                      .OrderBy(n => n.Value.IsComplex)
                      .All(n => n.Value.AllColumnsNull(record)))
@@ -1708,7 +1766,7 @@ namespace DbExtensions {
          return record.IsDBNull(this.ColumnOrdinal);
       }
 
-      protected virtual object MapSimple(IDataRecord record, TextWriter logger) {
+      protected virtual object MapSimple(IDataRecord record, MappingContext context) {
 
          bool isNull = record.IsDBNull(this.ColumnOrdinal);
          object value = isNull ? null : record.GetValue(this.ColumnOrdinal);
@@ -1716,52 +1774,106 @@ namespace DbExtensions {
          return value;
       }
 
-      public abstract object Create(IDataRecord record, TextWriter logger);
+      public abstract object Create(IDataRecord record, MappingContext context);
 
-      public void Load(ref object instance, IDataRecord record, TextWriter logger) {
+      public void Load(ref object instance, IDataRecord record, MappingContext context) {
 
          for (int i = 0; i < this.Properties.Count; i++) {
 
             Node childNode = this.Properties[i];
 
             if (!childNode.IsComplex
-               || childNode.ConstructorParameters.Count > 0) {
+               || childNode.HasConstructorParameters) {
 
-               childNode.Read(ref instance, record, logger);
+               childNode.Read(ref instance, record, context);
                continue;
             }
 
             object currentValue = childNode.Get(ref instance);
 
             if (currentValue != null) {
-               childNode.Load(ref currentValue, record, logger);
+               childNode.Load(ref currentValue, record, context);
             } else {
-               childNode.Read(ref instance, record, logger);
+               childNode.Read(ref instance, record, context);
+            }
+         }
+
+         if (this.HasCollections) {
+
+            if (context.SingleResult) {
+               // if the query is expected to return a single result at most
+               // we close the data reader to allow for collections to be loaded
+               // using the same connection (for providers that do not support MARS)
+
+               IDataReader reader = record as IDataReader;
+
+               if (reader != null) {
+                  reader.Close();
+               }
+            }
+
+            for (int i = 0; i < this.Collections.Count; i++) {
+
+               CollectionNode collectionNode = this.Collections[i];
+               collectionNode.Load(ref instance, context);
             }
          }
       }
 
-      void Read(ref object instance, IDataRecord record, TextWriter logger) {
+      void Read(ref object instance, IDataRecord record, MappingContext context) {
 
-         object value = Map(record, logger);
-         Set(ref instance, value, logger);
+         object value = Map(record, context);
+         Set(ref instance, value, context);
       }
 
       protected abstract object Get(ref object instance);
 
-      protected abstract void Set(ref object instance, object value, TextWriter logger);
+      protected abstract void Set(ref object instance, object value, MappingContext context);
 
       public abstract ConstructorInfo[] GetConstructors(BindingFlags bindingAttr);
+   }
+
+   abstract class CollectionNode {
+
+      public void Load(ref object instance, MappingContext context) {
+
+         IEnumerable collection = GetOrCreate(ref instance, context);
+         CollectionLoader loader = context.ManyLoaders[this];
+
+         IEnumerable elements = loader.Load(instance, loader.State);
+
+         foreach (object element in elements) {
+            Add(collection, element, context);
+         }
+      }
+
+      protected abstract IEnumerable GetOrCreate(ref object instance, MappingContext context);
+
+      protected abstract void Add(IEnumerable collection, object element, MappingContext context);
+   }
+
+   class MappingContext {
+
+      public TextWriter Log;
+      public IDictionary<CollectionNode, CollectionLoader> ManyLoaders;
+      public bool SingleResult;
+   }
+
+   class CollectionLoader {
+
+      public Func<object, object, IEnumerable> Load;
+      public object State;
    }
 }
 
 namespace DbExtensions {
 
    using System;
+   using System.Collections;
    using System.Collections.Generic;
+   using System.Collections.ObjectModel;
    using System.Data;
    using System.Globalization;
-   using System.IO;
    using System.Linq;
    using System.Reflection;
 
@@ -1769,8 +1881,7 @@ namespace DbExtensions {
 
       readonly Type type;
 
-      public PocoMapper(Type type, TextWriter logger)
-         : base(logger) {
+      public PocoMapper(Type type) {
 
          if (type == null) throw new ArgumentNullException("type");
 
@@ -1785,8 +1896,9 @@ namespace DbExtensions {
 
          PropertyInfo property = GetProperty(((PocoNode)container).UnderlyingType, propertyName);
 
-         if (property == null)
+         if (property == null) {
             return null;
+         }
 
          return PocoNode.Simple(columnOrdinal, property);
       }
@@ -1795,8 +1907,9 @@ namespace DbExtensions {
 
          PropertyInfo property = GetProperty(((PocoNode)container).UnderlyingType, propertyName);
 
-         if (property == null)
+         if (property == null) {
             return null;
+         }
 
          return PocoNode.Complex(property);
       }
@@ -1809,18 +1922,36 @@ namespace DbExtensions {
          return PocoNode.Root(paramInfo);
       }
 
+      protected override CollectionNode CreateCollectionNode(Node container, string propertyName) {
+
+         Type declaringType = ((PocoNode)container).UnderlyingType;
+
+         PropertyInfo property = declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+         if (property == null) {
+            return null;
+         }
+
+         if (!typeof(IEnumerable).IsAssignableFrom(property.PropertyType)) {
+            return null;
+         }
+
+         return new PocoCollection(property);
+      }
+
       static PropertyInfo GetProperty(Type declaringType, string propertyName) {
 
          PropertyInfo property = declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-         if (property == null)
+         if (property == null) {
             return property;
+         }
 
          if (!property.CanWrite) {
 
             throw new InvalidOperationException(
                String.Format(CultureInfo.InvariantCulture,
-                  "{0} property {1} doesn't have a setter.",
+                  "'{0}' property '{1}' doesn't have a setter.",
                   property.ReflectedType.FullName, property.Name
                )
             );
@@ -1839,9 +1970,7 @@ namespace DbExtensions {
       readonly MethodInfo Setter;
 
       bool _IsComplex;
-      List<Node> _Properties;
       int _ColumnOrdinal;
-      Dictionary<uint, Node> _ConstructorParameters;
 
       public Func<PocoNode, object, object> ConvertFunction;
       public ParameterInfo Parameter;
@@ -1850,12 +1979,14 @@ namespace DbExtensions {
          get { return _IsComplex; }
       }
 
-      public override List<Node> Properties {
-         get { return _Properties; }
-      }
+      public override string PropertyName {
+         get {
+            if (this.Property == null) {
+               return null;
+            }
 
-      public override Dictionary<uint, Node> ConstructorParameters {
-         get { return _ConstructorParameters; }
+            return this.Property.Name;
+         }
       }
 
       public override int ColumnOrdinal {
@@ -1870,8 +2001,6 @@ namespace DbExtensions {
 
          var node = new PocoNode(type) {
             _IsComplex = true,
-            _ConstructorParameters = new Dictionary<uint, Node>(),
-            _Properties = new List<Node>(),
          };
 
          return node;
@@ -1889,8 +2018,6 @@ namespace DbExtensions {
 
          var node = new PocoNode(property) {
             _IsComplex = true,
-            _ConstructorParameters = new Dictionary<uint, Node>(),
-            _Properties = new List<Node>()
          };
 
          return node;
@@ -1934,12 +2061,13 @@ namespace DbExtensions {
          this.Setter = property.GetSetMethod(true);
       }
 
-      public override object Create(IDataRecord record, TextWriter logger) {
+      public override object Create(IDataRecord record, MappingContext context) {
 
-         if (this.Constructor == null)
+         if (this.Constructor == null) {
             return Activator.CreateInstance(this.Type);
+         }
 
-         object[] args = this.ConstructorParameters.Select(m => m.Value.Map(record, logger)).ToArray();
+         object[] args = this.ConstructorParameters.Select(m => m.Value.Map(record, context)).ToArray();
 
          if (this.ConstructorParameters.Any(p => ((PocoNode)p.Value).ConvertFunction != null)
             || args.All(v => v == null)) {
@@ -1958,7 +2086,9 @@ namespace DbExtensions {
 
                object value = args[i];
 
-               if (value == null) continue;
+               if (value == null) {
+                  continue;
+               }
 
                PocoNode paramNode = (PocoNode)this.ConstructorParameters.ElementAt(i).Value;
 
@@ -1966,9 +2096,9 @@ namespace DbExtensions {
 
                   Func<PocoNode, object, object> convert = GetConversionFunction(value, paramNode);
 
-                  if (logger != null) {
+                  if (context.Log != null) {
 
-                     logger.WriteLine("-- WARNING: Couldn't instantiate {0} with argument '{1}' of type {2} {3}. Attempting conversion.",
+                     context.Log.WriteLine("-- WARNING: Couldn't instantiate {0} with argument '{1}' of type {2} {3}. Attempting conversion.",
                         this.UnderlyingType.FullName,
                         paramNode.Parameter.Name, paramNode.Type.FullName,
                         (value == null) ? "to null" : "with value of type " + value.GetType().FullName
@@ -1981,16 +2111,17 @@ namespace DbExtensions {
                }
             }
 
-            if (convertSet)
-               return Create(record, logger);
+            if (convertSet) {
+               return Create(record, context);
+            }
 
             throw;
          }
       }
 
-      protected override object MapSimple(IDataRecord record, TextWriter logger) {
+      protected override object MapSimple(IDataRecord record, MappingContext context) {
 
-         object value = base.MapSimple(record, logger);
+         object value = base.MapSimple(record, context);
 
          Func<PocoNode, object, object> convertFn;
 
@@ -2007,7 +2138,7 @@ namespace DbExtensions {
          return GetProperty(ref instance);
       }
 
-      protected override void Set(ref object instance, object value, TextWriter logger) {
+      protected override void Set(ref object instance, object value, MappingContext context) {
 
          if (this.IsComplex) {
             SetProperty(ref instance, value);
@@ -2015,21 +2146,21 @@ namespace DbExtensions {
          } else {
 
             try {
-               SetSimple(ref instance, value, logger);
+               SetSimple(ref instance, value, context);
 
             } catch (Exception ex) {
 
                throw new InvalidCastException(
                   String.Format(CultureInfo.InvariantCulture,
-                     "Couldn't set {0} property {1} of type {2} {3}.",
-                     this.Property.ReflectedType.FullName, this.Property.Name, this.Type.FullName, (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+                     "Couldn't set '{0}' property '{1}' of type '{2}' {3}.",
+                     this.Property.ReflectedType.FullName, this.Property.Name, this.Type.FullName, (value == null) ? "to null" : "with value of type '" + value.GetType().FullName + "'"
                   )
                , ex);
             }
          }
       }
 
-      void SetSimple(ref object instance, object value, TextWriter logger) {
+      void SetSimple(ref object instance, object value, MappingContext context) {
 
          if (this.ConvertFunction != null || value == null) {
             SetProperty(ref instance, value);
@@ -2043,12 +2174,12 @@ namespace DbExtensions {
 
             Func<PocoNode, object, object> convert = GetConversionFunction(value, this);
 
-            if (logger != null) {
+            if (context.Log != null) {
 
-               logger.WriteLine("-- WARNING: Couldn't set {0} property '{1}' of type {2} {3}. Attempting conversion.",
+               context.Log.WriteLine("-- WARNING: Couldn't set '{0}' property '{1}' of type '{2}' {3}. Attempting conversion.",
                   this.Property.ReflectedType.FullName,
                   this.Property.Name, this.Property.PropertyType.FullName,
-                  (value == null) ? "to null" : "with value of type " + value.GetType().FullName
+                  (value == null) ? "to null" : "with value of type '" + value.GetType().FullName + "'"
                );
             }
 
@@ -2056,7 +2187,7 @@ namespace DbExtensions {
 
             this.ConvertFunction = convert;
 
-            SetSimple(ref instance, value, logger);
+            SetSimple(ref instance, value, context);
          }
       }
 
@@ -2074,10 +2205,19 @@ namespace DbExtensions {
 
       static Func<PocoNode, object, object> GetConversionFunction(object value, PocoNode node) {
 
-         if (node.UnderlyingType == typeof(bool)
-            && value.GetType() == typeof(string)) {
+         if (node.UnderlyingType == typeof(bool)) {
 
-            return ConvertToBoolean;
+            if (value.GetType() == typeof(string)) {
+               return ConvertToBoolean;
+            }
+
+         } else if (node.UnderlyingType.IsEnum) {
+
+            if (value.GetType() == typeof(string)) {
+               return ParseEnum;
+            }
+
+            return CastToEnum;
          }
 
          return ConvertTo;
@@ -2087,62 +2227,77 @@ namespace DbExtensions {
          return Convert.ToBoolean(Convert.ToInt64(value, CultureInfo.InvariantCulture));
       }
 
+      static object CastToEnum(PocoNode node, object value) {
+         return Enum.ToObject(node.UnderlyingType, value);
+      }
+
+      static object ParseEnum(PocoNode node, object value) {
+         return Enum.Parse(node.UnderlyingType, Convert.ToString(value, CultureInfo.InvariantCulture));
+      }
+
       static object ConvertTo(PocoNode node, object value) {
          return Convert.ChangeType(value, node.UnderlyingType, CultureInfo.InvariantCulture);
       }
    }
-}
 
-namespace DbExtensions {
+   class PocoCollection : CollectionNode {
 
-   using System;
-   using System.ComponentModel;
-   using System.Data.Common;
+      readonly PropertyInfo property;
+      readonly Type elementType;
+      readonly MethodInfo addMethod;
 
-   /// <summary>
-   /// Provides a set of static (Shared in Visual Basic) methods for the creation 
-   /// and location of common ADO.NET objects.
-   /// </summary>
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public static class DbFactory {
+      public PocoCollection(PropertyInfo property) {
 
-      /// <summary>
-      /// Locates a <see cref="DbProviderFactory"/> using <see cref="DbProviderFactories.GetFactory(string)"/>
-      /// and caches the result.
-      /// </summary>
-      /// <param name="providerInvariantName">The provider invariant name.</param>
-      /// <returns>The requested provider factory.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use DbExtensions.Database.GetProviderFactory(String) instead.")]
-      public static DbProviderFactory GetProviderFactory(string providerInvariantName) {
-         return Database.GetProviderFactory(providerInvariantName);
+         this.property = property;
+
+         Type colType = this.property.PropertyType;
+         this.elementType = typeof(object);
+
+         for (Type type = colType; type != null; type = type.BaseType) {
+
+            Type[] interfaces = type.GetInterfaces();
+
+            Type genericICol = type.GetInterfaces()
+               .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>));
+
+            if (genericICol != null) {
+               this.elementType = genericICol.GetGenericArguments()[0];
+               break;
+            }
+         }
+
+         this.addMethod = colType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, new[] { this.elementType }, null);
+
+         if (this.addMethod == null) {
+            throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture, "Couldn't find a public 'Add' method on '{0}'.", colType.FullName));
+         }
       }
 
-      /// <summary>
-      /// Creates a connection using the default connection name specified by the 
-      /// "DbExtensions:DefaultConnectionName" key in the appSettings configuration section, 
-      /// which is used to locate a connection string in the connectionStrings configuration section.
-      /// </summary>
-      /// <returns>The requested connection.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use DbExtensions.Database.CreateConnection() instead.")]
-      public static DbConnection CreateConnection() {
-         return Database.CreateConnection();
+      protected override IEnumerable GetOrCreate(ref object instance, MappingContext context) {
+
+         object collection = this.property.GetValue(instance, null);
+
+         if (collection == null) {
+
+            Type collectionType = this.property.PropertyType;
+
+            if (collectionType.IsAbstract
+               || collectionType.IsInterface) {
+
+               collection = Activator.CreateInstance(typeof(Collection<>).MakeGenericType(this.elementType));
+
+            } else {
+               collection = Activator.CreateInstance(collectionType);
+            }
+
+            this.property.SetValue(instance, collection, null);
+         }
+
+         return (IEnumerable)collection;
       }
 
-      /// <summary>
-      /// Creates a connection using the provided connection string. If the connection
-      /// string is a named connection string (e.g. "name=Northwind"), then the name is used to
-      /// locate the connection string in the connectionStrings configuration section, else the 
-      /// default provider is used to create the connection (specified by the "DbExtensions:DefaultProviderName"
-      /// key in the appSettings configuration section).
-      /// </summary>
-      /// <param name="connectionString">The connection string.</param>
-      /// <returns>The requested connection.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use DbExtensions.Database.CreateConnection(String) instead.")]
-      public static DbConnection CreateConnection(string connectionString) {
-         return Database.CreateConnection(connectionString);
+      protected override void Add(IEnumerable collection, object element, MappingContext context) {
+         this.addMethod.Invoke(collection, new[] { element });
       }
    }
 }

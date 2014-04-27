@@ -43,4 +43,4 @@ See Also
 [3]: http://msdn.microsoft.com/en-us/library/td2s409d
 [4]: http://msdn.microsoft.com/en-us/library/bsdf9tb2
 [5]: README.md
-[6]: ../Extensions/AffectOne_4.md
+[6]: ../Extensions/AffectOne.md

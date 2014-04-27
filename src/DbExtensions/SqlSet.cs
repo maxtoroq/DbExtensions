@@ -29,7 +29,7 @@ namespace DbExtensions {
    /// <summary>
    /// Represents an immutable, connected SQL query.
    /// </summary>
-   public partial class SqlSet : ISqlSet<SqlSet, object> {
+   public class SqlSet : ISqlSet<SqlSet, object> {
 
       const string SetAliasPrefix = "dbex_set";
       static readonly object padlock = new object();
@@ -39,21 +39,16 @@ namespace DbExtensions {
 
       readonly SqlBuilder definingQuery;
       readonly string[] fromSelect;
-      readonly Type resultType;
-      readonly IConnectionContext context;
+      internal readonly Type resultType;
+      internal readonly IConnectionContext context;
+
       int setIndex = 1;
 
-      SqlFragment whereBuffer;
-      SqlFragment orderByBuffer;
-      int? skipBuffer;
-      int? takeBuffer;
-
-      /// <summary>
-      /// The database connection.
-      /// </summary>
-      private DbConnection Connection { 
-         get { return context.Connection; } 
-      }
+      SqlFragment _WhereBuffer;
+      SqlFragment _OrderByBuffer;
+      int? _SkipBuffer;
+      int? _TakeBuffer;
+      IDictionary<string[], CollectionLoader> _ManyIncludes;
 
       /// <summary>
       /// A <see cref="TextWriter"/> used to log when queries are executed.
@@ -64,10 +59,68 @@ namespace DbExtensions {
 
       private bool HasBufferedCalls {
          get {
-            return whereBuffer != null
-               || orderByBuffer != null
-               || skipBuffer.HasValue
-               || takeBuffer.HasValue;
+            return _WhereBuffer != null
+               || _OrderByBuffer != null
+               || _SkipBuffer.HasValue
+               || _TakeBuffer.HasValue;
+         }
+      }
+
+      private SqlFragment WhereBuffer {
+         get { return _WhereBuffer; }
+         set {
+            if (value != null
+               && _WhereBuffer != null) {
+
+               throw new InvalidOperationException();
+            }
+            _WhereBuffer = value;
+         }
+      }
+
+      private SqlFragment OrderByBuffer {
+         get { return _OrderByBuffer; }
+         set {
+            if (value != null
+               && _OrderByBuffer != null) {
+
+               throw new InvalidOperationException();
+            }
+            _OrderByBuffer = value;
+         }
+      }
+
+      private int? SkipBuffer {
+         get { return _SkipBuffer; }
+         set {
+            if (value != null
+               && _SkipBuffer != null) {
+
+               throw new InvalidOperationException();
+            }
+            _SkipBuffer = value;
+         }
+      }
+
+      private int? TakeBuffer {
+         get { return _TakeBuffer; }
+         set {
+            if (value != null
+               && _TakeBuffer != null) {
+
+               throw new InvalidOperationException();
+            }
+            _TakeBuffer = value;
+         }
+      }
+
+      internal IDictionary<string[], CollectionLoader> ManyIncludes {
+         get { return _ManyIncludes; }
+         set {
+            if (_ManyIncludes != null) {
+               throw new InvalidOperationException();
+            }
+            _ManyIncludes = value;
          }
       }
 
@@ -85,18 +138,8 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <param name="connection">The database connection.</param>
-      public SqlSet(SqlBuilder definingQuery, DbConnection connection) 
-         : this(definingQuery, connection, (TextWriter)null) { }
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="SqlSet"/> class
-      /// using the provided defining query, connection and logger.
-      /// </summary>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="connection">The database connection.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      public SqlSet(SqlBuilder definingQuery, DbConnection connection, TextWriter logger)
-         : this(definingQuery, (Type)null, connection, logger) { }
+      public SqlSet(SqlBuilder definingQuery, DbConnection connection)
+         : this(definingQuery, (Type)null, connection) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlSet"/> class
@@ -114,66 +157,17 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <param name="resultType">The type of objects to map the results to.</param>
       /// <param name="connection">The database connection.</param>
-      public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection) 
-         : this(definingQuery, resultType, connection, (TextWriter)null) { }
+      public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection)
+         : this(definingQuery, resultType, new SimpleConnectionContext(connection)) { }
 
-      /// <summary>
-      /// Initializes a new instance of the <see cref="SqlSet"/> class
-      /// using the provided defining query, result type, connection and logger.
-      /// </summary>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <param name="connection">The database connection.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection, TextWriter logger)
-         : this(definingQuery, resultType, connection, logger, adoptQuery: false) { }
-
-      internal SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection, TextWriter logger, bool adoptQuery) 
-         : this(definingQuery, resultType, new SimpleConnectionContext(connection, logger), adoptQuery) { }
-
-      internal SqlSet(SqlBuilder definingQuery, Type resultType, IConnectionContext context, bool adoptQuery) {
+      internal SqlSet(SqlBuilder definingQuery, Type resultType, IConnectionContext context) {
 
          if (definingQuery == null) throw new ArgumentNullException("definingQuery");
 
-         this.definingQuery = (adoptQuery) ?
-            definingQuery
-            : definingQuery.Clone();
-
+         this.definingQuery = definingQuery.Clone();
          this.resultType = resultType;
          this.context = context;
       }
-
-      internal SqlSet(SqlSet set) {
-
-         if (set == null) throw new ArgumentNullException("set");
-
-         this.resultType = set.resultType;
-         this.setIndex += set.setIndex;
-         this.context = set.context;
-      }
-
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected SqlSet(SqlSet set, SqlBuilder superQuery) 
-         : this(set) {
-
-         if (superQuery == null) throw new ArgumentNullException("superQuery");
-
-         this.definingQuery = superQuery;
-      }
-
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType)
-         : this(set, superQuery) {
-
-         this.resultType = resultType;
-      }
-
-      internal SqlSet(string[] fromSelect, Type resultType, DbConnection connection, TextWriter logger = null)
-         : this(fromSelect, resultType, new SimpleConnectionContext(connection, logger)) { }
 
       internal SqlSet(string[] fromSelect, Type resultType, IConnectionContext context) {
 
@@ -185,6 +179,31 @@ namespace DbExtensions {
          this.context = context;
       }
 
+      internal SqlSet(SqlSet set) {
+
+         if (set == null) throw new ArgumentNullException("set");
+
+         this.resultType = set.resultType;
+         this.setIndex += set.setIndex;
+         this.context = set.context;
+
+         if (set.ManyIncludes != null) {
+            this.ManyIncludes = new Dictionary<string[], CollectionLoader>(set.ManyIncludes);
+         }
+      }
+
+      internal SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType = null) 
+         : this(set) {
+
+         if (superQuery == null) throw new ArgumentNullException("superQuery");
+
+         this.definingQuery = superQuery;
+
+         if (resultType != null) {
+            this.resultType = resultType;
+         }
+      }
+
       internal SqlSet(SqlSet set, string[] fromSelect, Type resultType = null) 
          : this(set) {
 
@@ -192,7 +211,10 @@ namespace DbExtensions {
          if (fromSelect.Length != 2) throw new ArgumentException("fromSelect.Length must be 2.", "fromSelect");
 
          this.fromSelect = fromSelect;
-         this.resultType = resultType;
+
+         if (resultType != null) {
+            this.resultType = resultType; 
+         }
       }
 
       /// <summary>
@@ -234,10 +256,10 @@ namespace DbExtensions {
 
       void CopyBufferState(SqlSet otherSet) {
 
-         otherSet.whereBuffer = this.whereBuffer;
-         otherSet.orderByBuffer = this.orderByBuffer;
-         otherSet.skipBuffer = this.skipBuffer;
-         otherSet.takeBuffer = this.takeBuffer;
+         otherSet.WhereBuffer = this.WhereBuffer;
+         otherSet.OrderByBuffer = this.OrderByBuffer;
+         otherSet.SkipBuffer = this.SkipBuffer;
+         otherSet.TakeBuffer = this.TakeBuffer;
       }
 
       SqlBuilder BuildQuery(string selectFormat = null, object[] args = null) {
@@ -259,10 +281,15 @@ namespace DbExtensions {
 
       SqlBuilder BuildQuery_Default(string selectFormat = null, object[] args = null) {
 
-         bool hasWhere = this.whereBuffer != null;
-         bool hasOrderBy = this.orderByBuffer != null;
-         bool hasSkip = this.skipBuffer.HasValue;
-         bool hasTake = this.takeBuffer.HasValue;
+         SqlFragment whereBuffer = this.WhereBuffer;
+         SqlFragment orderByBuffer = this.OrderByBuffer;
+         int? skipBuffer = this.SkipBuffer;
+         int? takeBuffer = this.TakeBuffer;
+
+         bool hasWhere = whereBuffer != null;
+         bool hasOrderBy = orderByBuffer != null;
+         bool hasSkip = skipBuffer.HasValue;
+         bool hasTake = takeBuffer.HasValue;
 
          SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: selectFormat, args: args);
 
@@ -272,19 +299,19 @@ namespace DbExtensions {
             || hasSkip) {
 
             if (hasWhere) {
-               query.WHERE(this.whereBuffer.Format, this.whereBuffer.Args);
+               query.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
             if (hasOrderBy) {
-               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+               query.ORDER_BY(orderByBuffer.Format, orderByBuffer.Args);
             }
 
             if (hasTake) {
-               query.LIMIT(this.takeBuffer.Value);
+               query.LIMIT(takeBuffer.Value);
             }
 
             if (hasSkip) {
-               query.OFFSET(this.skipBuffer.Value);
+               query.OFFSET(skipBuffer.Value);
             }
          }
 
@@ -293,10 +320,15 @@ namespace DbExtensions {
 
       SqlBuilder BuildQuery_SqlServer(string selectFormat = null, object[] args = null) {
 
-         bool hasWhere = this.whereBuffer != null;
-         bool hasOrderBy = this.orderByBuffer != null;
-         bool hasSkip = this.skipBuffer.HasValue;
-         bool hasTake = this.takeBuffer.HasValue;
+         SqlFragment whereBuffer = this.WhereBuffer;
+         SqlFragment orderByBuffer = this.OrderByBuffer;
+         int? skipBuffer = this.SkipBuffer;
+         int? takeBuffer = this.TakeBuffer;
+
+         bool hasWhere = whereBuffer != null;
+         bool hasOrderBy = orderByBuffer != null;
+         bool hasSkip = skipBuffer.HasValue;
+         bool hasTake = takeBuffer.HasValue;
 
          SqlBuilder definingQuery = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: selectFormat, args: args);
 
@@ -305,11 +337,11 @@ namespace DbExtensions {
             SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: selectFormat, args: args);
 
             if (hasWhere) {
-               query.WHERE(this.whereBuffer.Format, this.whereBuffer.Args);
+               query.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
             if (hasOrderBy) {
-               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+               query.ORDER_BY(orderByBuffer.Format, orderByBuffer.Args);
 
             } else {
 
@@ -317,10 +349,10 @@ namespace DbExtensions {
                query.ORDER_BY("1");
             }
 
-            query.OFFSET("{0} ROWS", this.skipBuffer.Value);
+            query.OFFSET("{0} ROWS", skipBuffer.Value);
 
             if (hasTake) {
-               query.AppendClause("FETCH", null, "NEXT {0} ROWS ONLY", new object[] { this.takeBuffer.Value });
+               query.AppendClause("FETCH", null, "NEXT {0} ROWS ONLY", new object[] { takeBuffer.Value });
             }
 
             return query;
@@ -328,14 +360,14 @@ namespace DbExtensions {
 
          if (hasTake) {
 
-            SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: "TOP({0}) *", args: new object[] { this.takeBuffer.Value });
+            SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: "TOP({0}) *", args: new object[] { takeBuffer.Value });
 
             if (hasWhere) {
-               query.WHERE(this.whereBuffer.Format, this.whereBuffer.Args);
+               query.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
             if (hasOrderBy) {
-               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+               query.ORDER_BY(orderByBuffer.Format, orderByBuffer.Args);
             }
 
             if (selectFormat != null) {
@@ -351,12 +383,12 @@ namespace DbExtensions {
             SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: selectFormat, args: args);
 
             if (hasWhere) {
-               query.WHERE(this.whereBuffer.Format, this.whereBuffer.Args);
+               query.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
             if (hasOrderBy) {
 
-               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args);
+               query.ORDER_BY(orderByBuffer.Format, orderByBuffer.Args);
 
                // The ORDER BY clause is invalid in subqueries, unless TOP, OFFSET or FOR XML is also specified.
 
@@ -371,10 +403,15 @@ namespace DbExtensions {
 
       SqlBuilder BuildQuery_Oracle(string selectFormat = null, object[] args = null) {
 
-         bool hasWhere = this.whereBuffer != null;
-         bool hasOrderBy = this.orderByBuffer != null;
-         bool hasSkip = this.skipBuffer.HasValue;
-         bool hasTake = this.takeBuffer.HasValue;
+         SqlFragment whereBuffer = this.WhereBuffer;
+         SqlFragment orderByBuffer = this.OrderByBuffer;
+         int? skipBuffer = this.SkipBuffer;
+         int? takeBuffer = this.TakeBuffer;
+
+         bool hasWhere = whereBuffer != null;
+         bool hasOrderBy = orderByBuffer != null;
+         bool hasSkip = skipBuffer.HasValue;
+         bool hasTake = takeBuffer.HasValue;
 
          SqlBuilder definingQuery = GetDefiningQuery(omitBufferedCalls: true, selectFormat: selectFormat, args: args);
 
@@ -385,15 +422,15 @@ namespace DbExtensions {
             string innerQueryAlias = queryAlias + "_1";
             const string rowNumberAlias = "dbex_rn";
 
-            int start = (hasSkip) ? this.skipBuffer.Value : 0;
-            int? end = (hasTake) ? start + this.takeBuffer.Value : default(int?);
+            int start = (hasSkip) ? skipBuffer.Value : 0;
+            int? end = (hasTake) ? start + takeBuffer.Value : default(int?);
 
             var innerQuery = new SqlBuilder();
 
             if (hasOrderBy) {
 
                innerQuery
-                  .SELECT(String.Concat("ROW_NUMBER() OVER (ORDER BY ", this.orderByBuffer.Format, ") AS ", rowNumberAlias), this.orderByBuffer.Args);
+                  .SELECT(String.Concat("ROW_NUMBER() OVER (ORDER BY ", orderByBuffer.Format, ") AS ", rowNumberAlias), orderByBuffer.Args);
             
             } else {
 
@@ -406,7 +443,7 @@ namespace DbExtensions {
                .FROM(definingQuery, innerQueryAlias);
 
             if (hasWhere) {
-               innerQuery.WHERE(this.whereBuffer.Format, this.whereBuffer.Args);
+               innerQuery.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
             var query = new SqlBuilder()
@@ -433,11 +470,11 @@ namespace DbExtensions {
             SqlBuilder query = definingQuery;
 
             if (hasWhere) {
-               query.WHERE(this.whereBuffer.Format, this.whereBuffer.Args);
+               query.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
             if (hasOrderBy) {
-               query.ORDER_BY(this.orderByBuffer.Format, this.orderByBuffer.Args); 
+               query.ORDER_BY(orderByBuffer.Format, orderByBuffer.Args); 
             }
 
             return query;
@@ -448,7 +485,8 @@ namespace DbExtensions {
 
       SqlDialect GetConnectionDialect() {
 
-         Type connType = this.Connection.GetType();
+         DbConnection conn = this.context.Connection;
+         Type connType = conn.GetType();
 
          SqlDialect dialect;
 
@@ -456,8 +494,8 @@ namespace DbExtensions {
             lock (padlock) {
                if (!connectionDialect.TryGetValue(connType, out dialect)) {
 
-                  dialect = IsSqlServer() ? SqlDialect.SqlServer
-                     : IsOracle() ? SqlDialect.Oracle
+                  dialect = IsSqlServer(conn) ? SqlDialect.SqlServer
+                     : IsOracle(conn) ? SqlDialect.Oracle
                      : SqlDialect.Default;
 
                   connectionDialect[connType] = dialect;
@@ -468,26 +506,20 @@ namespace DbExtensions {
          return dialect;
       }
 
-      bool IsSqlServer() {
-         return this.Connection is System.Data.SqlClient.SqlConnection
-            || this.Connection.GetType().Namespace.Equals("System.Data.SqlServerCe", StringComparison.Ordinal);
+      static bool IsSqlServer(DbConnection conn) {
+         return conn is System.Data.SqlClient.SqlConnection
+            || conn.GetType().Namespace.Equals("System.Data.SqlServerCe", StringComparison.Ordinal);
       }
 
-      bool IsOracle() {
-         return this.Connection.GetType().Namespace.Equals("System.Data.OracleClient", StringComparison.Ordinal);
+      static bool IsOracle(DbConnection conn) {
+         return conn.GetType().Namespace.Equals("System.Data.OracleClient", StringComparison.Ordinal);
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected SqlBuilder CreateSuperQuery() {
+      internal SqlBuilder CreateSuperQuery() {
          return CreateSuperQuery(null, null);
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected SqlBuilder CreateSuperQuery(string selectFormat, params object[] args) {
+      internal SqlBuilder CreateSuperQuery(string selectFormat, params object[] args) {
          return CreateSuperQuery(GetDefiningQuery(clone: false), selectFormat, args);
       }
 
@@ -514,40 +546,16 @@ namespace DbExtensions {
          return this.setIndex++;
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected virtual SqlSet CreateSet(SqlBuilder superQuery) {
-         return new SqlSet(this, superQuery);
-      }
-
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected virtual SqlSet CreateSet(SqlBuilder superQuery, Type resultType) {
+      internal virtual SqlSet CreateSet(SqlBuilder superQuery, Type resultType = null) {
          return new SqlSet(this, superQuery, resultType);
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected virtual SqlSet<TResult> CreateSet<TResult>(SqlBuilder superQuery) {
-         return new SqlSet<TResult>(this, superQuery);
-      }
-
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected virtual SqlSet<TResult> CreateSet<TResult>(SqlBuilder superQuery, Func<IDataRecord, TResult> mapper) {
-         return new SqlSet<TResult>(this, superQuery, mapper);
-      }
-
-      internal virtual SqlSet CreateSet(string[] fromSelect) {
-         return new SqlSet(this, fromSelect);
-      }
-
-      internal SqlSet CreateSet(string[] fromSelect, Type resultType) {
+      internal virtual SqlSet CreateSet(string[] fromSelect, Type resultType = null) {
          return new SqlSet(this, fromSelect, resultType);
+      }
+
+      internal SqlSet<TResult> CreateSet<TResult>(SqlBuilder superQuery, Func<IDataRecord, TResult> mapper = null) {
+         return new SqlSet<TResult>(this, superQuery, mapper);
       }
 
       internal SqlSet<TResult> CreateSet<TResult>(string[] fromSelect) {
@@ -561,9 +569,7 @@ namespace DbExtensions {
          if (omitBufferedCalls
             && this.definingQuery == null) {
                
-            set = (resultType != null) ?
-               CreateSet(this.fromSelect, resultType)
-               : CreateSet(this.fromSelect);
+            set = CreateSet(this.fromSelect, resultType);
          }
 
          if (set == null) {
@@ -572,9 +578,7 @@ namespace DbExtensions {
                omitBufferedCalls: omitBufferedCalls
             );
 
-            set = (resultType != null) ?
-               CreateSet(query, resultType)
-               : CreateSet(query);
+            set = CreateSet(query, resultType);
          }
          
          CopyBufferState(set);
@@ -610,38 +614,33 @@ namespace DbExtensions {
          return this.context.CreateCommand(sqlBuilder);
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete]
-      protected virtual IEnumerable Execute(DbCommand command) {
-
-         if (this.resultType == null) {
-#if NET35
-            throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
-#else
-            return command.Map(this.Log);
-#endif
-         }
-
-         return command.Map(resultType, this.Log);
-      }
-
-      internal virtual IEnumerable Map() {
+      internal virtual IEnumerable Map(bool singleResult) {
 
          SqlBuilder query = GetDefiningQuery(clone: false);
 
          if (this.resultType != null) {
-            return Extensions.Map<object>(q => CreateCommand(query), query, new PocoMapper(this.resultType, this.Log), this.Log);
-
-         } else {
-#if NET35
-            throw new InvalidOperationException("Cannot map set, a result type was not specified when this set was created. Call the 'Cast' method first.");
-#else
-            return Extensions.Map<dynamic>(q => CreateCommand(query), query, new DynamicMapper(this.Log), this.Log);
-#endif
+            return Extensions.Map<object>(q => CreateCommand(query), query, CreatePocoMapper(singleResult), this.Log);
          }
+
+         return Extensions.Map<dynamic>(
+            q => CreateCommand(query),
+            query,
+            new DynamicMapper { 
+               Log = this.Log,
+               ManyIncludes = this.ManyIncludes,
+               SingleResult = singleResult
+            },
+            this.Log
+         );
+      }
+
+      internal PocoMapper CreatePocoMapper(bool singleResult) {
+
+         return new PocoMapper(this.resultType) {
+            Log = this.Log,
+            ManyIncludes = this.ManyIncludes,
+            SingleResult = singleResult
+         };
       }
 
       #region ISqlSet<SqlSet,object> Members
@@ -675,7 +674,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>true if the sequence contains any elements; otherwise, false.</returns>
       public bool Any() {
-         return this.Connection.Exists(CreateCommand(Extensions.ExistsQuery(GetDefiningQuery(clone: false))), this.Log);
+         return this.context.ExistsImpl(GetDefiningQuery(clone: false));
       }
 
       /// <summary>
@@ -702,8 +701,12 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>All elements in the set.</returns>
       public IEnumerable<object> AsEnumerable() {
+         return AsEnumerable(singleResult: false);
+      }
 
-         IEnumerable enumerable = Map();
+      IEnumerable<object> AsEnumerable(bool singleResult) {
+         
+         IEnumerable enumerable = Map(singleResult);
 
          return enumerable as IEnumerable<object>
             ?? enumerable.Cast<object>();
@@ -745,7 +748,7 @@ namespace DbExtensions {
       /// <returns>The number of elements in the set.</returns>
       /// <exception cref="System.OverflowException">The number of elements is larger than <see cref="Int32.MaxValue"/>.</exception>      
       public int Count() {
-         return this.Connection.Count(CreateCommand(Extensions.CountQuery(GetDefiningQuery(clone: false))), this.Log);
+         return this.context.CountImpl(GetDefiningQuery(clone: false));
       }
 
       /// <summary>
@@ -775,7 +778,7 @@ namespace DbExtensions {
       /// <returns>The first element in the set.</returns>
       /// <exception cref="System.InvalidOperationException">The set is empty.</exception>
       public object First() {
-         return Take(1).AsEnumerable().First();
+         return Take(1).AsEnumerable(singleResult: true).First();
       }
 
       /// <summary>
@@ -804,7 +807,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>A default value if the set is empty; otherwise, the first element.</returns>
       public object FirstOrDefault() {
-         return Take(1).AsEnumerable().FirstOrDefault();
+         return Take(1).AsEnumerable(singleResult: true).FirstOrDefault();
       }
 
       /// <summary>
@@ -847,7 +850,7 @@ namespace DbExtensions {
       /// <exception cref="System.OverflowException">The number of elements is larger than <see cref="Int64.MaxValue"/>.</exception>      
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount() {
-         return this.Connection.LongCount(CreateCommand(Extensions.CountQuery(GetDefiningQuery(clone: false))), this.Log);
+         return this.context.LongCountImpl(GetDefiningQuery(clone: false));
       }
 
       /// <summary>
@@ -889,19 +892,19 @@ namespace DbExtensions {
       /// <returns>A new <see cref="SqlSet"/> whose elements are sorted according to <paramref name="columnList"/>.</returns>
       public SqlSet OrderBy(string columnList, params object[] parameters) {
 
-         bool omitBufferedCalls = this.orderByBuffer == null
-            && this.skipBuffer == null
-            && this.takeBuffer == null;
+         bool omitBufferedCalls = this.OrderByBuffer == null
+            && this.SkipBuffer == null
+            && this.TakeBuffer == null;
 
          SqlSet set = CreateSet(omitBufferedCalls);
 
          if (!omitBufferedCalls) {
-            set.whereBuffer = null;
+            set.WhereBuffer = null;
          }
 
-         set.orderByBuffer = new SqlFragment(columnList, parameters);
-         set.skipBuffer = null;
-         set.takeBuffer = null;
+         set._OrderByBuffer = new SqlFragment(columnList, parameters);
+         set.SkipBuffer = null;
+         set.TakeBuffer = null;
 
          return set;
       }
@@ -981,12 +984,34 @@ namespace DbExtensions {
       }
 
       /// <summary>
+      /// Projects each element of the set into a new form.
+      /// </summary>
+      /// <param name="columnList">The list of columns to select.</param>
+      /// <returns>A new <see cref="SqlSet"/>.</returns>
+      public SqlSet Select(string columnList) {
+         return Select(columnList, null);
+      }
+
+      /// <summary>
+      /// Projects each element of the set into a new form.
+      /// </summary>
+      /// <param name="columnList">The list of columns to select.</param>
+      /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
+      /// <returns>A new <see cref="SqlSet"/>.</returns>
+      public SqlSet Select(string columnList, params object[] parameters) {
+
+         SqlBuilder query = GetDefiningQuery(selectFormat: columnList, args: parameters);
+
+         return CreateSet(query);
+      }
+
+      /// <summary>
       /// The single element of the set.
       /// </summary>
       /// <returns>The single element of the set.</returns>
       /// <exception cref="System.InvalidOperationException">The set contains more than one element.-or-The set is empty.</exception>      
       public object Single() {
-         return AsEnumerable().Single();
+         return AsEnumerable(singleResult: true).Single();
       }
 
       /// <summary>
@@ -1016,7 +1041,7 @@ namespace DbExtensions {
       /// <returns>The single element of the set, or a default value if the set contains no elements.</returns>
       /// <exception cref="System.InvalidOperationException">The set contains more than one element.</exception>
       public object SingleOrDefault() {
-         return AsEnumerable().SingleOrDefault();
+         return AsEnumerable(singleResult: true).SingleOrDefault();
       }
 
       /// <summary>
@@ -1045,18 +1070,18 @@ namespace DbExtensions {
       /// <returns>A new <see cref="SqlSet"/> that contains the elements that occur after the specified index in the current set.</returns>
       public SqlSet Skip(int count) {
 
-         bool omitBufferedCalls = this.skipBuffer == null
-            && this.takeBuffer == null;
+         bool omitBufferedCalls = this.SkipBuffer == null
+            && this.TakeBuffer == null;
 
          SqlSet set = CreateSet(omitBufferedCalls);
 
          if (!omitBufferedCalls) {
-            set.whereBuffer = null;
-            set.orderByBuffer = null;
+            set.WhereBuffer = null;
+            set.OrderByBuffer = null;
          }
 
-         set.skipBuffer = count;
-         set.takeBuffer = null;
+         set._SkipBuffer = count;
+         set.TakeBuffer = null;
 
          return set;
       }
@@ -1068,17 +1093,17 @@ namespace DbExtensions {
       /// <returns>A new <see cref="SqlSet"/> that contains the specified number of elements from the start of the current set.</returns>
       public SqlSet Take(int count) {
 
-         bool omitBufferedCalls = this.takeBuffer == null;
+         bool omitBufferedCalls = this.TakeBuffer == null;
 
          SqlSet set = CreateSet(omitBufferedCalls);
 
          if (!omitBufferedCalls) {
-            set.whereBuffer = null;
-            set.orderByBuffer = null;
-            set.skipBuffer = null;
+            set.WhereBuffer = null;
+            set.OrderByBuffer = null;
+            set.SkipBuffer = null;
          }
 
-         set.takeBuffer = count;
+         set._TakeBuffer = count;
 
          return set;
       }
@@ -1117,37 +1142,19 @@ namespace DbExtensions {
       /// <returns>A new <see cref="SqlSet"/> that contains elements from the current set that satisfy the condition.</returns>
       public SqlSet Where(string predicate, params object[] parameters) {
 
-         bool omitBufferedCalls = this.whereBuffer == null 
-            && this.orderByBuffer == null 
-            && this.skipBuffer == null
-            && this.takeBuffer == null;
+         bool omitBufferedCalls = this.WhereBuffer == null 
+            && this.OrderByBuffer == null 
+            && this.SkipBuffer == null
+            && this.TakeBuffer == null;
 
          SqlSet set = CreateSet(omitBufferedCalls);
          
-         set.whereBuffer = new SqlFragment(predicate, parameters);
-         set.orderByBuffer = null;
-         set.skipBuffer = null;
-         set.takeBuffer = null;
+         set._WhereBuffer = new SqlFragment(predicate, parameters);
+         set.OrderByBuffer = null;
+         set.SkipBuffer = null;
+         set.TakeBuffer = null;
 
          return set;
-      }
-
-      /// <summary>
-      /// Produces the set union of the current set with <paramref name="otherSet"/>.
-      /// </summary>
-      /// <param name="otherSet">A <see cref="SqlSet"/> whose distinct elements form the second set for the union.</param>
-      /// <returns>A new <see cref="SqlSet"/> that contains the elements from both sets, excluding duplicates.</returns>
-      public SqlSet Union(SqlSet otherSet) {
-
-         if (otherSet == null) throw new ArgumentNullException("otherSet");
-
-         // TODO: check result compatibility?
-
-         var superQuery = CreateSuperQuery()
-            .UNION()
-            .Append(otherSet.CreateSuperQuery());
-
-         return CreateSet(superQuery);
       }
 
       #endregion
@@ -1239,18 +1246,8 @@ namespace DbExtensions {
       public SqlSet(SqlBuilder definingQuery, DbConnection connection) 
          : base(definingQuery, typeof(TResult), connection) { }
 
-      /// <summary>
-      /// Initializes a new instance of the <see cref="SqlSet&lt;TResult>"/> class
-      /// using the provided defining query, connection and logger.
-      /// </summary>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="connection">The database connection.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      public SqlSet(SqlBuilder definingQuery, DbConnection connection, TextWriter logger)
-         : base(definingQuery, typeof(TResult), connection, logger) { }
-
-      internal SqlSet(SqlBuilder definingQuery, IConnectionContext context, bool adoptQuery)
-         : base(definingQuery, typeof(TResult), context, adoptQuery) { }
+      internal SqlSet(SqlBuilder definingQuery, IConnectionContext context)
+         : base(definingQuery, typeof(TResult), context) { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlSet&lt;TResult>"/> class
@@ -1268,60 +1265,32 @@ namespace DbExtensions {
       /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
       /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
       /// <param name="connection">The database connection.</param>
-      public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, DbConnection connection) 
-         : this(definingQuery, mapper, connection, (TextWriter)null) { }
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="SqlSet&lt;TResult>"/> class
-      /// using the provided defining query, mapper, connection and logger.
-      /// </summary>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <param name="connection">The database connection.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, DbConnection connection, TextWriter logger)
-         : base(definingQuery, typeof(TResult), connection, logger) {
+      public SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, DbConnection connection)
+         : base(definingQuery, typeof(TResult), connection) {
 
          if (mapper == null) throw new ArgumentNullException("mapper");
 
          this.mapper = mapper;
       }
 
-      internal SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, IConnectionContext context, bool adoptQuery) 
-         : base(definingQuery, typeof(TResult), context, adoptQuery) {
+      internal SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, IConnectionContext context) 
+         : base(definingQuery, typeof(TResult), context) {
 
          if (mapper == null) throw new ArgumentNullException("mapper");
 
          this.mapper = mapper;
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected SqlSet(SqlSet<TResult> set, SqlBuilder superQuery) 
+      internal SqlSet(string[] fromSelect, IConnectionContext context)
+         : base(fromSelect, typeof(TResult), context) { }
+
+      internal SqlSet(SqlSet<TResult> set, SqlBuilder superQuery) 
          : base((SqlSet)set, superQuery) {
 
          if (set == null) throw new ArgumentNullException("set");
 
          this.mapper = set.mapper;
       }
-
-      internal SqlSet(SqlSet set, SqlBuilder superQuery)
-         : base(set, superQuery, typeof(TResult)) { }
-
-      internal SqlSet(SqlSet set, SqlBuilder superQuery, Func<IDataRecord, TResult> mapper)
-         : base(set, superQuery, typeof(TResult)) {
-
-         if (mapper == null) throw new ArgumentNullException("mapper");
-
-         this.mapper = mapper;
-      }
-
-      internal SqlSet(string[] fromSelect, DbConnection connection, TextWriter logger = null)
-         : base(fromSelect, typeof(TResult), new SimpleConnectionContext(connection, logger)) { }
-
-      internal SqlSet(string[] fromSelect, IConnectionContext context)
-         : base(fromSelect, typeof(TResult), context) { }
 
       internal SqlSet(SqlSet<TResult> set, string[] fromSelect)
          : base((SqlSet)set, fromSelect) {
@@ -1331,51 +1300,44 @@ namespace DbExtensions {
          this.mapper = set.mapper;
       }
 
-      internal SqlSet(SqlSet set, string[] fromSelect)
-         : base(set, fromSelect) { }
+      internal SqlSet(SqlSet set, SqlBuilder superQuery, Func<IDataRecord, TResult> mapper = null)
+         : base(set, superQuery, typeof(TResult)) {
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected override SqlSet CreateSet(SqlBuilder superQuery) {
+         if (mapper != null) {
+            this.mapper = mapper;
+         }
+      }
+
+      internal SqlSet(SqlSet set, string[] fromSelect)
+         : base(set, fromSelect, typeof(TResult)) { }
+
+      internal override SqlSet CreateSet(SqlBuilder superQuery, Type resultType = null) {
+
+         if (resultType != null) {
+            return base.CreateSet(superQuery, resultType);
+         }
+
          return new SqlSet<TResult>(this, superQuery);
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      protected override SqlSet<T> CreateSet<T>(SqlBuilder superQuery) {
-         // TODO: This method is apparently not needed since it calls the same constructor as the base method
-         return new SqlSet<T>(this, superQuery);
-      }
+      internal override SqlSet CreateSet(string[] fromSelect, Type resultType = null) {
 
-      internal override SqlSet CreateSet(string[] fromSelect) {
+         if (resultType != null) {
+            return base.CreateSet(fromSelect, resultType);
+         }
+
          return new SqlSet<TResult>(this, fromSelect);
       }
 
-      /// <summary>
-      /// This member supports the DbExtensions infrastructure and is not intended to be used directly from your code.
-      /// </summary>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete]
-      protected override IEnumerable Execute(DbCommand command) {
-
-         if (this.mapper != null)
-            return command.Map(this.mapper, this.Log);
-
-         return command.Map<TResult>(this.Log);
-      }
-
-      internal override IEnumerable Map() {
+      internal override IEnumerable Map(bool singleResult) {
 
          SqlBuilder query = GetDefiningQuery(clone: false);
 
          if (this.mapper != null) {
             return CreateCommand(query).Map(this.mapper, this.Log);
-
-         } else {
-            return Extensions.Map<TResult>(q => CreateCommand(q), query, new PocoMapper(typeof(TResult), this.Log), this.Log);
          }
+
+         return Extensions.Map<TResult>(q => CreateCommand(q), query, CreatePocoMapper(singleResult), this.Log);
       }
 
       #region ISqlSet<SqlSet<TResult>,TResult> Members
@@ -1385,7 +1347,11 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>All <typeparamref name="TResult"/> objects in the set.</returns>
       public new IEnumerable<TResult> AsEnumerable() {
-         return (IEnumerable<TResult>)Map();
+         return AsEnumerable(singleResult: false);
+      }
+
+      IEnumerable<TResult> AsEnumerable(bool singleResult) {
+         return (IEnumerable<TResult>)Map(singleResult);
       }
 
       /// <summary>
@@ -1414,7 +1380,7 @@ namespace DbExtensions {
       /// <returns>The first element in the set.</returns>
       /// <exception cref="System.InvalidOperationException">The set is empty.</exception>
       public new TResult First() {
-         return Take(1).AsEnumerable().First();
+         return Take(1).AsEnumerable(singleResult: true).First();
       }
 
       /// <summary>
@@ -1443,7 +1409,7 @@ namespace DbExtensions {
       /// </summary>
       /// <returns>A default value if the set is empty; otherwise, the first element.</returns>
       public new TResult FirstOrDefault() {
-         return Take(1).AsEnumerable().FirstOrDefault();
+         return Take(1).AsEnumerable(singleResult: true).FirstOrDefault();
       }
 
       /// <summary>
@@ -1504,7 +1470,7 @@ namespace DbExtensions {
       /// <returns>The single element of the set.</returns>
       /// <exception cref="System.InvalidOperationException">The set contains more than one element.-or-The set is empty.</exception>      
       public new TResult Single() {
-         return AsEnumerable().Single();
+         return AsEnumerable(singleResult: true).Single();
       }
 
       /// <summary>
@@ -1534,7 +1500,7 @@ namespace DbExtensions {
       /// <returns>The single element of the set, or a default value if the set contains no elements.</returns>
       /// <exception cref="System.InvalidOperationException">The set contains more than one element.</exception>
       public new TResult SingleOrDefault() {
-         return AsEnumerable().SingleOrDefault();
+         return AsEnumerable(singleResult: true).SingleOrDefault();
       }
 
       /// <summary>
@@ -1610,285 +1576,52 @@ namespace DbExtensions {
          return (SqlSet<TResult>)base.Where(predicate, parameters);
       }
 
-      /// <summary>
-      /// Produces the set union of the current set with <paramref name="otherSet"/>.
-      /// </summary>
-      /// <param name="otherSet">A <see cref="SqlSet&lt;TResult>"/> whose distinct elements form the second set for the union.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> that contains the elements from both sets, excluding duplicates.</returns>
-      public SqlSet<TResult> Union(SqlSet<TResult> otherSet) {
-         return (SqlSet<TResult>)base.Union(otherSet);
-      }
-
       #endregion
    }
 
    public static partial class Extensions {
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided table name.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, string tableName) {
-         return new SqlSet(new string[2] { tableName, null }, (Type)null, connection);
+      internal static int CountImpl(this IConnectionContext context, SqlBuilder query) {
+         return Count(context.CreateCommand(CountQuery(query)), context.Log);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided table name.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, string tableName, TextWriter logger) {
-         return new SqlSet(new string[2] { tableName, null }, (Type)null, connection, logger);
+      internal static long LongCountImpl(this IConnectionContext context, SqlBuilder query) {
+         return LongCount(context.CreateCommand(CountQuery(query)), context.Log);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided table name.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, string tableName, Type resultType) {
-         return new SqlSet(new string[2] { tableName, null }, resultType, connection);
+      static SqlBuilder CountQuery(SqlBuilder query) {
+
+         return new SqlBuilder()
+            .SELECT("COUNT(*)")
+            .FROM("({0}) dbex_count", query);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided table name.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, string tableName, Type resultType, TextWriter logger) {
-         return new SqlSet(new string[2] { tableName, null }, resultType, connection, logger);
+      static int Count(IDbCommand command, TextWriter logger) {
+         return Convert.ToInt32(CountExecute(command, logger), CultureInfo.InvariantCulture);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided table name.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      public static SqlSet<TResult> From<TResult>(this DbConnection connection, string tableName) {
-         return new SqlSet<TResult>(new string[2] { tableName, null }, connection);
+      static long LongCount(IDbCommand command, TextWriter logger) {
+         return Convert.ToInt64(CountExecute(command, logger), CultureInfo.InvariantCulture);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided table name.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      public static SqlSet<TResult> From<TResult>(this DbConnection connection, string tableName, TextWriter logger) {
-         return new SqlSet<TResult>(new string[2] { tableName, null }, connection, logger);
+      static object CountExecute(IDbCommand command, TextWriter logger) {
+         return command.Map(r => r[0], logger).SingleOrDefault() ?? 0;
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, SqlBuilder definingQuery) {
-         return new SqlSet(definingQuery, connection);
+      internal static bool ExistsImpl(this IConnectionContext context, SqlBuilder query) {
+         return Exists(context.CreateCommand(ExistsQuery(query)), context.Log);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query and logger.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, SqlBuilder definingQuery, TextWriter logger) {
-         return new SqlSet(definingQuery, connection, logger);
+      static SqlBuilder ExistsQuery(SqlBuilder query) {
+
+         return new SqlBuilder()
+            .SELECT("(CASE WHEN EXISTS ({0}) THEN 1 ELSE 0 END)", query);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query and result type.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, SqlBuilder definingQuery, Type resultType) {
-         return new SqlSet(definingQuery, resultType, connection);
-      }
+      static bool Exists(IDbCommand command, TextWriter logger) {
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query, result type and logger.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      public static SqlSet From(this DbConnection connection, SqlBuilder definingQuery, Type resultType, TextWriter logger) {
-         return new SqlSet(definingQuery, resultType, connection, logger);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      public static SqlSet<TResult> From<TResult>(this DbConnection connection, SqlBuilder definingQuery) {
-         return new SqlSet<TResult>(definingQuery, connection);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and logger.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      public static SqlSet<TResult> From<TResult>(this DbConnection connection, SqlBuilder definingQuery, TextWriter logger) {
-         return new SqlSet<TResult>(definingQuery, connection, logger);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and mapper.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      public static SqlSet<TResult> From<TResult>(this DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
-         return new SqlSet<TResult>(definingQuery, mapper, connection);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query, mapper and logger.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      public static SqlSet<TResult> From<TResult>(this DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, TextWriter logger) {
-         return new SqlSet<TResult>(definingQuery, mapper, connection, logger);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From(SqlBuilder) instead.")]
-      public static SqlSet Set(this DbConnection connection, SqlBuilder definingQuery) {
-         return new SqlSet(definingQuery, connection);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query and logger.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From(SqlBuilder, TextWriter) instead.")]
-      public static SqlSet Set(this DbConnection connection, SqlBuilder definingQuery, TextWriter logger) {
-         return new SqlSet(definingQuery, connection, logger);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query and result type.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From(SqlBuilder, Type) instead.")]
-      public static SqlSet Set(this DbConnection connection, SqlBuilder definingQuery, Type resultType) {
-         return new SqlSet(definingQuery, resultType, connection);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query, result type and logger.
-      /// </summary>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From(SqlBuilder, Type, TextWriter) instead.")]
-      public static SqlSet Set(this DbConnection connection, SqlBuilder definingQuery, Type resultType, TextWriter logger) {
-         return new SqlSet(definingQuery, resultType, connection, logger);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From<TResult>(SqlBuilder) instead.")]
-      public static SqlSet<TResult> Set<TResult>(this DbConnection connection, SqlBuilder definingQuery) {
-         return new SqlSet<TResult>(definingQuery, connection);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and logger.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From<TResult>(SqlBuilder, TextWriter) instead.")]
-      public static SqlSet<TResult> Set<TResult>(this DbConnection connection, SqlBuilder definingQuery, TextWriter logger) {
-         return new SqlSet<TResult>(definingQuery, connection, logger);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and mapper.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From<TResult>(SqlBuilder, Func<IDataRecord, TResult>) instead.")]
-      public static SqlSet<TResult> Set<TResult>(this DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
-         return new SqlSet<TResult>(definingQuery, mapper, connection);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query, mapper and logger.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="connection">The connection that the set is bound to.</param>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
-      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when queries are executed.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
-      [EditorBrowsable(EditorBrowsableState.Never)]
-      [Obsolete("Please use From<TResult>(SqlBuilder, Func<IDataRecord, TResult>, TextWriter) instead.")]
-      public static SqlSet<TResult> Set<TResult>(this DbConnection connection, SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, TextWriter logger) {
-         return new SqlSet<TResult>(definingQuery, mapper, connection, logger);
+         return command.Map(r => Convert.ToInt32(r[0], CultureInfo.InvariantCulture) != 0, logger)
+            .SingleOrDefault();
       }
    }
 
@@ -1921,6 +1654,8 @@ namespace DbExtensions {
       SqlSet<TResult> Select<TResult>(string columnList, params object[] parameters);
       SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string columnList);
       SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string columnList, params object[] parameters);
+      SqlSet Select(string columnList);
+      SqlSet Select(string columnList, params object[] parameters);
       SqlSet Select(Type resultType, string columnList);
       SqlSet Select(Type resultType, string columnList, params object[] parameters);
       TSource Single();
@@ -1935,7 +1670,6 @@ namespace DbExtensions {
       List<TSource> ToList();
       TSqlSet Where(string predicate);
       TSqlSet Where(string predicate, params object[] parameters);
-      TSqlSet Union(TSqlSet otherSet);
    }
 
    interface IConnectionContext {

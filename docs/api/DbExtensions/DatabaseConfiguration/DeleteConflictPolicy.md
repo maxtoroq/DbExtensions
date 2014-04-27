@@ -1,6 +1,6 @@
 DatabaseConfiguration.DeleteConflictPolicy Property
 ===================================================
-Gets or sets the default policy to use when calling [Delete(TEntity)][1]. The default value is [IgnoreVersionAndLowerAffectedRecords][2].
+Gets or sets the default policy to use when calling [Remove(TEntity)][1]. The default value is [IgnoreVersionAndLowerAffectedRecords][2].
 
 **Namespace:** [DbExtensions][3]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -20,7 +20,7 @@ See Also
 [DatabaseConfiguration Class][4]  
 [DbExtensions Namespace][3]  
 
-[1]: ../SqlTable_1/Delete.md
+[1]: ../SqlTable_1/Remove.md
 [2]: ../ConcurrencyConflictPolicy/README.md
 [3]: ../README.md
 [4]: README.md

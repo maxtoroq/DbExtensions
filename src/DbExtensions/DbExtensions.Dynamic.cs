@@ -15,16 +15,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Dynamic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace DbExtensions {
 
-   static partial class Extensions {
+   public static partial class Extensions {
 
       /// <summary>
       /// Maps the results of the <paramref name="command"/> to dynamic objects.
@@ -45,35 +42,11 @@ namespace DbExtensions {
       /// <returns>The results of the query as dynamic objects.</returns>
       public static IEnumerable<dynamic> Map(this IDbCommand command, TextWriter logger) {
 
-         var mapper = new DynamicMapper(logger);
+         var mapper = new DynamicMapper { 
+            Log = logger
+         };
 
          return Map(command, r => (dynamic)mapper.Map(r), logger);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to dynamic objects.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query.</param>
-      /// <returns>The results of the query as dynamic objects.</returns>
-      public static IEnumerable<dynamic> Map(this DbConnection connection, SqlBuilder query) {
-         return Map(connection, query, (TextWriter)null);
-      }
-
-      /// <summary>
-      /// Maps the results of the <paramref name="query"/> to dynamic objects.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="query">The query.</param>
-      /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as dynamic objects.</returns>
-      public static IEnumerable<dynamic> Map(this DbConnection connection, SqlBuilder query, TextWriter logger) {
-
-         var mapper = new DynamicMapper(logger);
-
-         return Map<dynamic>(q => connection.CreateCommand(q), query, mapper, logger);
       }
    }
 
@@ -88,16 +61,15 @@ namespace DbExtensions {
       /// <seealso cref="Extensions.Map(IDbCommand, TextWriter)"/>
       public IEnumerable<dynamic> Map(SqlBuilder query) {
 
-         var mapper = new DynamicMapper(this.Log);
+         var mapper = new DynamicMapper { 
+            Log = this.Log
+         };
 
          return Extensions.Map<dynamic>(q => CreateCommand(q), query, mapper, this.Log);
       }
    }
 
    class DynamicMapper : Mapper {
-
-      public DynamicMapper(TextWriter logger) 
-         : base(logger) { }
 
       protected override Node CreateRootNode() {
          return DynamicNode.Root();
@@ -118,29 +90,27 @@ namespace DbExtensions {
       protected override Node CreateParameterNode(int columnOrdinal, ParameterInfo paramInfo) {
          throw new NotImplementedException();
       }
+
+      protected override CollectionNode CreateCollectionNode(Node container, string propertyName) {
+         throw new NotSupportedException();
+      }
    }
 
    class DynamicNode : Node {
 
       static readonly string _TypeName = typeof(ExpandoObject).FullName;
 
-      readonly string PropertyName;
+      readonly string _PropertyName;
 
       bool _IsComplex;
-      List<Node> _Properties;
       int _ColumnOrdinal;
-      Dictionary<uint, Node> _ConstructorParameters;
 
       public override bool IsComplex {
          get { return _IsComplex; }
       }
 
-      public override List<Node> Properties {
-         get { return _Properties; }
-      }
-
-      public override Dictionary<uint, Node> ConstructorParameters {
-         get { return _ConstructorParameters; }
+      public override string PropertyName {
+         get { return _PropertyName; }
       }
 
       public override int ColumnOrdinal {
@@ -155,8 +125,6 @@ namespace DbExtensions {
 
          var node = new DynamicNode() {
             _IsComplex = true,
-            _ConstructorParameters = new Dictionary<uint, Node>(),
-            _Properties = new List<Node>(),
          };
 
          return node;
@@ -166,8 +134,6 @@ namespace DbExtensions {
 
          var node = new DynamicNode(propertyName) {
             _IsComplex = true,
-            _ConstructorParameters = new Dictionary<uint, Node>(),
-            _Properties = new List<Node>()
          };
 
          return node;
@@ -192,13 +158,14 @@ namespace DbExtensions {
 
          uint nameAsNumber;
 
-         if (UInt32.TryParse(propertyName, out nameAsNumber))
+         if (UInt32.TryParse(propertyName, out nameAsNumber)) {
             throw new ArgumentException("Cannot use constructor mapping, by using numeric column names, unless you specify the type of the object you want to map to.", "propertyName");
+         }
 
-         this.PropertyName = propertyName;
+         this._PropertyName = propertyName;
       }
 
-      public override object Create(IDataRecord record, TextWriter logger) {
+      public override object Create(IDataRecord record, MappingContext context) {
          return new ExpandoObject();
       }
 
@@ -208,13 +175,14 @@ namespace DbExtensions {
 
          object value;
 
-         if (dictionary.TryGetValue(PropertyName, out value))
+         if (dictionary.TryGetValue(PropertyName, out value)) {
             return value;
+         }
 
          return null;
       }
 
-      protected override void Set(ref object instance, object value, TextWriter logger) {
+      protected override void Set(ref object instance, object value, MappingContext context) {
          ((IDictionary<string, object>)instance)[PropertyName] = value;
       }
 

@@ -52,4 +52,4 @@ See Also
 [7]: http://msdn.microsoft.com/en-us/library/td2s409d
 [8]: http://msdn.microsoft.com/en-us/library/bsdf9tb2
 [9]: README.md
-[10]: ../Extensions/AffectOneOrNone_4.md
+[10]: ../Extensions/AffectOneOrNone.md

@@ -28,9 +28,6 @@ Namespace Northwind
       <Column()>
       Public Property Fax As String
 
-      <Column(UpdateCheck:=UpdateCheck.Never)>
-      Public Property HomePage As String
-
       <Column()>
       Public Property Phone As String
 

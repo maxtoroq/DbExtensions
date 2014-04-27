@@ -24,6 +24,24 @@ Namespace Northwind
          End Get
       End Property
 
+      Public ReadOnly Property Employees As SqlTable(Of Employee)
+         Get
+            Return Table(Of Employee)()
+         End Get
+      End Property
+
+      Public ReadOnly Property EmployeeTerritories As SqlTable(Of EmployeeTerritory)
+         Get
+            Return Table(Of EmployeeTerritory)()
+         End Get
+      End Property
+
+      Public ReadOnly Property Regions As SqlTable(Of Region)
+         Get
+            Return Table(Of Region)()
+         End Get
+      End Property
+
       Public Sub New(ByVal connectionString As String)
          MyBase.New(connectionString)
       End Sub
