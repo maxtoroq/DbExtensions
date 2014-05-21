@@ -162,7 +162,7 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all it's
+      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all its
       /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
       /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
@@ -180,7 +180,7 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all its
       /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
       /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
@@ -190,7 +190,7 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all its
       /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
       /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
@@ -448,7 +448,7 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all it's
+      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all its
       /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
       /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
@@ -595,7 +595,7 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all its
       /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
       /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
@@ -608,7 +608,7 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all it's
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all its
       /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
       /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
       /// </summary>
