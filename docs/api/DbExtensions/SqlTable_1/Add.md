@@ -1,6 +1,6 @@
 SqlTable&lt;TEntity>.Add Method
 ===============================
-Recursively executes INSERT commands for the specified *entity* and all it's one-to-one and one-to-many associations. Recursion can be disabled by setting [EnableInsertRecursion][1] to false.
+Recursively executes INSERT commands for the specified *entity* and all its one-to-one and one-to-many associations. Recursion can be disabled by setting [EnableInsertRecursion][1] to false.
 
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
