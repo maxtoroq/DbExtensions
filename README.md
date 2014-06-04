@@ -137,7 +137,7 @@ DbExtensions doesn't provide the following functionality:
 
 Resources
 ---------
-- [Documentation](https://github.com/maxtoroq/DbExtensions/wiki)
+- [Documentation](docs)
 - [Ask for help](https://github.com/maxtoroq/DbExtensions/issues?labels=question&state=closed)
 - [Report an issue](https://github.com/maxtoroq/DbExtensions/issues?state=open)
 
