@@ -320,7 +320,7 @@ readonly Database db = new Database("name=Northwind");
 public IEnumerable<Product> GetProducts(int? categoryId) {
 
    var query = SQL
-      .SELECT("p.ProductID, p.ProductName, s.UnitPrice, p.CategoryID")
+      .SELECT("p.ProductID, p.ProductName, p.UnitPrice, p.CategoryID")
       ._("c.CategoryID AS Category$CategoryID, c.CategoryName AS Category$CategoryName")
       .FROM("Products p")
       .JOIN("Categories c ON p.CategoryID = c.CategoryID")
