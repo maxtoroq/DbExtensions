@@ -16,11 +16,11 @@ public enum AffectedRecordsPolicy
 Members
 -------
 
-Member name            | Value | Description                                                                         
----------------------- | ----- | ----------------------------------------------------------------------------------- 
-**MustMatchAffecting** | 0     | The affected records value must be equal as the affecting records value.            
-**AllowLower**         | 1     | The affected records value must be equal or lower than the affecting records value. 
-**AllowAny**           | 2     | The affected records value is ignored.                                              
+  | Member name            | Value | Description                                                                         
+- | ---------------------- | ----- | ----------------------------------------------------------------------------------- 
+  | **MustMatchAffecting** | 0     | The affected records value must be equal as the affecting records value.            
+  | **AllowLower**         | 1     | The affected records value must be equal or lower than the affecting records value. 
+  | **AllowAny**           | 2     | The affected records value is ignored.                                              
 
 
 See Also

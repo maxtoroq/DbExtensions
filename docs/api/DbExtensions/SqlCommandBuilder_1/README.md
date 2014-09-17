@@ -32,24 +32,24 @@ The **SqlCommandBuilder<TEntity>** type exposes the following members.
 Methods
 -------
 
-Name                                                       | Description                                                                                                                                                        
----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ 
-[DELETE_FROM][5]                                           | Creates and returns a DELETE command for the current table that includes the DELETE and FROM clauses.                                                              
-[DELETE_FROM_WHERE(TEntity)][6]                            | Creates and returns a DELETE command for the specified *entity*, using the default [ConcurrencyConflictPolicy][7].                                                 
-[DELETE_FROM_WHERE(TEntity, ConcurrencyConflictPolicy)][8] | Creates and returns a DELETE command for the specified *entity* using the provided *conflictPolicy*.                                                               
-[DELETE_FROM_WHERE_id][9]                                  | Creates and returns a DELETE command for the entity whose primary key matches the *id* parameter.                                                                  
-[Equals][10]                                               | Returns whether the specified object is equal to the current object. (Overrides [Object.Equals(Object)][11].)                                                      
-[GetHashCode][12]                                          | Returns the hash function for the current object. (Overrides [Object.GetHashCode()][13].)                                                                          
-[GetType][14]                                              | Gets the type for the current object.                                                                                                                              
-[INSERT_INTO_VALUES][15]                                   | Creates and returns an INSERT command for the specified *entity*.                                                                                                  
-[SELECT_()][16]                                            | Creates and returns a SELECT query for the current table that includes the SELECT clause only.                                                                     
-[SELECT_(String)][17]                                      | Creates and returns a SELECT query for the current table that includes the SELECT clause only. All column names are qualified with the provided *tableAlias*.      
-[SELECT_FROM()][18]                                        | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses.                                                                
-[SELECT_FROM(String)][19]                                  | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses. All column names are qualified with the provided *tableAlias*. 
-[ToString][20]                                             | Returns a string representation of the object. (Overrides [Object.ToString()][21].)                                                                                
-[UPDATE][22]                                               | Creates and returns an UPDATE command for the current table that includes the UPDATE clause.                                                                       
-[UPDATE_SET_WHERE(TEntity)][23]                            | Creates and returns an UPDATE command for the specified *entity*, using the default [ConcurrencyConflictPolicy][7].                                                
-[UPDATE_SET_WHERE(TEntity, ConcurrencyConflictPolicy)][24] | Creates and returns an UPDATE command for the specified *entity* using the provided *conflictPolicy*.                                                              
+                 | Name                                                       | Description                                                                                                                                                        
+---------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ 
+![Public method] | [DELETE_FROM][5]                                           | Creates and returns a DELETE command for the current table that includes the DELETE and FROM clauses.                                                              
+![Public method] | [DELETE_FROM_WHERE(TEntity)][6]                            | Creates and returns a DELETE command for the specified *entity*, using the default [ConcurrencyConflictPolicy][7].                                                 
+![Public method] | [DELETE_FROM_WHERE(TEntity, ConcurrencyConflictPolicy)][8] | Creates and returns a DELETE command for the specified *entity* using the provided *conflictPolicy*.                                                               
+![Public method] | [DELETE_FROM_WHERE_id][9]                                  | Creates and returns a DELETE command for the entity whose primary key matches the *id* parameter.                                                                  
+![Public method] | [Equals][10]                                               | Returns whether the specified object is equal to the current object. (Overrides [Object.Equals(Object)][11].)                                                      
+![Public method] | [GetHashCode][12]                                          | Returns the hash function for the current object. (Overrides [Object.GetHashCode()][13].)                                                                          
+![Public method] | [GetType][14]                                              | Gets the type for the current object.                                                                                                                              
+![Public method] | [INSERT_INTO_VALUES][15]                                   | Creates and returns an INSERT command for the specified *entity*.                                                                                                  
+![Public method] | [SELECT_()][16]                                            | Creates and returns a SELECT query for the current table that includes the SELECT clause only.                                                                     
+![Public method] | [SELECT_(String)][17]                                      | Creates and returns a SELECT query for the current table that includes the SELECT clause only. All column names are qualified with the provided *tableAlias*.      
+![Public method] | [SELECT_FROM()][18]                                        | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses.                                                                
+![Public method] | [SELECT_FROM(String)][19]                                  | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses. All column names are qualified with the provided *tableAlias*. 
+![Public method] | [ToString][20]                                             | Returns a string representation of the object. (Overrides [Object.ToString()][21].)                                                                                
+![Public method] | [UPDATE][22]                                               | Creates and returns an UPDATE command for the current table that includes the UPDATE clause.                                                                       
+![Public method] | [UPDATE_SET_WHERE(TEntity)][23]                            | Creates and returns an UPDATE command for the specified *entity*, using the default [ConcurrencyConflictPolicy][7].                                                
+![Public method] | [UPDATE_SET_WHERE(TEntity, ConcurrencyConflictPolicy)][24] | Creates and returns an UPDATE command for the specified *entity* using the provided *conflictPolicy*.                                                              
 
 
 See Also
@@ -84,3 +84,4 @@ See Also
 [24]: UPDATE_SET_WHERE_1.md
 [25]: ../SqlTable_1/SQL.md
 [26]: ../SqlTable/SQL.md
+[Public method]: ../../_icons/pubmethod.gif "Public method"

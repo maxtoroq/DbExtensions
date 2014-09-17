@@ -24,22 +24,22 @@ The **SQL** type exposes the following members.
 Methods
 -------
 
-Name                               | Description                                                                                                                       
----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- 
-[DELETE_FROM(String)][4]           | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *body*.              
-[DELETE_FROM(String, Object[])][5] | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *format* and *args*. 
-[Equals][6]                        | Determines whether the specified object instances are considered equal.                                                           
-[INSERT_INTO(String)][7]           | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided *body*.              
-[INSERT_INTO(String, Object[])][8] | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided *format* and *args*. 
-[Param][9]                         | Wraps an array parameter to be used with [SqlBuilder][1].                                                                         
-[ReferenceEquals][10]              | Determines whether the specified System.Object instances are the same instance.                                                   
-[SELECT(String)][11]               | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *body*.                   
-[SELECT(String, Object[])][12]     | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *format* and *args*.      
-[UPDATE(String)][13]               | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *body*.                   
-[UPDATE(String, Object[])][14]     | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *format* and *args*.      
-[WITH(String)][15]                 | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *body*.                     
-[WITH(String, Object[])][16]       | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *format* and *args*.        
-[WITH(SqlBuilder, String)][17]     | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.     
+                                 | Name                               | Description                                                                                                                       
+-------------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- 
+![Public method]![Static member] | [DELETE_FROM(String)][4]           | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *body*.              
+![Public method]![Static member] | [DELETE_FROM(String, Object[])][5] | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *format* and *args*. 
+![Public method]![Static member] | [Equals][6]                        | Determines whether the specified object instances are considered equal.                                                           
+![Public method]![Static member] | [INSERT_INTO(String)][7]           | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided *body*.              
+![Public method]![Static member] | [INSERT_INTO(String, Object[])][8] | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided *format* and *args*. 
+![Public method]![Static member] | [Param][9]                         | Wraps an array parameter to be used with [SqlBuilder][1].                                                                         
+![Public method]![Static member] | [ReferenceEquals][10]              | Determines whether the specified System.Object instances are the same instance.                                                   
+![Public method]![Static member] | [SELECT(String)][11]               | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *body*.                   
+![Public method]![Static member] | [SELECT(String, Object[])][12]     | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *format* and *args*.      
+![Public method]![Static member] | [UPDATE(String)][13]               | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *body*.                   
+![Public method]![Static member] | [UPDATE(String, Object[])][14]     | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *format* and *args*.      
+![Public method]![Static member] | [WITH(String)][15]                 | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *body*.                     
+![Public method]![Static member] | [WITH(String, Object[])][16]       | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *format* and *args*.        
+![Public method]![Static member] | [WITH(SqlBuilder, String)][17]     | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.     
 
 
 See Also
@@ -63,3 +63,5 @@ See Also
 [15]: WITH_1.md
 [16]: WITH_2.md
 [17]: WITH.md
+[Public method]: ../../_icons/pubmethod.gif "Public method"
+[Static member]: ../../_icons/static.gif "Static member"
