@@ -5,4 +5,4 @@
 
 Reference
 ---------
-- [DbExtensions API Reference](api)
+- [DbExtensions API Reference](api/README.md)

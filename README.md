@@ -1,5 +1,5 @@
-The SQL framework for .NET
-==========================
+[DbExtensions](http://maxtoroq.github.io/DbExtensions/) - The SQL framework for .NET
+====================================================================================
 DbExtensions is a data-access API with a strong focus on **query composition, granularity and code aesthetics**.
 It supports both POCO and dynamic (untyped) mapping.
 
@@ -137,7 +137,7 @@ DbExtensions doesn't provide the following functionality:
 
 Resources
 ---------
-- [Documentation](docs)
+- [Documentation](docs/README.md)
 - [Ask for help](https://github.com/maxtoroq/DbExtensions/issues?labels=question&state=closed)
 - [Report an issue](https://github.com/maxtoroq/DbExtensions/issues?state=open)
 
