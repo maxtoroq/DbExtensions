@@ -17,12 +17,11 @@ Syntax
 ------
 
 ```csharp
-public class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
+public class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
+
 ```
 
-
-Type Parameters
----------------
+### Type Parameters
 
 #### *TResult*
 The type of objects to map the results to.

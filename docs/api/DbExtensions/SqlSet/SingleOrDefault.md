@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public Object SingleOrDefault()
+public Object SingleOrDefault()
 ```
 
 ### Return Value
-Type: [Object][2]  
+Type: [Object][2]  
 The single element of the set, or a default value if the set contains no elements.
 
 Exceptions

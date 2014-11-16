@@ -15,7 +15,7 @@ Syntax
 ------
 
 ```csharp
-public static class SQL
+public static class SQL
 ```
 
 The **SQL** type exposes the following members.

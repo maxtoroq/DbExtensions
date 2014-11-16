@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public IDbTransaction EnsureInTransaction()
+public IDbTransaction EnsureInTransaction()
 ```
 
 ### Return Value
-Type: [IDbTransaction][2]  
+Type: [IDbTransaction][2]  
  A virtual transaction you can use to ensure a code block is always executed in a transaction, new or existing. 
 
 Remarks

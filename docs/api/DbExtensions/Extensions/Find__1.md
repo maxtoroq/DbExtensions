@@ -9,31 +9,30 @@ Syntax
 ------
 
 ```csharp
-public static TResult Find<TResult>(
-	this SqlSet<TResult> source,
-	Object id
+public static TResult Find<TResult>(
+	this SqlSet<TResult> source,
+	Object id
 )
+
 ```
 
 ### Parameters
 
 #### *source*
-Type: [DbExtensions.SqlSet][2]&lt;**TResult**>  
+Type: [DbExtensions.SqlSet][2]&lt;**TResult**>  
 The source set.
 
 #### *id*
-Type: [System.Object][3]  
+Type: [System.Object][3]  
 The primary key value.
 
-
-Type Parameters
----------------
+### Type Parameters
 
 #### *TResult*
 The type of the elements in the *source* set.
 
 ### Return Value
-Type: **TResult**  
+Type: **TResult**  
  The entity whose primary key matches the *id* parameter, or null if the *id* does not exist. 
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [SqlSet][2]&lt;**TResult**>. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][4] or [Extension Methods (C# Programming Guide)][5].

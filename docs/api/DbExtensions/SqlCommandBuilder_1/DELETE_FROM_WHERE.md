@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder DELETE_FROM_WHERE(
+public SqlBuilder DELETE_FROM_WHERE(
 	TEntity entity
 )
 ```
@@ -17,11 +17,11 @@ public SqlBuilder DELETE_FROM_WHERE(
 ### Parameters
 
 #### *entity*
-Type: [TEntity][3]  
+Type: [TEntity][3]  
 The entity whose DELETE command is to be created.
 
 ### Return Value
-Type: [SqlBuilder][4]  
+Type: [SqlBuilder][4]  
 The DELETE command for *entity*.
 
 See Also

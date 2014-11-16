@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public int AffectOne(
-	string commandText,
-	params Object[] parameters
+public int AffectOne(
+	string commandText,
+	params Object[] parameters
 )
 ```
 
 ### Parameters
 
 #### *commandText*
-Type: [System.String][5]  
+Type: [System.String][5]  
 The command text.
 
 #### *parameters*
-Type: [System.Object][6][]  
+Type: [System.Object][6][]  
 The parameters to apply to the command text.
 
 ### Return Value
-Type: [Int32][7]  
+Type: [Int32][7]  
 The number of affected records.
 
 Exceptions

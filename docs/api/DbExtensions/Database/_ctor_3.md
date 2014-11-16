@@ -9,15 +9,15 @@ Syntax
 ------
 
 ```csharp
-public Database(
-	MetaModel mapping
+public Database(
+	MetaModel mapping
 )
 ```
 
 ### Parameters
 
 #### *mapping*
-Type: [System.Data.Linq.Mapping.MetaModel][3]  
+Type: [System.Data.Linq.Mapping.MetaModel][3]  
 The meta model.
 
 

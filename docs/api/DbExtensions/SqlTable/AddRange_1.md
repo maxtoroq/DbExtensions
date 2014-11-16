@@ -9,15 +9,15 @@ Syntax
 ------
 
 ```csharp
-public void AddRange(
-	params Object[] entities
+public void AddRange(
+	params Object[] entities
 )
 ```
 
 ### Parameters
 
 #### *entities*
-Type: [System.Object][3][]  
+Type: [System.Object][3][]  
 The entities whose INSERT commands are to be executed.
 
 

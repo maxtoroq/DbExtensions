@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void RemoveRange(
+public void RemoveRange(
 	IEnumerable<TEntity> entities
 )
 ```
@@ -17,7 +17,7 @@ public void RemoveRange(
 ### Parameters
 
 #### *entities*
-Type: [System.Collections.Generic.IEnumerable][3]&lt;[TEntity][4]>  
+Type: [System.Collections.Generic.IEnumerable][3]&lt;[TEntity][4]>  
 The entities whose DELETE commands are to be executed.
 
 

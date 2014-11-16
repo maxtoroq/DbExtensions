@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public bool Any()
+public bool Any()
 ```
 
 ### Return Value
-Type: [Boolean][2]  
+Type: [Boolean][2]  
 true if the sequence contains any elements; otherwise, false.
 
 See Also

@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder LIMIT(
-	int maxRecords
+public SqlBuilder LIMIT(
+	int maxRecords
 )
 ```
 
 ### Parameters
 
 #### *maxRecords*
-Type: [System.Int32][2]  
+Type: [System.Int32][2]  
 The value to use as the body of the LIMIT clause.
 
 ### Return Value
-Type: [SqlBuilder][3]  
+Type: [SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also

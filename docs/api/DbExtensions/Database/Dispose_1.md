@@ -9,16 +9,16 @@ Syntax
 ------
 
 ```csharp
-protected virtual void Dispose(
-	bool disposing
+protected virtual void Dispose(
+	bool disposing
 )
 ```
 
 ### Parameters
 
 #### *disposing*
-Type: [System.Boolean][3]  
-true if this method is being called due to a call to [Dispose()][4]; otherwise, false.
+Type: [System.Boolean][3]  
+ true if this method is being called due to a call to [Dispose()][4]; otherwise, false.
 
 
 See Also

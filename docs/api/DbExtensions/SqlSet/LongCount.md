@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public long LongCount()
+public long LongCount()
 ```
 
 ### Return Value
-Type: [Int64][1]  
+Type: [Int64][1]  
 The number of elements in the set.
 
 Exceptions

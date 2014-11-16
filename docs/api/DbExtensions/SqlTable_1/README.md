@@ -17,14 +17,13 @@ Syntax
 ------
 
 ```csharp
-public sealed class SqlTable<TEntity> : SqlSet<TEntity>, 
-	ISqlTable 
+public sealed class SqlTable<TEntity> : SqlSet<TEntity>, 
+	ISqlTable
 where TEntity : class
+
 ```
 
-
-Type Parameters
----------------
+### Type Parameters
 
 #### *TEntity*
 The type of the entity.

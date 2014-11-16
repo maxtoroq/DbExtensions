@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder AppendLine()
+public SqlBuilder AppendLine()
 ```
 
 ### Return Value
-Type: [SqlBuilder][2]  
+Type: [SqlBuilder][2]  
 A reference to this instance after the append operation has completed.
 
 See Also

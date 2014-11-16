@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public SqlSet Select(
-	Type resultType,
-	string columnList
+public SqlSet Select(
+	Type resultType,
+	string columnList
 )
 ```
 
 ### Parameters
 
 #### *resultType*
-Type: [System.Type][2]  
+Type: [System.Type][2]  
 The type that *columnList* maps to.
 
 #### *columnList*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The list of columns that maps to properties on *resultType*.
 
 ### Return Value
-Type: [SqlSet][4]  
+Type: [SqlSet][4]  
 A new [SqlSet][4].
 
 See Also

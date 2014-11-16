@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public static DbConnection CreateConnection()
+public static DbConnection CreateConnection()
 ```
 
 ### Return Value
-Type: [DbConnection][2]  
+Type: [DbConnection][2]  
 The requested connection.
 
 See Also

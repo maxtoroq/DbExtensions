@@ -9,21 +9,21 @@ Syntax
 ------
 
 ```csharp
-public void RemoveKey(
-	Object id,
-	ConcurrencyConflictPolicy conflictPolicy
+public void RemoveKey(
+	Object id,
+	ConcurrencyConflictPolicy conflictPolicy
 )
 ```
 
 ### Parameters
 
 #### *id*
-Type: [System.Object][2]  
+Type: [System.Object][2]  
 The primary key value.
 
 #### *conflictPolicy*
-Type: [DbExtensions.ConcurrencyConflictPolicy][3]  
-The [ConcurrencyConflictPolicy][3] that specifies how to validate the affected records value.
+Type: [DbExtensions.ConcurrencyConflictPolicy][3]  
+ The [ConcurrencyConflictPolicy][3] that specifies how to validate the affected records value.
 
 
 See Also

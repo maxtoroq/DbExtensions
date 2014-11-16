@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlSet<TResult> Take(
-	int count
+public SqlSet<TResult> Take(
+	int count
 )
 ```
 
 ### Parameters
 
 #### *count*
-Type: [System.Int32][2]  
+Type: [System.Int32][2]  
 The number of elements to return.
 
 ### Return Value
-Type: [SqlSet][3]&lt;[TResult][3]>  
+Type: [SqlSet][3]&lt;[TResult][3]>  
 A new [SqlSet][4] that contains the specified number of elements from the start of the current set.
 
 See Also

@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlSet<TResult> OrderBy(
-	string columnList
+public SqlSet<TResult> OrderBy(
+	string columnList
 )
 ```
 
 ### Parameters
 
 #### *columnList*
-Type: [System.String][2]  
+Type: [System.String][2]  
 The list of columns to base the sort on.
 
 ### Return Value
-Type: [SqlSet][3]&lt;[TResult][3]>  
+Type: [SqlSet][3]&lt;[TResult][3]>  
 A new [SqlSet&lt;TResult>][3] whose elements are sorted according to *columnList*.
 
 See Also

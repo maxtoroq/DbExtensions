@@ -9,21 +9,21 @@ Syntax
 ------
 
 ```csharp
-public void UpdateRange(
+public void UpdateRange(
 	IEnumerable<Object> entities,
-	ConcurrencyConflictPolicy conflictPolicy
+	ConcurrencyConflictPolicy conflictPolicy
 )
 ```
 
 ### Parameters
 
 #### *entities*
-Type: [System.Collections.Generic.IEnumerable][2]&lt;[Object][3]>  
+Type: [System.Collections.Generic.IEnumerable][2]&lt;[Object][3]>  
 The entities whose UPDATE commands are to be executed.
 
 #### *conflictPolicy*
-Type: [DbExtensions.ConcurrencyConflictPolicy][4]  
-The [ConcurrencyConflictPolicy][4] that specifies what columns to check for in the UPDATE predicate, and how to validate the affected records value.
+Type: [DbExtensions.ConcurrencyConflictPolicy][4]  
+ The [ConcurrencyConflictPolicy][4] that specifies what columns to check for in the UPDATE predicate, and how to validate the affected records value.
 
 
 See Also

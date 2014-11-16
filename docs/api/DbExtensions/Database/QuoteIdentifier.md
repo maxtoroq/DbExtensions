@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public string QuoteIdentifier(
-	string unquotedIdentifier
+public string QuoteIdentifier(
+	string unquotedIdentifier
 )
 ```
 
 ### Parameters
 
 #### *unquotedIdentifier*
-Type: [System.String][2]  
+Type: [System.String][2]  
 The original unquoted identifier.
 
 ### Return Value
-Type: [String][2]  
+Type: [String][2]  
 The quoted version of the identifier. Embedded quotes within the identifier are properly escaped.
 
 See Also

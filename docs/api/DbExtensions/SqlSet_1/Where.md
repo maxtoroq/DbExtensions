@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlSet<TResult> Where(
-	string predicate
+public SqlSet<TResult> Where(
+	string predicate
 )
 ```
 
 ### Parameters
 
 #### *predicate*
-Type: [System.String][2]  
+Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
 ### Return Value
-Type: [SqlSet][3]&lt;[TResult][3]>  
+Type: [SqlSet][3]&lt;[TResult][3]>  
 A new [SqlSet&lt;TResult>][3] that contains elements from the current set that satisfy the condition.
 
 See Also

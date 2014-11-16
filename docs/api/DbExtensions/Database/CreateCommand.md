@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public DbCommand CreateCommand(
-	SqlBuilder sqlBuilder
+public DbCommand CreateCommand(
+	SqlBuilder sqlBuilder
 )
 ```
 
 ### Parameters
 
 #### *sqlBuilder*
-Type: [DbExtensions.SqlBuilder][3]  
+Type: [DbExtensions.SqlBuilder][3]  
 The [SqlBuilder][3] that provides the command's text and parameters.
 
 ### Return Value
-Type: [DbCommand][1]  
+Type: [DbCommand][1]  
  A new [DbCommand][1] object whose [CommandText][4] property is initialized with the *sqlBuilder* string representation, and whose [Parameters][5] property is initialized with the values from the [ParameterValues][6] property of the *sqlBuilder* parameter. 
 
 Remarks

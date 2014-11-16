@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder HAVING(
-	string body
+public SqlBuilder HAVING(
+	string body
 )
 ```
 
 ### Parameters
 
 #### *body*
-Type: [System.String][2]  
+Type: [System.String][2]  
 The body of the HAVING clause.
 
 ### Return Value
-Type: [SqlBuilder][3]  
+Type: [SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also

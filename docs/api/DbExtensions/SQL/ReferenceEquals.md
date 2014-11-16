@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public static bool ReferenceEquals(
-	Object objectA,
-	Object objectB
+public static bool ReferenceEquals(
+	Object objectA,
+	Object objectB
 )
 ```
 
 ### Parameters
 
 #### *objectA*
-Type: [System.Object][2]  
+Type: [System.Object][2]  
 The first object to compare.
 
 #### *objectB*
-Type: [System.Object][2]  
+Type: [System.Object][2]  
 The second object to compare.
 
 ### Return Value
-Type: [Boolean][3]  
+Type: [Boolean][3]  
 true if objA is the same instance as objB or if both are null; otherwise, false.
 
 See Also

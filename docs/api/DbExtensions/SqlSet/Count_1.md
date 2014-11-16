@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public int Count(
-	string predicate
+public int Count(
+	string predicate
 )
 ```
 
 ### Parameters
 
 #### *predicate*
-Type: [System.String][2]  
+Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
 ### Return Value
-Type: [Int32][3]  
+Type: [Int32][3]  
 A number that represents how many elements in the set satisfy the condition in the *predicate*.
 
 Exceptions

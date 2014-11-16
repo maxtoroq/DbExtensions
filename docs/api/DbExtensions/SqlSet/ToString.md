@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public override string ToString()
+public override string ToString()
 ```
 
 ### Return Value
-Type: [String][2]  
+Type: [String][2]  
 The SQL query of the set.
 
 See Also

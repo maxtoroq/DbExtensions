@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void RemoveRange(
+public void RemoveRange(
 	params TEntity[] entities
 )
 ```
@@ -17,7 +17,7 @@ public void RemoveRange(
 ### Parameters
 
 #### *entities*
-Type: [TEntity][3][]  
+Type: [TEntity][3][]  
 The entities whose DELETE commands are to be executed.
 
 

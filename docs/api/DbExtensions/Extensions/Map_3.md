@@ -9,29 +9,29 @@ Syntax
 ------
 
 ```csharp
-public static IEnumerable<Object> Map(
-	this IDbCommand command,
-	Type resultType,
-	TextWriter logger
+public static IEnumerable<Object> Map(
+	this IDbCommand command,
+	Type resultType,
+	TextWriter logger
 )
 ```
 
 ### Parameters
 
 #### *command*
-Type: [System.Data.IDbCommand][2]  
+Type: [System.Data.IDbCommand][2]  
 The query command.
 
 #### *resultType*
-Type: [System.Type][3]  
+Type: [System.Type][3]  
 The type of objects to map the results to.
 
 #### *logger*
-Type: [System.IO.TextWriter][4]  
+Type: [System.IO.TextWriter][4]  
 A [TextWriter][4] used to log when the command is executed.
 
 ### Return Value
-Type: [IEnumerable][5]&lt;[Object][6]>  
+Type: [IEnumerable][5]&lt;[Object][6]>  
 The results of the query as objects of type specified by the *resultType* parameter.
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDbCommand][2]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][7] or [Extension Methods (C# Programming Guide)][8].

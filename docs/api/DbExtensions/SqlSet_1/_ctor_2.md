@@ -9,8 +9,8 @@ Syntax
 ------
 
 ```csharp
-public SqlSet(
-	SqlBuilder definingQuery,
+public SqlSet(
+	SqlBuilder definingQuery,
 	Func<IDataRecord, TResult> mapper
 )
 ```
@@ -18,11 +18,11 @@ public SqlSet(
 ### Parameters
 
 #### *definingQuery*
-Type: [DbExtensions.SqlBuilder][3]  
+Type: [DbExtensions.SqlBuilder][3]  
 The SQL query that will be the source of data for the set.
 
 #### *mapper*
-Type: [System.Func][4]&lt;[IDataRecord][5], [TResult][1]>  
+Type: [System.Func][4]&lt;[IDataRecord][5], [TResult][1]>  
 A custom mapper function that creates TResult instances from the rows in the set.
 
 

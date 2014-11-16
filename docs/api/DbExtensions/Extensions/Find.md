@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public static Object Find(
-	this SqlSet source,
-	Object id
+public static Object Find(
+	this SqlSet source,
+	Object id
 )
 ```
 
 ### Parameters
 
 #### *source*
-Type: [DbExtensions.SqlSet][2]  
+Type: [DbExtensions.SqlSet][2]  
 The source set.
 
 #### *id*
-Type: [System.Object][3]  
+Type: [System.Object][3]  
 The primary key value.
 
 ### Return Value
-Type: [Object][3]  
+Type: [Object][3]  
  The entity whose primary key matches the *id* parameter, or null if the *id* does not exist. 
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [SqlSet][2]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][4] or [Extension Methods (C# Programming Guide)][5].

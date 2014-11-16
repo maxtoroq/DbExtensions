@@ -9,19 +9,18 @@ Syntax
 ------
 
 ```csharp
-public SqlTable<TEntity> Cast<TEntity>()
+public SqlTable<TEntity> Cast<TEntity>()
 where TEntity : class
+
 ```
 
-
-Type Parameters
----------------
+### Type Parameters
 
 #### *TEntity*
 The type of the entity.
 
 ### Return Value
-Type: [SqlTable][2]&lt;**TEntity**>  
+Type: [SqlTable][2]&lt;**TEntity**>  
 The [SqlTable&lt;TEntity>][2] instance for TEntity.
 
 Exceptions

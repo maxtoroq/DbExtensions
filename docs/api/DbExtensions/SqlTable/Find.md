@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public Object Find(
-	Object id
+public Object Find(
+	Object id
 )
 ```
 
 ### Parameters
 
 #### *id*
-Type: [System.Object][2]  
+Type: [System.Object][2]  
 The primary key value.
 
 ### Return Value
-Type: [Object][2]  
+Type: [Object][2]  
  The entity whose primary key matches the *id* parameter, or null if the *id* does not exist. 
 
 See Also

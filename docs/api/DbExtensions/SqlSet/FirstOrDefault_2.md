@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public Object FirstOrDefault(
-	string predicate,
-	params Object[] parameters
+public Object FirstOrDefault(
+	string predicate,
+	params Object[] parameters
 )
 ```
 
 ### Parameters
 
 #### *predicate*
-Type: [System.String][2]  
+Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
 #### *parameters*
-Type: [System.Object][3][]  
+Type: [System.Object][3][]  
 The parameters to apply to the *predicate*.
 
 ### Return Value
-Type: [Object][3]  
+Type: [Object][3]  
  A default value if the set is empty or if no element passes the test specified by *predicate*; otherwise, the first element that passes the test specified by *predicate*. 
 
 See Also

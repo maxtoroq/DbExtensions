@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public static IDisposable EnsureOpen(
-	this IDbConnection connection
+public static IDisposable EnsureOpen(
+	this IDbConnection connection
 )
 ```
 
 ### Parameters
 
 #### *connection*
-Type: [System.Data.IDbConnection][3]  
+Type: [System.Data.IDbConnection][3]  
 The connection.
 
 ### Return Value
-Type: [IDisposable][1]  
+Type: [IDisposable][1]  
 An [IDisposable][1] object to close the connection.
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDbConnection][3]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][4] or [Extension Methods (C# Programming Guide)][5].

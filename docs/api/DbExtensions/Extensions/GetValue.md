@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public static Object GetValue(
-	this IDataRecord record,
-	string name
+public static Object GetValue(
+	this IDataRecord record,
+	string name
 )
 ```
 
 ### Parameters
 
 #### *record*
-Type: [System.Data.IDataRecord][2]  
+Type: [System.Data.IDataRecord][2]  
 The data record.
 
 #### *name*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The name of the column to find.
 
 ### Return Value
-Type: [Object][4]  
+Type: [Object][4]  
 The value of the column.
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDataRecord][2]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][5] or [Extension Methods (C# Programming Guide)][6].

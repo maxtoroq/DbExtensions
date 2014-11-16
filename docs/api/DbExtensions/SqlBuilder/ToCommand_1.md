@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public DbCommand ToCommand(
-	DbProviderFactory providerFactory
+public DbCommand ToCommand(
+	DbProviderFactory providerFactory
 )
 ```
 
 ### Parameters
 
 #### *providerFactory*
-Type: [System.Data.Common.DbProviderFactory][6]  
+Type: [System.Data.Common.DbProviderFactory][6]  
 The provider factory used to create the command.
 
 ### Return Value
-Type: [DbCommand][1]  
+Type: [DbCommand][1]  
  A new [DbCommand][1] object whose [CommandText][2] property is initialized with the SQL representation of this instance, and whose [Parameters][3] property is initialized with the values from [ParameterValues][4] of this instance. 
 
 See Also

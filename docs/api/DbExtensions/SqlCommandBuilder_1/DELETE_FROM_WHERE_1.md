@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder DELETE_FROM_WHERE(
+public SqlBuilder DELETE_FROM_WHERE(
 	TEntity entity,
-	ConcurrencyConflictPolicy conflictPolicy
+	ConcurrencyConflictPolicy conflictPolicy
 )
 ```
 
 ### Parameters
 
 #### *entity*
-Type: [TEntity][2]  
+Type: [TEntity][2]  
 The entity whose DELETE command is to be created.
 
 #### *conflictPolicy*
-Type: [DbExtensions.ConcurrencyConflictPolicy][3]  
-The [ConcurrencyConflictPolicy][3] that specifies what columns to include in the DELETE predicate.
+Type: [DbExtensions.ConcurrencyConflictPolicy][3]  
+ The [ConcurrencyConflictPolicy][3] that specifies what columns to include in the DELETE predicate.
 
 ### Return Value
-Type: [SqlBuilder][4]  
+Type: [SqlBuilder][4]  
 The DELETE command for *entity*.
 
 See Also

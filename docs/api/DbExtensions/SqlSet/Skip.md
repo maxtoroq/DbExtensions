@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlSet Skip(
-	int count
+public SqlSet Skip(
+	int count
 )
 ```
 
 ### Parameters
 
 #### *count*
-Type: [System.Int32][2]  
+Type: [System.Int32][2]  
 The number of elements to skip before returning the remaining elements.
 
 ### Return Value
-Type: [SqlSet][3]  
+Type: [SqlSet][3]  
 A new [SqlSet][3] that contains the elements that occur after the specified index in the current set.
 
 See Also

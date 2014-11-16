@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder UPDATE()
+public SqlBuilder UPDATE()
 ```
 
 ### Return Value
-Type: [SqlBuilder][2]  
+Type: [SqlBuilder][2]  
 The UPDATE command for the current table.
 
 See Also

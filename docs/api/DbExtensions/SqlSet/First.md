@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public Object First()
+public Object First()
 ```
 
 ### Return Value
-Type: [Object][2]  
+Type: [Object][2]  
 The first element in the set.
 
 Exceptions

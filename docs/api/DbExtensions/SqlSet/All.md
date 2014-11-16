@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public bool All(
-	string predicate
+public bool All(
+	string predicate
 )
 ```
 
 ### Parameters
 
 #### *predicate*
-Type: [System.String][2]  
+Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
 ### Return Value
-Type: [Boolean][3]  
+Type: [Boolean][3]  
 true if every element of the set passes the test in the specified *predicate*, or if the set is empty; otherwise, false.
 
 See Also

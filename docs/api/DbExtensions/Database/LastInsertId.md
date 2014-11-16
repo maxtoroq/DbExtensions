@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public virtual Object LastInsertId()
+public virtual Object LastInsertId()
 ```
 
 ### Return Value
-Type: [Object][2]  
+Type: [Object][2]  
 The identity value of the last inserted record.
 
 Remarks

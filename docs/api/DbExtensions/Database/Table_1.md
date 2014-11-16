@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlTable Table(
-	Type entityType
+public SqlTable Table(
+	Type entityType
 )
 ```
 
 ### Parameters
 
 #### *entityType*
-Type: [System.Type][3]  
+Type: [System.Type][3]  
 The type of the entity.
 
 ### Return Value
-Type: [SqlTable][1]  
+Type: [SqlTable][1]  
 The [SqlTable][1] instance for *entityType*.
 
 See Also

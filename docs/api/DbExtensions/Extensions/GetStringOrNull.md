@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public static string GetStringOrNull(
-	this IDataRecord record,
-	int i
+public static string GetStringOrNull(
+	this IDataRecord record,
+	int i
 )
 ```
 
 ### Parameters
 
 #### *record*
-Type: [System.Data.IDataRecord][3]  
+Type: [System.Data.IDataRecord][3]  
 The data record.
 
 #### *i*
-Type: [System.Int32][4]  
+Type: [System.Int32][4]  
 The zero-based column ordinal.
 
 ### Return Value
-Type: [String][1]  
+Type: [String][1]  
 The value of the column.
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDataRecord][3]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][5] or [Extension Methods (C# Programming Guide)][6].

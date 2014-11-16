@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public override string ToString()
+public override string ToString()
 ```
 
 ### Return Value
-Type: [String][1]  
+Type: [String][1]  
 A string whose value is the same as this instance.
 
 See Also

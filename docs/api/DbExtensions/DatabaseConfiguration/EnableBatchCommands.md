@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public bool EnableBatchCommands { get; set; }
+public bool EnableBatchCommands { get; set; }
 ```
 
 ### Property Value
-Type: [Boolean][2]
+Type: [Boolean][2]
 
 See Also
 --------

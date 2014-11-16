@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public long LongCount(
-	string predicate,
-	params Object[] parameters
+public long LongCount(
+	string predicate,
+	params Object[] parameters
 )
 ```
 
 ### Parameters
 
 #### *predicate*
-Type: [System.String][3]  
+Type: [System.String][3]  
 A SQL expression to test each row for a condition.
 
 #### *parameters*
-Type: [System.Object][4][]  
+Type: [System.Object][4][]  
 The parameters to apply to the *predicate*.
 
 ### Return Value
-Type: [Int64][1]  
+Type: [Int64][1]  
 A number that represents how many elements in the set satisfy the condition in the *predicate*.
 
 Exceptions

@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public long LongCount(
-	SqlBuilder query
+public long LongCount(
+	SqlBuilder query
 )
 ```
 
 ### Parameters
 
 #### *query*
-Type: [DbExtensions.SqlBuilder][2]  
+Type: [DbExtensions.SqlBuilder][2]  
 The query whose count is to be computed.
 
 ### Return Value
-Type: [Int64][3]  
+Type: [Int64][3]  
 The number of results the *query* would return.
 
 See Also

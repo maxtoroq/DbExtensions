@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public static SqlBuilder INSERT_INTO(
-	string body
+public static SqlBuilder INSERT_INTO(
+	string body
 )
 ```
 
 ### Parameters
 
 #### *body*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The body of the INSERT INTO clause.
 
 ### Return Value
-Type: [SqlBuilder][1]  
+Type: [SqlBuilder][1]  
  A new [SqlBuilder][1] after calling [INSERT_INTO(String)][4]. 
 
 See Also

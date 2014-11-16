@@ -10,23 +10,23 @@ Syntax
 
 ```csharp
 public TResult SingleOrDefault(
-	string predicate,
-	params Object[] parameters
+	string predicate,
+	params Object[] parameters
 )
 ```
 
 ### Parameters
 
 #### *predicate*
-Type: [System.String][2]  
+Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
 #### *parameters*
-Type: [System.Object][3][]  
+Type: [System.Object][3][]  
 The parameters to apply to the *predicate*.
 
 ### Return Value
-Type: [TResult][4]  
+Type: [TResult][4]  
 The single element of the set that satisfies the condition, or a default value if no such element is found.
 
 See Also

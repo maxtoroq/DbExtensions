@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public bool Exists(
-	SqlBuilder query
+public bool Exists(
+	SqlBuilder query
 )
 ```
 
 ### Parameters
 
 #### *query*
-Type: [DbExtensions.SqlBuilder][2]  
+Type: [DbExtensions.SqlBuilder][2]  
 The query whose existance is to be checked.
 
 ### Return Value
-Type: [Boolean][3]  
+Type: [Boolean][3]  
 true if *query* contains any rows; otherwise, false.
 
 See Also

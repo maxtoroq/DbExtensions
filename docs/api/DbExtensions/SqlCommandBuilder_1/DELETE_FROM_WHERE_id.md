@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder DELETE_FROM_WHERE_id(
-	Object id
+public SqlBuilder DELETE_FROM_WHERE_id(
+	Object id
 )
 ```
 
 ### Parameters
 
 #### *id*
-Type: [System.Object][2]  
+Type: [System.Object][2]  
 The primary key value.
 
 ### Return Value
-Type: [SqlBuilder][3]  
+Type: [SqlBuilder][3]  
 The DELETE command the entity whose primary key matches the *id* parameter.
 
 See Also

@@ -16,7 +16,7 @@ Syntax
 ------
 
 ```csharp
-public sealed class SqlTable : SqlSet, 
+public sealed class SqlTable : SqlSet, 
 	ISqlTable
 ```
 

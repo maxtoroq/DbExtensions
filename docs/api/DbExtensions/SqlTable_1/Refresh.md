@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void Refresh(
+public void Refresh(
 	TEntity entity
 )
 ```
@@ -17,7 +17,7 @@ public void Refresh(
 ### Parameters
 
 #### *entity*
-Type: [TEntity][2]  
+Type: [TEntity][2]  
 The entity to refresh.
 
 

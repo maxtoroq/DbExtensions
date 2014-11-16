@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public static SqlBuilder INSERT_INTO(
-	string format,
-	params Object[] args
+public static SqlBuilder INSERT_INTO(
+	string format,
+	params Object[] args
 )
 ```
 
 ### Parameters
 
 #### *format*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The body of the INSERT INTO clause.
 
 #### *args*
-Type: [System.Object][4][]  
+Type: [System.Object][4][]  
 The parameters of the clause body.
 
 ### Return Value
-Type: [SqlBuilder][1]  
+Type: [SqlBuilder][1]  
  A new [SqlBuilder][1] after calling [INSERT_INTO(String, Object[])][5]. 
 
 See Also

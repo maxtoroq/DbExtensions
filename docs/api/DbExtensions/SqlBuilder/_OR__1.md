@@ -9,36 +9,35 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder _OR<T>(
+public SqlBuilder _OR<T>(
 	IEnumerable<T> items,
-	string itemFormat,
+	string itemFormat,
 	Func<T, Object[]> parametersFactory
 )
+
 ```
 
 ### Parameters
 
 #### *items*
-Type: [System.Collections.Generic.IEnumerable][2]&lt;**T**>  
+Type: [System.Collections.Generic.IEnumerable][2]&lt;**T**>  
 The collection of objects that contain parameters.
 
 #### *itemFormat*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The format string.
 
 #### *parametersFactory*
-Type: [System.Func][4]&lt;**T**, [Object][5][]>  
+Type: [System.Func][4]&lt;**T**, [Object][5][]>  
 The delegate that extract parameters for each element in *items*.
 
-
-Type Parameters
----------------
+### Type Parameters
 
 #### *T*
 The type of elements in *items*.
 
 ### Return Value
-Type: [SqlBuilder][6]  
+Type: [SqlBuilder][6]  
 A reference to this instance after the append operation has completed.
 
 See Also

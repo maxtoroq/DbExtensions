@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder SELECT_FROM(
-	string tableAlias
+public SqlBuilder SELECT_FROM(
+	string tableAlias
 )
 ```
 
 ### Parameters
 
 #### *tableAlias*
-Type: [System.String][2]  
+Type: [System.String][2]  
 The table alias.
 
 ### Return Value
-Type: [SqlBuilder][3]  
+Type: [SqlBuilder][3]  
 The SELECT query for the current table.
 
 See Also

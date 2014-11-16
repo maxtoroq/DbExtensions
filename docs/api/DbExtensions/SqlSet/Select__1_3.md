@@ -9,31 +9,30 @@ Syntax
 ------
 
 ```csharp
-public SqlSet<TResult> Select<TResult>(
-	string columnList,
-	params Object[] parameters
+public SqlSet<TResult> Select<TResult>(
+	string columnList,
+	params Object[] parameters
 )
+
 ```
 
 ### Parameters
 
 #### *columnList*
-Type: [System.String][2]  
+Type: [System.String][2]  
 The list of columns that maps to properties on TResult.
 
 #### *parameters*
-Type: [System.Object][3][]  
+Type: [System.Object][3][]  
 The parameters to apply to the *columnList*.
 
-
-Type Parameters
----------------
+### Type Parameters
 
 #### *TResult*
 The type that *columnList* maps to.
 
 ### Return Value
-Type: [SqlSet][4]&lt;**TResult**>  
+Type: [SqlSet][4]&lt;**TResult**>  
 A new [SqlSet&lt;TResult>][4].
 
 See Also

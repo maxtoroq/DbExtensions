@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder _If(
-	bool condition,
-	string body
+public SqlBuilder _If(
+	bool condition,
+	string body
 )
 ```
 
 ### Parameters
 
 #### *condition*
-Type: [System.Boolean][2]  
+Type: [System.Boolean][2]  
 true to append *body* to the current clause; otherwise, false.
 
 #### *body*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The body of the current clause.
 
 ### Return Value
-Type: [SqlBuilder][4]  
+Type: [SqlBuilder][4]  
 A reference to this instance after the append operation has completed.
 
 See Also

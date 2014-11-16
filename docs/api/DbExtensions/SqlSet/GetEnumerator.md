@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public IEnumerator<Object> GetEnumerator()
+public IEnumerator<Object> GetEnumerator()
 ```
 
 ### Return Value
-Type: [IEnumerator][2]&lt;[Object][3]>  
+Type: [IEnumerator][2]&lt;[Object][3]>  
 A [IEnumerator&lt;T>][2] for the set.
 
 See Also

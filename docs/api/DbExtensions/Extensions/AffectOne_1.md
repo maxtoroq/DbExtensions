@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public static int AffectOne(
-	this IDbCommand command,
-	TextWriter logger
+public static int AffectOne(
+	this IDbCommand command,
+	TextWriter logger
 )
 ```
 
 ### Parameters
 
 #### *command*
-Type: [System.Data.IDbCommand][2]  
+Type: [System.Data.IDbCommand][2]  
 The non-query command to execute.
 
 #### *logger*
-Type: [System.IO.TextWriter][3]  
+Type: [System.IO.TextWriter][3]  
 A [TextWriter][3] for logging the whole process.
 
 ### Return Value
-Type: [Int32][4]  
+Type: [Int32][4]  
 The number of affected records.
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDbCommand][2]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][5] or [Extension Methods (C# Programming Guide)][6].

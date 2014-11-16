@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public static SqlBuilder DELETE_FROM(
-	string body
+public static SqlBuilder DELETE_FROM(
+	string body
 )
 ```
 
 ### Parameters
 
 #### *body*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The body of the DELETE FROM clause.
 
 ### Return Value
-Type: [SqlBuilder][1]  
+Type: [SqlBuilder][1]  
  A new [SqlBuilder][1] after calling [DELETE_FROM(String)][4]. 
 
 See Also

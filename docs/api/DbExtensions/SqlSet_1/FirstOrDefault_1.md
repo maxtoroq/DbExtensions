@@ -10,18 +10,18 @@ Syntax
 
 ```csharp
 public TResult FirstOrDefault(
-	string predicate
+	string predicate
 )
 ```
 
 ### Parameters
 
 #### *predicate*
-Type: [System.String][2]  
+Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
 ### Return Value
-Type: [TResult][3]  
+Type: [TResult][3]  
  A default value if the set is empty or if no element passes the test specified by *predicate*; otherwise, the first element that passes the test specified by *predicate*. 
 
 See Also

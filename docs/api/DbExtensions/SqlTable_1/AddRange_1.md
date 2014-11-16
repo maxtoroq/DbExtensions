@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void AddRange(
+public void AddRange(
 	params TEntity[] entities
 )
 ```
@@ -17,7 +17,7 @@ public void AddRange(
 ### Parameters
 
 #### *entities*
-Type: [TEntity][3][]  
+Type: [TEntity][3][]  
 The entities whose INSERT commands are to be executed.
 
 

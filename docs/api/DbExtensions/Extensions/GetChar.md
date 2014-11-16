@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public static char GetChar(
-	this IDataRecord record,
-	string name
+public static char GetChar(
+	this IDataRecord record,
+	string name
 )
 ```
 
 ### Parameters
 
 #### *record*
-Type: [System.Data.IDataRecord][3]  
+Type: [System.Data.IDataRecord][3]  
 The data record.
 
 #### *name*
-Type: [System.String][4]  
+Type: [System.String][4]  
 The name of the column to find.
 
 ### Return Value
-Type: [Char][1]  
+Type: [Char][1]  
 The value of the column.
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDataRecord][3]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][5] or [Extension Methods (C# Programming Guide)][6].

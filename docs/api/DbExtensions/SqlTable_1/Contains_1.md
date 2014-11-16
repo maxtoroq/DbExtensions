@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public bool Contains(
+public bool Contains(
 	TEntity entity,
-	bool version
+	bool version
 )
 ```
 
 ### Parameters
 
 #### *entity*
-Type: [TEntity][2]  
+Type: [TEntity][2]  
 The entity whose existance is to be checked.
 
 #### *version*
-Type: [System.Boolean][3]  
+Type: [System.Boolean][3]  
 true to check the version column; otherwise, false.
 
 ### Return Value
-Type: [Boolean][3]  
+Type: [Boolean][3]  
 true if the primary key and version combination exists in the database; otherwise, false.
 
 See Also

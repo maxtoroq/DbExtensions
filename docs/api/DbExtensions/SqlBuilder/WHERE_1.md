@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder WHERE(
-	string body
+public SqlBuilder WHERE(
+	string body
 )
 ```
 
 ### Parameters
 
 #### *body*
-Type: [System.String][2]  
+Type: [System.String][2]  
 The body of the WHERE clause.
 
 ### Return Value
-Type: [SqlBuilder][3]  
+Type: [SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also

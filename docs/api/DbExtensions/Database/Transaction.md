@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public DbTransaction Transaction { get; set; }
+public DbTransaction Transaction { get; set; }
 ```
 
 ### Property Value
-Type: [DbTransaction][1]
+Type: [DbTransaction][1]
 
 See Also
 --------

@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public int AffectOneOrNone(
-	string commandText,
-	params Object[] parameters
+public int AffectOneOrNone(
+	string commandText,
+	params Object[] parameters
 )
 ```
 
 ### Parameters
 
 #### *commandText*
-Type: [System.String][5]  
+Type: [System.String][5]  
 The non-query command to execute.
 
 #### *parameters*
-Type: [System.Object][6][]  
+Type: [System.Object][6][]  
 The parameters to apply to the command text.
 
 ### Return Value
-Type: [Int32][7]  
+Type: [Int32][7]  
 The number of affected records.
 
 Exceptions

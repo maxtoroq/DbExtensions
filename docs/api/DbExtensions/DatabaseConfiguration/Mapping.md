@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public MetaModel Mapping { get; }
+public MetaModel Mapping { get; }
 ```
 
 ### Property Value
-Type: [MetaModel][1]
+Type: [MetaModel][1]
 
 See Also
 --------

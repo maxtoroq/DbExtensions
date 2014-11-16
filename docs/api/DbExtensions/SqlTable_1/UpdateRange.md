@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void UpdateRange(
+public void UpdateRange(
 	IEnumerable<TEntity> entities
 )
 ```
@@ -17,7 +17,7 @@ public void UpdateRange(
 ### Parameters
 
 #### *entities*
-Type: [System.Collections.Generic.IEnumerable][3]&lt;[TEntity][4]>  
+Type: [System.Collections.Generic.IEnumerable][3]&lt;[TEntity][4]>  
 The entities whose UPDATE commands are to be executed.
 
 

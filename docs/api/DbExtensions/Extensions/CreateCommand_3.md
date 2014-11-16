@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public static DbCommand CreateCommand(
-	this DbConnection connection,
-	string commandText
+public static DbCommand CreateCommand(
+	this DbConnection connection,
+	string commandText
 )
 ```
 
 ### Parameters
 
 #### *connection*
-Type: [System.Data.Common.DbConnection][4]  
+Type: [System.Data.Common.DbConnection][4]  
 The connection used to create the command.
 
 #### *commandText*
-Type: [System.String][5]  
+Type: [System.String][5]  
 The command text.
 
 ### Return Value
-Type: [DbCommand][1]  
+Type: [DbCommand][1]  
  A new [DbCommand][1] object whose [CommandText][2] property is initialized with the *commandText* parameter. 
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [DbConnection][4]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][6] or [Extension Methods (C# Programming Guide)][7].

@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public static SqlBuilder WITH(
-	SqlBuilder subQuery,
-	string alias
+public static SqlBuilder WITH(
+	SqlBuilder subQuery,
+	string alias
 )
 ```
 
 ### Parameters
 
 #### *subQuery*
-Type: [DbExtensions.SqlBuilder][1]  
+Type: [DbExtensions.SqlBuilder][1]  
 The sub-query to use as the body of the WITH clause.
 
 #### *alias*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The alias of the sub-query.
 
 ### Return Value
-Type: [SqlBuilder][1]  
+Type: [SqlBuilder][1]  
  A new [SqlBuilder][1] after calling [WITH(SqlBuilder, String)][4]. 
 
 See Also

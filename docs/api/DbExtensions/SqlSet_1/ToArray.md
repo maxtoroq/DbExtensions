@@ -13,7 +13,7 @@ public TResult[] ToArray()
 ```
 
 ### Return Value
-Type: [TResult][2][]  
+Type: [TResult][2][]  
 An array that contains the elements from the set.
 
 See Also

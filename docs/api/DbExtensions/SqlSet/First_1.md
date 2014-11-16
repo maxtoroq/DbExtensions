@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public Object First(
-	string predicate
+public Object First(
+	string predicate
 )
 ```
 
 ### Parameters
 
 #### *predicate*
-Type: [System.String][2]  
+Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
 ### Return Value
-Type: [Object][3]  
+Type: [Object][3]  
 The first element in the set that passes the test in the specified *predicate*.
 
 Exceptions

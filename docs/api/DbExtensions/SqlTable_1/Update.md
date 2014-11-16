@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void Update(
+public void Update(
 	TEntity entity
 )
 ```
@@ -17,7 +17,7 @@ public void Update(
 ### Parameters
 
 #### *entity*
-Type: [TEntity][3]  
+Type: [TEntity][3]  
 The entity whose UPDATE command is to be executed.
 
 

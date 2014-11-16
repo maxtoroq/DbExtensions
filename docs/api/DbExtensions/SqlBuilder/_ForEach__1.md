@@ -9,46 +9,45 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder _ForEach<T>(
+public SqlBuilder _ForEach<T>(
 	IEnumerable<T> items,
-	string format,
-	string itemFormat,
-	string separator,
+	string format,
+	string itemFormat,
+	string separator,
 	Func<T, Object[]> parametersFactory
 )
+
 ```
 
 ### Parameters
 
 #### *items*
-Type: [System.Collections.Generic.IEnumerable][2]&lt;**T**>  
+Type: [System.Collections.Generic.IEnumerable][2]&lt;**T**>  
 The collection of objects that contain parameters.
 
 #### *format*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The clause body format string, which must contain a {0} placeholder. This parameter can be null.
 
 #### *itemFormat*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The item format.
 
 #### *separator*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The string to use as separator between each item format.
 
 #### *parametersFactory*
-Type: [System.Func][4]&lt;**T**, [Object][5][]>  
+Type: [System.Func][4]&lt;**T**, [Object][5][]>  
 The delegate that extract parameters for each element in *items*. This parameter can be null.
 
-
-Type Parameters
----------------
+### Type Parameters
 
 #### *T*
 The type of elements in *items*.
 
 ### Return Value
-Type: [SqlBuilder][6]  
+Type: [SqlBuilder][6]  
 A reference to this instance after the append operation has completed.
 
 See Also

@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public override bool Equals(
-	Object obj
+public override bool Equals(
+	Object obj
 )
 ```
 
 ### Parameters
 
 #### *obj*
-Type: [System.Object][2]  
+Type: [System.Object][2]  
 The set to compare with the current set.
 
 ### Return Value
-Type: [Boolean][3]  
+Type: [Boolean][3]  
 True if the specified set is equal to the current set; otherwise, false.
 
 See Also

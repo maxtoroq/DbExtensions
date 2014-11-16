@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public StringBuilder Buffer { get; }
+public StringBuilder Buffer { get; }
 ```
 
 ### Property Value
-Type: [StringBuilder][1]
+Type: [StringBuilder][1]
 
 See Also
 --------

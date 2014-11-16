@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void Remove(
+public void Remove(
 	TEntity entity
 )
 ```
@@ -17,7 +17,7 @@ public void Remove(
 ### Parameters
 
 #### *entity*
-Type: [TEntity][3]  
+Type: [TEntity][3]  
 The entity whose DELETE command is to be executed.
 
 

@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public TextWriter Log { get; set; }
+public TextWriter Log { get; set; }
 ```
 
 ### Property Value
-Type: [TextWriter][2]
+Type: [TextWriter][2]
 
 See Also
 --------

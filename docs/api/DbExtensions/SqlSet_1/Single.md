@@ -13,7 +13,7 @@ public TResult Single()
 ```
 
 ### Return Value
-Type: [TResult][2]  
+Type: [TResult][2]  
 The single element of the set.
 
 Exceptions

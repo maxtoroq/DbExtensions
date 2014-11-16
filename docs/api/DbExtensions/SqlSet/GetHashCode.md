@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public override int GetHashCode()
+public override int GetHashCode()
 ```
 
 ### Return Value
-Type: [Int32][2]  
+Type: [Int32][2]  
 The hash function for the current set.
 
 See Also

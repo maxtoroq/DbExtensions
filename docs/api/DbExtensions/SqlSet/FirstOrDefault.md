@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public Object FirstOrDefault()
+public Object FirstOrDefault()
 ```
 
 ### Return Value
-Type: [Object][2]  
+Type: [Object][2]  
 A default value if the set is empty; otherwise, the first element.
 
 See Also

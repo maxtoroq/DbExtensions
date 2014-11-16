@@ -9,29 +9,29 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder _If(
-	bool condition,
-	string format,
-	params Object[] args
+public SqlBuilder _If(
+	bool condition,
+	string format,
+	params Object[] args
 )
 ```
 
 ### Parameters
 
 #### *condition*
-Type: [System.Boolean][2]  
+Type: [System.Boolean][2]  
 true to append *format* to the current clause; otherwise, false.
 
 #### *format*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The format string that represents the body of the current clause.
 
 #### *args*
-Type: [System.Object][4][]  
+Type: [System.Object][4][]  
 The parameters of the clause body.
 
 ### Return Value
-Type: [SqlBuilder][5]  
+Type: [SqlBuilder][5]  
 A reference to this instance after the append operation has completed.
 
 See Also

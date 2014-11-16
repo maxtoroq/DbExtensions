@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder DELETE_FROM()
+public SqlBuilder DELETE_FROM()
 ```
 
 ### Return Value
-Type: [SqlBuilder][2]  
+Type: [SqlBuilder][2]  
 The DELETE command for the current table.
 
 See Also

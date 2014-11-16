@@ -9,15 +9,15 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder(
-	string sql
+public SqlBuilder(
+	string sql
 )
 ```
 
 ### Parameters
 
 #### *sql*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The SQL string.
 
 

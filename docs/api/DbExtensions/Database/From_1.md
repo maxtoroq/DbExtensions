@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public SqlSet From(
-	SqlBuilder definingQuery,
-	Type resultType
+public SqlSet From(
+	SqlBuilder definingQuery,
+	Type resultType
 )
 ```
 
 ### Parameters
 
 #### *definingQuery*
-Type: [DbExtensions.SqlBuilder][3]  
+Type: [DbExtensions.SqlBuilder][3]  
 The SQL query that will be the source of data for the set.
 
 #### *resultType*
-Type: [System.Type][4]  
+Type: [System.Type][4]  
 The type of objects to map the results to.
 
 ### Return Value
-Type: [SqlSet][1]  
+Type: [SqlSet][1]  
 A new [SqlSet][1] object.
 
 See Also

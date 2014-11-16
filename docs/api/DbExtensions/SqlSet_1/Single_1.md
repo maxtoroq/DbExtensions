@@ -10,18 +10,18 @@ Syntax
 
 ```csharp
 public TResult Single(
-	string predicate
+	string predicate
 )
 ```
 
 ### Parameters
 
 #### *predicate*
-Type: [System.String][2]  
+Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
 ### Return Value
-Type: [TResult][3]  
+Type: [TResult][3]  
 The single element of the set that passes the test in the specified *predicate*.
 
 Exceptions

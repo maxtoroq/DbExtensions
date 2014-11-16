@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public Object Single()
+public Object Single()
 ```
 
 ### Return Value
-Type: [Object][2]  
+Type: [Object][2]  
 The single element of the set.
 
 Exceptions

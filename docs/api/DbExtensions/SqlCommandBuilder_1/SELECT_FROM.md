@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder SELECT_FROM()
+public SqlBuilder SELECT_FROM()
 ```
 
 ### Return Value
-Type: [SqlBuilder][2]  
+Type: [SqlBuilder][2]  
 The SELECT query for the current table.
 
 See Also

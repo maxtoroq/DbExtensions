@@ -17,7 +17,7 @@ Syntax
 ------
 
 ```csharp
-public class SqlSet : ISqlSet<SqlSet, Object>
+public class SqlSet : ISqlSet<SqlSet, Object>
 ```
 
 The **SqlSet** type exposes the following members.

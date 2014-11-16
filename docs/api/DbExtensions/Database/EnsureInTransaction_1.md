@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public IDbTransaction EnsureInTransaction(
-	IsolationLevel isolationLevel
+public IDbTransaction EnsureInTransaction(
+	IsolationLevel isolationLevel
 )
 ```
 
 ### Parameters
 
 #### *isolationLevel*
-Type: [System.Data.IsolationLevel][2]  
-Specifies the isolation level for the transaction. This parameter is ignored when using an existing transaction.
+Type: [System.Data.IsolationLevel][2]  
+ Specifies the isolation level for the transaction. This parameter is ignored when using an existing transaction.
 
 ### Return Value
-Type: [IDbTransaction][3]  
+Type: [IDbTransaction][3]  
  A virtual transaction you can use to ensure a code block is always executed in a transaction, new or existing. 
 
 Remarks

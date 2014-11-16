@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void Dispose()
+public void Dispose()
 ```
 
 ### Implements

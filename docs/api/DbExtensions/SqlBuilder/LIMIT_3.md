@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder LIMIT(
-	string format,
-	params Object[] args
+public SqlBuilder LIMIT(
+	string format,
+	params Object[] args
 )
 ```
 
 ### Parameters
 
 #### *format*
-Type: [System.String][2]  
+Type: [System.String][2]  
 The format string that represents the body of the LIMIT clause.
 
 #### *args*
-Type: [System.Object][3][]  
+Type: [System.Object][3][]  
 The parameters of the clause body.
 
 ### Return Value
-Type: [SqlBuilder][4]  
+Type: [SqlBuilder][4]  
 A reference to this instance after the append operation has completed.
 
 See Also

@@ -13,7 +13,7 @@ public TResult SingleOrDefault()
 ```
 
 ### Return Value
-Type: [TResult][2]  
+Type: [TResult][2]  
 The single element of the set, or a default value if the set contains no elements.
 
 Exceptions

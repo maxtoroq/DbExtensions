@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder UPDATE_SET_WHERE(
+public SqlBuilder UPDATE_SET_WHERE(
 	TEntity entity
 )
 ```
@@ -17,11 +17,11 @@ public SqlBuilder UPDATE_SET_WHERE(
 ### Parameters
 
 #### *entity*
-Type: [TEntity][3]  
+Type: [TEntity][3]  
 The entity whose UPDATE command is to be created.
 
 ### Return Value
-Type: [SqlBuilder][4]  
+Type: [SqlBuilder][4]  
 The UPDATE command for *entity*.
 
 See Also

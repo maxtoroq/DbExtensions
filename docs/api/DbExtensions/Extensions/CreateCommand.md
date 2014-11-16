@@ -9,34 +9,34 @@ Syntax
 ------
 
 ```csharp
-public static DbCommand CreateCommand(
-	this DbCommandBuilder commandBuilder,
-	DbConnection connection,
-	string commandText,
-	params Object[] parameters
+public static DbCommand CreateCommand(
+	this DbCommandBuilder commandBuilder,
+	DbConnection connection,
+	string commandText,
+	params Object[] parameters
 )
 ```
 
 ### Parameters
 
 #### *commandBuilder*
-Type: [System.Data.Common.DbCommandBuilder][5]  
+Type: [System.Data.Common.DbCommandBuilder][5]  
 The command builder used to create the parameter names.
 
 #### *connection*
-Type: [System.Data.Common.DbConnection][6]  
+Type: [System.Data.Common.DbConnection][6]  
 The connection used to create the command.
 
 #### *commandText*
-Type: [System.String][7]  
+Type: [System.String][7]  
 The command text.
 
 #### *parameters*
-Type: [System.Object][8][]  
-The array of parameters to be passed to the command. Note the following behavior: If the number of objects in the array is less than the highest number identified in the command string, an exception is thrown. If the array contains objects that are not referenced in the command string, no exception is thrown. If a parameter is null, it is converted to DBNull.Value.
+Type: [System.Object][8][]  
+ The array of parameters to be passed to the command. Note the following behavior: If the number of objects in the array is less than the highest number identified in the command string, an exception is thrown. If the array contains objects that are not referenced in the command string, no exception is thrown. If a parameter is null, it is converted to DBNull.Value.
 
 ### Return Value
-Type: [DbCommand][1]  
+Type: [DbCommand][1]  
  A new [DbCommand][1] object whose [CommandText][9] property is initialized with the *commandText* parameter, and whose [Parameters][3] property is initialized with the values from the *parameters* parameter. 
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [DbCommandBuilder][5]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][10] or [Extension Methods (C# Programming Guide)][11].

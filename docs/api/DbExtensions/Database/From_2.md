@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlSet From(
-	string tableName
+public SqlSet From(
+	string tableName
 )
 ```
 
 ### Parameters
 
 #### *tableName*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The name of the table that will be the source of data for the set.
 
 ### Return Value
-Type: [SqlSet][1]  
+Type: [SqlSet][1]  
 A new [SqlSet][1] object.
 
 See Also

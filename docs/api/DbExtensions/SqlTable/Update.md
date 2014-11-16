@@ -9,15 +9,15 @@ Syntax
 ------
 
 ```csharp
-public void Update(
-	Object entity
+public void Update(
+	Object entity
 )
 ```
 
 ### Parameters
 
 #### *entity*
-Type: [System.Object][3]  
+Type: [System.Object][3]  
 The entity whose UPDATE command is to be executed.
 
 

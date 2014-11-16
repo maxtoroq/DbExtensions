@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder WITH(
-	string body
+public SqlBuilder WITH(
+	string body
 )
 ```
 
 ### Parameters
 
 #### *body*
-Type: [System.String][2]  
+Type: [System.String][2]  
 The body of the WITH clause.
 
 ### Return Value
-Type: [SqlBuilder][3]  
+Type: [SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also

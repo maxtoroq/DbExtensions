@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public Object[] ToArray()
+public Object[] ToArray()
 ```
 
 ### Return Value
-Type: [Object][2][]  
+Type: [Object][2][]  
 An array that contains the elements from the set.
 
 See Also

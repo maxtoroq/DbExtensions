@@ -15,13 +15,12 @@ Syntax
 ------
 
 ```csharp
-public sealed class SqlCommandBuilder<TEntity>
+public sealed class SqlCommandBuilder<TEntity>
 where TEntity : class
+
 ```
 
-
-Type Parameters
----------------
+### Type Parameters
 
 #### *TEntity*
 The type of the entity to generate commands for.

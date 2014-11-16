@@ -9,8 +9,8 @@ Syntax
 ------
 
 ```csharp
-public static SqlBuilder JoinSql(
-	string separator,
+public static SqlBuilder JoinSql(
+	string separator,
 	IEnumerable<SqlBuilder> values
 )
 ```
@@ -18,15 +18,15 @@ public static SqlBuilder JoinSql(
 ### Parameters
 
 #### *separator*
-Type: [System.String][4]  
+Type: [System.String][4]  
 The string to use as a separator.
 
 #### *values*
-Type: [System.Collections.Generic.IEnumerable][1]&lt;[SqlBuilder][2]>  
+Type: [System.Collections.Generic.IEnumerable][1]&lt;[SqlBuilder][2]>  
 A collection that contains the [SqlBuilder][2] objects to concatenate.
 
 ### Return Value
-Type: [SqlBuilder][2]  
+Type: [SqlBuilder][2]  
  A [SqlBuilder][2] that consists of the members of *values* delimited by the *separator* string. If *values* has no members, the method returns an empty [SqlBuilder][2]. 
 
 See Also

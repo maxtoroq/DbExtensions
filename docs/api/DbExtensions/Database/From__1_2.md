@@ -9,26 +9,25 @@ Syntax
 ------
 
 ```csharp
-public SqlSet<TResult> From<TResult>(
-	string tableName
+public SqlSet<TResult> From<TResult>(
+	string tableName
 )
+
 ```
 
 ### Parameters
 
 #### *tableName*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The name of the table that will be the source of data for the set.
 
-
-Type Parameters
----------------
+### Type Parameters
 
 #### *TResult*
 The type of objects to map the results to.
 
 ### Return Value
-Type: [SqlSet][1]&lt;**TResult**>  
+Type: [SqlSet][1]&lt;**TResult**>  
 A new [SqlSet&lt;TResult>][1] object.
 
 See Also

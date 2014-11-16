@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public IEnumerable<Object> Map(
-	Type resultType,
-	SqlBuilder query
+public IEnumerable<Object> Map(
+	Type resultType,
+	SqlBuilder query
 )
 ```
 
 ### Parameters
 
 #### *resultType*
-Type: [System.Type][2]  
+Type: [System.Type][2]  
 The type of objects to map the results to.
 
 #### *query*
-Type: [DbExtensions.SqlBuilder][3]  
+Type: [DbExtensions.SqlBuilder][3]  
 The query.
 
 ### Return Value
-Type: [IEnumerable][4]&lt;[Object][5]>  
+Type: [IEnumerable][4]&lt;[Object][5]>  
 The results of the query as objects of type specified by the *resultType* parameter.
 
 See Also

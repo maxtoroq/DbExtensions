@@ -9,15 +9,15 @@ Syntax
 ------
 
 ```csharp
-public void Remove(
-	Object entity
+public void Remove(
+	Object entity
 )
 ```
 
 ### Parameters
 
 #### *entity*
-Type: [System.Object][3]  
+Type: [System.Object][3]  
 The entity whose DELETE command is to be executed.
 
 

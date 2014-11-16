@@ -10,18 +10,18 @@ Syntax
 
 ```csharp
 public TEntity Find(
-	Object id
+	Object id
 )
 ```
 
 ### Parameters
 
 #### *id*
-Type: [System.Object][2]  
+Type: [System.Object][2]  
 The primary key value.
 
 ### Return Value
-Type: [TEntity][3]  
+Type: [TEntity][3]  
  The entity whose primary key matches the *id* parameter, or null if the *id* does not exist. 
 
 See Also

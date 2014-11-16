@@ -15,7 +15,7 @@ Syntax
 ------
 
 ```csharp
-public sealed class DatabaseConfiguration
+public sealed class DatabaseConfiguration
 ```
 
 The **DatabaseConfiguration** type exposes the following members.

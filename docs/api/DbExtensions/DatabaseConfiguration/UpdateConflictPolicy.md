@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public ConcurrencyConflictPolicy UpdateConflictPolicy { get; set; }
+public ConcurrencyConflictPolicy UpdateConflictPolicy { get; set; }
 ```
 
 ### Property Value
-Type: [ConcurrencyConflictPolicy][2]
+Type: [ConcurrencyConflictPolicy][2]
 
 See Also
 --------

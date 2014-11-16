@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public Type GetType()
+public Type GetType()
 ```
 
 ### Return Value
-Type: [Type][2]  
+Type: [Type][2]  
 The type for the current set.
 
 See Also

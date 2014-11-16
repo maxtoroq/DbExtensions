@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder Insert(
-	int index,
-	string value
+public SqlBuilder Insert(
+	int index,
+	string value
 )
 ```
 
 ### Parameters
 
 #### *index*
-Type: [System.Int32][2]  
+Type: [System.Int32][2]  
 The position in this instance where insertion begins.
 
 #### *value*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The string to insert.
 
 ### Return Value
-Type: [SqlBuilder][4]  
+Type: [SqlBuilder][4]  
 A reference to this instance after the insert operation has completed.
 
 See Also

@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public List<TResult> ToList()
+public List<TResult> ToList()
 ```
 
 ### Return Value
-Type: [List][2]&lt;[TResult][3]>  
+Type: [List][2]&lt;[TResult][3]>  
 A List&lt;TResult> that contains elements from the set.
 
 See Also

@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder GetDefiningQuery()
+public SqlBuilder GetDefiningQuery()
 ```
 
 ### Return Value
-Type: [SqlBuilder][2]  
+Type: [SqlBuilder][2]  
 The SQL query that is the source of data for the set
 
 See Also

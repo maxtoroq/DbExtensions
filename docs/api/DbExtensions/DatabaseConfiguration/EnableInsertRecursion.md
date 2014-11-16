@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public bool EnableInsertRecursion { get; set; }
+public bool EnableInsertRecursion { get; set; }
 ```
 
 ### Property Value
-Type: [Boolean][2]
+Type: [Boolean][2]
 
 Remarks
 -------

@@ -9,26 +9,25 @@ Syntax
 ------
 
 ```csharp
-public SqlSet<TResult> From<TResult>(
-	SqlBuilder definingQuery
+public SqlSet<TResult> From<TResult>(
+	SqlBuilder definingQuery
 )
+
 ```
 
 ### Parameters
 
 #### *definingQuery*
-Type: [DbExtensions.SqlBuilder][3]  
+Type: [DbExtensions.SqlBuilder][3]  
 The SQL query that will be the source of data for the set.
 
-
-Type Parameters
----------------
+### Type Parameters
 
 #### *TResult*
 The type of objects to map the results to.
 
 ### Return Value
-Type: [SqlSet][1]&lt;**TResult**>  
+Type: [SqlSet][1]&lt;**TResult**>  
 A new [SqlSet&lt;TResult>][1] object.
 
 See Also

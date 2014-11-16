@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public static Nullable<char> GetNullableChar(
-	this IDataRecord record,
-	int i
+public static Nullable<char> GetNullableChar(
+	this IDataRecord record,
+	int i
 )
 ```
 
 ### Parameters
 
 #### *record*
-Type: [System.Data.IDataRecord][4]  
+Type: [System.Data.IDataRecord][4]  
 The data record.
 
 #### *i*
-Type: [System.Int32][5]  
+Type: [System.Int32][5]  
 The zero-based column ordinal.
 
 ### Return Value
-Type: [Nullable][1]&lt;[Char][2]>  
+Type: [Nullable][1]&lt;[Char][2]>  
 The value of the column.
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDataRecord][4]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][6] or [Extension Methods (C# Programming Guide)][7].

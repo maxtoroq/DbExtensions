@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public static Object Param(
-	Array value
+public static Object Param(
+	Array value
 )
 ```
 
 ### Parameters
 
 #### *value*
-Type: [System.Array][3]  
+Type: [System.Array][3]  
 The array parameter.
 
 ### Return Value
-Type: [Object][4]  
+Type: [Object][4]  
 An object to use as parameter with [SqlBuilder][1].
 
 Remarks
@@ -30,7 +30,7 @@ Remarks
 By default, [SqlBuilder][1] treats array parameters as a list of individual parameters. For example:
 
 ```csharp
-var query = new SqlBuilder("SELECT {0} IN ({1})", "a", new string[] { "a", "b", "c" });
+var query = new SqlBuilder("SELECT {0} IN ({1})", "a", new string[] { "a", "b", "c" });
 
 Console.WriteLine(query.ToString());
 ```

@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void Add(
+public void Add(
 	TEntity entity
 )
 ```
@@ -17,8 +17,8 @@ public void Add(
 ### Parameters
 
 #### *entity*
-Type: [TEntity][3]  
-The object whose INSERT command is to be executed. This parameter is named entity for consistency with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't need to have a primary key.
+Type: [TEntity][3]  
+ The object whose INSERT command is to be executed. This parameter is named entity for consistency with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't need to have a primary key.
 
 
 See Also

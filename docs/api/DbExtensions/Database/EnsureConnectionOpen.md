@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public IDisposable EnsureConnectionOpen()
+public IDisposable EnsureConnectionOpen()
 ```
 
 ### Return Value
-Type: [IDisposable][2]  
+Type: [IDisposable][2]  
 An [IDisposable][2] object to close the connection.
 
 Remarks

@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public bool All(
-	string predicate,
-	params Object[] parameters
+public bool All(
+	string predicate,
+	params Object[] parameters
 )
 ```
 
 ### Parameters
 
 #### *predicate*
-Type: [System.String][2]  
+Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
 #### *parameters*
-Type: [System.Object][3][]  
+Type: [System.Object][3][]  
 The parameters to apply to the *predicate*.
 
 ### Return Value
-Type: [Boolean][4]  
+Type: [Boolean][4]  
 true if every element of the set passes the test in the specified *predicate*, or if the set is empty; otherwise, false.
 
 See Also

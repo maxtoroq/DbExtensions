@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder Clone()
+public SqlBuilder Clone()
 ```
 
 ### Return Value
-Type: [SqlBuilder][2]  
+Type: [SqlBuilder][2]  
 A new [SqlBuilder][2] that is equivalent to this instance.
 
 See Also

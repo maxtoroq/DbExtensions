@@ -9,29 +9,29 @@ Syntax
 ------
 
 ```csharp
-public int Affect(
-	SqlBuilder nonQuery,
-	int affectingRecords,
-	AffectedRecordsPolicy affectedMode
+public int Affect(
+	SqlBuilder nonQuery,
+	int affectingRecords,
+	AffectedRecordsPolicy affectedMode
 )
 ```
 
 ### Parameters
 
 #### *nonQuery*
-Type: [DbExtensions.SqlBuilder][2]  
+Type: [DbExtensions.SqlBuilder][2]  
 The non-query command to execute.
 
 #### *affectingRecords*
-Type: [System.Int32][3]  
+Type: [System.Int32][3]  
 The number of records that the command should affect.
 
 #### *affectedMode*
-Type: [DbExtensions.AffectedRecordsPolicy][4]  
+Type: [DbExtensions.AffectedRecordsPolicy][4]  
 The criteria for validating the affected records value.
 
 ### Return Value
-Type: [Int32][3]  
+Type: [Int32][3]  
 The number of affected records.
 
 Exceptions

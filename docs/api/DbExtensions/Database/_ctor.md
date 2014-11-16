@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public Database()
+public Database()
 ```
 
 

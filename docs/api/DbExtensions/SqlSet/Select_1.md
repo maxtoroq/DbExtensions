@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public SqlSet Select(
-	string columnList,
-	params Object[] parameters
+public SqlSet Select(
+	string columnList,
+	params Object[] parameters
 )
 ```
 
 ### Parameters
 
 #### *columnList*
-Type: [System.String][2]  
+Type: [System.String][2]  
 The list of columns to select.
 
 #### *parameters*
-Type: [System.Object][3][]  
+Type: [System.Object][3][]  
 The parameters to apply to the *columnList*.
 
 ### Return Value
-Type: [SqlSet][4]  
+Type: [SqlSet][4]  
 A new [SqlSet][4].
 
 See Also

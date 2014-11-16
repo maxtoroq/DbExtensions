@@ -9,15 +9,15 @@ Syntax
 ------
 
 ```csharp
-public void RemoveKey(
-	Object id
+public void RemoveKey(
+	Object id
 )
 ```
 
 ### Parameters
 
 #### *id*
-Type: [System.Object][3]  
+Type: [System.Object][3]  
 The primary key value.
 
 

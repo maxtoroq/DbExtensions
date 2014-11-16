@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public static Nullable<bool> GetNullableBoolean(
-	this IDataRecord record,
-	string name
+public static Nullable<bool> GetNullableBoolean(
+	this IDataRecord record,
+	string name
 )
 ```
 
 ### Parameters
 
 #### *record*
-Type: [System.Data.IDataRecord][4]  
+Type: [System.Data.IDataRecord][4]  
 The data record.
 
 #### *name*
-Type: [System.String][5]  
+Type: [System.String][5]  
 The name of the column to find.
 
 ### Return Value
-Type: [Nullable][1]&lt;[Boolean][2]>  
+Type: [Nullable][1]&lt;[Boolean][2]>  
 The value of the column.
 ### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDataRecord][4]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][6] or [Extension Methods (C# Programming Guide)][7].

@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder GROUP_BY()
+public SqlBuilder GROUP_BY()
 ```
 
 ### Return Value
-Type: [SqlBuilder][4]  
+Type: [SqlBuilder][4]  
 A reference to this instance after the operation has completed.
 
 See Also

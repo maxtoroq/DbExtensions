@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder UPDATE_SET_WHERE(
+public SqlBuilder UPDATE_SET_WHERE(
 	TEntity entity,
-	ConcurrencyConflictPolicy conflictPolicy
+	ConcurrencyConflictPolicy conflictPolicy
 )
 ```
 
 ### Parameters
 
 #### *entity*
-Type: [TEntity][2]  
+Type: [TEntity][2]  
 The entity whose UPDATE command is to be created.
 
 #### *conflictPolicy*
-Type: [DbExtensions.ConcurrencyConflictPolicy][3]  
-The [ConcurrencyConflictPolicy][3] that specifies what columns to include in the UPDATE predicate.
+Type: [DbExtensions.ConcurrencyConflictPolicy][3]  
+ The [ConcurrencyConflictPolicy][3] that specifies what columns to include in the UPDATE predicate.
 
 ### Return Value
-Type: [SqlBuilder][4]  
+Type: [SqlBuilder][4]  
 The UPDATE command for *entity*.
 
 See Also

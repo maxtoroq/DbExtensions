@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public static SqlBuilder UPDATE(
-	string body
+public static SqlBuilder UPDATE(
+	string body
 )
 ```
 
 ### Parameters
 
 #### *body*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The body of the UPDATE clause.
 
 ### Return Value
-Type: [SqlBuilder][1]  
+Type: [SqlBuilder][1]  
  A new [SqlBuilder][1] after calling [UPDATE(String)][4]. 
 
 See Also

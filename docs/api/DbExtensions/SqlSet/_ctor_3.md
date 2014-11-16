@@ -9,25 +9,25 @@ Syntax
 ------
 
 ```csharp
-public SqlSet(
-	SqlBuilder definingQuery,
-	Type resultType,
-	DbConnection connection
+public SqlSet(
+	SqlBuilder definingQuery,
+	Type resultType,
+	DbConnection connection
 )
 ```
 
 ### Parameters
 
 #### *definingQuery*
-Type: [DbExtensions.SqlBuilder][3]  
+Type: [DbExtensions.SqlBuilder][3]  
 The SQL query that will be the source of data for the set.
 
 #### *resultType*
-Type: [System.Type][4]  
+Type: [System.Type][4]  
 The type of objects to map the results to.
 
 #### *connection*
-Type: [System.Data.Common.DbConnection][5]  
+Type: [System.Data.Common.DbConnection][5]  
 The database connection.
 
 

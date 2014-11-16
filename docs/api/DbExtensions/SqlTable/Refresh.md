@@ -9,15 +9,15 @@ Syntax
 ------
 
 ```csharp
-public void Refresh(
-	Object entity
+public void Refresh(
+	Object entity
 )
 ```
 
 ### Parameters
 
 #### *entity*
-Type: [System.Object][2]  
+Type: [System.Object][2]  
 The entity to refresh.
 
 

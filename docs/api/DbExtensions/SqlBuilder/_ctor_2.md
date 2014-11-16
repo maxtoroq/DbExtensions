@@ -9,20 +9,20 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder(
-	string format,
-	params Object[] args
+public SqlBuilder(
+	string format,
+	params Object[] args
 )
 ```
 
 ### Parameters
 
 #### *format*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The SQL format string.
 
 #### *args*
-Type: [System.Object][4][]  
+Type: [System.Object][4][]  
 The array of parameters.
 
 

@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public bool Any(
-	string predicate
+public bool Any(
+	string predicate
 )
 ```
 
 ### Parameters
 
 #### *predicate*
-Type: [System.String][2]  
+Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
 ### Return Value
-Type: [Boolean][3]  
+Type: [Boolean][3]  
 true if any elements in the set pass the test in the specified *predicate*; otherwise, false.
 
 See Also

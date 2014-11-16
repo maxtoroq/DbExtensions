@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public IEnumerable<Object> Map(
-	SqlBuilder query
+public IEnumerable<Object> Map(
+	SqlBuilder query
 )
 ```
 
 ### Parameters
 
 #### *query*
-Type: [DbExtensions.SqlBuilder][2]  
+Type: [DbExtensions.SqlBuilder][2]  
 The query.
 
 ### Return Value
-Type: [IEnumerable][3]&lt;[Object][4]>  
+Type: [IEnumerable][3]&lt;[Object][4]>  
 The results of the query as dynamic objects.
 
 See Also

@@ -9,26 +9,25 @@ Syntax
 ------
 
 ```csharp
-public IEnumerable<TResult> Map<TResult>(
-	SqlBuilder query
+public IEnumerable<TResult> Map<TResult>(
+	SqlBuilder query
 )
+
 ```
 
 ### Parameters
 
 #### *query*
-Type: [DbExtensions.SqlBuilder][2]  
+Type: [DbExtensions.SqlBuilder][2]  
 The query.
 
-
-Type Parameters
----------------
+### Type Parameters
 
 #### *TResult*
 The type of objects to map the results to.
 
 ### Return Value
-Type: [IEnumerable][3]&lt;**TResult**>  
+Type: [IEnumerable][3]&lt;**TResult**>  
 The results of the query as TResult objects.
 
 See Also

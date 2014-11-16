@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder Append(
-	SqlBuilder sql
+public SqlBuilder Append(
+	SqlBuilder sql
 )
 ```
 
 ### Parameters
 
 #### *sql*
-Type: [DbExtensions.SqlBuilder][2]  
+Type: [DbExtensions.SqlBuilder][2]  
 A [SqlBuilder][2].
 
 ### Return Value
-Type: [SqlBuilder][2]  
+Type: [SqlBuilder][2]  
 A reference to this instance after the append operation has completed.
 
 See Also

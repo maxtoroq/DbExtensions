@@ -9,21 +9,21 @@ Syntax
 ------
 
 ```csharp
-public void RemoveRange(
+public void RemoveRange(
 	Object[] entities,
-	ConcurrencyConflictPolicy conflictPolicy
+	ConcurrencyConflictPolicy conflictPolicy
 )
 ```
 
 ### Parameters
 
 #### *entities*
-Type: [System.Object][2][]  
+Type: [System.Object][2][]  
 The entities whose DELETE commands are to be executed.
 
 #### *conflictPolicy*
-Type: [DbExtensions.ConcurrencyConflictPolicy][3]  
-The [ConcurrencyConflictPolicy][3] that specifies what columns to check for in the DELETE predicate, and how to validate the affected records value.
+Type: [DbExtensions.ConcurrencyConflictPolicy][3]  
+ The [ConcurrencyConflictPolicy][3] that specifies what columns to check for in the DELETE predicate, and how to validate the affected records value.
 
 
 See Also

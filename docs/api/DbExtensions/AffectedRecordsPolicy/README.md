@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public enum AffectedRecordsPolicy
+public enum AffectedRecordsPolicy
 ```
 
 

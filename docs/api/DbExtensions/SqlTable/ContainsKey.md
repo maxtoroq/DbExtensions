@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public bool ContainsKey(
-	Object id
+public bool ContainsKey(
+	Object id
 )
 ```
 
 ### Parameters
 
 #### *id*
-Type: [System.Object][2]  
+Type: [System.Object][2]  
 The primary key value.
 
 ### Return Value
-Type: [Boolean][3]  
+Type: [Boolean][3]  
 true if the primary key value exists in the database; otherwise false.
 
 See Also

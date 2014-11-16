@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public DbCommand CreateCommand(
-	string commandText
+public DbCommand CreateCommand(
+	string commandText
 )
 ```
 
 ### Parameters
 
 #### *commandText*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The SQL command.
 
 ### Return Value
-Type: [DbCommand][1]  
+Type: [DbCommand][1]  
  A new [DbCommand][1] object whose [CommandText][4] property is initialized with the *commandText* parameter. 
 
 Remarks

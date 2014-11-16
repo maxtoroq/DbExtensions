@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlSet Cast(
-	Type resultType
+public SqlSet Cast(
+	Type resultType
 )
 ```
 
 ### Parameters
 
 #### *resultType*
-Type: [System.Type][2]  
+Type: [System.Type][2]  
 The type to cast the elements of the set to.
 
 ### Return Value
-Type: [SqlSet][3]  
+Type: [SqlSet][3]  
 A new [SqlSet][3] that contains each element of the current set cast to the specified type.
 
 See Also

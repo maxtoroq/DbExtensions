@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public int Count()
+public int Count()
 ```
 
 ### Return Value
-Type: [Int32][2]  
+Type: [Int32][2]  
 The number of elements in the set.
 
 Exceptions

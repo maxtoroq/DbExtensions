@@ -13,7 +13,7 @@ public TResult FirstOrDefault()
 ```
 
 ### Return Value
-Type: [TResult][2]  
+Type: [TResult][2]  
 A default value if the set is empty; otherwise, the first element.
 
 See Also

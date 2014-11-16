@@ -15,7 +15,7 @@ Syntax
 ------
 
 ```csharp
-public class SqlBuilder
+public class SqlBuilder
 ```
 
 The **SqlBuilder** type exposes the following members.

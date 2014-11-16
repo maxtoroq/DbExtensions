@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public static DbProviderFactory GetProviderFactory(
-	string providerInvariantName
+public static DbProviderFactory GetProviderFactory(
+	string providerInvariantName
 )
 ```
 
 ### Parameters
 
 #### *providerInvariantName*
-Type: [System.String][4]  
+Type: [System.String][4]  
 The provider invariant name.
 
 ### Return Value
-Type: [DbProviderFactory][1]  
+Type: [DbProviderFactory][1]  
 The requested provider factory.
 
 See Also

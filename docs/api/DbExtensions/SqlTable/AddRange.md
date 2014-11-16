@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void AddRange(
+public void AddRange(
 	IEnumerable<Object> entities
 )
 ```
@@ -17,7 +17,7 @@ public void AddRange(
 ### Parameters
 
 #### *entities*
-Type: [System.Collections.Generic.IEnumerable][3]&lt;[Object][4]>  
+Type: [System.Collections.Generic.IEnumerable][3]&lt;[Object][4]>  
 The entities whose INSERT commands are to be executed.
 
 

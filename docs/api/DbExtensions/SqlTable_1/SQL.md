@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public SqlCommandBuilder<TEntity> SQL { get; }
+public SqlCommandBuilder<TEntity> SQL { get; }
 ```
 
 ### Property Value
-Type: [SqlCommandBuilder][1]&lt;[TEntity][3]>
+Type: [SqlCommandBuilder][1]&lt;[TEntity][3]>
 
 See Also
 --------

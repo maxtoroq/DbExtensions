@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder GROUP_BY(
-	string body
+public SqlBuilder GROUP_BY(
+	string body
 )
 ```
 
 ### Parameters
 
 #### *body*
-Type: [System.String][2]  
+Type: [System.String][2]  
 The body of the GROUP BY clause.
 
 ### Return Value
-Type: [SqlBuilder][3]  
+Type: [SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also

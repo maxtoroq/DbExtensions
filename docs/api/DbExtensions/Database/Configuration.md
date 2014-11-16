@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public DatabaseConfiguration Configuration { get; }
+public DatabaseConfiguration Configuration { get; }
 ```
 
 ### Property Value
-Type: [DatabaseConfiguration][2]
+Type: [DatabaseConfiguration][2]
 
 See Also
 --------

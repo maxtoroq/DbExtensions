@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public DbConnection Connection { get; }
+public DbConnection Connection { get; }
 ```
 
 ### Property Value
-Type: [DbConnection][2]
+Type: [DbConnection][2]
 
 See Also
 --------

@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public IEnumerable<Object> AsEnumerable()
+public IEnumerable<Object> AsEnumerable()
 ```
 
 ### Return Value
-Type: [IEnumerable][2]&lt;[Object][3]>  
+Type: [IEnumerable][2]&lt;[Object][3]>  
 All elements in the set.
 
 See Also

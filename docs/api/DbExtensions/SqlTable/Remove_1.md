@@ -9,21 +9,21 @@ Syntax
 ------
 
 ```csharp
-public void Remove(
-	Object entity,
-	ConcurrencyConflictPolicy conflictPolicy
+public void Remove(
+	Object entity,
+	ConcurrencyConflictPolicy conflictPolicy
 )
 ```
 
 ### Parameters
 
 #### *entity*
-Type: [System.Object][2]  
+Type: [System.Object][2]  
 The entity whose DELETE command is to be executed.
 
 #### *conflictPolicy*
-Type: [DbExtensions.ConcurrencyConflictPolicy][3]  
-The [ConcurrencyConflictPolicy][3] that specifies what columns to check for in the DELETE predicate, and how to validate the affected records value.
+Type: [DbExtensions.ConcurrencyConflictPolicy][3]  
+ The [ConcurrencyConflictPolicy][3] that specifies what columns to check for in the DELETE predicate, and how to validate the affected records value.
 
 
 See Also

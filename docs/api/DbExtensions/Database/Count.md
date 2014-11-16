@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public int Count(
-	SqlBuilder query
+public int Count(
+	SqlBuilder query
 )
 ```
 
 ### Parameters
 
 #### *query*
-Type: [DbExtensions.SqlBuilder][2]  
+Type: [DbExtensions.SqlBuilder][2]  
 The query whose count is to be computed.
 
 ### Return Value
-Type: [Int32][3]  
+Type: [Int32][3]  
 The number of results the *query* would return.
 
 See Also

@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public static DbConnection CreateConnection(
-	string connectionString
+public static DbConnection CreateConnection(
+	string connectionString
 )
 ```
 
 ### Parameters
 
 #### *connectionString*
-Type: [System.String][2]  
+Type: [System.String][2]  
 The connection string.
 
 ### Return Value
-Type: [DbConnection][3]  
+Type: [DbConnection][3]  
 The requested connection.
 
 See Also

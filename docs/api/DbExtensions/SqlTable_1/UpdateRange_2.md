@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void UpdateRange(
+public void UpdateRange(
 	params TEntity[] entities
 )
 ```
@@ -17,7 +17,7 @@ public void UpdateRange(
 ### Parameters
 
 #### *entities*
-Type: [TEntity][3][]  
+Type: [TEntity][3][]  
 The entities whose UPDATE commands are to be executed.
 
 

@@ -9,15 +9,15 @@ Syntax
 ------
 
 ```csharp
-public Database(
-	string connectionString
+public Database(
+	string connectionString
 )
 ```
 
 ### Parameters
 
 #### *connectionString*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The connection string.
 
 

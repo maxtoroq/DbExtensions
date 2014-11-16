@@ -13,7 +13,7 @@ public TResult First()
 ```
 
 ### Return Value
-Type: [TResult][2]  
+Type: [TResult][2]  
 The first element in the set.
 
 Exceptions

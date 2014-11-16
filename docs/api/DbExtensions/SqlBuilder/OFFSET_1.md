@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public SqlBuilder OFFSET(
-	int startIndex
+public SqlBuilder OFFSET(
+	int startIndex
 )
 ```
 
 ### Parameters
 
 #### *startIndex*
-Type: [System.Int32][2]  
+Type: [System.Int32][2]  
 The value to use as the body of the OFFSET clause.
 
 ### Return Value
-Type: [SqlBuilder][3]  
+Type: [SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also

@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public bool Contains(
-	Object entity
+public bool Contains(
+	Object entity
 )
 ```
 
 ### Parameters
 
 #### *entity*
-Type: [System.Object][2]  
+Type: [System.Object][2]  
 The entity whose existance is to be checked.
 
 ### Return Value
-Type: [Boolean][3]  
+Type: [Boolean][3]  
 true if the primary key value exists in the database; otherwise false.
 
 See Also

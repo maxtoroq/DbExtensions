@@ -9,20 +9,20 @@ Syntax
 ------
 
 ```csharp
-public Database(
-	string connectionString,
-	MetaModel mapping
+public Database(
+	string connectionString,
+	MetaModel mapping
 )
 ```
 
 ### Parameters
 
 #### *connectionString*
-Type: [System.String][3]  
+Type: [System.String][3]  
 The connection string.
 
 #### *mapping*
-Type: [System.Data.Linq.Mapping.MetaModel][4]  
+Type: [System.Data.Linq.Mapping.MetaModel][4]  
 The meta model.
 
 

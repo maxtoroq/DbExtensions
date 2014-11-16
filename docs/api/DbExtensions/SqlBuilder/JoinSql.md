@@ -9,24 +9,24 @@ Syntax
 ------
 
 ```csharp
-public static SqlBuilder JoinSql(
-	string separator,
-	params SqlBuilder[] values
+public static SqlBuilder JoinSql(
+	string separator,
+	params SqlBuilder[] values
 )
 ```
 
 ### Parameters
 
 #### *separator*
-Type: [System.String][1]  
+Type: [System.String][1]  
 The string to use as a separator.
 
 #### *values*
-Type: [DbExtensions.SqlBuilder][2][]  
+Type: [DbExtensions.SqlBuilder][2][]  
 An array of [SqlBuilder][2].
 
 ### Return Value
-Type: [SqlBuilder][2]  
+Type: [SqlBuilder][2]  
  A [SqlBuilder][2] consisting of the elements of *values* interspersed with the *separator* string. 
 
 See Also

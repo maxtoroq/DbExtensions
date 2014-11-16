@@ -9,19 +9,19 @@ Syntax
 ------
 
 ```csharp
-public DbCommand ToCommand(
-	DbConnection connection
+public DbCommand ToCommand(
+	DbConnection connection
 )
 ```
 
 ### Parameters
 
 #### *connection*
-Type: [System.Data.Common.DbConnection][6]  
+Type: [System.Data.Common.DbConnection][6]  
 The connection used to create the command.
 
 ### Return Value
-Type: [DbCommand][1]  
+Type: [DbCommand][1]  
  A new [DbCommand][1] object whose [CommandText][2] property is initialized with the SQL representation of this instance, and whose [Parameters][3] property is initialized with the values from [ParameterValues][4] of this instance. 
 
 See Also
