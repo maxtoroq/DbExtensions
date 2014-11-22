@@ -210,7 +210,8 @@ public IEnumerable<Product> GetProductsByCategory(int categoryId, int skip = 0, 
       .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID")
       .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID");
 
-   return this.db.From<Product>(query)
+   return this.db
+      .From<Product>(query)
       .Where("CategoryID = {0}", categoryId)
       .OrderBy("ProductID DESC")
       .Skip(skip)

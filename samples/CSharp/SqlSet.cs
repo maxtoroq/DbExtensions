@@ -53,7 +53,8 @@ namespace Samples.CSharp {
 
       public IEnumerable Top5ProductsWithLowestStock() {
          
-         return products.Where("UnitsInStock > 0")
+         return products
+            .Where("UnitsInStock > 0")
             .OrderBy("UnitsInStock")
             .Take(5)
             .Select(r => new { Name = r.GetString(0), UnitsInStock = r.GetInt16(1) }, "ProductName, UnitsInStock")
@@ -62,7 +63,8 @@ namespace Samples.CSharp {
 
       public IEnumerable<string> NamesOfOutOfStockProducts() {
          
-         return products.Where("UnitsInStock = 0")
+         return products
+            .Where("UnitsInStock = 0")
             .Select(r => r.GetString(0), "ProductName")
             .AsEnumerable();
       }

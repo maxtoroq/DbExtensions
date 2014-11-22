@@ -37,7 +37,8 @@ type SqlSetSamples(conn : DbConnection, log : TextWriter) =
 
    member this.Top5ProductsWithLowestStock() =
       
-      products.Where("UnitsInStock > 0")
+      products
+         .Where("UnitsInStock > 0")
          .OrderBy("UnitsInStock")
          .Take(5)
          .Select((fun r -> (r.GetString(0), r.GetInt16(1))), "ProductName, UnitsInStock")
@@ -45,7 +46,8 @@ type SqlSetSamples(conn : DbConnection, log : TextWriter) =
 
    member this.NamesOfOutOfStockProducts() =
          
-      products.Where("UnitsInStock = 0")
+      products
+         .Where("UnitsInStock = 0")
          .Select((fun r -> r.GetString(0)), "ProductName")
          .AsEnumerable()
    
