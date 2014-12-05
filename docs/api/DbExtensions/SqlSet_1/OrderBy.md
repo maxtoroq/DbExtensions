@@ -14,20 +14,20 @@ public SqlSet<TResult> OrderBy(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *columnList*
+##### *columnList*
 Type: [System.String][2]  
 The list of columns to base the sort on.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][3]&lt;[TResult][3]>  
 A new [SqlSet&lt;TResult>][3] whose elements are sorted according to *columnList*.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 

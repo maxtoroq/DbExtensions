@@ -15,17 +15,17 @@ public DbCommand CreateCommand(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *commandText*
+##### *commandText*
 Type: [System.String][5]  
 The command text.
 
-#### *parameters*
+##### *parameters*
 Type: [System.Object][6][]  
  The array of parameters to be passed to the command. Note the following behavior: If the number of objects in the array is less than the highest number identified in the command string, an exception is thrown. If the array contains objects that are not referenced in the command string, no exception is thrown. If a parameter is null, it is converted to DBNull.Value.
 
-### Return Value
+#### Return Value
 Type: [DbCommand][1]  
  A new [DbCommand][1] object whose [CommandText][7] property is initialized with the *commandText* parameter, and whose [Parameters][3] property is initialized with the values from the *parameters* parameter. 
 
@@ -36,7 +36,7 @@ Remarks
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][9]  
 [DbExtensions Namespace][4]  
 [Extensions.CreateCommand(DbConnection, String, Object[])][10]  

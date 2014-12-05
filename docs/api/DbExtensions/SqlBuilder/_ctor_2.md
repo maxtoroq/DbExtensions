@@ -15,13 +15,13 @@ public SqlBuilder(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *format*
+##### *format*
 Type: [System.String][3]  
 The SQL format string.
 
-#### *args*
+##### *args*
 Type: [System.Object][4][]  
 The array of parameters.
 
@@ -29,7 +29,7 @@ The array of parameters.
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][1]  
 [DbExtensions Namespace][2]  
 

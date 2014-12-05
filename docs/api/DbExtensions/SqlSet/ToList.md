@@ -12,14 +12,14 @@ Syntax
 public List<Object> ToList()
 ```
 
-### Return Value
+#### Return Value
 Type: [List][2]&lt;[Object][3]>  
 A List&lt;object> that contains elements from the set.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 

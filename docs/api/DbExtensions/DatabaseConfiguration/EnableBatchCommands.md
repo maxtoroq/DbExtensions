@@ -12,13 +12,13 @@ Syntax
 public bool EnableBatchCommands { get; set; }
 ```
 
-### Property Value
+#### Property Value
 Type: [Boolean][2]
 
 See Also
 --------
 
-### Reference
+#### Reference
 [DatabaseConfiguration Class][3]  
 [DbExtensions Namespace][1]  
 

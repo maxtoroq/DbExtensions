@@ -14,20 +14,20 @@ public int Execute(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *commandText*
+##### *commandText*
 Type: [System.String][4]  
 The command text.
 
-### Return Value
+#### Return Value
 Type: [Int32][5]  
 The number of affected records.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][6]  
 [DbExtensions Namespace][3]  
 

@@ -15,24 +15,24 @@ public static SqlBuilder JoinSql(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *separator*
+##### *separator*
 Type: [System.String][4]  
 The string to use as a separator.
 
-#### *values*
+##### *values*
 Type: [System.Collections.Generic.IEnumerable][1]&lt;[SqlBuilder][2]>  
 A collection that contains the [SqlBuilder][2] objects to concatenate.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][2]  
  A [SqlBuilder][2] that consists of the members of *values* delimited by the *separator* string. If *values* has no members, the method returns an empty [SqlBuilder][2]. 
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][2]  
 [DbExtensions Namespace][3]  
 

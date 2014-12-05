@@ -12,7 +12,7 @@ Syntax
 public long LongCount()
 ```
 
-### Return Value
+#### Return Value
 Type: [Int64][1]  
 The number of elements in the set.
 
@@ -27,7 +27,7 @@ Exception              | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][5]  
 [DbExtensions Namespace][2]  
 

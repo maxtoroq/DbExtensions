@@ -26,7 +26,7 @@ Member name            | Value | Description
 See Also
 --------
 
-### Reference
+#### Reference
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

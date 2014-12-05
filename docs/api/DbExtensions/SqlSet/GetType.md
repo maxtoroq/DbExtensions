@@ -12,14 +12,14 @@ Syntax
 public Type GetType()
 ```
 
-### Return Value
+#### Return Value
 Type: [Type][2]  
 The type for the current set.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

@@ -12,7 +12,7 @@ Syntax
 public TResult First()
 ```
 
-### Return Value
+#### Return Value
 Type: [TResult][2]  
 The first element in the set.
 
@@ -27,7 +27,7 @@ Exception                      | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet&lt;TResult> Class][2]  
 [DbExtensions Namespace][1]  
 

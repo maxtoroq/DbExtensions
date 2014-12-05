@@ -14,20 +14,20 @@ public bool Any(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *predicate*
+##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
-### Return Value
+#### Return Value
 Type: [Boolean][3]  
 true if any elements in the set pass the test in the specified *predicate*; otherwise, false.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 

@@ -15,24 +15,24 @@ public SqlBuilder Append(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *format*
+##### *format*
 Type: [System.String][2]  
 A SQL format string.
 
-#### *args*
+##### *args*
 Type: [System.Object][3][]  
 The array of parameters.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][4]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][4]  
 [DbExtensions Namespace][1]  
 

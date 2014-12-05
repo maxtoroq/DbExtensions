@@ -12,14 +12,14 @@ Syntax
 public IEnumerable<Object> AsEnumerable()
 ```
 
-### Return Value
+#### Return Value
 Type: [IEnumerable][2]&lt;[Object][3]>  
 All elements in the set.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 

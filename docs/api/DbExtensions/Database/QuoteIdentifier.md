@@ -14,20 +14,20 @@ public string QuoteIdentifier(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *unquotedIdentifier*
+##### *unquotedIdentifier*
 Type: [System.String][2]  
 The original unquoted identifier.
 
-### Return Value
+#### Return Value
 Type: [String][2]  
 The quoted version of the identifier. Embedded quotes within the identifier are properly escaped.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][3]  
 [DbExtensions Namespace][1]  
 [DbCommandBuilder.QuoteIdentifier(String)][4]  

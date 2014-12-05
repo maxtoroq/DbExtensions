@@ -12,14 +12,14 @@ Syntax
 public override string ToString()
 ```
 
-### Return Value
+#### Return Value
 Type: [String][1]  
 A string whose value is the same as this instance.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][3]  
 [DbExtensions Namespace][2]  
 

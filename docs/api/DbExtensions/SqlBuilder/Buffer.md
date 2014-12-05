@@ -12,13 +12,13 @@ Syntax
 public StringBuilder Buffer { get; }
 ```
 
-### Property Value
+#### Property Value
 Type: [StringBuilder][1]
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][3]  
 [DbExtensions Namespace][2]  
 

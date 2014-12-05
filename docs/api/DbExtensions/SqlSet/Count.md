@@ -12,7 +12,7 @@ Syntax
 public int Count()
 ```
 
-### Return Value
+#### Return Value
 Type: [Int32][2]  
 The number of elements in the set.
 
@@ -27,7 +27,7 @@ Exception              | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][5]  
 [DbExtensions Namespace][1]  
 

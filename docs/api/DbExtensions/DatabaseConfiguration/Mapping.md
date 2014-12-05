@@ -12,13 +12,13 @@ Syntax
 public MetaModel Mapping { get; }
 ```
 
-### Property Value
+#### Property Value
 Type: [MetaModel][1]
 
 See Also
 --------
 
-### Reference
+#### Reference
 [DatabaseConfiguration Class][3]  
 [DbExtensions Namespace][2]  
 

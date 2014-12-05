@@ -14,13 +14,13 @@ public int AffectOne(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *commandText*
+##### *commandText*
 Type: [System.String][4]  
 The command text.
 
-### Return Value
+#### Return Value
 Type: [Int32][5]  
 The number of affected records.
 
@@ -35,7 +35,7 @@ Exception                   | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][7]  
 [DbExtensions Namespace][3]  
 [Extensions.AffectOne(IDbCommand)][8]  

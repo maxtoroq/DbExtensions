@@ -14,20 +14,20 @@ public DbCommand ToCommand(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *connection*
+##### *connection*
 Type: [System.Data.Common.DbConnection][6]  
 The connection used to create the command.
 
-### Return Value
+#### Return Value
 Type: [DbCommand][1]  
  A new [DbCommand][1] object whose [CommandText][2] property is initialized with the SQL representation of this instance, and whose [Parameters][3] property is initialized with the values from [ParameterValues][4] of this instance. 
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][7]  
 [DbExtensions Namespace][5]  
 [Extensions.CreateCommand(DbConnection, String, Object[])][8]  

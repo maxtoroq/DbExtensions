@@ -14,20 +14,20 @@ public SqlBuilder VALUES(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *args*
+##### *args*
 Type: [System.Object][2][]  
 The parameters of the clause body.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
 

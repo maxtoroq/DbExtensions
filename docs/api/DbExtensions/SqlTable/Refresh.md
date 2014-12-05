@@ -14,9 +14,9 @@ public void Refresh(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entity*
+##### *entity*
 Type: [System.Object][2]  
 The entity to refresh.
 
@@ -24,7 +24,7 @@ The entity to refresh.
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable Class][3]  
 [DbExtensions Namespace][1]  
 

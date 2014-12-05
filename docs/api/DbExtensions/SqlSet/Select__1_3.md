@@ -16,29 +16,29 @@ public SqlSet<TResult> Select<TResult>(
 
 ```
 
-### Parameters
+#### Parameters
 
-#### *columnList*
+##### *columnList*
 Type: [System.String][2]  
 The list of columns that maps to properties on TResult.
 
-#### *parameters*
+##### *parameters*
 Type: [System.Object][3][]  
 The parameters to apply to the *columnList*.
 
-### Type Parameters
+#### Type Parameters
 
-#### *TResult*
+##### *TResult*
 The type that *columnList* maps to.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][4]&lt;**TResult**>  
 A new [SqlSet&lt;TResult>][4].
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][5]  
 [DbExtensions Namespace][1]  
 

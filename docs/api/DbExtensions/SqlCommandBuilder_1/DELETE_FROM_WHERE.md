@@ -14,20 +14,20 @@ public SqlBuilder DELETE_FROM_WHERE(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entity*
+##### *entity*
 Type: [TEntity][3]  
 The entity whose DELETE command is to be created.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][4]  
 The DELETE command for *entity*.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlCommandBuilder&lt;TEntity> Class][3]  
 [DbExtensions Namespace][2]  
 

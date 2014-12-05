@@ -12,14 +12,14 @@ Syntax
 public IEnumerator<Object> GetEnumerator()
 ```
 
-### Return Value
+#### Return Value
 Type: [IEnumerator][2]&lt;[Object][3]>  
 A [IEnumerator&lt;T>][2] for the set.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 

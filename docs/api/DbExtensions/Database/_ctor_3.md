@@ -14,9 +14,9 @@ public Database(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *mapping*
+##### *mapping*
 Type: [System.Data.Linq.Mapping.MetaModel][3]  
 The meta model.
 
@@ -24,7 +24,7 @@ The meta model.
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][1]  
 [DbExtensions Namespace][2]  
 

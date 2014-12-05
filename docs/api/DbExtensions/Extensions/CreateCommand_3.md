@@ -15,26 +15,26 @@ public static DbCommand CreateCommand(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *connection*
+##### *connection*
 Type: [System.Data.Common.DbConnection][4]  
 The connection used to create the command.
 
-#### *commandText*
+##### *commandText*
 Type: [System.String][5]  
 The command text.
 
-### Return Value
+#### Return Value
 Type: [DbCommand][1]  
  A new [DbCommand][1] object whose [CommandText][2] property is initialized with the *commandText* parameter. 
-### Usage Note
+#### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [DbConnection][4]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][6] or [Extension Methods (C# Programming Guide)][7].
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Extensions Class][8]  
 [DbExtensions Namespace][3]  
 [DbConnection.CreateCommand()][9]  

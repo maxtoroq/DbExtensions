@@ -127,10 +127,10 @@ Properties
 See Also
 --------
 
-### Reference
+#### Reference
 [DbExtensions Namespace][2]  
 
-### Other Resources
+#### Other Resources
 [SqlBuilder Tutorial][92]  
 
 [1]: http://msdn.microsoft.com/en-us/library/e5kfa45b

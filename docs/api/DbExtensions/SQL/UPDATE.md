@@ -14,20 +14,20 @@ public static SqlBuilder UPDATE(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *body*
+##### *body*
 Type: [System.String][3]  
 The body of the UPDATE clause.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][1]  
  A new [SqlBuilder][1] after calling [UPDATE(String)][4]. 
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SQL Class][5]  
 [DbExtensions Namespace][2]  
 [SqlBuilder.UPDATE(String)][4]  

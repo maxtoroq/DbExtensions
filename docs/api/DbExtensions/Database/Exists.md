@@ -14,20 +14,20 @@ public bool Exists(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *query*
+##### *query*
 Type: [DbExtensions.SqlBuilder][2]  
 The query whose existance is to be checked.
 
-### Return Value
+#### Return Value
 Type: [Boolean][3]  
 true if *query* contains any rows; otherwise, false.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][4]  
 [DbExtensions Namespace][1]  
 

@@ -14,20 +14,20 @@ public SqlSet Where(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *predicate*
+##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][3]  
 A new [SqlSet][3] that contains elements from the current set that satisfy the condition.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

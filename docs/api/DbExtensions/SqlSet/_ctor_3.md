@@ -16,17 +16,17 @@ public SqlSet(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *definingQuery*
+##### *definingQuery*
 Type: [DbExtensions.SqlBuilder][3]  
 The SQL query that will be the source of data for the set.
 
-#### *resultType*
+##### *resultType*
 Type: [System.Type][4]  
 The type of objects to map the results to.
 
-#### *connection*
+##### *connection*
 Type: [System.Data.Common.DbConnection][5]  
 The database connection.
 
@@ -34,7 +34,7 @@ The database connection.
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][1]  
 [DbExtensions Namespace][2]  
 

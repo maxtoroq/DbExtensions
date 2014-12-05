@@ -14,9 +14,9 @@ public SqlBuilder(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *sql*
+##### *sql*
 Type: [System.String][3]  
 The SQL string.
 
@@ -24,7 +24,7 @@ The SQL string.
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][1]  
 [DbExtensions Namespace][2]  
 

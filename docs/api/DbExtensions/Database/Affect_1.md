@@ -16,21 +16,21 @@ public int Affect(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *nonQuery*
+##### *nonQuery*
 Type: [DbExtensions.SqlBuilder][2]  
 The non-query command to execute.
 
-#### *affectingRecords*
+##### *affectingRecords*
 Type: [System.Int32][3]  
 The number of records that the command should affect.
 
-#### *affectedMode*
+##### *affectedMode*
 Type: [DbExtensions.AffectedRecordsPolicy][4]  
 The criteria for validating the affected records value.
 
-### Return Value
+#### Return Value
 Type: [Int32][3]  
 The number of affected records.
 
@@ -45,7 +45,7 @@ Exception                   | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][6]  
 [DbExtensions Namespace][1]  
 [Extensions.Affect(IDbCommand, Int32, AffectedRecordsPolicy)][7]  

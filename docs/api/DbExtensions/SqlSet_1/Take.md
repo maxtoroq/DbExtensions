@@ -14,20 +14,20 @@ public SqlSet<TResult> Take(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *count*
+##### *count*
 Type: [System.Int32][2]  
 The number of elements to return.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][3]&lt;[TResult][3]>  
 A new [SqlSet][4] that contains the specified number of elements from the start of the current set.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 

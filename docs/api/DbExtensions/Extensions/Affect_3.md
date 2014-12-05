@@ -16,24 +16,24 @@ public static int Affect(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *command*
+##### *command*
 Type: [System.Data.IDbCommand][2]  
 The non-query command to execute.
 
-#### *affectingRecords*
+##### *affectingRecords*
 Type: [System.Int32][3]  
 The number of records that the command must affect, otherwise the transaction is rolledback.
 
-#### *logger*
+##### *logger*
 Type: [System.IO.TextWriter][4]  
 A [TextWriter][4] for logging the whole process.
 
-### Return Value
+#### Return Value
 Type: [Int32][3]  
 The number of affected records.
-### Usage Note
+#### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDbCommand][2]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][5] or [Extension Methods (C# Programming Guide)][6].
 
 Exceptions
@@ -47,7 +47,7 @@ Exception                   | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [Extensions Class][8]  
 [DbExtensions Namespace][1]  
 

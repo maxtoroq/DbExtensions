@@ -14,9 +14,9 @@ public void Add(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entity*
+##### *entity*
 Type: [TEntity][3]  
  The object whose INSERT command is to be executed. This parameter is named entity for consistency with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't need to have a primary key.
 
@@ -24,7 +24,7 @@ Type: [TEntity][3]
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable&lt;TEntity> Class][3]  
 [DbExtensions Namespace][2]  
 

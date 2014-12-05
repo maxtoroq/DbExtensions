@@ -15,24 +15,24 @@ public static SqlBuilder DELETE_FROM(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *format*
+##### *format*
 Type: [System.String][3]  
 The body of the DELETE FROM clause.
 
-#### *args*
+##### *args*
 Type: [System.Object][4][]  
 The parameters of the clause body.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][1]  
  A new [SqlBuilder][1] after calling [DELETE_FROM(String, Object[])][5]. 
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SQL Class][6]  
 [DbExtensions Namespace][2]  
 [SqlBuilder.DELETE_FROM(String, Object[])][5]  

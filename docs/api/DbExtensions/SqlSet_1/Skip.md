@@ -14,20 +14,20 @@ public SqlSet<TResult> Skip(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *count*
+##### *count*
 Type: [System.Int32][2]  
 The number of elements to skip before returning the remaining elements.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][3]&lt;[TResult][3]>  
 A new [SqlSet&lt;TResult>][3] that contains the elements that occur after the specified index in the current set.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 

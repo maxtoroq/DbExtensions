@@ -12,7 +12,7 @@ Syntax
 public TResult SingleOrDefault()
 ```
 
-### Return Value
+#### Return Value
 Type: [TResult][2]  
 The single element of the set, or a default value if the set contains no elements.
 
@@ -27,7 +27,7 @@ Exception                      | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet&lt;TResult> Class][2]  
 [DbExtensions Namespace][1]  
 

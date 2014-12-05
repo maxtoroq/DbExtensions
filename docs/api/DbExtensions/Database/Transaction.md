@@ -12,13 +12,13 @@ Syntax
 public DbTransaction Transaction { get; set; }
 ```
 
-### Property Value
+#### Property Value
 Type: [DbTransaction][1]
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][3]  
 [DbExtensions Namespace][2]  
 

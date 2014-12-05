@@ -15,24 +15,24 @@ public static SqlBuilder WITH(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *subQuery*
+##### *subQuery*
 Type: [DbExtensions.SqlBuilder][1]  
 The sub-query to use as the body of the WITH clause.
 
-#### *alias*
+##### *alias*
 Type: [System.String][3]  
 The alias of the sub-query.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][1]  
  A new [SqlBuilder][1] after calling [WITH(SqlBuilder, String)][4]. 
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SQL Class][5]  
 [DbExtensions Namespace][2]  
 [SqlBuilder.WITH(SqlBuilder, String)][4]  

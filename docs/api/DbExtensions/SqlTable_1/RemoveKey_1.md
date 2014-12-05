@@ -15,13 +15,13 @@ public void RemoveKey(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *id*
+##### *id*
 Type: [System.Object][2]  
 The primary key value.
 
-#### *conflictPolicy*
+##### *conflictPolicy*
 Type: [DbExtensions.ConcurrencyConflictPolicy][3]  
  The [ConcurrencyConflictPolicy][3] that specifies how to validate the affected records value.
 
@@ -29,7 +29,7 @@ Type: [DbExtensions.ConcurrencyConflictPolicy][3]
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable&lt;TEntity> Class][4]  
 [DbExtensions Namespace][1]  
 

@@ -12,14 +12,14 @@ Syntax
 public override int GetHashCode()
 ```
 
-### Return Value
+#### Return Value
 Type: [Int32][2]  
 The hash function for the current set.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

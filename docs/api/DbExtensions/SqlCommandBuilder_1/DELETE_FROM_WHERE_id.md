@@ -14,20 +14,20 @@ public SqlBuilder DELETE_FROM_WHERE_id(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *id*
+##### *id*
 Type: [System.Object][2]  
 The primary key value.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][3]  
 The DELETE command the entity whose primary key matches the *id* parameter.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlCommandBuilder&lt;TEntity> Class][4]  
 [DbExtensions Namespace][1]  
 

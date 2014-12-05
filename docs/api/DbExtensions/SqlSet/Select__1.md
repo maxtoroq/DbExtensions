@@ -16,29 +16,29 @@ public SqlSet<TResult> Select<TResult>(
 
 ```
 
-### Parameters
+#### Parameters
 
-#### *mapper*
+##### *mapper*
 Type: [System.Func][2]&lt;[IDataRecord][3], **TResult**>  
 A custom mapper function that creates TResult instances from the rows in the set.
 
-#### *columnList*
+##### *columnList*
 Type: [System.String][4]  
 The list of columns that are used by *mapper*.
 
-### Type Parameters
+#### Type Parameters
 
-#### *TResult*
+##### *TResult*
 The type that *mapper* returns.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][5]&lt;**TResult**>  
 A new [SqlSet&lt;TResult>][5].
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][6]  
 [DbExtensions Namespace][1]  
 

@@ -21,9 +21,9 @@ public class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
 
 ```
 
-### Type Parameters
+#### Type Parameters
 
-#### *TResult*
+##### *TResult*
 The type of objects to map the results to.
 
 The **SqlSet<TResult>** type exposes the following members.
@@ -107,10 +107,10 @@ Extension Methods
 See Also
 --------
 
-### Reference
+#### Reference
 [DbExtensions Namespace][4]  
 
-### Other Resources
+#### Other Resources
 [SqlSet Tutorial][61]  
 
 [1]: http://msdn.microsoft.com/en-us/library/e5kfa45b

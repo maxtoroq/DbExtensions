@@ -12,7 +12,7 @@ Syntax
 public IDbTransaction EnsureInTransaction()
 ```
 
-### Return Value
+#### Return Value
 Type: [IDbTransaction][2]  
  A virtual transaction you can use to ensure a code block is always executed in a transaction, new or existing. 
 
@@ -50,7 +50,7 @@ void DoSomethingElse() {
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][9]  
 [DbExtensions Namespace][1]  
 

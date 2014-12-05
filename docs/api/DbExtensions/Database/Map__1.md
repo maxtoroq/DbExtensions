@@ -15,25 +15,25 @@ public IEnumerable<TResult> Map<TResult>(
 
 ```
 
-### Parameters
+#### Parameters
 
-#### *query*
+##### *query*
 Type: [DbExtensions.SqlBuilder][2]  
 The query.
 
-### Type Parameters
+#### Type Parameters
 
-#### *TResult*
+##### *TResult*
 The type of objects to map the results to.
 
-### Return Value
+#### Return Value
 Type: [IEnumerable][3]&lt;**TResult**>  
 The results of the query as TResult objects.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][4]  
 [DbExtensions Namespace][1]  
 [Extensions.Map&lt;TResult>(IDbCommand, TextWriter)][5]  

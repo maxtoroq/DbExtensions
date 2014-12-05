@@ -12,13 +12,13 @@ Syntax
 public TextWriter Log { get; set; }
 ```
 
-### Property Value
+#### Property Value
 Type: [TextWriter][2]
 
 See Also
 --------
 
-### Reference
+#### Reference
 [DatabaseConfiguration Class][3]  
 [DbExtensions Namespace][1]  
 

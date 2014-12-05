@@ -12,13 +12,13 @@ Syntax
 public ConcurrencyConflictPolicy UpdateConflictPolicy { get; set; }
 ```
 
-### Property Value
+#### Property Value
 Type: [ConcurrencyConflictPolicy][2]
 
 See Also
 --------
 
-### Reference
+#### Reference
 [DatabaseConfiguration Class][4]  
 [DbExtensions Namespace][3]  
 

@@ -15,13 +15,13 @@ public Database(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *connection*
+##### *connection*
 Type: [System.Data.Common.DbConnection][3]  
 The connection.
 
-#### *mapping*
+##### *mapping*
 Type: [System.Data.Linq.Mapping.MetaModel][4]  
 The meta model.
 
@@ -29,7 +29,7 @@ The meta model.
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][1]  
 [DbExtensions Namespace][2]  
 

@@ -14,20 +14,20 @@ public int Count(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *query*
+##### *query*
 Type: [DbExtensions.SqlBuilder][2]  
 The query whose count is to be computed.
 
-### Return Value
+#### Return Value
 Type: [Int32][3]  
 The number of results the *query* would return.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][4]  
 [DbExtensions Namespace][1]  
 

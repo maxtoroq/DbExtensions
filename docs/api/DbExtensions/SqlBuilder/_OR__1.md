@@ -17,33 +17,33 @@ public SqlBuilder _OR<T>(
 
 ```
 
-### Parameters
+#### Parameters
 
-#### *items*
+##### *items*
 Type: [System.Collections.Generic.IEnumerable][2]&lt;**T**>  
 The collection of objects that contain parameters.
 
-#### *itemFormat*
+##### *itemFormat*
 Type: [System.String][3]  
 The format string.
 
-#### *parametersFactory*
+##### *parametersFactory*
 Type: [System.Func][4]&lt;**T**, [Object][5][]>  
 The delegate that extract parameters for each element in *items*.
 
-### Type Parameters
+#### Type Parameters
 
-#### *T*
+##### *T*
 The type of elements in *items*.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][6]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][6]  
 [DbExtensions Namespace][1]  
 

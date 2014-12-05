@@ -15,24 +15,24 @@ public SqlBuilder DELETE_FROM_WHERE(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entity*
+##### *entity*
 Type: [TEntity][2]  
 The entity whose DELETE command is to be created.
 
-#### *conflictPolicy*
+##### *conflictPolicy*
 Type: [DbExtensions.ConcurrencyConflictPolicy][3]  
  The [ConcurrencyConflictPolicy][3] that specifies what columns to include in the DELETE predicate.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][4]  
 The DELETE command for *entity*.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlCommandBuilder&lt;TEntity> Class][2]  
 [DbExtensions Namespace][1]  
 

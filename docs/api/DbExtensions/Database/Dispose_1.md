@@ -14,9 +14,9 @@ protected virtual void Dispose(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *disposing*
+##### *disposing*
 Type: [System.Boolean][3]  
  true if this method is being called due to a call to [Dispose()][4]; otherwise, false.
 
@@ -24,7 +24,7 @@ Type: [System.Boolean][3]
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][1]  
 [DbExtensions Namespace][2]  
 

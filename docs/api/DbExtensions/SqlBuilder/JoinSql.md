@@ -15,24 +15,24 @@ public static SqlBuilder JoinSql(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *separator*
+##### *separator*
 Type: [System.String][1]  
 The string to use as a separator.
 
-#### *values*
+##### *values*
 Type: [DbExtensions.SqlBuilder][2][]  
 An array of [SqlBuilder][2].
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][2]  
  A [SqlBuilder][2] consisting of the elements of *values* interspersed with the *separator* string. 
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][2]  
 [DbExtensions Namespace][3]  
 

@@ -12,14 +12,14 @@ Syntax
 public TResult[] ToArray()
 ```
 
-### Return Value
+#### Return Value
 Type: [TResult][2][]  
 An array that contains the elements from the set.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet&lt;TResult> Class][2]  
 [DbExtensions Namespace][1]  
 

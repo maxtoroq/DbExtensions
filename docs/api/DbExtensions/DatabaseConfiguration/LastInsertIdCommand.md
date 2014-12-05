@@ -12,7 +12,7 @@ Syntax
 public string LastInsertIdCommand { get; set; }
 ```
 
-### Property Value
+#### Property Value
 Type: [String][2]
 
 Remarks
@@ -22,7 +22,7 @@ Remarks
 See Also
 --------
 
-### Reference
+#### Reference
 [DatabaseConfiguration Class][3]  
 [DbExtensions Namespace][1]  
 

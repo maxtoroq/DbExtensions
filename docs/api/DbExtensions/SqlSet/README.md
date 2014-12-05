@@ -101,10 +101,10 @@ Extension Methods
 See Also
 --------
 
-### Reference
+#### Reference
 [DbExtensions Namespace][4]  
 
-### Other Resources
+#### Other Resources
 [SqlSet Tutorial][64]  
 
 [1]: http://msdn.microsoft.com/en-us/library/e5kfa45b

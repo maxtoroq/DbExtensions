@@ -12,13 +12,13 @@ Syntax
 public SqlCommandBuilder<Object> SQL { get; }
 ```
 
-### Property Value
+#### Property Value
 Type: [SqlCommandBuilder][1]&lt;[Object][3]>
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable Class][4]  
 [DbExtensions Namespace][2]  
 

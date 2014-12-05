@@ -15,17 +15,17 @@ public int AffectOneOrNone(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *commandText*
+##### *commandText*
 Type: [System.String][5]  
 The non-query command to execute.
 
-#### *parameters*
+##### *parameters*
 Type: [System.Object][6][]  
 The parameters to apply to the command text.
 
-### Return Value
+#### Return Value
 Type: [Int32][7]  
 The number of affected records.
 
@@ -40,7 +40,7 @@ Exception                   | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][9]  
 [DbExtensions Namespace][4]  
 [Extensions.AffectOneOrNone(IDbCommand)][10]  

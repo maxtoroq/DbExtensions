@@ -14,13 +14,13 @@ public DbCommand CreateCommand(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *commandText*
+##### *commandText*
 Type: [System.String][3]  
 The SQL command.
 
-### Return Value
+#### Return Value
 Type: [DbCommand][1]  
  A new [DbCommand][1] object whose [CommandText][4] property is initialized with the *commandText* parameter. 
 
@@ -31,7 +31,7 @@ Remarks
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][6]  
 [DbExtensions Namespace][2]  
 

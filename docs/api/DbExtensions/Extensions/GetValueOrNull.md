@@ -15,26 +15,26 @@ public static Object GetValueOrNull(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *record*
+##### *record*
 Type: [System.Data.IDataRecord][3]  
 The data record.
 
-#### *i*
+##### *i*
 Type: [System.Int32][4]  
 The zero-based column ordinal.
 
-### Return Value
+#### Return Value
 Type: [Object][1]  
 The value of the column.
-### Usage Note
+#### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDataRecord][3]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][5] or [Extension Methods (C# Programming Guide)][6].
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Extensions Class][7]  
 [DbExtensions Namespace][2]  
 

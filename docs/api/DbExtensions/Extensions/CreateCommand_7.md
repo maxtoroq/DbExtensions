@@ -16,30 +16,30 @@ public static DbCommand CreateCommand(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *factory*
+##### *factory*
 Type: [System.Data.Common.DbProviderFactory][5]  
 The provider factory used to create the command.
 
-#### *commandText*
+##### *commandText*
 Type: [System.String][6]  
 The command text.
 
-#### *parameters*
+##### *parameters*
 Type: [System.Object][7][]  
  The array of parameters to be passed to the command. Note the following behavior: If the number of objects in the array is less than the highest number identified in the command string, an exception is thrown. If the array contains objects that are not referenced in the command string, no exception is thrown. If a parameter is null, it is converted to DBNull.Value.
 
-### Return Value
+#### Return Value
 Type: [DbCommand][1]  
  A new [DbCommand][1] object whose [CommandText][8] property is initialized with the *commandText* parameter, and whose [Parameters][3] property is initialized with the values from the *parameters* parameter. 
-### Usage Note
+#### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [DbProviderFactory][5]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][9] or [Extension Methods (C# Programming Guide)][10].
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Extensions Class][11]  
 [DbExtensions Namespace][4]  
 

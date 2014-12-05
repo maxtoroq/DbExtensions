@@ -12,14 +12,14 @@ Syntax
 public void Dispose()
 ```
 
-### Implements
+#### Implements
 [IDisposable.Dispose()][3]  
 
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][1]  
 [DbExtensions Namespace][2]  
 

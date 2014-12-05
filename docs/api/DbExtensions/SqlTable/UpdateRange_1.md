@@ -15,13 +15,13 @@ public void UpdateRange(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entities*
+##### *entities*
 Type: [System.Collections.Generic.IEnumerable][2]&lt;[Object][3]>  
 The entities whose UPDATE commands are to be executed.
 
-#### *conflictPolicy*
+##### *conflictPolicy*
 Type: [DbExtensions.ConcurrencyConflictPolicy][4]  
  The [ConcurrencyConflictPolicy][4] that specifies what columns to check for in the UPDATE predicate, and how to validate the affected records value.
 
@@ -29,7 +29,7 @@ Type: [DbExtensions.ConcurrencyConflictPolicy][4]
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable Class][5]  
 [DbExtensions Namespace][1]  
 

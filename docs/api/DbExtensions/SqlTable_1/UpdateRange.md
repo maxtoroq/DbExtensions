@@ -14,9 +14,9 @@ public void UpdateRange(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entities*
+##### *entities*
 Type: [System.Collections.Generic.IEnumerable][3]&lt;[TEntity][4]>  
 The entities whose UPDATE commands are to be executed.
 
@@ -24,7 +24,7 @@ The entities whose UPDATE commands are to be executed.
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable&lt;TEntity> Class][4]  
 [DbExtensions Namespace][2]  
 

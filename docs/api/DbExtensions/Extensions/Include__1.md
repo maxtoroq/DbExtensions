@@ -16,25 +16,25 @@ public static SqlSet<TResult> Include<TResult>(
 
 ```
 
-### Parameters
+#### Parameters
 
-#### *source*
+##### *source*
 Type: [DbExtensions.SqlSet][2]&lt;**TResult**>  
 The source set.
 
-#### *path*
+##### *path*
 Type: [System.String][3]  
 Dot-separated list of related objects to return in the query results.
 
-### Type Parameters
+#### Type Parameters
 
-#### *TResult*
+##### *TResult*
 The type of the elements in the *source* set.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][2]&lt;**TResult**>  
 A new [SqlSet&lt;TResult>][2] with the defined query path.
-### Usage Note
+#### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [SqlSet][2]&lt;**TResult**>. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][4] or [Extension Methods (C# Programming Guide)][5].
 
 Remarks
@@ -44,7 +44,7 @@ Remarks
 See Also
 --------
 
-### Reference
+#### Reference
 [Extensions Class][7]  
 [DbExtensions Namespace][1]  
 

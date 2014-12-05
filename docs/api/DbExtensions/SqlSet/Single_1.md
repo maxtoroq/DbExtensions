@@ -14,13 +14,13 @@ public Object Single(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *predicate*
+##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
-### Return Value
+#### Return Value
 Type: [Object][3]  
 The single element of the set that passes the test in the specified *predicate*.
 
@@ -35,7 +35,7 @@ Exception                      | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][5]  
 [DbExtensions Namespace][1]  
 

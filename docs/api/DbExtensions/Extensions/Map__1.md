@@ -15,27 +15,27 @@ public static IEnumerable<TResult> Map<TResult>(
 
 ```
 
-### Parameters
+#### Parameters
 
-#### *command*
+##### *command*
 Type: [System.Data.IDbCommand][2]  
 The query command.
 
-### Type Parameters
+#### Type Parameters
 
-#### *TResult*
+##### *TResult*
 The type of objects to map the results to.
 
-### Return Value
+#### Return Value
 Type: [IEnumerable][3]&lt;**TResult**>  
 The results of the query as TResult objects.
-### Usage Note
+#### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDbCommand][2]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][4] or [Extension Methods (C# Programming Guide)][5].
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Extensions Class][6]  
 [DbExtensions Namespace][1]  
 

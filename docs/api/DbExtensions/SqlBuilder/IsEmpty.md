@@ -12,13 +12,13 @@ Syntax
 public bool IsEmpty { get; }
 ```
 
-### Property Value
+#### Property Value
 Type: [Boolean][2]
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
 

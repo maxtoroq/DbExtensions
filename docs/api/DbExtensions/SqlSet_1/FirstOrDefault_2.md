@@ -15,24 +15,24 @@ public TResult FirstOrDefault(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *predicate*
+##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
-#### *parameters*
+##### *parameters*
 Type: [System.Object][3][]  
 The parameters to apply to the *predicate*.
 
-### Return Value
+#### Return Value
 Type: [TResult][4]  
  A default value if the set is empty or if no element passes the test specified by *predicate*; otherwise, the first element that passes the test specified by *predicate*. 
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet&lt;TResult> Class][4]  
 [DbExtensions Namespace][1]  
 

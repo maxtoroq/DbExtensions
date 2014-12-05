@@ -12,14 +12,14 @@ Syntax
 public Object[] ToArray()
 ```
 
-### Return Value
+#### Return Value
 Type: [Object][2][]  
 An array that contains the elements from the set.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

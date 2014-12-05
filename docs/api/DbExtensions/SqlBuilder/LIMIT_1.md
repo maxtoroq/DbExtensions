@@ -14,20 +14,20 @@ public SqlBuilder LIMIT(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *maxRecords*
+##### *maxRecords*
 Type: [System.Int32][2]  
 The value to use as the body of the LIMIT clause.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
 

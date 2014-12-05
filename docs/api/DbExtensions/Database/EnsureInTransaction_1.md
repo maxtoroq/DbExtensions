@@ -14,13 +14,13 @@ public IDbTransaction EnsureInTransaction(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *isolationLevel*
+##### *isolationLevel*
 Type: [System.Data.IsolationLevel][2]  
  Specifies the isolation level for the transaction. This parameter is ignored when using an existing transaction.
 
-### Return Value
+#### Return Value
 Type: [IDbTransaction][3]  
  A virtual transaction you can use to ensure a code block is always executed in a transaction, new or existing. 
 
@@ -58,7 +58,7 @@ void DoSomethingElse() {
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][10]  
 [DbExtensions Namespace][1]  
 

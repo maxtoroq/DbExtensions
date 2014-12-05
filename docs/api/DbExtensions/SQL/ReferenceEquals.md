@@ -15,24 +15,24 @@ public static bool ReferenceEquals(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *objectA*
+##### *objectA*
 Type: [System.Object][2]  
 The first object to compare.
 
-#### *objectB*
+##### *objectB*
 Type: [System.Object][2]  
 The second object to compare.
 
-### Return Value
+#### Return Value
 Type: [Boolean][3]  
 true if objA is the same instance as objB or if both are null; otherwise, false.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SQL Class][4]  
 [DbExtensions Namespace][1]  
 

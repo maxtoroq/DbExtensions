@@ -14,13 +14,13 @@ public static Object Param(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *value*
+##### *value*
 Type: [System.Array][3]  
 The array parameter.
 
-### Return Value
+#### Return Value
 Type: [Object][4]  
 An object to use as parameter with [SqlBuilder][1].
 
@@ -54,7 +54,7 @@ NOTE: Use only if you are explicitly specifying the format string, don't use wit
 See Also
 --------
 
-### Reference
+#### Reference
 [SQL Class][7]  
 [DbExtensions Namespace][2]  
 

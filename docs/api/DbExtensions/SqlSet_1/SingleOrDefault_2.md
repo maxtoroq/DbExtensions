@@ -15,24 +15,24 @@ public TResult SingleOrDefault(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *predicate*
+##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
-#### *parameters*
+##### *parameters*
 Type: [System.Object][3][]  
 The parameters to apply to the *predicate*.
 
-### Return Value
+#### Return Value
 Type: [TResult][4]  
 The single element of the set that satisfies the condition, or a default value if no such element is found.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet&lt;TResult> Class][4]  
 [DbExtensions Namespace][1]  
 

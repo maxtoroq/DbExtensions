@@ -12,13 +12,13 @@ Syntax
 public SqlCommandBuilder<TEntity> SQL { get; }
 ```
 
-### Property Value
+#### Property Value
 Type: [SqlCommandBuilder][1]&lt;[TEntity][3]>
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable&lt;TEntity> Class][3]  
 [DbExtensions Namespace][2]  
 

@@ -12,13 +12,13 @@ Syntax
 public string CurrentClause { get; set; }
 ```
 
-### Property Value
+#### Property Value
 Type: [String][2]
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
 

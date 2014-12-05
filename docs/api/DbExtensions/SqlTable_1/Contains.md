@@ -14,20 +14,20 @@ public bool Contains(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entity*
+##### *entity*
 Type: [TEntity][2]  
 The entity whose existance is to be checked.
 
-### Return Value
+#### Return Value
 Type: [Boolean][3]  
 true if the primary key value exists in the database; otherwise false.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable&lt;TEntity> Class][2]  
 [DbExtensions Namespace][1]  
 

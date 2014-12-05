@@ -14,20 +14,20 @@ public IEnumerable<Object> Map(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *query*
+##### *query*
 Type: [DbExtensions.SqlBuilder][2]  
 The query.
 
-### Return Value
+#### Return Value
 Type: [IEnumerable][3]&lt;[Object][4]>  
 The results of the query as dynamic objects.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][5]  
 [DbExtensions Namespace][1]  
 [Extensions.Map(IDbCommand, TextWriter)][6]  

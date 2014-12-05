@@ -15,24 +15,24 @@ public static bool Equals(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *objectA*
+##### *objectA*
 Type: [System.Object][2]  
 The first object to compare.
 
-#### *objectB*
+##### *objectB*
 Type: [System.Object][2]  
 The second object to compare.
 
-### Return Value
+#### Return Value
 Type: [Boolean][3]  
 true if the objects are considered equal; otherwise, false. If both objA and objB are null, the method returns true.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SQL Class][4]  
 [DbExtensions Namespace][1]  
 

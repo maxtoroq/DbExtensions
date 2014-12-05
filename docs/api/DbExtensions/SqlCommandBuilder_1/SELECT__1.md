@@ -14,20 +14,20 @@ public SqlBuilder SELECT_(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *tableAlias*
+##### *tableAlias*
 Type: [System.String][2]  
 The table alias.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][3]  
 The SELECT query for the current table.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlCommandBuilder&lt;TEntity> Class][4]  
 [DbExtensions Namespace][1]  
 

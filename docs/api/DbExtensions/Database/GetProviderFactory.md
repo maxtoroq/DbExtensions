@@ -14,20 +14,20 @@ public static DbProviderFactory GetProviderFactory(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *providerInvariantName*
+##### *providerInvariantName*
 Type: [System.String][4]  
 The provider invariant name.
 
-### Return Value
+#### Return Value
 Type: [DbProviderFactory][1]  
 The requested provider factory.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][5]  
 [DbExtensions Namespace][3]  
 

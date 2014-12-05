@@ -14,20 +14,20 @@ public SqlTable Table(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entityType*
+##### *entityType*
 Type: [System.Type][3]  
 The type of the entity.
 
-### Return Value
+#### Return Value
 Type: [SqlTable][1]  
 The [SqlTable][1] instance for *entityType*.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][4]  
 [DbExtensions Namespace][2]  
 

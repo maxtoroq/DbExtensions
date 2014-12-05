@@ -20,9 +20,9 @@ where TEntity : class
 
 ```
 
-### Type Parameters
+#### Type Parameters
 
-#### *TEntity*
+##### *TEntity*
 The type of the entity to generate commands for.
 
 The **SqlCommandBuilder<TEntity>** type exposes the following members.
@@ -54,7 +54,7 @@ Methods
 See Also
 --------
 
-### Reference
+#### Reference
 [DbExtensions Namespace][4]  
 [SqlTable&lt;TEntity>.SQL][25]  
 [SqlTable.SQL][26]  

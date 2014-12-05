@@ -12,13 +12,13 @@ Syntax
 public DatabaseConfiguration Configuration { get; }
 ```
 
-### Property Value
+#### Property Value
 Type: [DatabaseConfiguration][2]
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][3]  
 [DbExtensions Namespace][1]  
 

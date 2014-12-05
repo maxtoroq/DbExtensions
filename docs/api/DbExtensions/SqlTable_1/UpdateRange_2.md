@@ -14,9 +14,9 @@ public void UpdateRange(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entities*
+##### *entities*
 Type: [TEntity][3][]  
 The entities whose UPDATE commands are to be executed.
 
@@ -24,7 +24,7 @@ The entities whose UPDATE commands are to be executed.
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable&lt;TEntity> Class][3]  
 [DbExtensions Namespace][2]  
 

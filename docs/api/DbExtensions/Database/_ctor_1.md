@@ -14,9 +14,9 @@ public Database(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *connection*
+##### *connection*
 Type: [System.Data.Common.DbConnection][3]  
 The connection.
 
@@ -24,7 +24,7 @@ The connection.
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][1]  
 [DbExtensions Namespace][2]  
 

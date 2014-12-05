@@ -15,24 +15,24 @@ public SqlBuilder FROM(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *subQuery*
+##### *subQuery*
 Type: [DbExtensions.SqlBuilder][2]  
 The sub-query to use as the body of the FROM clause.
 
-#### *alias*
+##### *alias*
 Type: [System.String][3]  
 The alias of the sub-query.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][2]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][2]  
 [DbExtensions Namespace][1]  
 

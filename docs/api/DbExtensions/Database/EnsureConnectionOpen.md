@@ -12,7 +12,7 @@ Syntax
 public IDisposable EnsureConnectionOpen()
 ```
 
-### Return Value
+#### Return Value
 Type: [IDisposable][2]  
 An [IDisposable][2] object to close the connection.
 
@@ -33,7 +33,7 @@ using (db.EnsureConnectionOpen()) {
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][4]  
 [DbExtensions Namespace][3]  
 

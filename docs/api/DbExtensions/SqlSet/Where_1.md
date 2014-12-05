@@ -15,24 +15,24 @@ public SqlSet Where(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *predicate*
+##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
-#### *parameters*
+##### *parameters*
 Type: [System.Object][3][]  
 The parameters to apply to the *predicate*.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][4]  
 A new [SqlSet][4] that contains elements from the current set that satisfy the condition.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 

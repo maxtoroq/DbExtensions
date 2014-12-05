@@ -12,14 +12,14 @@ Syntax
 public SqlBuilder Clone()
 ```
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][2]  
 A new [SqlBuilder][2] that is equivalent to this instance.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][2]  
 [DbExtensions Namespace][1]  
 

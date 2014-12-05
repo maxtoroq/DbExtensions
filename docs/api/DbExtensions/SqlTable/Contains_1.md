@@ -15,24 +15,24 @@ public bool Contains(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entity*
+##### *entity*
 Type: [System.Object][2]  
 The entity whose existance is to be checked.
 
-#### *version*
+##### *version*
 Type: [System.Boolean][3]  
 true to check the version column; otherwise, false.
 
-### Return Value
+#### Return Value
 Type: [Boolean][3]  
 true if the primary key and version combination exists in the database; otherwise, false.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable Class][4]  
 [DbExtensions Namespace][1]  
 

@@ -12,14 +12,14 @@ Syntax
 public SqlBuilder UPDATE()
 ```
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][2]  
 The UPDATE command for the current table.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlCommandBuilder&lt;TEntity> Class][3]  
 [DbExtensions Namespace][1]  
 

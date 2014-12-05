@@ -15,24 +15,24 @@ public SqlBuilder SetNextClause(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *clauseName*
+##### *clauseName*
 Type: [System.String][2]  
 The SQL clause.
 
-#### *separator*
+##### *separator*
 Type: [System.String][2]  
 The clause body separator, used for consecutive appends to the same clause.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][3]  
 A reference to this instance after the operation has completed.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
 [SqlBuilder.NextClause][4]  

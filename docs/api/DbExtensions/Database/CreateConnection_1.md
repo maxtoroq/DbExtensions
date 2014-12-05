@@ -14,20 +14,20 @@ public static DbConnection CreateConnection(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *connectionString*
+##### *connectionString*
 Type: [System.String][2]  
 The connection string.
 
-### Return Value
+#### Return Value
 Type: [DbConnection][3]  
 The requested connection.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][4]  
 [DbExtensions Namespace][1]  
 

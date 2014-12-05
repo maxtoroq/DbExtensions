@@ -14,9 +14,9 @@ public void Remove(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entity*
+##### *entity*
 Type: [System.Object][3]  
 The entity whose DELETE command is to be executed.
 
@@ -24,7 +24,7 @@ The entity whose DELETE command is to be executed.
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable Class][4]  
 [DbExtensions Namespace][2]  
 

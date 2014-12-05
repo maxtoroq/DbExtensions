@@ -14,19 +14,19 @@ where TEntity : class
 
 ```
 
-### Type Parameters
+#### Type Parameters
 
-#### *TEntity*
+##### *TEntity*
 The type of the entity.
 
-### Return Value
+#### Return Value
 Type: [SqlTable][1]&lt;**TEntity**>  
 The [SqlTable&lt;TEntity>][1] instance for TEntity.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][3]  
 [DbExtensions Namespace][2]  
 

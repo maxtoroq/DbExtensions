@@ -14,16 +14,16 @@ public static IDisposable EnsureOpen(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *connection*
+##### *connection*
 Type: [System.Data.IDbConnection][3]  
 The connection.
 
-### Return Value
+#### Return Value
 Type: [IDisposable][1]  
 An [IDisposable][1] object to close the connection.
-### Usage Note
+#### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDbConnection][3]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][4] or [Extension Methods (C# Programming Guide)][5].
 
 Remarks
@@ -43,7 +43,7 @@ using (connection.EnsureOpen()) {
 See Also
 --------
 
-### Reference
+#### Reference
 [Extensions Class][6]  
 [DbExtensions Namespace][2]  
 

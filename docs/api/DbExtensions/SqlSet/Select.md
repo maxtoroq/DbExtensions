@@ -14,20 +14,20 @@ public SqlSet Select(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *columnList*
+##### *columnList*
 Type: [System.String][2]  
 The list of columns to select.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][3]  
 A new [SqlSet][3].
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

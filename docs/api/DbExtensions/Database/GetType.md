@@ -12,14 +12,14 @@ Syntax
 public Type GetType()
 ```
 
-### Return Value
+#### Return Value
 Type: [Type][2]  
 The type for the current object.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][3]  
 [DbExtensions Namespace][1]  
 

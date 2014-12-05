@@ -13,19 +13,19 @@ public SqlSet<TResult> Cast<TResult>()
 
 ```
 
-### Type Parameters
+#### Type Parameters
 
-#### *TResult*
+##### *TResult*
 The type to cast the elements of the set to.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][2]&lt;**TResult**>  
 A new [SqlSet&lt;TResult>][2] that contains each element of the current set cast to the specified type.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

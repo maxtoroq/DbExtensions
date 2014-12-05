@@ -15,17 +15,17 @@ public Object First(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *predicate*
+##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
-#### *parameters*
+##### *parameters*
 Type: [System.Object][3][]  
 The parameters to apply to the *predicate*.
 
-### Return Value
+#### Return Value
 Type: [Object][3]  
 The first element in the set that passes the test in the specified *predicate*.
 
@@ -40,7 +40,7 @@ Exception                      | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][5]  
 [DbExtensions Namespace][1]  
 

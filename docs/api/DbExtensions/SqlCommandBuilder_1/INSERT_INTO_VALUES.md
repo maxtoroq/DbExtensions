@@ -14,20 +14,20 @@ public SqlBuilder INSERT_INTO_VALUES(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entity*
+##### *entity*
 Type: [TEntity][2]  
  The object whose INSERT command is to be created. This parameter is named entity for consistency with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't need to have a primary key.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][3]  
 The INSERT command for *entity*.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlCommandBuilder&lt;TEntity> Class][2]  
 [DbExtensions Namespace][1]  
 

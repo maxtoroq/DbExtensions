@@ -12,13 +12,13 @@ Syntax
 public DbConnection Connection { get; }
 ```
 
-### Property Value
+#### Property Value
 Type: [DbConnection][2]
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][3]  
 [DbExtensions Namespace][1]  
 

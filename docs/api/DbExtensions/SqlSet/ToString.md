@@ -12,14 +12,14 @@ Syntax
 public override string ToString()
 ```
 
-### Return Value
+#### Return Value
 Type: [String][2]  
 The SQL query of the set.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

@@ -14,9 +14,9 @@ public void RemoveRange(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entities*
+##### *entities*
 Type: [System.Collections.Generic.IEnumerable][3]&lt;[Object][4]>  
 The entities whose DELETE commands are to be executed.
 
@@ -24,7 +24,7 @@ The entities whose DELETE commands are to be executed.
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable Class][5]  
 [DbExtensions Namespace][2]  
 

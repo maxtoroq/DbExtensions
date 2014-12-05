@@ -15,24 +15,24 @@ public IEnumerable<Object> Map(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *resultType*
+##### *resultType*
 Type: [System.Type][2]  
 The type of objects to map the results to.
 
-#### *query*
+##### *query*
 Type: [DbExtensions.SqlBuilder][3]  
 The query.
 
-### Return Value
+#### Return Value
 Type: [IEnumerable][4]&lt;[Object][5]>  
 The results of the query as objects of type specified by the *resultType* parameter.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][6]  
 [DbExtensions Namespace][1]  
 [Extensions.Map(IDbCommand, Type, TextWriter)][7]  

@@ -16,29 +16,29 @@ public IEnumerable<TResult> Map<TResult>(
 
 ```
 
-### Parameters
+#### Parameters
 
-#### *query*
+##### *query*
 Type: [DbExtensions.SqlBuilder][2]  
 The query.
 
-#### *mapper*
+##### *mapper*
 Type: [System.Func][3]&lt;[IDataRecord][4], **TResult**>  
 The delegate for creating TResult objects from an [IDataRecord][4] object.
 
-### Type Parameters
+#### Type Parameters
 
-#### *TResult*
+##### *TResult*
 The type of objects to map the results to.
 
-### Return Value
+#### Return Value
 Type: [IEnumerable][5]&lt;**TResult**>  
 The results of the query as TResult objects.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][6]  
 [DbExtensions Namespace][1]  
 [Extensions.Map&lt;TResult>(IDbCommand, Func&lt;IDataRecord, TResult>, TextWriter)][7]  

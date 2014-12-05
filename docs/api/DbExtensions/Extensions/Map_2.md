@@ -15,26 +15,26 @@ public static IEnumerable<Object> Map(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *command*
+##### *command*
 Type: [System.Data.IDbCommand][2]  
 The query command.
 
-#### *resultType*
+##### *resultType*
 Type: [System.Type][3]  
 The type of objects to map the results to.
 
-### Return Value
+#### Return Value
 Type: [IEnumerable][4]&lt;[Object][5]>  
 The results of the query as objects of type specified by the *resultType* parameter.
-### Usage Note
+#### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [IDbCommand][2]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][6] or [Extension Methods (C# Programming Guide)][7].
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Extensions Class][8]  
 [DbExtensions Namespace][1]  
 

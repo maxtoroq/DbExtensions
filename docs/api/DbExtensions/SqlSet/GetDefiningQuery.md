@@ -12,14 +12,14 @@ Syntax
 public SqlBuilder GetDefiningQuery()
 ```
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][2]  
 The SQL query that is the source of data for the set
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

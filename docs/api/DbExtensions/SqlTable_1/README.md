@@ -23,9 +23,9 @@ where TEntity : class
 
 ```
 
-### Type Parameters
+#### Type Parameters
 
-#### *TEntity*
+##### *TEntity*
 The type of the entity.
 
 The **SqlTable<TEntity>** type exposes the following members.
@@ -127,7 +127,7 @@ Properties
 See Also
 --------
 
-### Reference
+#### Reference
 [DbExtensions Namespace][6]  
 [Database.Table&lt;TEntity>()][3]  
 

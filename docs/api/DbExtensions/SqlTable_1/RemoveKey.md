@@ -14,9 +14,9 @@ public void RemoveKey(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *id*
+##### *id*
 Type: [System.Object][3]  
 The primary key value.
 
@@ -24,7 +24,7 @@ The primary key value.
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable&lt;TEntity> Class][4]  
 [DbExtensions Namespace][2]  
 

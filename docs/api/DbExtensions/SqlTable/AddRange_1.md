@@ -14,9 +14,9 @@ public void AddRange(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entities*
+##### *entities*
 Type: [System.Object][3][]  
 The entities whose INSERT commands are to be executed.
 
@@ -24,7 +24,7 @@ The entities whose INSERT commands are to be executed.
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable Class][4]  
 [DbExtensions Namespace][2]  
 

@@ -16,28 +16,28 @@ public SqlBuilder _If(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *condition*
+##### *condition*
 Type: [System.Boolean][2]  
 true to append *format* to the current clause; otherwise, false.
 
-#### *format*
+##### *format*
 Type: [System.String][3]  
 The format string that represents the body of the current clause.
 
-#### *args*
+##### *args*
 Type: [System.Object][4][]  
 The parameters of the clause body.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][5]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][5]  
 [DbExtensions Namespace][1]  
 

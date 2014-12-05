@@ -16,28 +16,28 @@ public SqlSet Select(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *resultType*
+##### *resultType*
 Type: [System.Type][2]  
 The type that *columnList* maps to.
 
-#### *columnList*
+##### *columnList*
 Type: [System.String][3]  
 The list of columns that maps to properties on *resultType*.
 
-#### *parameters*
+##### *parameters*
 Type: [System.Object][4][]  
 The parameters to apply to the *columnList*.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][5]  
 A new [SqlSet][5].
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][5]  
 [DbExtensions Namespace][1]  
 

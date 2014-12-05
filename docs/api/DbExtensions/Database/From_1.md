@@ -15,24 +15,24 @@ public SqlSet From(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *definingQuery*
+##### *definingQuery*
 Type: [DbExtensions.SqlBuilder][3]  
 The SQL query that will be the source of data for the set.
 
-#### *resultType*
+##### *resultType*
 Type: [System.Type][4]  
 The type of objects to map the results to.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][1]  
 A new [SqlSet][1] object.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][5]  
 [DbExtensions Namespace][2]  
 

@@ -14,20 +14,20 @@ public Object Find(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *id*
+##### *id*
 Type: [System.Object][2]  
 The primary key value.
 
-### Return Value
+#### Return Value
 Type: [Object][2]  
  The entity whose primary key matches the *id* parameter, or null if the *id* does not exist. 
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable Class][3]  
 [DbExtensions Namespace][1]  
 

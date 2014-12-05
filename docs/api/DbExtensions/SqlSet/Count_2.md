@@ -15,17 +15,17 @@ public int Count(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *predicate*
+##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
-#### *parameters*
+##### *parameters*
 Type: [System.Object][3][]  
 The parameters to apply to the predicate.
 
-### Return Value
+#### Return Value
 Type: [Int32][4]  
 A number that represents how many elements in the set satisfy the condition in the *predicate*.
 
@@ -40,7 +40,7 @@ Exception              | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][7]  
 [DbExtensions Namespace][1]  
 

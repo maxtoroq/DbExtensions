@@ -14,20 +14,20 @@ public SqlBuilder Append(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *sql*
+##### *sql*
 Type: [DbExtensions.SqlBuilder][2]  
 A [SqlBuilder][2].
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][2]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][2]  
 [DbExtensions Namespace][1]  
 

@@ -14,20 +14,20 @@ public SqlSet Cast(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *resultType*
+##### *resultType*
 Type: [System.Type][2]  
 The type to cast the elements of the set to.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][3]  
 A new [SqlSet][3] that contains each element of the current set cast to the specified type.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

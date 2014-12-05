@@ -15,24 +15,24 @@ public bool All(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *predicate*
+##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
-#### *parameters*
+##### *parameters*
 Type: [System.Object][3][]  
 The parameters to apply to the *predicate*.
 
-### Return Value
+#### Return Value
 Type: [Boolean][4]  
 true if every element of the set passes the test in the specified *predicate*, or if the set is empty; otherwise, false.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][5]  
 [DbExtensions Namespace][1]  
 

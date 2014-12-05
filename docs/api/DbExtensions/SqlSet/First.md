@@ -12,7 +12,7 @@ Syntax
 public Object First()
 ```
 
-### Return Value
+#### Return Value
 Type: [Object][2]  
 The first element in the set.
 
@@ -27,7 +27,7 @@ Exception                      | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 

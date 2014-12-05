@@ -15,25 +15,25 @@ public SqlSet<TResult> From<TResult>(
 
 ```
 
-### Parameters
+#### Parameters
 
-#### *tableName*
+##### *tableName*
 Type: [System.String][3]  
 The name of the table that will be the source of data for the set.
 
-### Type Parameters
+#### Type Parameters
 
-#### *TResult*
+##### *TResult*
 The type of objects to map the results to.
 
-### Return Value
+#### Return Value
 Type: [SqlSet][1]&lt;**TResult**>  
 A new [SqlSet&lt;TResult>][1] object.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][4]  
 [DbExtensions Namespace][2]  
 

@@ -15,24 +15,24 @@ public SqlBuilder _If(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *condition*
+##### *condition*
 Type: [System.Boolean][2]  
 true to append *body* to the current clause; otherwise, false.
 
-#### *body*
+##### *body*
 Type: [System.Int32][3]  
 The body of the current clause.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][4]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][4]  
 [DbExtensions Namespace][1]  
 

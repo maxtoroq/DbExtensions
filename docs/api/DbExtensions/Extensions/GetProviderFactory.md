@@ -14,22 +14,22 @@ public static DbProviderFactory GetProviderFactory(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *connection*
+##### *connection*
 Type: [System.Data.Common.DbConnection][3]  
 The connection.
 
-### Return Value
+#### Return Value
 Type: [DbProviderFactory][1]  
 The [DbProviderFactory][1] associated with the connection.
-### Usage Note
+#### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [DbConnection][3]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][4] or [Extension Methods (C# Programming Guide)][5].
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Extensions Class][6]  
 [DbExtensions Namespace][2]  
 

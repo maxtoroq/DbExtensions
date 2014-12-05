@@ -12,14 +12,14 @@ Syntax
 public bool Any()
 ```
 
-### Return Value
+#### Return Value
 Type: [Boolean][2]  
 true if the sequence contains any elements; otherwise, false.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

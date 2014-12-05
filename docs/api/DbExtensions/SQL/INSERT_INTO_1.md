@@ -15,24 +15,24 @@ public static SqlBuilder INSERT_INTO(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *format*
+##### *format*
 Type: [System.String][3]  
 The body of the INSERT INTO clause.
 
-#### *args*
+##### *args*
 Type: [System.Object][4][]  
 The parameters of the clause body.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][1]  
  A new [SqlBuilder][1] after calling [INSERT_INTO(String, Object[])][5]. 
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SQL Class][6]  
 [DbExtensions Namespace][2]  
 [SqlBuilder.INSERT_INTO(String, Object[])][5]  

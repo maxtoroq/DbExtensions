@@ -12,7 +12,7 @@ Syntax
 public virtual Object LastInsertId()
 ```
 
-### Return Value
+#### Return Value
 Type: [Object][2]  
 The identity value of the last inserted record.
 
@@ -23,7 +23,7 @@ Remarks
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][3]  
 [DbExtensions Namespace][1]  
 

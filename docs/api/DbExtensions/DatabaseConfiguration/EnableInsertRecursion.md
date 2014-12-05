@@ -12,7 +12,7 @@ Syntax
 public bool EnableInsertRecursion { get; set; }
 ```
 
-### Property Value
+#### Property Value
 Type: [Boolean][2]
 
 Remarks
@@ -22,7 +22,7 @@ Remarks
 See Also
 --------
 
-### Reference
+#### Reference
 [DatabaseConfiguration Class][5]  
 [DbExtensions Namespace][1]  
 

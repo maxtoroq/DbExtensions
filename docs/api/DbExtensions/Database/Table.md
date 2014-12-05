@@ -14,20 +14,20 @@ protected internal SqlTable Table(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *metaType*
+##### *metaType*
 Type: [System.Data.Linq.Mapping.MetaType][3]  
 The [MetaType][3] of the entity.
 
-### Return Value
+#### Return Value
 Type: [SqlTable][1]  
 The [SqlTable][1] instance for *metaType*.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][4]  
 [DbExtensions Namespace][2]  
 

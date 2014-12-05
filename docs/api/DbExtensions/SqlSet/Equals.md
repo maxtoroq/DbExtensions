@@ -14,20 +14,20 @@ public override bool Equals(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *obj*
+##### *obj*
 Type: [System.Object][2]  
 The set to compare with the current set.
 
-### Return Value
+#### Return Value
 Type: [Boolean][3]  
 True if the specified set is equal to the current set; otherwise, false.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 

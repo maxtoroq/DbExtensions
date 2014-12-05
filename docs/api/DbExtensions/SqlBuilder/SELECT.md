@@ -12,14 +12,14 @@ Syntax
 public SqlBuilder SELECT()
 ```
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][4]  
 A reference to this instance after the operation has completed.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][4]  
 [DbExtensions Namespace][3]  
 

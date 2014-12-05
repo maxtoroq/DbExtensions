@@ -14,9 +14,9 @@ public void Update(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *entity*
+##### *entity*
 Type: [TEntity][3]  
 The entity whose UPDATE command is to be executed.
 
@@ -24,7 +24,7 @@ The entity whose UPDATE command is to be executed.
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlTable&lt;TEntity> Class][3]  
 [DbExtensions Namespace][2]  
 

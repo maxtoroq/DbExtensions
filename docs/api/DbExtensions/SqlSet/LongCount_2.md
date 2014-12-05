@@ -15,17 +15,17 @@ public long LongCount(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *predicate*
+##### *predicate*
 Type: [System.String][3]  
 A SQL expression to test each row for a condition.
 
-#### *parameters*
+##### *parameters*
 Type: [System.Object][4][]  
 The parameters to apply to the *predicate*.
 
-### Return Value
+#### Return Value
 Type: [Int64][1]  
 A number that represents how many elements in the set satisfy the condition in the *predicate*.
 
@@ -40,7 +40,7 @@ Exception              | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet Class][7]  
 [DbExtensions Namespace][2]  
 

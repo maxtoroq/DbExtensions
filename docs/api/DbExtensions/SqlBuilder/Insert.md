@@ -15,24 +15,24 @@ public SqlBuilder Insert(
 )
 ```
 
-### Parameters
+#### Parameters
 
-#### *index*
+##### *index*
 Type: [System.Int32][2]  
 The position in this instance where insertion begins.
 
-#### *value*
+##### *value*
 Type: [System.String][3]  
 The string to insert.
 
-### Return Value
+#### Return Value
 Type: [SqlBuilder][4]  
 A reference to this instance after the insert operation has completed.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlBuilder Class][4]  
 [DbExtensions Namespace][1]  
 [StringBuilder.Insert(Int32, String)][5]  

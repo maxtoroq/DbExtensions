@@ -12,7 +12,7 @@ Syntax
 public TResult Single()
 ```
 
-### Return Value
+#### Return Value
 Type: [TResult][2]  
 The single element of the set.
 
@@ -27,7 +27,7 @@ Exception                      | Condition
 See Also
 --------
 
-### Reference
+#### Reference
 [SqlSet&lt;TResult> Class][2]  
 [DbExtensions Namespace][1]  
 

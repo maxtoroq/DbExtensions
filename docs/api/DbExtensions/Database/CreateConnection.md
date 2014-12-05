@@ -12,14 +12,14 @@ Syntax
 public static DbConnection CreateConnection()
 ```
 
-### Return Value
+#### Return Value
 Type: [DbConnection][2]  
 The requested connection.
 
 See Also
 --------
 
-### Reference
+#### Reference
 [Database Class][3]  
 [DbExtensions Namespace][1]  
 
