@@ -26,6 +26,8 @@ The quoted version of the identifier. Embedded quotes within the identifier are 
 
 See Also
 --------
+
+### Reference
 [Database Class][3]  
 [DbExtensions Namespace][1]  
 [DbCommandBuilder.QuoteIdentifier(String)][4]  

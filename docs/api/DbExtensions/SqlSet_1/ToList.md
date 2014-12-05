@@ -18,6 +18,8 @@ A List&lt;TResult> that contains elements from the set.
 
 See Also
 --------
+
+### Reference
 [SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 

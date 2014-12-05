@@ -18,6 +18,8 @@ The SQL query of the set.
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

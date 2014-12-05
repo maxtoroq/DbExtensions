@@ -26,6 +26,8 @@ A new [SqlSet][4] that contains the specified number of elements from the start 
 
 See Also
 --------
+
+### Reference
 [SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 

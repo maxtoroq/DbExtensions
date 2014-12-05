@@ -53,6 +53,8 @@ NOTE: Use only if you are explicitly specifying the format string, don't use wit
 
 See Also
 --------
+
+### Reference
 [SQL Class][7]  
 [DbExtensions Namespace][2]  
 

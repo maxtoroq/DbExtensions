@@ -18,6 +18,8 @@ The type for the current object.
 
 See Also
 --------
+
+### Reference
 [Database Class][3]  
 [DbExtensions Namespace][1]  
 

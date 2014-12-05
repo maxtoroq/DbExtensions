@@ -31,6 +31,8 @@ A new [SqlSet][4] that contains elements from the current set that satisfy the c
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 

@@ -31,6 +31,8 @@ Type: [SqlBuilder][2]
 
 See Also
 --------
+
+### Reference
 [SqlBuilder Class][2]  
 [DbExtensions Namespace][3]  
 

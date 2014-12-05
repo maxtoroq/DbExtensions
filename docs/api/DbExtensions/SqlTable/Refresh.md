@@ -23,6 +23,8 @@ The entity to refresh.
 
 See Also
 --------
+
+### Reference
 [SqlTable Class][3]  
 [DbExtensions Namespace][1]  
 

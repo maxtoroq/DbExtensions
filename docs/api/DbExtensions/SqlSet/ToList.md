@@ -18,6 +18,8 @@ A List&lt;object> that contains elements from the set.
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 

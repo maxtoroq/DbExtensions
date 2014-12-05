@@ -31,6 +31,8 @@ true if the objects are considered equal; otherwise, false. If both objA and obj
 
 See Also
 --------
+
+### Reference
 [SQL Class][4]  
 [DbExtensions Namespace][1]  
 

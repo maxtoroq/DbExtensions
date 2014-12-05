@@ -31,6 +31,8 @@ A reference to this instance after the insert operation has completed.
 
 See Also
 --------
+
+### Reference
 [SqlBuilder Class][4]  
 [DbExtensions Namespace][1]  
 [StringBuilder.Insert(Int32, String)][5]  

@@ -26,6 +26,8 @@ A new [SqlSet][3] that contains each element of the current set cast to the spec
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

@@ -30,6 +30,8 @@ Remarks
 
 See Also
 --------
+
+### Reference
 [Database Class][6]  
 [DbExtensions Namespace][2]  
 

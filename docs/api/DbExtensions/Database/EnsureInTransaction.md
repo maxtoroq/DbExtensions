@@ -49,6 +49,8 @@ void DoSomethingElse() {
 
 See Also
 --------
+
+### Reference
 [Database Class][9]  
 [DbExtensions Namespace][1]  
 

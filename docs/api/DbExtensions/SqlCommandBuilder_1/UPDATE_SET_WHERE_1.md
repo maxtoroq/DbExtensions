@@ -31,6 +31,8 @@ The UPDATE command for *entity*.
 
 See Also
 --------
+
+### Reference
 [SqlCommandBuilder&lt;TEntity> Class][2]  
 [DbExtensions Namespace][1]  
 

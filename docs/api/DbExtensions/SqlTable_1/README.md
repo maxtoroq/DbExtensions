@@ -126,6 +126,8 @@ Properties
 
 See Also
 --------
+
+### Reference
 [DbExtensions Namespace][6]  
 [Database.Table&lt;TEntity>()][3]  
 

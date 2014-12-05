@@ -21,6 +21,8 @@ Remarks
 
 See Also
 --------
+
+### Reference
 [DatabaseConfiguration Class][5]  
 [DbExtensions Namespace][1]  
 

@@ -24,6 +24,8 @@ A new [SqlSet&lt;TResult>][2] that contains each element of the current set cast
 
 See Also
 --------
+
+### Reference
 [SqlSet&lt;TResult> Class][2]  
 [DbExtensions Namespace][1]  
 

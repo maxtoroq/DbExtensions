@@ -18,6 +18,8 @@ A string representation of the object.
 
 See Also
 --------
+
+### Reference
 [Database Class][3]  
 [DbExtensions Namespace][1]  
 

@@ -26,6 +26,8 @@ A new [SqlSet][3] that contains the elements that occur after the specified inde
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

@@ -17,6 +17,8 @@ Type: [String][3]
 
 See Also
 --------
+
+### Reference
 [SqlBuilder Class][4]  
 [DbExtensions Namespace][2]  
 

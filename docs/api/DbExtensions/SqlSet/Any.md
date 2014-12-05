@@ -18,6 +18,8 @@ true if the sequence contains any elements; otherwise, false.
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

@@ -26,6 +26,8 @@ A new [SqlSet][3] whose elements are sorted according to *columnList*.
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

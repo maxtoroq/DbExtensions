@@ -30,6 +30,7 @@ namespace DbExtensions {
    /// <summary>
    /// Represents a mutable SQL string.
    /// </summary>
+   /// <seealso href="../../../SqlBuilder.md">SqlBuilder Tutorial</seealso>
    [CLSCompliant(true)]
    [DebuggerDisplay("{Buffer}")]
    public class SqlBuilder {

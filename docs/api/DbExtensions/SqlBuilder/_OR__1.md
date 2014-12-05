@@ -42,6 +42,8 @@ A reference to this instance after the append operation has completed.
 
 See Also
 --------
+
+### Reference
 [SqlBuilder Class][6]  
 [DbExtensions Namespace][1]  
 

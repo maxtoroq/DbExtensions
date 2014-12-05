@@ -18,6 +18,8 @@ A new [SqlBuilder][2] that is equivalent to this instance.
 
 See Also
 --------
+
+### Reference
 [SqlBuilder Class][2]  
 [DbExtensions Namespace][1]  
 

@@ -26,6 +26,8 @@ A new [SqlSet][3] that contains elements from the current set that satisfy the c
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

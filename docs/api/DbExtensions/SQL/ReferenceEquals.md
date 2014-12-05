@@ -31,6 +31,8 @@ true if objA is the same instance as objB or if both are null; otherwise, false.
 
 See Also
 --------
+
+### Reference
 [SQL Class][4]  
 [DbExtensions Namespace][1]  
 

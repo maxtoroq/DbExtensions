@@ -18,6 +18,8 @@ The hash function for the current set.
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

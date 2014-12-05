@@ -116,6 +116,8 @@ Properties
 
 See Also
 --------
+
+### Reference
 [DbExtensions Namespace][5]  
 [Database.Table(Type)][2]  
 

@@ -15,6 +15,8 @@ public Database()
 
 See Also
 --------
+
+### Reference
 [Database Class][1]  
 [DbExtensions Namespace][2]  
 

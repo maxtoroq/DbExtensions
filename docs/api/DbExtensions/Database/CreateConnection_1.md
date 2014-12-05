@@ -26,6 +26,8 @@ The requested connection.
 
 See Also
 --------
+
+### Reference
 [Database Class][4]  
 [DbExtensions Namespace][1]  
 

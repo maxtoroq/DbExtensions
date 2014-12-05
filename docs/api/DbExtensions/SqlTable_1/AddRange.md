@@ -23,6 +23,8 @@ The entities whose INSERT commands are to be executed.
 
 See Also
 --------
+
+### Reference
 [SqlTable&lt;TEntity> Class][4]  
 [DbExtensions Namespace][2]  
 

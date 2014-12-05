@@ -29,6 +29,7 @@ namespace DbExtensions {
    /// <summary>
    /// Represents an immutable, connected SQL query.
    /// </summary>
+   /// <seealso href="../../../SqlSet.md">SqlSet Tutorial</seealso>
    public class SqlSet : ISqlSet<SqlSet, object> {
 
       const string SetAliasPrefix = "dbex_set";
@@ -1225,6 +1226,7 @@ namespace DbExtensions {
    /// Represents an immutable, connected SQL query that maps to <typeparamref name="TResult"/> objects.
    /// </summary>
    /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
+   /// <seealso href="../../../SqlSet.md">SqlSet Tutorial</seealso>
    public class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult> {
 
       readonly Func<IDataRecord, TResult> mapper;

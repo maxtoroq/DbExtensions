@@ -26,6 +26,8 @@ The requested provider factory.
 
 See Also
 --------
+
+### Reference
 [Database Class][5]  
 [DbExtensions Namespace][3]  
 

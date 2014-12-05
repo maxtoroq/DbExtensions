@@ -34,6 +34,8 @@ Exception                   | Condition
 
 See Also
 --------
+
+### Reference
 [Database Class][7]  
 [DbExtensions Namespace][3]  
 [Extensions.AffectOneOrNone(IDbCommand)][8]  

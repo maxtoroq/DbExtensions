@@ -17,6 +17,8 @@ Type: [ConcurrencyConflictPolicy][2]
 
 See Also
 --------
+
+### Reference
 [DatabaseConfiguration Class][4]  
 [DbExtensions Namespace][3]  
 

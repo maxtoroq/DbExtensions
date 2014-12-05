@@ -35,6 +35,8 @@ Remarks
 
 See Also
 --------
+
+### Reference
 [Database Class][9]  
 [DbExtensions Namespace][4]  
 [Extensions.CreateCommand(DbConnection, String, Object[])][10]  

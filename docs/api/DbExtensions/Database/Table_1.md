@@ -26,6 +26,8 @@ The [SqlTable][1] instance for *entityType*.
 
 See Also
 --------
+
+### Reference
 [Database Class][4]  
 [DbExtensions Namespace][2]  
 

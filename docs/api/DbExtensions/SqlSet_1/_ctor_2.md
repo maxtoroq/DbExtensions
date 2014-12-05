@@ -28,6 +28,8 @@ A custom mapper function that creates TResult instances from the rows in the set
 
 See Also
 --------
+
+### Reference
 [SqlSet&lt;TResult> Class][1]  
 [DbExtensions Namespace][2]  
 

@@ -23,6 +23,8 @@ Type: [System.Boolean][3]
 
 See Also
 --------
+
+### Reference
 [Database Class][1]  
 [DbExtensions Namespace][2]  
 

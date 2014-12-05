@@ -31,6 +31,8 @@ A reference to this instance after the operation has completed.
 
 See Also
 --------
+
+### Reference
 [SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
 [SqlBuilder.CurrentClause][4]  

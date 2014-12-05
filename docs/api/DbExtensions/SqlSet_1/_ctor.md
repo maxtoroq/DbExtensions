@@ -23,6 +23,8 @@ The SQL query that will be the source of data for the set.
 
 See Also
 --------
+
+### Reference
 [SqlSet&lt;TResult> Class][1]  
 [DbExtensions Namespace][2]  
 

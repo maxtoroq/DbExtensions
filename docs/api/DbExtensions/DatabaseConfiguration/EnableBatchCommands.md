@@ -17,6 +17,8 @@ Type: [Boolean][2]
 
 See Also
 --------
+
+### Reference
 [DatabaseConfiguration Class][3]  
 [DbExtensions Namespace][1]  
 

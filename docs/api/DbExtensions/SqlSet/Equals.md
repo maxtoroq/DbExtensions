@@ -26,6 +26,8 @@ True if the specified set is equal to the current set; otherwise, false.
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 

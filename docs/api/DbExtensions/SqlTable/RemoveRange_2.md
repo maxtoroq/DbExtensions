@@ -23,6 +23,8 @@ The entities whose DELETE commands are to be executed.
 
 See Also
 --------
+
+### Reference
 [SqlTable Class][4]  
 [DbExtensions Namespace][2]  
 

@@ -23,6 +23,8 @@ Type: [System.Object][3]
 
 See Also
 --------
+
+### Reference
 [SqlTable Class][4]  
 [DbExtensions Namespace][2]  
 

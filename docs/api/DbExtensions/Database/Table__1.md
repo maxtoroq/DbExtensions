@@ -25,6 +25,8 @@ The [SqlTable&lt;TEntity>][1] instance for TEntity.
 
 See Also
 --------
+
+### Reference
 [Database Class][3]  
 [DbExtensions Namespace][2]  
 

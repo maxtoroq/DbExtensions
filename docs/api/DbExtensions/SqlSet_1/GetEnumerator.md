@@ -18,6 +18,8 @@ A [IEnumerator&lt;T>][2] for the set.
 
 See Also
 --------
+
+### Reference
 [SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 

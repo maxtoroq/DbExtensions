@@ -26,6 +26,8 @@ Type: [DbCommand][1]
 
 See Also
 --------
+
+### Reference
 [SqlBuilder Class][7]  
 [DbExtensions Namespace][5]  
 [Extensions.CreateCommand(DbConnection, String, Object[])][8]  

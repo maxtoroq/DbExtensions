@@ -18,6 +18,8 @@ The SQL query that is the source of data for the set
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

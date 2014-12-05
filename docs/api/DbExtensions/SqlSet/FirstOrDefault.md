@@ -18,6 +18,8 @@ A default value if the set is empty; otherwise, the first element.
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 

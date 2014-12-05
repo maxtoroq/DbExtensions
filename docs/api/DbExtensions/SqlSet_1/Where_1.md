@@ -31,6 +31,8 @@ A new [SqlSet&lt;TResult>][4] that contains elements from the current set that s
 
 See Also
 --------
+
+### Reference
 [SqlSet&lt;TResult> Class][4]  
 [DbExtensions Namespace][1]  
 

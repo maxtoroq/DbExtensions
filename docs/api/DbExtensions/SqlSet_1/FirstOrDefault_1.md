@@ -26,6 +26,8 @@ Type: [TResult][3]
 
 See Also
 --------
+
+### Reference
 [SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 

@@ -28,6 +28,8 @@ The type of objects to map the results to.
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][1]  
 [DbExtensions Namespace][2]  
 

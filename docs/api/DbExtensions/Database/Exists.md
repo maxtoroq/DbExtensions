@@ -26,6 +26,8 @@ true if *query* contains any rows; otherwise, false.
 
 See Also
 --------
+
+### Reference
 [Database Class][4]  
 [DbExtensions Namespace][1]  
 

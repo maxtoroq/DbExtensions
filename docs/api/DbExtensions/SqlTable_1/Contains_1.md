@@ -31,6 +31,8 @@ true if the primary key and version combination exists in the database; otherwis
 
 See Also
 --------
+
+### Reference
 [SqlTable&lt;TEntity> Class][2]  
 [DbExtensions Namespace][1]  
 

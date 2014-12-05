@@ -37,6 +37,8 @@ The results of the query as TResult objects.
 
 See Also
 --------
+
+### Reference
 [Database Class][6]  
 [DbExtensions Namespace][1]  
 [Extensions.Map&lt;TResult>(IDbCommand, Func&lt;IDataRecord, TResult>, TextWriter)][7]  

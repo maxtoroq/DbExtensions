@@ -28,6 +28,8 @@ Type: [DbExtensions.ConcurrencyConflictPolicy][3]
 
 See Also
 --------
+
+### Reference
 [SqlTable Class][4]  
 [DbExtensions Namespace][1]  
 

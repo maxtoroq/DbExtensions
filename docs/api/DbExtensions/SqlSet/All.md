@@ -26,6 +26,8 @@ true if every element of the set passes the test in the specified *predicate*, o
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 

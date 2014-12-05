@@ -53,6 +53,8 @@ Methods
 
 See Also
 --------
+
+### Reference
 [DbExtensions Namespace][4]  
 [SqlTable&lt;TEntity>.SQL][25]  
 [SqlTable.SQL][26]  

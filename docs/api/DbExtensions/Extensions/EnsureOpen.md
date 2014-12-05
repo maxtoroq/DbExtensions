@@ -42,6 +42,8 @@ using (connection.EnsureOpen()) {
 
 See Also
 --------
+
+### Reference
 [Extensions Class][6]  
 [DbExtensions Namespace][2]  
 

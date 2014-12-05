@@ -26,6 +26,8 @@ The results of the query as dynamic objects.
 
 See Also
 --------
+
+### Reference
 [Database Class][5]  
 [DbExtensions Namespace][1]  
 [Extensions.Map(IDbCommand, TextWriter)][6]  

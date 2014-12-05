@@ -31,6 +31,8 @@ The results of the query as objects of type specified by the *resultType* parame
 
 See Also
 --------
+
+### Reference
 [Database Class][6]  
 [DbExtensions Namespace][1]  
 [Extensions.Map(IDbCommand, Type, TextWriter)][7]  

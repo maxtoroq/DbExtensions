@@ -31,6 +31,8 @@ A new [SqlSet][4].
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 

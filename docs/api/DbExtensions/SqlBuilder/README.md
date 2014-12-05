@@ -126,7 +126,12 @@ Properties
 
 See Also
 --------
+
+### Reference
 [DbExtensions Namespace][2]  
+
+### Other Resources
+[SqlBuilder Tutorial][92]  
 
 [1]: http://msdn.microsoft.com/en-us/library/e5kfa45b
 [2]: ../README.md
@@ -219,6 +224,7 @@ See Also
 [89]: IsEmpty.md
 [90]: NextClause.md
 [91]: NextSeparator.md
+[92]: ../../../SqlBuilder.md
 [Public method]: ../../_icons/pubmethod.gif "Public method"
 [Static member]: ../../_icons/static.gif "Static member"
 [Public property]: ../../_icons/pubproperty.gif "Public property"

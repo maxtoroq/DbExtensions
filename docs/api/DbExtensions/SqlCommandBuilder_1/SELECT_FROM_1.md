@@ -26,6 +26,8 @@ The SELECT query for the current table.
 
 See Also
 --------
+
+### Reference
 [SqlCommandBuilder&lt;TEntity> Class][4]  
 [DbExtensions Namespace][1]  
 

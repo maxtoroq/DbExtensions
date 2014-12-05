@@ -18,6 +18,8 @@ The DELETE command for the current table.
 
 See Also
 --------
+
+### Reference
 [SqlCommandBuilder&lt;TEntity> Class][3]  
 [DbExtensions Namespace][1]  
 

@@ -26,6 +26,8 @@ A new [SqlSet&lt;TResult>][3] whose elements are sorted according to *columnList
 
 See Also
 --------
+
+### Reference
 [SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 

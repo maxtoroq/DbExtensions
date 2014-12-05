@@ -43,6 +43,8 @@ In Visual Basic and C#, you can call this method as an instance method on any ob
 
 See Also
 --------
+
+### Reference
 [Extensions Class][12]  
 [DbExtensions Namespace][4]  
 

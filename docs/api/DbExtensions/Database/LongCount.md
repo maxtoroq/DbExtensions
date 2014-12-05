@@ -26,6 +26,8 @@ The number of results the *query* would return.
 
 See Also
 --------
+
+### Reference
 [Database Class][4]  
 [DbExtensions Namespace][1]  
 

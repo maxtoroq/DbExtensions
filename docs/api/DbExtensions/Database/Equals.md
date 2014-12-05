@@ -26,6 +26,8 @@ True if the specified object is equal to the current object; otherwise, false.
 
 See Also
 --------
+
+### Reference
 [Database Class][4]  
 [DbExtensions Namespace][1]  
 

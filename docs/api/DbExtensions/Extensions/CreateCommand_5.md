@@ -33,6 +33,8 @@ In Visual Basic and C#, you can call this method as an instance method on any ob
 
 See Also
 --------
+
+### Reference
 [Extensions Class][10]  
 [DbExtensions Namespace][2]  
 [Extensions.CreateCommand(DbProviderFactory, String, Object[])][11]  

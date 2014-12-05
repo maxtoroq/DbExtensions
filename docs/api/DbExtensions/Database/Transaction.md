@@ -17,6 +17,8 @@ Type: [DbTransaction][1]
 
 See Also
 --------
+
+### Reference
 [Database Class][3]  
 [DbExtensions Namespace][2]  
 

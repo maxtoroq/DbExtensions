@@ -31,6 +31,8 @@ A new [SqlSet][1] object.
 
 See Also
 --------
+
+### Reference
 [Database Class][5]  
 [DbExtensions Namespace][2]  
 

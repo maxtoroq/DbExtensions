@@ -23,6 +23,8 @@ The entity whose UPDATE command is to be executed.
 
 See Also
 --------
+
+### Reference
 [SqlTable&lt;TEntity> Class][3]  
 [DbExtensions Namespace][2]  
 

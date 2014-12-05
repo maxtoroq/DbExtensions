@@ -26,6 +26,8 @@ A new [SqlSet&lt;TResult>][3] that contains the elements that occur after the sp
 
 See Also
 --------
+
+### Reference
 [SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 

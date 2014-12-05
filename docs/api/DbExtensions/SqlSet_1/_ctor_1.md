@@ -28,6 +28,8 @@ The database connection.
 
 See Also
 --------
+
+### Reference
 [SqlSet&lt;TResult> Class][1]  
 [DbExtensions Namespace][2]  
 

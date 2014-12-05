@@ -26,6 +26,8 @@ Exception                      | Condition
 
 See Also
 --------
+
+### Reference
 [SqlSet&lt;TResult> Class][2]  
 [DbExtensions Namespace][1]  
 

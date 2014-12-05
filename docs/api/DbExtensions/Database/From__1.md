@@ -32,6 +32,8 @@ A new [SqlSet&lt;TResult>][1] object.
 
 See Also
 --------
+
+### Reference
 [Database Class][4]  
 [DbExtensions Namespace][2]  
 

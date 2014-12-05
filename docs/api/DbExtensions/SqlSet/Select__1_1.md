@@ -42,6 +42,8 @@ A new [SqlSet&lt;TResult>][6].
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][7]  
 [DbExtensions Namespace][1]  
 

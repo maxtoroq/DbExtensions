@@ -31,6 +31,8 @@ true if any elements in the set pass the test in the specified *predicate*; othe
 
 See Also
 --------
+
+### Reference
 [SqlSet Class][5]  
 [DbExtensions Namespace][1]  
 

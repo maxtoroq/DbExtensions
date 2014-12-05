@@ -26,6 +26,8 @@ The DELETE command for *entity*.
 
 See Also
 --------
+
+### Reference
 [SqlCommandBuilder&lt;TEntity> Class][3]  
 [DbExtensions Namespace][2]  
 

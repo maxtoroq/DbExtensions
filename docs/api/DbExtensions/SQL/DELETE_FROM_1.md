@@ -31,6 +31,8 @@ Type: [SqlBuilder][1]
 
 See Also
 --------
+
+### Reference
 [SQL Class][6]  
 [DbExtensions Namespace][2]  
 [SqlBuilder.DELETE_FROM(String, Object[])][5]  

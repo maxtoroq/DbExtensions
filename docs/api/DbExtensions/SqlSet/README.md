@@ -100,7 +100,12 @@ Extension Methods
 
 See Also
 --------
+
+### Reference
 [DbExtensions Namespace][4]  
+
+### Other Resources
+[SqlSet Tutorial][64]  
 
 [1]: http://msdn.microsoft.com/en-us/library/e5kfa45b
 [2]: ../SqlSet_1/README.md
@@ -165,5 +170,6 @@ See Also
 [61]: ../Extensions/Find.md
 [62]: ../Extensions/README.md
 [63]: ../Extensions/Include.md
+[64]: ../../../SqlSet.md
 [Public method]: ../../_icons/pubmethod.gif "Public method"
 [Public Extension Method]: ../../_icons/pubextension.gif "Public Extension Method"
