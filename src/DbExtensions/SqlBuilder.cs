@@ -33,7 +33,7 @@ namespace DbExtensions {
    /// <seealso href="../../../SqlBuilder.md">SqlBuilder Tutorial</seealso>
    [CLSCompliant(true)]
    [DebuggerDisplay("{Buffer}")]
-   public class SqlBuilder {
+   public partial class SqlBuilder {
 
       HashSet<int> _IgnoredColumns;
 
@@ -433,44 +433,6 @@ namespace DbExtensions {
          this.NextSeparator = separator;
 
          return this;
-      }
-
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
-      /// </summary>
-      /// <param name="providerFactory">The provider factory used to create the command.</param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
-      /// </returns>
-      /// <seealso cref="Extensions.CreateCommand(DbProviderFactory, string, object[])"/>
-      public DbCommand ToCommand(DbProviderFactory providerFactory) {
-
-         if (providerFactory == null) throw new ArgumentNullException("providerFactory");
-
-         return providerFactory.CreateCommand(ToString(), this.ParameterValues.ToArray());
-      }
-
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
-      /// </summary>
-      /// <param name="connection">The connection used to create the command.</param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
-      /// </returns>
-      /// <seealso cref="Extensions.CreateCommand(DbConnection, string, object[])"/>
-      public DbCommand ToCommand(DbConnection connection) {
-
-         if (connection == null) throw new ArgumentNullException("connection");
-
-         return connection.CreateCommand(ToString(), this.ParameterValues.ToArray());
       }
 
       /// <summary>
@@ -1333,47 +1295,5 @@ namespace DbExtensions {
       }
 
       #endregion
-   }
-
-   public static partial class Extensions {
-
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object from the specified <paramref name="sqlBuilder"/>.
-      /// </summary>
-      /// <param name="providerFactory">The provider factory used to create the command.</param>
-      /// <param name="sqlBuilder">The <see cref="SqlBuilder"/> that provides the command's text and parameters.</param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
-      /// </returns>
-      /// <seealso cref="Extensions.CreateCommand(DbProviderFactory, string, object[])"/>
-      public static DbCommand CreateCommand(this DbProviderFactory providerFactory, SqlBuilder sqlBuilder) {
-         return sqlBuilder.ToCommand(providerFactory);
-      }
-
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object from the specified <paramref name="sqlBuilder"/>.
-      /// </summary>
-      /// <param name="connection">The connection used to create the command.</param>
-      /// <param name="sqlBuilder">The <see cref="SqlBuilder"/> that provides the command's text and parameters.</param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
-      /// </returns>
-      /// <seealso cref="Extensions.CreateCommand(DbConnection, string, object[])"/>
-      public static DbCommand CreateCommand(this DbConnection connection, SqlBuilder sqlBuilder) {
-         return sqlBuilder.ToCommand(connection);
-      }
-
-      internal static IEnumerable<TResult> Map<TResult>(Func<SqlBuilder, IDbCommand> queryToCommand, SqlBuilder query, Mapper mapper, TextWriter logger) {
-
-         if (query.HasIgnoredColumns) {
-            mapper.IgnoredColumns = new HashSet<int>(query.IgnoredColumns);
-         }
-
-         return Map<TResult>(queryToCommand(query), r => (TResult)mapper.Map(r), logger);
-      }
    }
 }
