@@ -1530,14 +1530,21 @@ namespace DbExtensions {
 
       internal object ConvertMemberValue(MetaDataMember member, object value) {
 
-         if (value != null
-            && member.DbType != null
+         if (value == null) {
+            return value;
+         }
+
+         if (member.DbType != null
             && (member.Type.IsEnum || (member.Type.IsGenericType
                && member.Type.GetGenericTypeDefinition() == typeof(Nullable<>)
                && Nullable.GetUnderlyingType(member.Type).IsEnum))
             && member.DbType.IndexOf("char", StringComparison.OrdinalIgnoreCase) > 0) {
 
             value = Convert.ToString(value, CultureInfo.InvariantCulture);
+         }
+
+         if (member.Type.IsArray) {
+            return SQL.Param((Array)value);
          }
 
          return value;
