@@ -66,6 +66,7 @@
     <Compile Include="Mapping\PocoMappingBehavior.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Querying\SqlBuilderBehavior.cs" />
+    <Compile Include="Querying\SqlCommandBuilderBehavior.cs" />
     <Compile Include="Querying\SqlSetBehaviorForSqlServer.cs" />
     <Compile Include="Querying\SqlSetBehavior.cs" />
     <Compile Include="Querying\SqlSetIncludeBehavior.cs" />
