@@ -65,7 +65,7 @@ namespace DbExtensions {
             Log = this.Log
          };
 
-         return Extensions.Map<dynamic>(q => CreateCommand(q), query, mapper, this.Log);
+         return Extensions.Map<dynamic>(CreateCommand, query, mapper, this.Log);
       }
    }
 

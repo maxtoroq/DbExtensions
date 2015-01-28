@@ -620,11 +620,11 @@ namespace DbExtensions {
          SqlBuilder query = GetDefiningQuery(clone: false);
 
          if (this.resultType != null) {
-            return Extensions.Map<object>(q => CreateCommand(query), query, CreatePocoMapper(singleResult), this.Log);
+            return Extensions.Map<object>(CreateCommand, query, CreatePocoMapper(singleResult), this.Log);
          }
 
          return Extensions.Map<dynamic>(
-            q => CreateCommand(query),
+            CreateCommand,
             query,
             new DynamicMapper { 
                Log = this.Log,
@@ -1339,7 +1339,7 @@ namespace DbExtensions {
             return CreateCommand(query).Map(this.mapper, this.Log);
          }
 
-         return Extensions.Map<TResult>(q => CreateCommand(q), query, CreatePocoMapper(singleResult), this.Log);
+         return Extensions.Map<TResult>(CreateCommand, query, CreatePocoMapper(singleResult), this.Log);
       }
 
       #region ISqlSet<SqlSet<TResult>,TResult> Members
