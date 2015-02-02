@@ -135,11 +135,7 @@ namespace DbExtensions {
          return (SqlTable<TEntity>)table;
       }
 
-      /// <summary>
-      /// Casts the elements of the set to the specified type.
-      /// </summary>
-      /// <param name="resultType">The type to cast the elements of the set to.</param>
-      /// <returns>A new <see cref="SqlSet"/> that contains each element of the current set cast to the specified type.</returns>
+      /// <inheritdoc cref="SqlSet.Cast(Type)"/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public new SqlSet Cast(Type resultType) {
          return base.Cast(resultType);
@@ -149,28 +145,12 @@ namespace DbExtensions {
 
       // These methods just call the same method on this.table
 
-      /// <summary>
-      /// Gets the entity whose primary key matches the <paramref name="id"/> parameter.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
-      /// <returns>
-      /// The entity whose primary key matches the <paramref name="id"/> parameter, 
-      /// or null if the <paramref name="id"/> does not exist.
-      /// </returns>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Find(Object)"/>
       public object Find(object id) {
          return table.Find(id);
       }
 
-      /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entity"/> and all its
-      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
-      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
-      /// </summary>
-      /// <param name="entity">
-      /// The object whose INSERT command is to be executed. This parameter is named entity for consistency
-      /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
-      /// need to have a primary key.
-      /// </param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Add(TEntity)"/>
       public void Add(object entity) {
          table.Add(entity);
       }
@@ -179,215 +159,102 @@ namespace DbExtensions {
          table.AddDescendants(entity);
       }
 
-      /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all its
-      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
-      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.AddRange(IEnumerable&lt;TEntity>)"/>
       public void AddRange(IEnumerable<object> entities) {
          table.AddRange(entities);
       }
 
-      /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all its
-      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
-      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.AddRange(TEntity[])"/>
       public void AddRange(params object[] entities) {
          table.AddRange(entities);
       }
 
-      /// <summary>
-      /// Executes an UPDATE command for the specified <paramref name="entity"/>,
-      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
-      /// </summary>
-      /// <param name="entity">The entity whose UPDATE command is to be executed.</param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Update(TEntity)"/>
       public void Update(object entity) {
          table.Update(entity);
       }
 
-      /// <summary>
-      /// Executes an UPDATE command for the specified <paramref name="entity"/>
-      /// using the provided <paramref name="conflictPolicy"/>.
-      /// </summary>
-      /// <param name="entity">The entity whose UPDATE command is to be executed.</param>
-      /// <param name="conflictPolicy">
-      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the UPDATE
-      /// predicate, and how to validate the affected records value.
-      /// </param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Update(TEntity, ConcurrencyConflictPolicy)"/>
       public void Update(object entity, ConcurrencyConflictPolicy conflictPolicy) {
          table.Update(entity, conflictPolicy);
       }
 
-      /// <summary>
-      /// Executes UPDATE commands for the specified <paramref name="entities"/>,
-      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose UPDATE commands are to be executed.</param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.UpdateRange(IEnumerable&lt;TEntity>)"/>
       public void UpdateRange(IEnumerable<object> entities) {
          table.UpdateRange(entities);
       }
 
-      /// <summary>
-      /// Executes UPDATE commands for the specified <paramref name="entities"/>
-      /// using the provided <paramref name="conflictPolicy"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose UPDATE commands are to be executed.</param>
-      /// <param name="conflictPolicy">
-      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the UPDATE
-      /// predicate, and how to validate the affected records value.
-      /// </param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.UpdateRange(IEnumerable&lt;TEntity>, ConcurrencyConflictPolicy)"/>
       public void UpdateRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
          table.UpdateRange(entities, conflictPolicy);
       }
 
-      /// <summary>
-      /// Executes UPDATE commands for the specified <paramref name="entities"/>,
-      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose UPDATE commands are to be executed.</param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.UpdateRange(TEntity[])"/>
       public void UpdateRange(params object[] entities) {
          table.UpdateRange(entities);
       }
 
-      /// <summary>
-      /// Executes UPDATE commands for the specified <paramref name="entities"/>
-      /// using the provided <paramref name="conflictPolicy"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose UPDATE commands are to be executed.</param>
-      /// <param name="conflictPolicy">
-      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the UPDATE
-      /// predicate, and how to validate the affected records value.
-      /// </param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.UpdateRange(TEntity[], ConcurrencyConflictPolicy)"/>
       public void UpdateRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
          table.UpdateRange(entities, conflictPolicy);
       }
 
-      /// <summary>
-      /// Executes a DELETE command for the specified <paramref name="entity"/>,
-      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
-      /// </summary>
-      /// <param name="entity">The entity whose DELETE command is to be executed.</param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Remove(TEntity)"/>
       public void Remove(object entity) {
          table.Remove(entity);
       }
 
-      /// <summary>
-      /// Executes a DELETE command for the specified <paramref name="entity"/>
-      /// using the provided <paramref name="conflictPolicy"/>.
-      /// </summary>
-      /// <param name="entity">The entity whose DELETE command is to be executed.</param>
-      /// <param name="conflictPolicy">
-      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
-      /// predicate, and how to validate the affected records value.
-      /// </param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Remove(TEntity, ConcurrencyConflictPolicy)"/>
       public void Remove(object entity, ConcurrencyConflictPolicy conflictPolicy) {
          table.Remove(entity, conflictPolicy);
       }
 
-      /// <summary>
-      /// Executes a DELETE command for the entity
-      /// whose primary key matches the <paramref name="id"/> parameter,
-      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveKey(Object)"/>
       public void RemoveKey(object id) {
          table.RemoveKey(id);
       }
 
-      /// <summary>
-      /// Executes a DELETE command for the entity
-      /// whose primary key matches the <paramref name="id"/> parameter,
-      /// using the provided <paramref name="conflictPolicy"/>.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
-      /// <param name="conflictPolicy">
-      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies how to validate the affected records value.
-      /// </param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveKey(Object, ConcurrencyConflictPolicy)"/>
       public void RemoveKey(object id, ConcurrencyConflictPolicy conflictPolicy) {
          table.RemoveKey(id, conflictPolicy);
       }
 
-      /// <summary>
-      /// Executes DELETE commands for the specified <paramref name="entities"/>,
-      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveRange(IEnumerable&lt;TEntity>)"/>
       public void RemoveRange(IEnumerable<object> entities) {
          table.RemoveRange(entities);
       }
 
-      /// <summary>
-      /// Executes DELETE commands for the specified <paramref name="entities"/>,
-      /// using the provided <paramref name="conflictPolicy"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
-      /// <param name="conflictPolicy">
-      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
-      /// predicate, and how to validate the affected records value.
-      /// </param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveRange(IEnumerable&lt;TEntity>, ConcurrencyConflictPolicy)"/>
       public void RemoveRange(IEnumerable<object> entities, ConcurrencyConflictPolicy conflictPolicy) {
          table.RemoveRange(entities, conflictPolicy);
       }
 
-      /// <summary>
-      /// Executes DELETE commands for the specified <paramref name="entities"/>,
-      /// using the default <see cref="ConcurrencyConflictPolicy"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveRange(TEntity[])"/>
       public void RemoveRange(params object[] entities) {
          table.RemoveRange(entities);
       }
 
-      /// <summary>
-      /// Executes DELETE commands for the specified <paramref name="entities"/>,
-      /// using the provided <paramref name="conflictPolicy"/>.
-      /// </summary>
-      /// <param name="entities">The entities whose DELETE commands are to be executed.</param>
-      /// <param name="conflictPolicy">
-      /// The <see cref="ConcurrencyConflictPolicy"/> that specifies what columns to check for in the DELETE
-      /// predicate, and how to validate the affected records value.
-      /// </param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveRange(TEntity[], ConcurrencyConflictPolicy)"/>
       public void RemoveRange(object[] entities, ConcurrencyConflictPolicy conflictPolicy) {
          table.RemoveRange(entities, conflictPolicy);
       }
 
-      /// <summary>
-      /// Checks the existance of the <paramref name="entity"/>,
-      /// using the primary key value. Version members are ignored.
-      /// </summary>
-      /// <param name="entity">The entity whose existance is to be checked.</param>
-      /// <returns>true if the primary key value exists in the database; otherwise false.</returns>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Contains(TEntity)"/>
       public bool Contains(object entity) {
          return table.Contains(entity);
       }
 
-      /// <summary>
-      /// Checks the existance of the <paramref name="entity"/>,
-      /// using the primary key and optionally version column.
-      /// </summary>
-      /// <param name="entity">The entity whose existance is to be checked.</param>
-      /// <param name="version">true to check the version column; otherwise, false.</param>
-      /// <returns>true if the primary key and version combination exists in the database; otherwise, false.</returns>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Contains(TEntity, Boolean)"/>
       public bool Contains(object entity, bool version) {
          return table.Contains(entity, version);
       }
 
-      /// <summary>
-      /// Checks the existance of an entity whose primary matches the <paramref name="id"/> parameter.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
-      /// <returns>true if the primary key value exists in the database; otherwise false.</returns>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.ContainsKey(Object)"/>
       public bool ContainsKey(object id) {
          return table.ContainsKey(id);
       }
 
-      /// <summary>
-      /// Sets all mapped members of <paramref name="entity"/> to their most current persisted value.
-      /// </summary>
-      /// <param name="entity">The entity to refresh.</param>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Refresh(TEntity)"/>
       public void Refresh(object entity) {
          table.Refresh(entity);
       }
@@ -607,12 +474,7 @@ namespace DbExtensions {
          AddRange(entities.ToArray());
       }
 
-      /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all its
-      /// one-to-one and one-to-many associations. Recursion can be disabled by setting 
-      /// <see cref="DatabaseConfiguration.EnableInsertRecursion"/> to false.
-      /// </summary>
-      /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
+      /// <inheritdoc cref="AddRange(IEnumerable&lt;TEntity>)"/>
       public void AddRange(params TEntity[] entities) {
 
          if (entities == null) throw new ArgumentNullException("entities");
@@ -1552,39 +1414,26 @@ namespace DbExtensions {
 
       #region Object Members
 
-      /// <summary>
-      /// Returns whether the specified object is equal to the current object.
-      /// </summary>
-      /// <param name="obj">The object to compare with the current object. </param>
-      /// <returns>True if the specified object is equal to the current object; otherwise, false.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override bool Equals(object obj) {
          return base.Equals(obj);
       }
 
-      /// <summary>
-      /// Returns the hash function for the current object.
-      /// </summary>
-      /// <returns>The hash function for the current object.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override int GetHashCode() {
          return base.GetHashCode();
       }
 
-      /// <summary>
-      /// Gets the type for the current object.
-      /// </summary>
-      /// <returns>The type for the current object.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Must match base signature.")]
       public new Type GetType() {
          return base.GetType();
       }
 
-      /// <summary>
-      /// Returns a string representation of the object.
-      /// </summary>
-      /// <returns>A string representation of the object.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override string ToString() {
          return base.ToString();
@@ -1595,15 +1444,8 @@ namespace DbExtensions {
 
    public static partial class Extensions {
 
-      /// <summary>
-      /// Gets the entity whose primary key matches the <paramref name="id"/> parameter.
-      /// </summary>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Find(Object)"/>
       /// <param name="source">The source set.</param>
-      /// <param name="id">The primary key value.</param>
-      /// <returns>
-      /// The entity whose primary key matches the <paramref name="id"/> parameter, 
-      /// or null if the <paramref name="id"/> does not exist.
-      /// </returns>
       /// <remarks>
       /// This method can only be used on mapped sets created by <see cref="Database"/>.
       /// </remarks>
@@ -1611,16 +1453,9 @@ namespace DbExtensions {
          return FindImpl(source, id).SingleOrDefault();
       }
 
-      /// <summary>
-      /// Gets the entity whose primary key matches the <paramref name="id"/> parameter.
-      /// </summary>
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Find(Object)"/>
       /// <typeparam name="TResult">The type of the elements in the <paramref name="source"/> set.</typeparam>
       /// <param name="source">The source set.</param>
-      /// <param name="id">The primary key value.</param>
-      /// <returns>
-      /// The entity whose primary key matches the <paramref name="id"/> parameter, 
-      /// or null if the <paramref name="id"/> does not exist.
-      /// </returns>
       /// <remarks>
       /// This method can only be used on mapped sets created by <see cref="Database"/>.
       /// </remarks>
@@ -1707,16 +1542,9 @@ namespace DbExtensions {
          return IncludeImpl.Expand(source, path, metaType, db);
       }
 
-      /// <summary>
-      /// Specifies the related objects to include in the query results.
-      /// </summary>
+      /// <inheritdoc cref="Include(SqlSet, String)"/>
       /// <typeparam name="TResult">The type of the elements in the <paramref name="source"/> set.</typeparam>
-      /// <param name="source">The source set.</param>
-      /// <param name="path">Dot-separated list of related objects to return in the query results.</param>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> with the defined query path.</returns>
-      /// <remarks>
-      /// This method can only be used on mapped sets created by <see cref="Database"/>.
-      /// </remarks>
       [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Need to keep result type same as input type.")]
       public static SqlSet<TResult> Include<TResult>(this SqlSet<TResult> source, string path) {
          return (SqlSet<TResult>)Include((SqlSet)source, path);

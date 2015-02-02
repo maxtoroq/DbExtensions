@@ -1,6 +1,6 @@
 SqlSet.Count Method (String, Object[])
 ======================================
-Gets the number of elements in the set that matches the *predicate*.
+Returns a number that represents how many elements in the set satisfy a condition.
 
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)

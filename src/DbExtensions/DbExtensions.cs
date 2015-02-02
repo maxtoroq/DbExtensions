@@ -102,16 +102,9 @@ namespace DbExtensions {
             .GetValue(null);
       }
 
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter.
-      /// </summary>
+      /// <inheritdoc cref="CreateCommand(DbProviderFactory, String)"
+      ///             select="*[not(self::param/@name='factory')]"/>
       /// <param name="connection">The connection used to create the command.</param>
-      /// <param name="commandText">The command text.</param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter.
-      /// </returns>
       /// <seealso cref="DbConnection.CreateCommand()"/>
       public static DbCommand CreateCommand(this DbConnection connection, string commandText) {
 
@@ -123,26 +116,9 @@ namespace DbExtensions {
          return command;
       }
 
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object using the provided <paramref name="commandText"/> as a composite format string 
-      /// (as used on <see cref="String.Format(String, Object[])"/>), 
-      /// where the format items are replaced with appropiate parameter names, and the objects in the
-      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection.
-      /// </summary>
+      /// <inheritdoc cref="CreateCommand(DbProviderFactory, String, Object[])"
+      ///             select="*[not(self::param/@name='factory')]"/>
       /// <param name="connection">The connection used to create the command.</param>
-      /// <param name="commandText">The command text.</param>
-      /// <param name="parameters">
-      /// The array of parameters to be passed to the command. Note the following 
-      /// behavior: If the number of objects in the array is less than the highest 
-      /// number identified in the command string, an exception is thrown. If the 
-      /// array contains objects that are not referenced in the command string, no 
-      /// exception is thrown. If a parameter is null, it is converted to DBNull.Value. 
-      /// </param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from the <paramref name="parameters"/> parameter.
-      /// </returns>
       public static DbCommand CreateCommand(this DbConnection connection, string commandText, params object[] parameters) {
          
          if (connection == null) throw new ArgumentNullException("connection");
@@ -170,26 +146,8 @@ namespace DbExtensions {
          return command;
       }
 
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object using the provided <paramref name="commandText"/> as a composite format string 
-      /// (as used on <see cref="String.Format(String, Object[])"/>), 
-      /// where the format items are replaced with appropiate parameter names, and the objects in the
-      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection.
-      /// </summary>
-      /// <param name="factory">The provider factory used to create the command.</param>
-      /// <param name="commandText">The command text.</param>
-      /// <param name="parameters">
-      /// The array of parameters to be passed to the command. Note the following 
-      /// behavior: If the number of objects in the array is less than the highest 
-      /// number identified in the command string, an exception is thrown. If the 
-      /// array contains objects that are not referenced in the command string, no 
-      /// exception is thrown. If a parameter is null, it is converted to DBNull.Value. 
-      /// </param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from the <paramref name="parameters"/> parameter.
-      /// </returns>
+      /// <inheritdoc cref="CreateCommand(DbCommandBuilder, DbProviderFactory, String, Object[])"
+      ///             select="*[not(self::param/@name='commandBuilder')]"/>
       public static DbCommand CreateCommand(this DbProviderFactory factory, string commandText, params object[] parameters) {
          
          if (factory == null) throw new ArgumentNullException("factory");
@@ -197,27 +155,9 @@ namespace DbExtensions {
          return CreateCommandImpl(factory.CreateCommandBuilder(), factory.CreateCommand(), commandText, parameters);
       }
 
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object using the provided <paramref name="commandText"/> as a composite format string 
-      /// (as used on <see cref="String.Format(String, Object[])"/>), 
-      /// where the format items are replaced with appropiate parameter names, and the objects in the
-      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection.
-      /// </summary>
-      /// <param name="commandBuilder">The command builder used to create the parameter names.</param>
+      /// <inheritdoc cref="CreateCommand(DbCommandBuilder, DbProviderFactory, String, Object[])"
+      ///             select="*[not(self::param/@name='factory')]"/>
       /// <param name="connection">The connection used to create the command.</param>
-      /// <param name="commandText">The command text.</param>
-      /// <param name="parameters">
-      /// The array of parameters to be passed to the command. Note the following 
-      /// behavior: If the number of objects in the array is less than the highest 
-      /// number identified in the command string, an exception is thrown. If the 
-      /// array contains objects that are not referenced in the command string, no 
-      /// exception is thrown. If a parameter is null, it is converted to DBNull.Value. 
-      /// </param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from the <paramref name="parameters"/> parameter.
-      /// </returns>
       public static DbCommand CreateCommand(this DbCommandBuilder commandBuilder, DbConnection connection, string commandText, params object[] parameters) {
          
          if (connection == null) throw new ArgumentNullException("connection");
@@ -316,42 +256,22 @@ namespace DbExtensions {
          return Affect(command, affectingRecords, (TextWriter)null);
       }
 
-      /// <summary>
-      /// Executes the <paramref name="command"/> in a new or existing transaction, and
-      /// validates the affected records value before comitting.
-      /// </summary>
-      /// <param name="command">The non-query command to execute.</param>
+      /// <inheritdoc cref="Affect(IDbCommand, Int32)"/>
       /// <param name="affectingRecords">The number of records that the command should affect.</param>
       /// <param name="affectedMode">The criteria for validating the affected records value.</param>
-      /// <returns>The number of affected records.</returns>
       /// <exception cref="DBConcurrencyException">The number of affected records is not valid according to the <paramref name="affectingRecords"/> and <paramref name="affectedMode"/> parameters.</exception>
       public static int Affect(this IDbCommand command, int affectingRecords, AffectedRecordsPolicy affectedMode) {
          return Affect(command, affectingRecords, affectedMode, (TextWriter)null);
       }
 
-      /// <summary>
-      /// Executes the <paramref name="command"/> in a new or existing transaction, and
-      /// validates the affected records value before comitting.
-      /// </summary>
-      /// <param name="command">The non-query command to execute.</param>
-      /// <param name="affectingRecords">The number of records that the command must affect, otherwise the transaction is rolledback.</param>
+      /// <inheritdoc cref="Affect(IDbCommand, Int32)"/>
       /// <param name="logger">A <see cref="TextWriter"/> for logging the whole process.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to <paramref name="affectingRecords"/>.</exception>      
       public static int Affect(this IDbCommand command, int affectingRecords, TextWriter logger) {
          return Affect(command, affectingRecords, AffectedRecordsPolicy.MustMatchAffecting, logger);
       }
-      
-      /// <summary>
-      /// Executes the <paramref name="command"/> in a new or existing transaction, and
-      /// validates the affected records value before comitting.
-      /// </summary>
-      /// <param name="command">The non-query command to execute.</param>
-      /// <param name="affectingRecords">The number of records that the command should affect.</param>
-      /// <param name="affectedMode">The criteria for validating the affected records value.</param>
+
+      /// <inheritdoc cref="Affect(IDbCommand, Int32, AffectedRecordsPolicy)"/>
       /// <param name="logger">A <see cref="TextWriter"/> for logging the whole process.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not valid according to the <paramref name="affectingRecords"/> and <paramref name="affectedMode"/> parameters.</exception>
       public static int Affect(this IDbCommand command, int affectingRecords, AffectedRecordsPolicy affectedMode, TextWriter logger) {
 
          if (command == null) throw new ArgumentNullException("command");
@@ -451,14 +371,8 @@ namespace DbExtensions {
          return Affect(command, 1);
       }
 
-      /// <summary>
-      /// Executes the <paramref name="command"/> in a new or existing transaction, and
-      /// validates that the affected records value is equal to one before comitting.
-      /// </summary>
-      /// <param name="command">The non-query command to execute.</param>
+      /// <inheritdoc cref="AffectOne(IDbCommand)"/>
       /// <param name="logger">A <see cref="TextWriter"/> for logging the whole process.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public static int AffectOne(this IDbCommand command, TextWriter logger) {
          return Affect(command, 1, logger);
       }
@@ -474,14 +388,8 @@ namespace DbExtensions {
          return Affect(command, 1, AffectedRecordsPolicy.AllowLower);
       }
 
-      /// <summary>
-      /// Executes the <paramref name="command"/> in a new or existing transaction, and
-      /// validates that the affected records value is less or equal to one before comitting.
-      /// </summary>
-      /// <param name="command">The non-query command to execute.</param>
+      /// <inheritdoc cref="AffectOneOrNone(IDbCommand)"/>
       /// <param name="logger">A <see cref="TextWriter"/> for logging the whole process.</param>
-      /// <returns>The number of affected records.</returns>
-      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>      
       public static int AffectOneOrNone(this IDbCommand command, TextWriter logger) {
          return Affect(command, 1, AffectedRecordsPolicy.AllowLower, logger);
       }
@@ -498,15 +406,8 @@ namespace DbExtensions {
          return Map(command, resultType, (TextWriter)null);
       }
 
-      /// <summary>
-      /// Maps the results of the <paramref name="command"/> to objects of type
-      /// specified by the <paramref name="resultType"/> parameter.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="command">The query command.</param>
-      /// <param name="resultType">The type of objects to map the results to.</param>
+      /// <inheritdoc cref="Map(IDbCommand, Type)"/>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
       public static IEnumerable<object> Map(this IDbCommand command, Type resultType, TextWriter logger) {
 
          var mapper = new PocoMapper(resultType) { 
@@ -527,14 +428,8 @@ namespace DbExtensions {
          return Map<TResult>(command, (TextWriter)null);
       }
 
-      /// <summary>
-      /// Maps the results of the <paramref name="command"/> to <typeparamref name="TResult"/> objects.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="command">The query command.</param>
+      /// <inheritdoc cref="Map&lt;TResult>(IDbCommand)"/>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       public static IEnumerable<TResult> Map<TResult>(this IDbCommand command, TextWriter logger) {
 
          var mapper = new PocoMapper(typeof(TResult)) { 
@@ -556,15 +451,8 @@ namespace DbExtensions {
          return Map<TResult>(command, mapper, (TextWriter)null);
       }
 
-      /// <summary>
-      /// Maps the results of the <paramref name="command"/> to <typeparamref name="TResult"/> objects,
-      /// using the provided <paramref name="mapper"/> delegate.
-      /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="command">The query command.</param>
-      /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
+      /// <inheritdoc cref="Map&lt;TResult>(IDbCommand, Func&lt;IDataRecord, TResult>)"/>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
       public static IEnumerable<TResult> Map<TResult>(this IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter logger) {
          return new MappingEnumerable<TResult>(command, mapper, logger);
       }
@@ -595,13 +483,8 @@ namespace DbExtensions {
          return sb.ToString();
       }
 
-      /// <summary>
-      /// Creates a string representation of <paramref name="command"/> for logging
-      /// and debugging purposes.
-      /// </summary>
-      /// <param name="command">The command.</param>
+      /// <inheritdoc cref="ToTraceString(IDbCommand)"/>
       /// <param name="affectedRecords">The number of affected records that the command returned.</param>
-      /// <returns>The string representation of <paramref name="command"/>.</returns>
       public static string ToTraceString(this IDbCommand command, int affectedRecords) {
          return String.Concat(ToTraceString(command), Environment.NewLine, "-- [", affectedRecords, "] records affected.");
       }
@@ -611,9 +494,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Boolean"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Boolean GetBoolean(this IDataRecord record, string name) {
          return record.GetBoolean(record.GetOrdinal(name));
       }
@@ -621,9 +502,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Byte"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Byte GetByte(this IDataRecord record, string name) {
          return record.GetByte(record.GetOrdinal(name));
       }
@@ -631,9 +510,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Char"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Char GetChar(this IDataRecord record, string name) {
          return record.GetChar(record.GetOrdinal(name));
       }
@@ -641,9 +518,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="DateTime"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static DateTime GetDateTime(this IDataRecord record, string name) {
          return record.GetDateTime(record.GetOrdinal(name));
       }
@@ -651,9 +526,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Decimal"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Decimal GetDecimal(this IDataRecord record, string name) {
          return record.GetDecimal(record.GetOrdinal(name));
       }
@@ -661,9 +534,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Double"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Double GetDouble(this IDataRecord record, string name) {
          return record.GetDouble(record.GetOrdinal(name));
       }
@@ -671,9 +542,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Single"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Single GetFloat(this IDataRecord record, string name) {
          return record.GetFloat(record.GetOrdinal(name));
       }
@@ -681,9 +550,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as an <see cref="Int16"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Int16 GetInt16(this IDataRecord record, string name) {
          return record.GetInt16(record.GetOrdinal(name));
       }
@@ -691,9 +558,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as an <see cref="Int32"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Int32 GetInt32(this IDataRecord record, string name) {
          return record.GetInt32(record.GetOrdinal(name));
       }
@@ -701,9 +566,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as an <see cref="Int64"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Int64 GetInt64(this IDataRecord record, string name) {
          return record.GetInt64(record.GetOrdinal(name));
       }
@@ -711,9 +574,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="String"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static String GetString(this IDataRecord record, string name) {
          return record.GetString(record.GetOrdinal(name));
       }
@@ -731,9 +592,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Boolean&gt;"/> of <see cref="Boolean"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Boolean? GetNullableBoolean(this IDataRecord record, string name) {
          return GetNullableBoolean(record, record.GetOrdinal(name));
       }
@@ -741,9 +600,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Boolean&gt;"/> of <see cref="Boolean"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="i">The zero-based column ordinal.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "i", Justification = "Consistent with .NET Framework.")]
       public static Boolean? GetNullableBoolean(this IDataRecord record, int i) {
          return (record.IsDBNull(i)) ? default(Boolean?) : record.GetBoolean(i);
@@ -752,9 +609,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Byte&gt;"/> of <see cref="Byte"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Byte? GetNullableByte(this IDataRecord record, string name) {
          return GetNullableByte(record, record.GetOrdinal(name));
       }
@@ -762,9 +617,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Byte&gt;"/> of <see cref="Byte"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="i">The zero-based column ordinal.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "i", Justification = "Consistent with .NET Framework.")]
       public static Byte? GetNullableByte(this IDataRecord record, int i) {
          return (record.IsDBNull(i)) ? default(Byte?) : record.GetByte(i);
@@ -773,9 +626,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Char&gt;"/> of <see cref="Char"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Char? GetNullableChar(this IDataRecord record, string name) {
          return GetNullableChar(record, record.GetOrdinal(name));
       }
@@ -783,9 +634,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Char&gt;"/> of <see cref="Char"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="i">The zero-based column ordinal.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "i", Justification = "Consistent with .NET Framework.")]
       public static Char? GetNullableChar(this IDataRecord record, int i) {
          return (record.IsDBNull(i)) ? default(Char?) : record.GetChar(i);
@@ -794,9 +643,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;DateTime&gt;"/> of <see cref="DateTime"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static DateTime? GetNullableDateTime(this IDataRecord record, string name) {
          return GetNullableDateTime(record, record.GetOrdinal(name));
       }
@@ -804,9 +651,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;DateTime&gt;"/> of <see cref="DateTime"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="i">The zero-based column ordinal.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "i", Justification = "Consistent with .NET Framework.")]
       public static DateTime? GetNullableDateTime(this IDataRecord record, int i) {
          return (record.IsDBNull(i)) ? default(DateTime?) : record.GetDateTime(i);
@@ -815,9 +660,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Decimal&gt;"/> of <see cref="Decimal"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Decimal? GetNullableDecimal(this IDataRecord record, string name) {
          return GetNullableDecimal(record, record.GetOrdinal(name));
       }
@@ -825,9 +668,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Decimal&gt;"/> of <see cref="Decimal"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="i">The zero-based column ordinal.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "i", Justification = "Consistent with .NET Framework.")]
       public static Decimal? GetNullableDecimal(this IDataRecord record, int i) {
          return (record.IsDBNull(i)) ? default(Decimal?) : record.GetDecimal(i);
@@ -836,9 +677,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Double&gt;"/> of <see cref="Double"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Double? GetNullableDouble(this IDataRecord record, string name) {
          return GetNullableDouble(record, record.GetOrdinal(name));
       }
@@ -846,9 +685,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Double&gt;"/> of <see cref="Double"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="i">The zero-based column ordinal.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "i", Justification = "Consistent with .NET Framework.")]
       public static Double? GetNullableDouble(this IDataRecord record, int i) {
          return (record.IsDBNull(i)) ? default(Double?) : record.GetDouble(i);
@@ -857,9 +694,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Single&gt;"/> of <see cref="Single"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Single? GetNullableFloat(this IDataRecord record, string name) {
          return GetNullableFloat(record, record.GetOrdinal(name));
       }
@@ -867,9 +702,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Single&gt;"/> of <see cref="Single"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="i">The zero-based column ordinal.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "i", Justification = "Consistent with .NET Framework.")]
       public static Single? GetNullableFloat(this IDataRecord record, int i) {
          return (record.IsDBNull(i)) ? default(Single?) : record.GetFloat(i);
@@ -878,9 +711,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Guid&gt;"/> of <see cref="Guid"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Guid? GetNullableGuid(this IDataRecord record, string name) {
          return GetNullableGuid(record, record.GetOrdinal(name));
       }
@@ -888,9 +719,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Guid&gt;"/> of <see cref="Guid"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="i">The zero-based column ordinal.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "i", Justification = "Consistent with .NET Framework.")]
       public static Guid? GetNullableGuid(this IDataRecord record, int i) {
          return (record.IsDBNull(i)) ? default(Guid?) : record.GetGuid(i);
@@ -899,9 +728,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Int16&gt;"/> of <see cref="Int16"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Int16? GetNullableInt16(this IDataRecord record, string name) {
          return GetNullableInt16(record, record.GetOrdinal(name));
       }
@@ -909,9 +736,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Int16&gt;"/> of <see cref="Int16"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="i">The zero-based column ordinal.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "i", Justification = "Consistent with .NET Framework.")]
       public static Int16? GetNullableInt16(this IDataRecord record, int i) {
          return (record.IsDBNull(i)) ? default(Int16?) : record.GetInt16(i);
@@ -920,9 +745,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Int32&gt;"/> of <see cref="Int32"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Int32? GetNullableInt32(this IDataRecord record, string name) {
          return GetNullableInt32(record, record.GetOrdinal(name));
       }
@@ -930,9 +753,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Int32&gt;"/> of <see cref="Int32"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="i">The zero-based column ordinal.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "i", Justification = "Consistent with .NET Framework.")]
       public static Int32? GetNullableInt32(this IDataRecord record, int i) {
          return (record.IsDBNull(i)) ? default(Int32?) : record.GetInt32(i);
@@ -941,9 +762,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Int64&gt;"/> of <see cref="Int64"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Int64? GetNullableInt64(this IDataRecord record, string name) {
          return GetNullableInt64(record, record.GetOrdinal(name));
       }
@@ -951,9 +770,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="Nullable&lt;Int64&gt;"/> of <see cref="Int64"/>.
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="i">The zero-based column ordinal.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "i", Justification = "Consistent with .NET Framework.")]
       public static Int64? GetNullableInt64(this IDataRecord record, int i) {
          return (record.IsDBNull(i)) ? default(Int64?) : record.GetInt64(i);
@@ -962,9 +779,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="String"/>, or null (Nothing in Visual Basic).
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static String GetStringOrNull(this IDataRecord record, string name) {
          return GetStringOrNull(record, record.GetOrdinal(name));
       }
@@ -972,9 +787,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as a <see cref="String"/>, or null (Nothing in Visual Basic).
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="i">The zero-based column ordinal.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
       [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "i", Justification = "Consistent with .NET Framework.")]
       public static String GetStringOrNull(this IDataRecord record, int i) {
          return (record.IsDBNull(i)) ? default(String) : record.GetString(i);
@@ -983,9 +796,7 @@ namespace DbExtensions {
       /// <summary>
       /// Gets the value of the specified column as an <see cref="Object"/>, or null (Nothing in Visual Basic).
       /// </summary>
-      /// <param name="record">The data record.</param>
-      /// <param name="name">The name of the column to find.</param>
-      /// <returns>The value of the column.</returns>
+      /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
       public static Object GetValueOrNull(this IDataRecord record, string name) {
          return GetValueOrNull(record, record.GetOrdinal(name));
       }

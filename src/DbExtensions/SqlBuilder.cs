@@ -504,23 +504,13 @@ namespace DbExtensions {
          return _If(condition, body, null);
       }
 
-      /// <summary>
-      /// Appends <paramref name="body"/> to the current clause if <paramref name="condition"/> is true.
-      /// </summary>
-      /// <param name="condition">true to append <paramref name="body"/> to the current clause; otherwise, false.</param>
-      /// <param name="body">The body of the current clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
+      /// <inheritdoc cref="_If(Boolean, String)"/>
       [CLSCompliant(false)]
       public SqlBuilder _If(bool condition, int body) {
          return _If(condition, body.ToString(CultureInfo.InvariantCulture), null);
       }
 
-      /// <summary>
-      /// Appends <paramref name="body"/> to the current clause if <paramref name="condition"/> is true.
-      /// </summary>
-      /// <param name="condition">true to append <paramref name="body"/> to the current clause; otherwise, false.</param>
-      /// <param name="body">The body of the current clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
+      /// <inheritdoc cref="_If(Boolean, String)"/>
       [CLSCompliant(false)]
       public SqlBuilder _If(bool condition, long body) {
          return _If(condition, body.ToString(CultureInfo.InvariantCulture), null);
@@ -922,10 +912,9 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Appends the LIMIT clause using the string representation of <paramref name="maxRecords"/>
-      /// as body.
+      /// Appends the LIMIT clause using the provided <paramref name="maxRecords"/> parameter.
       /// </summary>
-      /// <param name="maxRecords">The value to use as the body of the LIMIT clause.</param>
+      /// <param name="maxRecords">The value to use as parameter.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
       public SqlBuilder LIMIT(int maxRecords) {
          return LIMIT("{0}", maxRecords);
@@ -960,10 +949,9 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Appends the OFFSET clause using the string representation of <paramref name="startIndex"/>
-      /// as body.
+      /// Appends the OFFSET clause using the provided <paramref name="startIndex"/> parameter.
       /// </summary>
-      /// <param name="startIndex">The value to use as the body of the OFFSET clause.</param>
+      /// <param name="startIndex">The value to use as parameter.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
       public SqlBuilder OFFSET(int startIndex) {
          return OFFSET("{0}", startIndex);
@@ -1272,23 +1260,13 @@ namespace DbExtensions {
 
       #region Object Members
 
-      /// <summary>
-      /// Determines whether the specified object instances are considered equal.
-      /// </summary>
-      /// <param name="objectA">The first object to compare.</param>
-      /// <param name="objectB">The second object to compare.</param>
-      /// <returns>true if the objects are considered equal; otherwise, false. If both objA and objB are null, the method returns true.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public static new bool Equals(object objectA, object objectB) {
          return Object.Equals(objectA, objectB);
       }
 
-      /// <summary>
-      /// Determines whether the specified System.Object instances are the same instance.
-      /// </summary>
-      /// <param name="objectA">The first object to compare.</param>
-      /// <param name="objectB">The second object to compare.</param>
-      /// <returns>true if objA is the same instance as objB or if both are null; otherwise, false.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public static new bool ReferenceEquals(object objectA, object objectB) {
          return Object.ReferenceEquals(objectA, objectB);

@@ -1,6 +1,6 @@
 SqlBuilder.OFFSET Method (Int32)
 ================================
-Appends the OFFSET clause using the string representation of *startIndex* as body.
+Appends the OFFSET clause using the provided *startIndex* parameter.
 
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -18,7 +18,7 @@ public SqlBuilder OFFSET(
 
 ##### *startIndex*
 Type: [System.Int32][2]  
-The value to use as the body of the OFFSET clause.
+The value to use as parameter.
 
 #### Return Value
 Type: [SqlBuilder][3]  

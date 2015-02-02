@@ -36,29 +36,15 @@ namespace DbExtensions {
       /// </returns>
       /// <seealso cref="Extensions.CreateCommand(DbProviderFactory, string, object[])"/>
       public DbCommand ToCommand(DbProviderFactory providerFactory) {
-
-         if (providerFactory == null) throw new ArgumentNullException("providerFactory");
-
-         return providerFactory.CreateCommand(ToString(), this.ParameterValues.ToArray());
+         return Extensions.CreateCommand(providerFactory, this);
       }
 
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
-      /// </summary>
+      /// <inheritdoc cref="ToCommand(DbProviderFactory)"
+      ///             select="*[not(self::param/@name='providerFactory') and not(self::seealso)]"/>
       /// <param name="connection">The connection used to create the command.</param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
-      /// </returns>
       /// <seealso cref="Extensions.CreateCommand(DbConnection, string, object[])"/>
       public DbCommand ToCommand(DbConnection connection) {
-
-         if (connection == null) throw new ArgumentNullException("connection");
-
-         return connection.CreateCommand(ToString(), this.ParameterValues.ToArray());
+         return Extensions.CreateCommand(connection, this);
       }
    }
 
@@ -71,27 +57,23 @@ namespace DbExtensions {
       /// <param name="sqlBuilder">The <see cref="SqlBuilder"/> that provides the command's text and parameters.</param>
       /// <returns>
       /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
+      /// is initialized with the <paramref name="sqlBuilder"/>'s string representation, and whose <see cref="DbCommand.Parameters"/>
+      /// property is initialized with the values from the <see cref="SqlBuilder.ParameterValues"/> property of the <paramref name="sqlBuilder"/> parameter.
       /// </returns>
-      /// <seealso cref="Extensions.CreateCommand(DbProviderFactory, string, object[])"/>
+      /// <seealso cref="CreateCommand(DbProviderFactory, string, object[])"/>
       public static DbCommand CreateCommand(this DbProviderFactory providerFactory, SqlBuilder sqlBuilder) {
-         return sqlBuilder.ToCommand(providerFactory);
+
+         // TODO: providerFactory should be factory for consistency with other methods in Extension class
+
+         return CreateCommand(providerFactory, sqlBuilder.ToString(), sqlBuilder.ParameterValues.ToArray());
       }
 
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object from the specified <paramref name="sqlBuilder"/>.
-      /// </summary>
+      /// <inheritdoc cref="CreateCommand(DbProviderFactory, SqlBuilder)"
+      ///             select="*[not(self::param/@name='providerFactory') and not(self::seealso)]"/>
       /// <param name="connection">The connection used to create the command.</param>
-      /// <param name="sqlBuilder">The <see cref="SqlBuilder"/> that provides the command's text and parameters.</param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the SQL representation of this instance, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from <see cref="SqlBuilder.ParameterValues"/> of this instance.
-      /// </returns>
-      /// <seealso cref="Extensions.CreateCommand(DbConnection, string, object[])"/>
+      /// <seealso cref="CreateCommand(DbConnection, string, object[])"/>
       public static DbCommand CreateCommand(this DbConnection connection, SqlBuilder sqlBuilder) {
-         return sqlBuilder.ToCommand(connection);
+         return CreateCommand(connection, sqlBuilder.ToString(), sqlBuilder.ParameterValues.ToArray());
       }
 
       internal static IEnumerable<TResult> Map<TResult>(Func<SqlBuilder, IDbCommand> queryToCommand, SqlBuilder query, Mapper mapper, TextWriter logger) {

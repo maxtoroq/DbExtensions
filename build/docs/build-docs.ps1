@@ -40,7 +40,7 @@ try {
    }
    
    # convert to markdown
-   sandcastle-md\src\sandcastle-md\bin\Debug\sandcastle-md.exe output ..\..\docs\api
+   sandcastle-md\src\sandcastle-md\bin\Debug\sandcastle-md.exe api\html ..\..\docs\api
 
 } finally {
    Pop-Location

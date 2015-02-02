@@ -22,7 +22,7 @@ The [SqlBuilder][3] that provides the command's text and parameters.
 
 #### Return Value
 Type: [DbCommand][1]  
- A new [DbCommand][1] object whose [CommandText][4] property is initialized with the *sqlBuilder* string representation, and whose [Parameters][5] property is initialized with the values from the [ParameterValues][6] property of the *sqlBuilder* parameter. 
+ A new [DbCommand][1] object whose [CommandText][4] property is initialized with the *sqlBuilder*'s string representation, and whose [Parameters][5] property is initialized with the values from the [ParameterValues][6] property of the *sqlBuilder* parameter. 
 
 Remarks
 -------
@@ -34,6 +34,7 @@ See Also
 #### Reference
 [Database Class][8]  
 [DbExtensions Namespace][2]  
+[Extensions.CreateCommand(DbConnection, SqlBuilder)][9]  
 
 [1]: http://msdn.microsoft.com/en-us/library/852d01k6
 [2]: ../README.md
@@ -43,3 +44,4 @@ See Also
 [6]: ../SqlBuilder/ParameterValues.md
 [7]: Transaction.md
 [8]: README.md
+[9]: ../Extensions/CreateCommand_2.md

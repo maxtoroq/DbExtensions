@@ -655,12 +655,8 @@ namespace DbExtensions {
          return All(predicate, null);
       }
 
-      /// <summary>
-      /// Determines whether all elements of the set satisfy a condition.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <inheritdoc cref="All(String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>true if every element of the set passes the test in the specified <paramref name="predicate"/>, or if the set is empty; otherwise, false.</returns>
       public bool All(string predicate, params object[] parameters) {
 
          if (predicate == null) throw new ArgumentNullException("predicate");
@@ -687,12 +683,8 @@ namespace DbExtensions {
          return Where(predicate).Any();
       }
 
-      /// <summary>
-      /// Determines whether any element of the set satisfies a condition.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <inheritdoc cref="Any(String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>true if any elements in the set pass the test in the specified <paramref name="predicate"/>; otherwise, false.</returns>
       public bool Any(string predicate, params object[] parameters) {
          return Where(predicate, parameters).Any();
       }
@@ -762,13 +754,8 @@ namespace DbExtensions {
          return Where(predicate).Count();
       }
 
-      /// <summary>
-      /// Gets the number of elements in the set that matches the <paramref name="predicate"/>.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <inheritdoc cref="Count(String)"/>
       /// <param name="parameters">The parameters to apply to the predicate.</param>
-      /// <returns>A number that represents how many elements in the set satisfy the condition in the <paramref name="predicate"/>.</returns>
-      /// <exception cref="System.OverflowException">The number of matching elements exceeds <see cref="Int32.MaxValue"/>.</exception>      
       public int Count(string predicate, params object[] parameters) {
          return Where(predicate, parameters).Count();
       }
@@ -792,13 +779,8 @@ namespace DbExtensions {
          return Where(predicate).First();
       }
 
-      /// <summary>
-      /// Returns the first element in the set that satisfies a specified condition.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <inheritdoc cref="First(String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>The first element in the set that passes the test in the specified <paramref name="predicate"/>.</returns>
-      /// <exception cref="System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate"/>.-or-The set is empty.</exception>
       public object First(string predicate, params object[] parameters) {
          return Where(predicate, parameters).First();
       }
@@ -823,15 +805,8 @@ namespace DbExtensions {
          return Where(predicate).FirstOrDefault();
       }
 
-      /// <summary>
-      /// Returns the first element of the set that satisfies a condition or a default value if no such element is found.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <inheritdoc cref="FirstOrDefault(String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>
-      /// A default value if the set is empty or if no element passes the test specified by <paramref name="predicate"/>; otherwise, the 
-      /// first element that passes the test specified by <paramref name="predicate"/>.
-      /// </returns>
       public object FirstOrDefault(string predicate, params object[] parameters) {
          return Where(predicate, parameters).FirstOrDefault();
       }
@@ -864,13 +839,8 @@ namespace DbExtensions {
          return Where(predicate).LongCount();
       }
 
-      /// <summary>
-      /// Returns an <see cref="System.Int64"/> that represents how many elements in the set satisfy a condition.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <inheritdoc cref="LongCount(String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>A number that represents how many elements in the set satisfy the condition in the <paramref name="predicate"/>.</returns>
-      /// <exception cref="System.OverflowException">The number of matching elements exceeds <see cref="Int64.MaxValue"/>.</exception>      
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount(string predicate, params object[] parameters) {
          return Where(predicate, parameters).LongCount();
@@ -885,12 +855,8 @@ namespace DbExtensions {
          return OrderBy(columnList, null);
       }
 
-      /// <summary>
-      /// Sorts the elements of the set according to the <paramref name="columnList"/>.
-      /// </summary>
-      /// <param name="columnList">The list of columns to base the sort on.</param>
+      /// <inheritdoc cref="OrderBy(String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
-      /// <returns>A new <see cref="SqlSet"/> whose elements are sorted according to <paramref name="columnList"/>.</returns>
       public SqlSet OrderBy(string columnList, params object[] parameters) {
 
          bool omitBufferedCalls = this.OrderByBuffer == null
@@ -920,13 +886,8 @@ namespace DbExtensions {
          return Select<TResult>(columnList, null);
       }
 
-      /// <summary>
-      /// Projects each element of the set into a new form.
-      /// </summary>
-      /// <typeparam name="TResult">The type that <paramref name="columnList"/> maps to.</typeparam>
-      /// <param name="columnList">The list of columns that maps to properties on <typeparamref name="TResult"/>.</param>
+      /// <inheritdoc cref="Select&lt;TResult>(String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/>.</returns>
       public SqlSet<TResult> Select<TResult>(string columnList, params object[] parameters) {
 
          SqlBuilder query = GetDefiningQuery(selectFormat: columnList, args: parameters);
@@ -945,14 +906,8 @@ namespace DbExtensions {
          return Select<TResult>(mapper, columnList, null);
       }
 
-      /// <summary>
-      /// Projects each element of the set into a new form.
-      /// </summary>
-      /// <typeparam name="TResult">The type that <paramref name="mapper"/> returns.</typeparam>
-      /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <param name="columnList">The list of columns that are used by <paramref name="mapper"/>.</param>
+      /// <inheritdoc cref="Select&lt;TResult>(Func&lt;IDataRecord, TResult>, String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/>.</returns>
       public SqlSet<TResult> Select<TResult>(Func<IDataRecord, TResult> mapper, string columnList, params object[] parameters) {
 
          SqlBuilder query = GetDefiningQuery(selectFormat: columnList, args: parameters);
@@ -970,13 +925,8 @@ namespace DbExtensions {
          return Select(resultType, columnList, null);
       }
 
-      /// <summary>
-      /// Projects each element of the set into a new form.
-      /// </summary>
-      /// <param name="resultType">The type that <paramref name="columnList"/> maps to.</param>
-      /// <param name="columnList">The list of columns that maps to properties on <paramref name="resultType"/>.</param>
+      /// <inheritdoc cref="Select(Type, String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
-      /// <returns>A new <see cref="SqlSet"/>.</returns>
       public SqlSet Select(Type resultType, string columnList, params object[] parameters) {
 
          SqlBuilder query = GetDefiningQuery(selectFormat: columnList, args: parameters);
@@ -993,12 +943,8 @@ namespace DbExtensions {
          return Select(columnList, null);
       }
 
-      /// <summary>
-      /// Projects each element of the set into a new form.
-      /// </summary>
-      /// <param name="columnList">The list of columns to select.</param>
+      /// <inheritdoc cref="Select(String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
-      /// <returns>A new <see cref="SqlSet"/>.</returns>
       public SqlSet Select(string columnList, params object[] parameters) {
 
          SqlBuilder query = GetDefiningQuery(selectFormat: columnList, args: parameters);
@@ -1025,13 +971,8 @@ namespace DbExtensions {
          return Where(predicate).Single();
       }
 
-      /// <summary>
-      /// Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <inheritdoc cref="Single(String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>The single element of the set that passes the test in the specified <paramref name="predicate"/>.</returns>
-      /// <exception cref="System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate"/>.-or-More than one element satisfies the condition in <paramref name="predicate"/>.-or-The set is empty.</exception>      
       public object Single(string predicate, params object[] parameters) {
          return Where(predicate, parameters).Single();
       }
@@ -1054,12 +995,8 @@ namespace DbExtensions {
          return Where(predicate).SingleOrDefault();
       }
 
-      /// <summary>
-      /// Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <inheritdoc cref="SingleOrDefault(String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>The single element of the set that satisfies the condition, or a default value if no such element is found.</returns>
       public object SingleOrDefault(string predicate, params object[] parameters) {
          return Where(predicate, parameters).SingleOrDefault();
       }
@@ -1135,12 +1072,8 @@ namespace DbExtensions {
          return Where(predicate, null);
       }
 
-      /// <summary>
-      /// Filters the set based on a predicate.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <inheritdoc cref="Where(String)"/>
       /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>A new <see cref="SqlSet"/> that contains elements from the current set that satisfy the condition.</returns>
       public SqlSet Where(string predicate, params object[] parameters) {
 
          bool omitBufferedCalls = this.WhereBuffer == null 
@@ -1162,29 +1095,19 @@ namespace DbExtensions {
 
       #region Object Members
 
-      /// <summary>
-      /// Returns whether the specified set is equal to the current set.
-      /// </summary>
-      /// <param name="obj">The set to compare with the current set. </param>
-      /// <returns>True if the specified set is equal to the current set; otherwise, false.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override bool Equals(object obj) {
          return base.Equals(obj);
       }
 
-      /// <summary>
-      /// Returns the hash function for the current set.
-      /// </summary>
-      /// <returns>The hash function for the current set.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override int GetHashCode() {
          return base.GetHashCode();
       }
 
-      /// <summary>
-      /// Gets the type for the current set.
-      /// </summary>
-      /// <returns>The type for the current set.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Must match base signature.")]
       public new Type GetType() {
@@ -1366,75 +1289,38 @@ namespace DbExtensions {
          return base.Cast<T>();
       }
 
-      /// <summary>
-      /// Casts the elements of the set to the specified type.
-      /// </summary>
-      /// <param name="resultType">The type to cast the elements of the set to.</param>
-      /// <returns>A new <see cref="SqlSet"/> that contains each element of the current set cast to the specified type.</returns>
+      /// <inheritdoc cref="SqlSet.Cast(Type)"/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public new SqlSet Cast(Type resultType) {
          return base.Cast(resultType);
       }
 
-      /// <summary>
-      /// Returns the first element of the set.
-      /// </summary>
-      /// <returns>The first element in the set.</returns>
-      /// <exception cref="System.InvalidOperationException">The set is empty.</exception>
+      /// <inheritdoc cref="SqlSet.First()"/>
       public new TResult First() {
          return Take(1).AsEnumerable(singleResult: true).First();
       }
 
-      /// <summary>
-      /// Returns the first element in the set that satisfies a specified condition.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-      /// <returns>The first element in the set that passes the test in the specified <paramref name="predicate"/>.</returns>
-      /// <exception cref="System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate"/>.-or-The set is empty.</exception>
+      /// <inheritdoc cref="SqlSet.First(String)"/>
       public new TResult First(string predicate) {
          return Where(predicate).First();
       }
 
-      /// <summary>
-      /// Returns the first element in the set that satisfies a specified condition.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-      /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>The first element in the set that passes the test in the specified <paramref name="predicate"/>.</returns>
-      /// <exception cref="System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate"/>.-or-The set is empty.</exception>
+      /// <inheritdoc cref="SqlSet.First(String, Object[])"/>
       public new TResult First(string predicate, params object[] parameters) {
          return Where(predicate, parameters).First();
       }
 
-      /// <summary>
-      /// Returns the first element of the set, or a default value if the set contains no elements.
-      /// </summary>
-      /// <returns>A default value if the set is empty; otherwise, the first element.</returns>
+      /// <inheritdoc cref="SqlSet.FirstOrDefault()"/>
       public new TResult FirstOrDefault() {
          return Take(1).AsEnumerable(singleResult: true).FirstOrDefault();
       }
 
-      /// <summary>
-      /// Returns the first element of the set that satisfies a condition or a default value if no such element is found.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-      /// <returns>
-      /// A default value if the set is empty or if no element passes the test specified by <paramref name="predicate"/>; otherwise, the 
-      /// first element that passes the test specified by <paramref name="predicate"/>.
-      /// </returns>
+      /// <inheritdoc cref="SqlSet.FirstOrDefault(String)"/>
       public new TResult FirstOrDefault(string predicate) {
          return Where(predicate).FirstOrDefault();
       }
 
-      /// <summary>
-      /// Returns the first element of the set that satisfies a condition or a default value if no such element is found.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-      /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>
-      /// A default value if the set is empty or if no element passes the test specified by <paramref name="predicate"/>; otherwise, the 
-      /// first element that passes the test specified by <paramref name="predicate"/>.
-      /// </returns>
+      /// <inheritdoc cref="SqlSet.FirstOrDefault(String, Object[])"/>
       public new TResult FirstOrDefault(string predicate, params object[] parameters) {
          return Where(predicate, parameters).FirstOrDefault();
       }
@@ -1447,105 +1333,61 @@ namespace DbExtensions {
          return AsEnumerable().GetEnumerator();
       }
 
-      /// <summary>
-      /// Sorts the elements of the set according to the <paramref name="columnList"/>.
-      /// </summary>
-      /// <param name="columnList">The list of columns to base the sort on.</param>
+      /// <inheritdoc cref="SqlSet.OrderBy(String)"/>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> whose elements are sorted according to <paramref name="columnList"/>.</returns>
       public new SqlSet<TResult> OrderBy(string columnList) {
          return (SqlSet<TResult>)base.OrderBy(columnList);
       }
 
-      /// <summary>
-      /// Sorts the elements of the set according to the <paramref name="columnList"/>.
-      /// </summary>
-      /// <param name="columnList">The list of columns to base the sort on.</param>
-      /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
+      /// <inheritdoc cref="SqlSet.OrderBy(String, Object[])"/>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> whose elements are sorted according to <paramref name="columnList"/>.</returns>
       public new SqlSet<TResult> OrderBy(string columnList, params object[] parameters) {
          return (SqlSet<TResult>)base.OrderBy(columnList, parameters);
       }
 
-      /// <summary>
-      /// The single element of the set.
-      /// </summary>
-      /// <returns>The single element of the set.</returns>
-      /// <exception cref="System.InvalidOperationException">The set contains more than one element.-or-The set is empty.</exception>      
+      /// <inheritdoc cref="SqlSet.Single()"/>
       public new TResult Single() {
          return AsEnumerable(singleResult: true).Single();
       }
 
-      /// <summary>
-      /// Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-      /// <returns>The single element of the set that passes the test in the specified <paramref name="predicate"/>.</returns>
-      /// <exception cref="System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate"/>.-or-More than one element satisfies the condition in <paramref name="predicate"/>.-or-The set is empty.</exception>      
+      /// <inheritdoc cref="SqlSet.Single(String)"/>
       public new TResult Single(string predicate) {
          return Where(predicate).Single();
       }
 
-      /// <summary>
-      /// Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-      /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>The single element of the set that passes the test in the specified <paramref name="predicate"/>.</returns>
-      /// <exception cref="System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate"/>.-or-More than one element satisfies the condition in <paramref name="predicate"/>.-or-The set is empty.</exception>      
+      /// <inheritdoc cref="SqlSet.Single(String, Object[])"/>
       public new TResult Single(string predicate, params object[] parameters) {
          return Where(predicate, parameters).Single();
       }
 
-      /// <summary>
-      /// Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.
-      /// </summary>
-      /// <returns>The single element of the set, or a default value if the set contains no elements.</returns>
-      /// <exception cref="System.InvalidOperationException">The set contains more than one element.</exception>
+      /// <inheritdoc cref="SqlSet.SingleOrDefault()"/>
       public new TResult SingleOrDefault() {
          return AsEnumerable(singleResult: true).SingleOrDefault();
       }
 
-      /// <summary>
-      /// Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-      /// <returns>The single element of the set that satisfies the condition, or a default value if no such element is found.</returns>
+      /// <inheritdoc cref="SqlSet.SingleOrDefault(String)"/>
       public new TResult SingleOrDefault(string predicate) {
          return Where(predicate).SingleOrDefault();
       }
 
-      /// <summary>
-      /// Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-      /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
-      /// <returns>The single element of the set that satisfies the condition, or a default value if no such element is found.</returns>
+      /// <inheritdoc cref="SqlSet.SingleOrDefault(String, Object[])"/>
       public new TResult SingleOrDefault(string predicate, params object[] parameters) {
          return Where(predicate, parameters).SingleOrDefault();
       }
 
-      /// <summary>
-      /// Bypasses a specified number of elements in the set and then returns the remaining elements.
-      /// </summary>
-      /// <param name="count">The number of elements to skip before returning the remaining elements.</param>
+      /// <inheritdoc cref="SqlSet.Skip(Int32)"/>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> that contains the elements that occur after the specified index in the current set.</returns>
       public new SqlSet<TResult> Skip(int count) {
          return (SqlSet<TResult>)base.Skip(count);
       }
 
-      /// <summary>
-      /// Returns a specified number of contiguous elements from the start of the set.
-      /// </summary>
-      /// <param name="count">The number of elements to return.</param>
-      /// <returns>A new <see cref="SqlSet"/> that contains the specified number of elements from the start of the current set.</returns>
+      /// <inheritdoc cref="SqlSet.Take(Int32)"/>
+      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> that contains the specified number of elements from the start of the current set.</returns>
       public new SqlSet<TResult> Take(int count) {
          return (SqlSet<TResult>)base.Take(count);
       }
 
-      /// <summary>
-      /// Creates an array from the set.
-      /// </summary>
-      /// <returns>An array that contains the elements from the set.</returns>
+      /// <inheritdoc cref="SqlSet.ToArray()"/>
       public new TResult[] ToArray() {
          return AsEnumerable().ToArray();
       }
@@ -1559,20 +1401,13 @@ namespace DbExtensions {
          return AsEnumerable().ToList();
       }
 
-      /// <summary>
-      /// Filters the set based on a predicate.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
+      /// <inheritdoc cref="SqlSet.Where(String)"/>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> that contains elements from the current set that satisfy the condition.</returns>
       public new SqlSet<TResult> Where(string predicate) {
          return (SqlSet<TResult>)base.Where(predicate);
       }
 
-      /// <summary>
-      /// Filters the set based on a predicate.
-      /// </summary>
-      /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-      /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
+      /// <inheritdoc cref="SqlSet.Where(String, Object[])"/>
       /// <returns>A new <see cref="SqlSet&lt;TResult>"/> that contains elements from the current set that satisfy the condition.</returns>
       public new SqlSet<TResult> Where(string predicate, params object[] parameters) {
          return (SqlSet<TResult>)base.Where(predicate, parameters);

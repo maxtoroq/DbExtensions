@@ -1,8 +1,8 @@
 Database.CreateCommand Method (String)
 ======================================
-Creates and returns a [DbCommand][1] object using the specified *commandText*.
+Creates and returns a [DbCommand][1] object whose [CommandText][2] property is initialized with the *commandText* parameter.
 
-**Namespace:** [DbExtensions][2]  
+**Namespace:** [DbExtensions][3]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
 
 Syntax
@@ -17,12 +17,12 @@ public DbCommand CreateCommand(
 #### Parameters
 
 ##### *commandText*
-Type: [System.String][3]  
-The SQL command.
+Type: [System.String][4]  
+The command text.
 
 #### Return Value
 Type: [DbCommand][1]  
- A new [DbCommand][1] object whose [CommandText][4] property is initialized with the *commandText* parameter. 
+ A new [DbCommand][1] object whose [CommandText][2] property is initialized with the *commandText* parameter. 
 
 Remarks
 -------
@@ -33,11 +33,13 @@ See Also
 
 #### Reference
 [Database Class][6]  
-[DbExtensions Namespace][2]  
+[DbExtensions Namespace][3]  
+[Extensions.CreateCommand(DbConnection, String)][7]  
 
 [1]: http://msdn.microsoft.com/en-us/library/852d01k6
-[2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[4]: http://msdn.microsoft.com/en-us/library/9d2hk99t
+[2]: http://msdn.microsoft.com/en-us/library/9d2hk99t
+[3]: ../README.md
+[4]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
 [5]: Transaction.md
 [6]: README.md
+[7]: ../Extensions/CreateCommand_3.md

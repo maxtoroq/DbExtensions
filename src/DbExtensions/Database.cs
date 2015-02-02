@@ -192,11 +192,6 @@ namespace DbExtensions {
       /// Opens <see cref="Connection"/> (if it's not open) and returns an <see cref="IDisposable"/> object
       /// you can use to close it (if it wasn't open).
       /// </summary>
-      /// <returns>An <see cref="IDisposable"/> object to close the connection.</returns>
-      /// <remarks>
-      /// Use this method with the <c>using</c> statement in C# or Visual Basic to ensure that a block of code
-      /// is always executed with an open connection.
-      /// </remarks>
       /// <example>
       /// <code>
       /// using (db.EnsureConnectionOpen()) {
@@ -204,6 +199,7 @@ namespace DbExtensions {
       /// }
       /// </code>
       /// </example>
+      /// <inheritdoc cref="Extensions.EnsureOpen(IDbConnection)"/>
       public IDisposable EnsureConnectionOpen() {
          return this.Connection.EnsureOpen();
       }
@@ -258,56 +254,11 @@ namespace DbExtensions {
          return EnsureInTransaction(IsolationLevel.Unspecified);
       }
 
-      /// <summary>
-      /// Returns a virtual transaction that you can use to ensure a code block is always executed in 
-      /// a transaction, new or existing.
-      /// </summary>
+      /// <inheritdoc cref="EnsureInTransaction()"/>
       /// <param name="isolationLevel">
       /// Specifies the isolation level for the transaction. This parameter is ignored when using
       /// an existing transaction.
       /// </param>
-      /// <returns>
-      /// A virtual transaction you can use to ensure a code block is always executed in 
-      /// a transaction, new or existing.
-      /// </returns>
-      /// <remarks>
-      /// This method returns a virtual transaction that wraps an existing or new transaction.
-      /// If <see cref="System.Transactions.Transaction.Current"/> is not null, this method creates a
-      /// new <see cref="System.Transactions.TransactionScope"/> and returns an <see cref="IDbTransaction"/>
-      /// object that wraps it, and by calling <see cref="IDbTransaction.Commit()"/> on this object it will 
-      /// then call <see cref="System.Transactions.TransactionScope.Complete()"/> on the <see cref="System.Transactions.TransactionScope"/>.
-      /// If <see cref="System.Transactions.Transaction.Current"/> is null, this methods begins a new
-      /// <see cref="DbTransaction"/>, or uses an existing transaction created by a previous call to this method, and returns 
-      /// an <see cref="IDbTransaction"/> object that wraps it, and by calling <see cref="IDbTransaction.Commit()"/> 
-      /// on this object it will then call <see cref="DbTransaction.Commit"/> on the wrapped transaction if the 
-      /// transaction was just created, or do nothing if it was previously created.
-      /// <para>
-      /// Calls to this method can be nested, like in the following example:
-      /// </para>
-      /// <code>
-      /// void DoSomething() {
-      /// 
-      ///    using (var tx = this.db.EnsureInTransaction()) {
-      ///       
-      ///       // Execute commands
-      /// 
-      ///       DoSomethingElse();
-      /// 
-      ///       tx.Commit();
-      ///    }
-      /// }
-      /// 
-      /// void DoSomethingElse() { 
-      ///    
-      ///    using (var tx = this.db.EnsureInTransaction()) {
-      ///       
-      ///       // Execute commands
-      /// 
-      ///       tx.Commit();
-      ///    }
-      /// }
-      /// </code>
-      /// </remarks>
       public IDbTransaction EnsureInTransaction(IsolationLevel isolationLevel) {
          return new WrappedTransaction(this, isolationLevel);
       }
@@ -361,10 +312,9 @@ namespace DbExtensions {
       /// validates the affected records value before comitting.
       /// </summary>
       /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <param name="affectingRecords">The number of records that the command must affect, otherwise the transaction is rolledback.</param>
-      /// <returns>The number of affected records.</returns>
+      /// <inheritdoc cref="Extensions.Affect(IDbCommand, int)"
+      ///             select="*[not(self::param/@name='command')]"/>
       /// <seealso cref="Extensions.Affect(IDbCommand, int)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to <paramref name="affectingRecords"/>.</exception>      
       public int Affect(SqlBuilder nonQuery, int affectingRecords) {
          return CreateCommand(nonQuery).Affect(affectingRecords, this.Log);
       }
@@ -374,11 +324,9 @@ namespace DbExtensions {
       /// validates the affected records value before comitting.
       /// </summary>
       /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <param name="affectingRecords">The number of records that the command should affect.</param>
-      /// <param name="affectedMode">The criteria for validating the affected records value.</param>
-      /// <returns>The number of affected records.</returns>
+      /// <inheritdoc cref="Extensions.Affect(IDbCommand, int, AffectedRecordsPolicy)"
+      ///             select="*[not(self::param/@name='command')]"/>
       /// <seealso cref="Extensions.Affect(IDbCommand, int, AffectedRecordsPolicy)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not valid according to the <paramref name="affectingRecords"/> and <paramref name="affectedMode"/> parameters.</exception>
       public int Affect(SqlBuilder nonQuery, int affectingRecords, AffectedRecordsPolicy affectedMode) {
          return CreateCommand(nonQuery).Affect(affectingRecords, affectedMode, this.Log);
       }
@@ -388,9 +336,9 @@ namespace DbExtensions {
       /// validates that the affected records value is equal to one before comitting.
       /// </summary>
       /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <returns>The number of affected records.</returns>
+      /// <inheritdoc cref="Extensions.AffectOne(IDbCommand)"
+      ///             select="*[not(self::param/@name='command')]"/>
       /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public int AffectOne(SqlBuilder nonQuery) {
          return CreateCommand(nonQuery).AffectOne(this.Log);
       }
@@ -401,9 +349,9 @@ namespace DbExtensions {
       /// validates that the affected records value is equal to one before comitting.
       /// </summary>
       /// <param name="commandText">The command text.</param>
-      /// <returns>The number of affected records.</returns>
+      /// <inheritdoc cref="Extensions.AffectOne(IDbCommand)"
+      ///             select="returns|exception"/>
       /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public int AffectOne(string commandText) {
          return AffectOne(commandText, (object[])null);
       }
@@ -417,9 +365,9 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="commandText">The command text.</param>
       /// <param name="parameters">The parameters to apply to the command text.</param>
-      /// <returns>The number of affected records.</returns>
+      /// <inheritdoc cref="Extensions.AffectOne(IDbCommand)"
+      ///             select="returns|exception"/>
       /// <seealso cref="Extensions.AffectOne(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to one.</exception>
       public int AffectOne(string commandText, params object[] parameters) {
          return CreateCommand(commandText, parameters).AffectOne(this.Log);
       }
@@ -429,9 +377,9 @@ namespace DbExtensions {
       /// validates that the affected records value is less or equal to one before comitting.
       /// </summary>
       /// <param name="nonQuery">The non-query command to execute.</param>
-      /// <returns>The number of affected records.</returns>
+      /// <inheritdoc cref="Extensions.AffectOneOrNone(IDbCommand)"
+      ///             select="returns|exception"/>
       /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>      
       public int AffectOneOrNone(SqlBuilder nonQuery) {
          return CreateCommand(nonQuery).AffectOneOrNone(this.Log);
       }
@@ -442,9 +390,9 @@ namespace DbExtensions {
       /// validates that the affected records value is less or equal to one before comitting.
       /// </summary>
       /// <param name="commandText">The non-query command to execute.</param>
-      /// <returns>The number of affected records.</returns>
+      /// <inheritdoc cref="Extensions.AffectOneOrNone(IDbCommand)"
+      ///             select="returns|exception"/>
       /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
       public int AffectOneOrNone(string commandText) {
          return AffectOneOrNone(commandText, (object[])null);
       }
@@ -458,9 +406,9 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="commandText">The non-query command to execute.</param>
       /// <param name="parameters">The parameters to apply to the command text.</param>
-      /// <returns>The number of affected records.</returns>
+      /// <inheritdoc cref="Extensions.AffectOneOrNone(IDbCommand)"
+      ///             select="returns|exception"/>
       /// <seealso cref="Extensions.AffectOneOrNone(IDbCommand)"/>
-      /// <exception cref="DBConcurrencyException">The number of affected records is greater than one.</exception>
       public int AffectOneOrNone(string commandText, params object[] parameters) {
          return CreateCommand(commandText, parameters).AffectOneOrNone(this.Log);
       }
@@ -469,9 +417,9 @@ namespace DbExtensions {
       /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects.
       /// The query is deferred-executed.
       /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="query">The query.</param>
-      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
+      /// <inheritdoc cref="Extensions.Map&lt;T>(IDbCommand)"
+      ///             select="*[not(self::param/@name='command')]"/>
       /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, TextWriter)"/>
       public IEnumerable<TResult> Map<TResult>(SqlBuilder query) {
          return Extensions.Map<TResult>(CreateCommand, query, CreatePocoMapper(typeof(TResult)), this.Log);
@@ -481,10 +429,9 @@ namespace DbExtensions {
       /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects,
       /// using the provided <paramref name="mapper"/> delegate.
       /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
       /// <param name="query">The query.</param>
-      /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
-      /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
+      /// <inheritdoc cref="Extensions.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>)"
+      ///             select="*[not(self::param/@name='command')]"/>
       /// <seealso cref="Extensions.Map&lt;T>(IDbCommand, Func&lt;IDataRecord, T>, TextWriter)"/>
       public IEnumerable<TResult> Map<TResult>(SqlBuilder query, Func<IDataRecord, TResult> mapper) {
          return CreateCommand(query).Map<TResult>(mapper, this.Log);
@@ -495,9 +442,9 @@ namespace DbExtensions {
       /// specified by the <paramref name="resultType"/> parameter.
       /// The query is deferred-executed.
       /// </summary>
-      /// <param name="resultType">The type of objects to map the results to.</param>
       /// <param name="query">The query.</param>
-      /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
+      /// <inheritdoc cref="Extensions.Map(IDbCommand, Type)"
+      ///             select="*[not(self::param/@name='command')]"/>
       /// <seealso cref="Extensions.Map(IDbCommand, Type, TextWriter)"/>
       public IEnumerable<object> Map(Type resultType, SqlBuilder query) {
          return Extensions.Map<object>(CreateCommand, query, CreatePocoMapper(resultType), this.Log);
@@ -528,11 +475,7 @@ namespace DbExtensions {
          return this.CountImpl(query);
       }
 
-      /// <summary>
-      /// Gets the number of results the <paramref name="query"/> would return.
-      /// </summary>
-      /// <param name="query">The query whose count is to be computed.</param>
-      /// <returns>The number of results the <paramref name="query"/> would return.</returns>
+      /// <inheritdoc cref="Count(SqlBuilder)"/>
       [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "long", Justification = "Consistent with LINQ.")]
       public long LongCount(SqlBuilder query) {
          return this.LongCountImpl(query);
@@ -601,12 +544,8 @@ namespace DbExtensions {
          return new SqlSet(new string[2] { tableName, null }, (Type)null, this);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided table name.
-      /// </summary>
-      /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
+      /// <inheritdoc cref="From(String)"/>
       /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public SqlSet From(string tableName, Type resultType) {
          return new SqlSet(new string[2] { tableName, null }, resultType, this);
       }
@@ -630,12 +569,8 @@ namespace DbExtensions {
          return new SqlSet(definingQuery, (Type)null, this);
       }
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query.
-      /// </summary>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <inheritdoc cref="From(SqlBuilder)"/>
       /// <param name="resultType">The type of objects to map the results to.</param>
-      /// <returns>A new <see cref="SqlSet"/> object.</returns>
       public SqlSet From(SqlBuilder definingQuery, Type resultType) {
          return new SqlSet(definingQuery, resultType, this);
       }
@@ -653,10 +588,8 @@ namespace DbExtensions {
       /// <summary>
       /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and mapper.
       /// </summary>
-      /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-      /// <param name="definingQuery">The SQL query that will be the source of data for the set.</param>
+      /// <inheritdoc cref="From&lt;TResult>(SqlBuilder)"/>
       /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
-      /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
       public SqlSet<TResult> From<TResult>(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
          return new SqlSet<TResult>(definingQuery, mapper, this);
       }
@@ -687,19 +620,12 @@ namespace DbExtensions {
          return value;
       }
 
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object from the specified <paramref name="sqlBuilder"/>.
-      /// </summary>
-      /// <param name="sqlBuilder">The <see cref="SqlBuilder"/> that provides the command's text and parameters.</param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="sqlBuilder"/> string representation, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from the <see cref="SqlBuilder.ParameterValues"/> property of the
-      /// <paramref name="sqlBuilder"/> parameter.
-      /// </returns>
+      /// <inheritdoc cref="Extensions.CreateCommand(DbConnection, SqlBuilder)"
+      ///             select="*[not(self::param/@name='connection') and not(self::seealso)]"/>
       /// <remarks>
       /// <see cref="Transaction"/> is associated with all new commands created using this method.
       /// </remarks>
+      /// <seealso cref="Extensions.CreateCommand(DbConnection, SqlBuilder)"/>
       public DbCommand CreateCommand(SqlBuilder sqlBuilder) {
 
          if (sqlBuilder == null) throw new ArgumentNullException("sqlBuilder");
@@ -707,40 +633,18 @@ namespace DbExtensions {
          return CreateCommand(sqlBuilder.ToString(), sqlBuilder.ParameterValues.ToArray());
       }
 
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object using the specified <paramref name="commandText"/>.
-      /// </summary>
-      /// <param name="commandText">The SQL command.</param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter.
-      /// </returns>
+      /// <inheritdoc cref="Extensions.CreateCommand(DbConnection, String)" 
+      ///             select="*[not(self::param/@name='connection') and not(self::seealso)]"/>
       /// <remarks>
       /// <see cref="Transaction"/> is associated with all new commands created using this method.
       /// </remarks>
+      /// <seealso cref="Extensions.CreateCommand(DbConnection, string)"/>
       public DbCommand CreateCommand(string commandText) {
          return CreateCommand(commandText, (object[])null);
       }
 
-      /// <summary>
-      /// Creates and returns a <see cref="DbCommand"/> object using the provided <paramref name="commandText"/> as a composite format string 
-      /// (as used on <see cref="String.Format(String, Object[])"/>), 
-      /// where the format items are replaced with appropiate parameter names, and the objects in the
-      /// <paramref name="parameters"/> array are added to the command's <see cref="DbCommand.Parameters"/> collection.
-      /// </summary>
-      /// <param name="commandText">The command text.</param>
-      /// <param name="parameters">
-      /// The array of parameters to be passed to the command. Note the following 
-      /// behavior: If the number of objects in the array is less than the highest 
-      /// number identified in the command string, an exception is thrown. If the 
-      /// array contains objects that are not referenced in the command string, no 
-      /// exception is thrown. If a parameter is null, it is converted to DBNull.Value. 
-      /// </param>
-      /// <returns>
-      /// A new <see cref="DbCommand"/> object whose <see cref="DbCommand.CommandText"/> property
-      /// is initialized with the <paramref name="commandText"/> parameter, and whose <see cref="DbCommand.Parameters"/>
-      /// property is initialized with the values from the <paramref name="parameters"/> parameter.
-      /// </returns>
+      /// <inheritdoc cref="Extensions.CreateCommand(DbConnection, String, Object[])" 
+      ///             select="*[not(self::param/@name='connection') and not(self::seealso)]"/>
       /// <remarks>
       /// <see cref="Transaction"/> is associated with all new commands created using this method.
       /// </remarks>
@@ -757,13 +661,7 @@ namespace DbExtensions {
          return command;
       }
 
-      /// <summary>
-      /// Given an unquoted identifier in the correct catalog case, returns the correct
-      /// quoted form of that identifier, including properly escaping any embedded
-      /// quotes in the identifier.
-      /// </summary>
-      /// <param name="unquotedIdentifier">The original unquoted identifier.</param>
-      /// <returns>The quoted version of the identifier. Embedded quotes within the identifier are properly escaped.</returns>
+      /// <inheritdoc cref="DbCommandBuilder.QuoteIdentifier(string)"/>
       /// <seealso cref="DbCommandBuilder.QuoteIdentifier(string)"/>
       public string QuoteIdentifier(string unquotedIdentifier) {
          return this.cb.QuoteIdentifier(unquotedIdentifier);
@@ -789,39 +687,26 @@ namespace DbExtensions {
 
       #region Object Members
 
-      /// <summary>
-      /// Returns whether the specified object is equal to the current object.
-      /// </summary>
-      /// <param name="obj">The object to compare with the current object. </param>
-      /// <returns>True if the specified object is equal to the current object; otherwise, false.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override bool Equals(object obj) {
          return base.Equals(obj);
       }
 
-      /// <summary>
-      /// Returns the hash function for the current object.
-      /// </summary>
-      /// <returns>The hash function for the current object.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override int GetHashCode() {
          return base.GetHashCode();
       }
 
-      /// <summary>
-      /// Gets the type for the current object.
-      /// </summary>
-      /// <returns>The type for the current object.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Must match base signature.")]
       public new Type GetType() {
          return base.GetType();
       }
 
-      /// <summary>
-      /// Returns a string representation of the object.
-      /// </summary>
-      /// <returns>A string representation of the object.</returns>
+      /// <exclude/>
       [EditorBrowsable(EditorBrowsableState.Never)]
       public override string ToString() {
          return base.ToString();

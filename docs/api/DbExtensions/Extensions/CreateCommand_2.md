@@ -27,7 +27,7 @@ The [SqlBuilder][4] that provides the command's text and parameters.
 
 #### Return Value
 Type: [DbCommand][1]  
- A new [DbCommand][1] object whose [CommandText][5] property is initialized with the SQL representation of this instance, and whose [Parameters][6] property is initialized with the values from [ParameterValues][7] of this instance. 
+ A new [DbCommand][1] object whose [CommandText][5] property is initialized with the *sqlBuilder*'s string representation, and whose [Parameters][6] property is initialized with the values from the [ParameterValues][7] property of the *sqlBuilder* parameter. 
 #### Usage Note
 In Visual Basic and C#, you can call this method as an instance method on any object of type [DbConnection][3]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][8] or [Extension Methods (C# Programming Guide)][9].
 

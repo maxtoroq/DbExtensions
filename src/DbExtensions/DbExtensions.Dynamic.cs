@@ -33,13 +33,8 @@ namespace DbExtensions {
          return Map(command, (TextWriter)null);
       }
 
-      /// <summary>
-      /// Maps the results of the <paramref name="command"/> to dynamic objects.
-      /// The query is deferred-executed.
-      /// </summary>
-      /// <param name="command">The query command.</param>
+      /// <inheritdoc cref="Map(IDbCommand)"/>
       /// <param name="logger">A <see cref="TextWriter"/> used to log when the command is executed.</param>
-      /// <returns>The results of the query as dynamic objects.</returns>
       public static IEnumerable<dynamic> Map(this IDbCommand command, TextWriter logger) {
 
          var mapper = new DynamicMapper { 

@@ -1,6 +1,6 @@
 SqlBuilder.LIMIT Method (Int32)
 ===============================
-Appends the LIMIT clause using the string representation of *maxRecords* as body.
+Appends the LIMIT clause using the provided *maxRecords* parameter.
 
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -18,7 +18,7 @@ public SqlBuilder LIMIT(
 
 ##### *maxRecords*
 Type: [System.Int32][2]  
-The value to use as the body of the LIMIT clause.
+The value to use as parameter.
 
 #### Return Value
 Type: [SqlBuilder][3]  
