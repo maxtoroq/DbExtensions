@@ -40,79 +40,25 @@ namespace DbExtensions {
 
       readonly SqlBuilder definingQuery;
       readonly string[] fromSelect;
-      internal readonly Type resultType;
-      internal readonly IConnectionContext context;
+      readonly SqlBuffer buffer;
+
+      readonly Type resultType;
+      readonly IConnectionContext context;
 
       int setIndex = 1;
 
-      SqlFragment _WhereBuffer;
-      SqlFragment _OrderByBuffer;
-      int? _SkipBuffer;
-      int? _TakeBuffer;
       IDictionary<string[], CollectionLoader> _ManyIncludes;
 
-      /// <summary>
-      /// A <see cref="TextWriter"/> used to log when queries are executed.
-      /// </summary>
       internal TextWriter Log {
          get { return context.Log; }
       }
 
-      private bool HasBufferedCalls {
-         get {
-            return _WhereBuffer != null
-               || _OrderByBuffer != null
-               || _SkipBuffer.HasValue
-               || _TakeBuffer.HasValue;
-         }
+      internal Type ResultType {
+         get { return resultType; }
       }
 
-      private SqlFragment WhereBuffer {
-         get { return _WhereBuffer; }
-         set {
-            if (value != null
-               && _WhereBuffer != null) {
-
-               throw new InvalidOperationException();
-            }
-            _WhereBuffer = value;
-         }
-      }
-
-      private SqlFragment OrderByBuffer {
-         get { return _OrderByBuffer; }
-         set {
-            if (value != null
-               && _OrderByBuffer != null) {
-
-               throw new InvalidOperationException();
-            }
-            _OrderByBuffer = value;
-         }
-      }
-
-      private int? SkipBuffer {
-         get { return _SkipBuffer; }
-         set {
-            if (value != null
-               && _SkipBuffer != null) {
-
-               throw new InvalidOperationException();
-            }
-            _SkipBuffer = value;
-         }
-      }
-
-      private int? TakeBuffer {
-         get { return _TakeBuffer; }
-         set {
-            if (value != null
-               && _TakeBuffer != null) {
-
-               throw new InvalidOperationException();
-            }
-            _TakeBuffer = value;
-         }
+      internal IConnectionContext Context {
+         get { return context; }
       }
 
       internal IDictionary<string[], CollectionLoader> ManyIncludes {
@@ -159,7 +105,7 @@ namespace DbExtensions {
       /// <param name="resultType">The type of objects to map the results to.</param>
       /// <param name="connection">The database connection.</param>
       public SqlSet(SqlBuilder definingQuery, Type resultType, DbConnection connection)
-         : this(definingQuery, resultType, new SimpleConnectionContext(connection)) { }
+         : this(definingQuery, resultType, new DbConnectionContext(connection)) { }
 
       internal SqlSet(SqlBuilder definingQuery, Type resultType, IConnectionContext context) {
 
@@ -180,7 +126,7 @@ namespace DbExtensions {
          this.context = context;
       }
 
-      internal SqlSet(SqlSet set) {
+      private SqlSet(SqlSet set, Type resultType, SqlBuffer? buffer) {
 
          if (set == null) throw new ArgumentNullException("set");
 
@@ -191,31 +137,31 @@ namespace DbExtensions {
          if (set.ManyIncludes != null) {
             this.ManyIncludes = new Dictionary<string[], CollectionLoader>(set.ManyIncludes);
          }
-      }
-
-      internal SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType = null) 
-         : this(set) {
-
-         if (superQuery == null) throw new ArgumentNullException("superQuery");
-
-         this.definingQuery = superQuery;
 
          if (resultType != null) {
             this.resultType = resultType;
          }
+
+         if (buffer != null) {
+            this.buffer = buffer.Value;
+         }
       }
 
-      internal SqlSet(SqlSet set, string[] fromSelect, Type resultType = null) 
-         : this(set) {
+      internal SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType, SqlBuffer? buffer) 
+         : this(set, resultType, buffer) {
+
+         if (superQuery == null) throw new ArgumentNullException("superQuery");
+
+         this.definingQuery = superQuery;
+      }
+
+      internal SqlSet(SqlSet set, string[] fromSelect, Type resultType, SqlBuffer? buffer) 
+         : this(set, resultType, buffer) {
 
          if (fromSelect == null) throw new ArgumentNullException("fromSelect");
          if (fromSelect.Length != 2) throw new ArgumentException("fromSelect.Length must be 2.", "fromSelect");
 
          this.fromSelect = fromSelect;
-
-         if (resultType != null) {
-            this.resultType = resultType; 
-         }
       }
 
       /// <summary>
@@ -227,10 +173,10 @@ namespace DbExtensions {
          return GetDefiningQuery(clone: true);
       }
 
-      internal SqlBuilder GetDefiningQuery(bool clone = true, bool omitBufferedCalls = false, bool super = false, string selectFormat = null, object[] args = null) {
+      internal SqlBuilder GetDefiningQuery(bool clone = true, bool ignoreBuffer = false, bool super = false, string selectFormat = null, object[] args = null) {
 
-         if (!omitBufferedCalls
-            && this.HasBufferedCalls) {
+         if (!ignoreBuffer
+            && this.buffer.HasBuffer) {
 
             return BuildQuery(selectFormat, args);
          }
@@ -255,15 +201,7 @@ namespace DbExtensions {
          return query;
       }
 
-      void CopyBufferState(SqlSet otherSet) {
-
-         otherSet.WhereBuffer = this.WhereBuffer;
-         otherSet.OrderByBuffer = this.OrderByBuffer;
-         otherSet.SkipBuffer = this.SkipBuffer;
-         otherSet.TakeBuffer = this.TakeBuffer;
-      }
-
-      SqlBuilder BuildQuery(string selectFormat = null, object[] args = null) {
+      SqlBuilder BuildQuery(string selectFormat, object[] args) {
 
          switch (GetConnectionDialect()) {
             case SqlDialect.Default:
@@ -280,19 +218,19 @@ namespace DbExtensions {
          }
       }
 
-      SqlBuilder BuildQuery_Default(string selectFormat = null, object[] args = null) {
+      SqlBuilder BuildQuery_Default(string selectFormat, object[] args) {
 
-         SqlFragment whereBuffer = this.WhereBuffer;
-         SqlFragment orderByBuffer = this.OrderByBuffer;
-         int? skipBuffer = this.SkipBuffer;
-         int? takeBuffer = this.TakeBuffer;
+         SqlFragment whereBuffer = this.buffer.Where;
+         SqlFragment orderByBuffer = this.buffer.OrderBy;
+         int? skipBuffer = this.buffer.Skip;
+         int? takeBuffer = this.buffer.Take;
 
          bool hasWhere = whereBuffer != null;
          bool hasOrderBy = orderByBuffer != null;
          bool hasSkip = skipBuffer.HasValue;
          bool hasTake = takeBuffer.HasValue;
 
-         SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: selectFormat, args: args);
+         SqlBuilder query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: selectFormat, args: args);
 
          if (hasWhere
             || hasOrderBy
@@ -319,23 +257,23 @@ namespace DbExtensions {
          return query;
       }
 
-      SqlBuilder BuildQuery_SqlServer(string selectFormat = null, object[] args = null) {
+      SqlBuilder BuildQuery_SqlServer(string selectFormat, object[] args) {
 
-         SqlFragment whereBuffer = this.WhereBuffer;
-         SqlFragment orderByBuffer = this.OrderByBuffer;
-         int? skipBuffer = this.SkipBuffer;
-         int? takeBuffer = this.TakeBuffer;
+         SqlFragment whereBuffer = this.buffer.Where;
+         SqlFragment orderByBuffer = this.buffer.OrderBy;
+         int? skipBuffer = this.buffer.Skip;
+         int? takeBuffer = this.buffer.Take;
 
          bool hasWhere = whereBuffer != null;
          bool hasOrderBy = orderByBuffer != null;
          bool hasSkip = skipBuffer.HasValue;
          bool hasTake = takeBuffer.HasValue;
 
-         SqlBuilder definingQuery = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: selectFormat, args: args);
+         SqlBuilder definingQuery = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: selectFormat, args: args);
 
          if (hasSkip) {
 
-            SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: selectFormat, args: args);
+            SqlBuilder query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: selectFormat, args: args);
 
             if (hasWhere) {
                query.WHERE(whereBuffer.Format, whereBuffer.Args);
@@ -353,7 +291,7 @@ namespace DbExtensions {
             query.OFFSET("{0} ROWS", skipBuffer.Value);
 
             if (hasTake) {
-               query.AppendClause("FETCH", null, "NEXT {0} ROWS ONLY", new object[] { takeBuffer.Value });
+               query.AppendClause("FETCH", null, "NEXT {0} ROWS ONLY", new object[1] { takeBuffer.Value });
             }
 
             return query;
@@ -361,7 +299,7 @@ namespace DbExtensions {
 
          if (hasTake) {
 
-            SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: "TOP({0}) *", args: new object[] { takeBuffer.Value });
+            SqlBuilder query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: "TOP({0}) *", args: new object[1] { takeBuffer.Value });
 
             if (hasWhere) {
                query.WHERE(whereBuffer.Format, whereBuffer.Args);
@@ -372,6 +310,9 @@ namespace DbExtensions {
             }
 
             if (selectFormat != null) {
+
+               // SELECT must be done in super query, it could remove columns used by WHERE/ORDER BY
+
                query = CreateSuperQuery(query, selectFormat, args);
             }
 
@@ -381,7 +322,7 @@ namespace DbExtensions {
          if (hasWhere
             || hasOrderBy) {
 
-            SqlBuilder query = GetDefiningQuery(omitBufferedCalls: true, super: true, selectFormat: selectFormat, args: args);
+            SqlBuilder query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: selectFormat, args: args);
 
             if (hasWhere) {
                query.WHERE(whereBuffer.Format, whereBuffer.Args);
@@ -402,19 +343,19 @@ namespace DbExtensions {
          return definingQuery;
       }
 
-      SqlBuilder BuildQuery_Oracle(string selectFormat = null, object[] args = null) {
+      SqlBuilder BuildQuery_Oracle(string selectFormat, object[] args) {
 
-         SqlFragment whereBuffer = this.WhereBuffer;
-         SqlFragment orderByBuffer = this.OrderByBuffer;
-         int? skipBuffer = this.SkipBuffer;
-         int? takeBuffer = this.TakeBuffer;
+         SqlFragment whereBuffer = this.buffer.Where;
+         SqlFragment orderByBuffer = this.buffer.OrderBy;
+         int? skipBuffer = this.buffer.Skip;
+         int? takeBuffer = this.buffer.Take;
 
          bool hasWhere = whereBuffer != null;
          bool hasOrderBy = orderByBuffer != null;
          bool hasSkip = skipBuffer.HasValue;
          bool hasTake = takeBuffer.HasValue;
 
-         SqlBuilder definingQuery = GetDefiningQuery(omitBufferedCalls: true, selectFormat: selectFormat, args: args);
+         SqlBuilder definingQuery = GetDefiningQuery(ignoreBuffer: true, selectFormat: selectFormat, args: args);
 
          if (hasSkip 
             || hasTake) {
@@ -547,66 +488,62 @@ namespace DbExtensions {
          return this.setIndex++;
       }
 
-      internal virtual SqlSet CreateSet(SqlBuilder superQuery, Type resultType = null) {
-         return new SqlSet(this, superQuery, resultType);
+      internal virtual SqlSet CreateSet(SqlBuilder superQuery, Type resultType = null, SqlBuffer? buffer = null) {
+         return new SqlSet(this, superQuery, resultType, buffer);
       }
 
-      internal virtual SqlSet CreateSet(string[] fromSelect, Type resultType = null) {
-         return new SqlSet(this, fromSelect, resultType);
+      internal virtual SqlSet CreateSet(string[] fromSelect, Type resultType = null, SqlBuffer? buffer = null) {
+         return new SqlSet(this, fromSelect, resultType, buffer);
       }
 
-      internal SqlSet<TResult> CreateSet<TResult>(SqlBuilder superQuery, Func<IDataRecord, TResult> mapper = null) {
-         return new SqlSet<TResult>(this, superQuery, mapper);
+      internal SqlSet<TResult> CreateSet<TResult>(SqlBuilder superQuery, Func<IDataRecord, TResult> mapper = null, SqlBuffer? buffer = null) {
+         return new SqlSet<TResult>(this, superQuery, mapper, buffer);
       }
 
-      internal SqlSet<TResult> CreateSet<TResult>(string[] fromSelect) {
-         return new SqlSet<TResult>(this, fromSelect);
+      internal SqlSet<TResult> CreateSet<TResult>(string[] fromSelect, SqlBuffer? buffer = null) {
+         return new SqlSet<TResult>(this, fromSelect, buffer);
       }
 
-      internal SqlSet CreateSet(bool omitBufferedCalls, Type resultType = null) {
+      internal SqlSet Clone() {
+         return CreateBufferedSet(ignoreBuffer: true, buffer: this.buffer);
+      }
+
+      internal SqlSet CreateBufferedSet(bool ignoreBuffer, SqlBuffer buffer, Type resultType = null) {
 
          SqlSet set = null;
 
-         if (omitBufferedCalls
+         if (ignoreBuffer
             && this.definingQuery == null) {
-               
-            set = CreateSet(this.fromSelect, resultType);
+
+            set = CreateSet(this.fromSelect, resultType, buffer);
          }
 
          if (set == null) {
             
-            SqlBuilder query = GetDefiningQuery(
-               omitBufferedCalls: omitBufferedCalls
-            );
+            SqlBuilder query = GetDefiningQuery(ignoreBuffer: ignoreBuffer);
 
-            set = CreateSet(query, resultType);
+            set = CreateSet(query, resultType, buffer);
          }
-         
-         CopyBufferState(set);
 
          return set;
       }
 
-      internal SqlSet<TResult> CreateSet<TResult>(bool omitBufferedCalls) {
+      internal SqlSet<TResult> CreateBufferedSet<TResult>(bool ignoreBuffer, SqlBuffer buffer) {
 
          SqlSet<TResult> set = null;
 
-         if (omitBufferedCalls
+         if (ignoreBuffer
             && this.definingQuery == null) {
 
-            set = CreateSet<TResult>(this.fromSelect);
+            set = CreateSet<TResult>(this.fromSelect, buffer);
          }
 
          if (set == null) {
 
-            SqlBuilder query = GetDefiningQuery(
-               omitBufferedCalls: omitBufferedCalls
-            );
+            SqlBuilder query = GetDefiningQuery(ignoreBuffer: ignoreBuffer);
 
-            set = CreateSet<TResult>(query);
+            set = CreateSet<TResult>(query, default(Func<IDataRecord, TResult>), buffer);
          }
-
-         CopyBufferState(set);
 
          return set;
       }
@@ -619,23 +556,21 @@ namespace DbExtensions {
 
          SqlBuilder query = GetDefiningQuery(clone: false);
 
-         if (this.resultType != null) {
-            return Extensions.Map<object>(CreateCommand, query, CreatePocoMapper(singleResult), this.Log);
-         }
+         Mapper mapper = CreateMapper(singleResult);
 
-         return Extensions.Map<dynamic>(
-            CreateCommand,
-            query,
-            new DynamicMapper { 
+         return Extensions.Map<object>(CreateCommand, query, mapper, this.Log);
+      }
+
+      internal Mapper CreateMapper(bool singleResult) {
+
+         if (this.resultType == null) {
+
+            return new DynamicMapper {
                Log = this.Log,
                ManyIncludes = this.ManyIncludes,
                SingleResult = singleResult
-            },
-            this.Log
-         );
-      }
-
-      internal PocoMapper CreatePocoMapper(bool singleResult) {
+            };
+         }
 
          return new PocoMapper(this.resultType) {
             Log = this.Log,
@@ -717,7 +652,7 @@ namespace DbExtensions {
             throw new InvalidOperationException("The specified type parameter is not valid for this instance.");
          }
 
-         return CreateSet<TResult>(omitBufferedCalls: true);
+         return CreateBufferedSet<TResult>(ignoreBuffer: true, buffer: this.buffer);
       }
 
       /// <summary>
@@ -732,7 +667,7 @@ namespace DbExtensions {
             throw new InvalidOperationException("The specified resultType is not valid for this instance.");
          }
 
-         return CreateSet(omitBufferedCalls: true, resultType: resultType);
+         return CreateBufferedSet(ignoreBuffer: true, buffer: this.buffer, resultType: resultType);
       }
 
       /// <summary>
@@ -859,19 +794,18 @@ namespace DbExtensions {
       /// <param name="parameters">The parameters to apply to the <paramref name="columnList"/>.</param>
       public SqlSet OrderBy(string columnList, params object[] parameters) {
 
-         bool omitBufferedCalls = this.OrderByBuffer == null
-            && this.SkipBuffer == null
-            && this.TakeBuffer == null;
+         bool ignoreBuffer = this.buffer.OrderBy == null
+            && this.buffer.Skip == null
+            && this.buffer.Take == null;
 
-         SqlSet set = CreateSet(omitBufferedCalls);
+         var newBuffer = new SqlBuffer(
+            where: (ignoreBuffer) ? this.buffer.Where : null,
+            orderBy: new SqlFragment(columnList, parameters),
+            skip: null,
+            take: null
+         );
 
-         if (!omitBufferedCalls) {
-            set.WhereBuffer = null;
-         }
-
-         set._OrderByBuffer = new SqlFragment(columnList, parameters);
-         set.SkipBuffer = null;
-         set.TakeBuffer = null;
+         SqlSet set = CreateBufferedSet(ignoreBuffer, newBuffer);
 
          return set;
       }
@@ -1008,18 +942,17 @@ namespace DbExtensions {
       /// <returns>A new <see cref="SqlSet"/> that contains the elements that occur after the specified index in the current set.</returns>
       public SqlSet Skip(int count) {
 
-         bool omitBufferedCalls = this.SkipBuffer == null
-            && this.TakeBuffer == null;
+         bool ignoreBuffer = this.buffer.Skip == null
+            && this.buffer.Take == null;
 
-         SqlSet set = CreateSet(omitBufferedCalls);
+         var newBuffer = new SqlBuffer(
+            where: (ignoreBuffer) ? this.buffer.Where : null,
+            orderBy: (ignoreBuffer) ? this.buffer.OrderBy : null,
+            skip: count,
+            take: null
+         );
 
-         if (!omitBufferedCalls) {
-            set.WhereBuffer = null;
-            set.OrderByBuffer = null;
-         }
-
-         set._SkipBuffer = count;
-         set.TakeBuffer = null;
+         SqlSet set = CreateBufferedSet(ignoreBuffer, newBuffer);
 
          return set;
       }
@@ -1031,17 +964,16 @@ namespace DbExtensions {
       /// <returns>A new <see cref="SqlSet"/> that contains the specified number of elements from the start of the current set.</returns>
       public SqlSet Take(int count) {
 
-         bool omitBufferedCalls = this.TakeBuffer == null;
+         bool ignoreBuffer = this.buffer.Take == null;
 
-         SqlSet set = CreateSet(omitBufferedCalls);
+         var newBuffer = new SqlBuffer(
+            where: (ignoreBuffer) ? this.buffer.Where : null,
+            orderBy: (ignoreBuffer) ? this.buffer.OrderBy : null,
+            skip: (ignoreBuffer) ? this.buffer.Skip : null,
+            take: count
+         );
 
-         if (!omitBufferedCalls) {
-            set.WhereBuffer = null;
-            set.OrderByBuffer = null;
-            set.SkipBuffer = null;
-         }
-
-         set._TakeBuffer = count;
+         SqlSet set = CreateBufferedSet(ignoreBuffer, newBuffer);
 
          return set;
       }
@@ -1076,17 +1008,19 @@ namespace DbExtensions {
       /// <param name="parameters">The parameters to apply to the <paramref name="predicate"/>.</param>
       public SqlSet Where(string predicate, params object[] parameters) {
 
-         bool omitBufferedCalls = this.WhereBuffer == null 
-            && this.OrderByBuffer == null 
-            && this.SkipBuffer == null
-            && this.TakeBuffer == null;
+         bool ignoreBuffer = this.buffer.Where == null 
+            && this.buffer.OrderBy == null 
+            && this.buffer.Skip == null
+            && this.buffer.Take == null;
 
-         SqlSet set = CreateSet(omitBufferedCalls);
-         
-         set._WhereBuffer = new SqlFragment(predicate, parameters);
-         set.OrderByBuffer = null;
-         set.SkipBuffer = null;
-         set.TakeBuffer = null;
+         var newBuffer = new SqlBuffer(
+            where: new SqlFragment(predicate, parameters),
+            orderBy: null,
+            skip: null,
+            take: null
+         );
+
+         SqlSet set = CreateBufferedSet(ignoreBuffer, newBuffer);
 
          return set;
       }
@@ -1126,7 +1060,33 @@ namespace DbExtensions {
 
       #region Nested Types
 
-      sealed class SqlFragment {
+      internal struct SqlBuffer {
+
+         public readonly SqlFragment Where;
+         public readonly SqlFragment OrderBy;
+         public readonly int? Skip;
+         public readonly int? Take;
+
+         public bool HasBuffer {
+            get {
+               return Where != null
+                  || OrderBy != null
+                  || Skip != null
+                  || Take != null;
+            }
+         }
+
+         public SqlBuffer(SqlFragment where, SqlFragment orderBy, int? skip, int? take) {
+
+            this.Where = where;
+            this.OrderBy = orderBy;
+            this.Skip = skip;
+            this.Take = take;
+         }
+      }
+
+      internal class SqlFragment {
+
          public readonly string Format;
          public readonly object[] Args;
 
@@ -1209,49 +1169,54 @@ namespace DbExtensions {
       internal SqlSet(string[] fromSelect, IConnectionContext context)
          : base(fromSelect, typeof(TResult), context) { }
 
-      internal SqlSet(SqlSet<TResult> set, SqlBuilder superQuery) 
-         : base((SqlSet)set, superQuery) {
+      // These two SHOULD NOT pass TResult to base ctor
+      // result type is copied from set
+
+      private SqlSet(SqlSet<TResult> set, SqlBuilder superQuery, SqlBuffer? buffer) 
+         : base((SqlSet)set, superQuery, default(Type), buffer) {
 
          if (set == null) throw new ArgumentNullException("set");
 
          this.mapper = set.mapper;
       }
 
-      internal SqlSet(SqlSet<TResult> set, string[] fromSelect)
-         : base((SqlSet)set, fromSelect) {
+      private SqlSet(SqlSet<TResult> set, string[] fromSelect, SqlBuffer? buffer)
+         : base((SqlSet)set, fromSelect, default(Type), buffer) {
 
          if (set == null) throw new ArgumentNullException("set");
 
          this.mapper = set.mapper;
       }
 
-      internal SqlSet(SqlSet set, SqlBuilder superQuery, Func<IDataRecord, TResult> mapper = null)
-         : base(set, superQuery, typeof(TResult)) {
+      // These two SHOULD pass TResult to base ctor
+
+      internal SqlSet(SqlSet set, SqlBuilder superQuery, Func<IDataRecord, TResult> mapper, SqlBuffer? buffer)
+         : base(set, superQuery, typeof(TResult), buffer) {
 
          if (mapper != null) {
             this.mapper = mapper;
          }
       }
 
-      internal SqlSet(SqlSet set, string[] fromSelect)
-         : base(set, fromSelect, typeof(TResult)) { }
+      internal SqlSet(SqlSet set, string[] fromSelect, SqlBuffer? buffer)
+         : base(set, fromSelect, typeof(TResult), buffer) { }
 
-      internal override SqlSet CreateSet(SqlBuilder superQuery, Type resultType = null) {
+      internal override SqlSet CreateSet(SqlBuilder superQuery, Type resultType = null, SqlBuffer? buffer = null) {
 
          if (resultType != null) {
-            return base.CreateSet(superQuery, resultType);
+            return base.CreateSet(superQuery, resultType, buffer);
          }
 
-         return new SqlSet<TResult>(this, superQuery);
+         return new SqlSet<TResult>(this, superQuery, buffer);
       }
 
-      internal override SqlSet CreateSet(string[] fromSelect, Type resultType = null) {
+      internal override SqlSet CreateSet(string[] fromSelect, Type resultType = null, SqlBuffer? buffer = null) {
 
          if (resultType != null) {
-            return base.CreateSet(fromSelect, resultType);
+            return base.CreateSet(fromSelect, resultType, buffer);
          }
 
-         return new SqlSet<TResult>(this, fromSelect);
+         return new SqlSet<TResult>(this, fromSelect, buffer);
       }
 
       internal override IEnumerable Map(bool singleResult) {
@@ -1262,7 +1227,7 @@ namespace DbExtensions {
             return CreateCommand(query).Map(this.mapper, this.Log);
          }
 
-         return Extensions.Map<TResult>(CreateCommand, query, CreatePocoMapper(singleResult), this.Log);
+         return Extensions.Map<TResult>(CreateCommand, query, CreateMapper(singleResult), this.Log);
       }
 
       #region ISqlSet<SqlSet<TResult>,TResult> Members
@@ -1517,7 +1482,7 @@ namespace DbExtensions {
       DbCommand CreateCommand(SqlBuilder query);
    }
 
-   sealed class SimpleConnectionContext : IConnectionContext {
+   sealed class DbConnectionContext : IConnectionContext {
 
       readonly DbConnection _Connection;
       readonly TextWriter _Log;
@@ -1530,7 +1495,7 @@ namespace DbExtensions {
          get { return _Log; }
       }
 
-      public SimpleConnectionContext(DbConnection connection, TextWriter log = null) {
+      public DbConnectionContext(DbConnection connection, TextWriter log = null) {
 
          if (connection == null) throw new ArgumentNullException("connection");
 

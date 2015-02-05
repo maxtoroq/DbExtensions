@@ -1469,13 +1469,13 @@ namespace DbExtensions {
          if (source == null) throw new ArgumentNullException("source");
          if (id == null) throw new ArgumentNullException("id");
 
-         Database db = source.context as Database;
+         Database db = source.Context as Database;
 
          if (db == null) {
             throw new InvalidOperationException("Find can only be used on sets created by Database.");
          }
 
-         Type resultType = source.resultType;
+         Type resultType = source.ResultType;
 
          if (resultType == null) {
             throw new InvalidOperationException("Find operation is not supported on untyped sets.");
@@ -1521,13 +1521,13 @@ namespace DbExtensions {
          if (source == null) throw new ArgumentNullException("source");
          if (path == null) throw new ArgumentNullException("path");
 
-         Database db = source.context as Database;
+         Database db = source.Context as Database;
 
          if (db == null) {
             throw new InvalidOperationException("Include can only be used on sets created by Database.");
          }
 
-         Type resultType = source.resultType;
+         Type resultType = source.ResultType;
 
          if (resultType == null) {
             throw new InvalidOperationException("Include operation is not supported on untyped sets.");
@@ -1608,7 +1608,7 @@ namespace DbExtensions {
             SqlSet newSet;
 
             if (associations.Count == 0) {
-               newSet = source.CreateSet(omitBufferedCalls: true);
+               newSet = source.Clone();
 
             } else {
 

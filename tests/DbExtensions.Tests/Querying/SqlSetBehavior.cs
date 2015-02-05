@@ -306,6 +306,17 @@ namespace DbExtensions.Tests.Querying {
          Assert.AreEqual("a", value.foo);
       }
 
+      [TestMethod]
+      public void Remember_Mapper() {
+
+         SqlSet<string> set = db.From(SQL
+            .SELECT("'a' AS c")
+            , r => r.GetString(0))
+            .OrderBy("c");
+
+         string value = set.Single();
+      }
+
       bool SqlEquals(SqlSet set, SqlBuilder query) {
          return TestUtil.SqlEquals(set, query);
       }
