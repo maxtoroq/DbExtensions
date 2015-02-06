@@ -354,13 +354,11 @@ namespace DbExtensions {
          bool hasSkip = skipBuffer.HasValue;
          bool hasTake = takeBuffer.HasValue;
 
-         SqlBuilder definingQuery = GetDefiningQuery(ignoreBuffer: true, selectFormat: selectFormat, args: args);
-
          if (hasSkip 
             || hasTake) {
 
             string queryAlias = SetAliasPrefix + this.setIndex.ToString(CultureInfo.InvariantCulture);
-            string innerQueryAlias = queryAlias + "_1";
+            string innerQueryAlias = queryAlias + "_rn";
             const string rowNumberAlias = "dbex_rn";
 
             int start = (hasSkip) ? skipBuffer.Value : 0;
@@ -381,15 +379,13 @@ namespace DbExtensions {
 
             innerQuery
                .SELECT(innerQueryAlias + ".*")
-               .FROM(definingQuery, innerQueryAlias);
+               .FROM(GetDefiningQuery(clone: false, ignoreBuffer: true), innerQueryAlias);
 
             if (hasWhere) {
                innerQuery.WHERE(whereBuffer.Format, whereBuffer.Args);
             }
 
-            var query = new SqlBuilder()
-               .SELECT("*")
-               .FROM(innerQuery, queryAlias);
+            var query = CreateSuperQuery(innerQuery, selectFormat, args);
 
             if (end.HasValue) {
                query.WHERE(rowNumberAlias + " BETWEEN {0} AND {1}", (start + 1), end.Value);
@@ -408,7 +404,7 @@ namespace DbExtensions {
          if (hasWhere
             || hasOrderBy) {
 
-            SqlBuilder query = definingQuery;
+            SqlBuilder query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: selectFormat, args: args);
 
             if (hasWhere) {
                query.WHERE(whereBuffer.Format, whereBuffer.Args);
@@ -421,7 +417,7 @@ namespace DbExtensions {
             return query;
          }
 
-         return definingQuery;
+         return GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: selectFormat, args: args);
       }
 
       SqlDialect GetConnectionDialect() {

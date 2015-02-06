@@ -22,10 +22,10 @@ namespace DbExtensions.Tests.Querying {
          SqlBuilder expected = SQL
             .SELECT("ProductName")
             .FROM(SQL
-               .SELECT("ROWNUM AS dbex_rn, __1.*")
+               .SELECT("ROWNUM AS dbex_rn, __rn.*")
                .FROM(SQL
                   .SELECT("*")
-                  .FROM("products"), "__1")
+                  .FROM("products"), "__rn")
                .WHERE("UnitsInStock > 0"), "_")
             .WHERE("dbex_rn BETWEEN {0} AND {1}", 1, 5)
             .ORDER_BY("dbex_rn");
