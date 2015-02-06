@@ -44,8 +44,7 @@ namespace DbExtensions {
 
       readonly Type resultType;
       readonly IConnectionContext context;
-
-      int setIndex = 1;
+      readonly int setIndex = 1;
 
       IDictionary<string[], CollectionLoader> _ManyIncludes;
 
@@ -360,7 +359,7 @@ namespace DbExtensions {
          if (hasSkip 
             || hasTake) {
 
-            string queryAlias = SetAliasPrefix + GetNextIndex().ToString(CultureInfo.InvariantCulture);
+            string queryAlias = SetAliasPrefix + this.setIndex.ToString(CultureInfo.InvariantCulture);
             string innerQueryAlias = queryAlias + "_1";
             const string rowNumberAlias = "dbex_rn";
 
@@ -469,7 +468,7 @@ namespace DbExtensions {
 
          var query = new SqlBuilder()
             .SELECT(selectFormat ?? "*", args)
-            .FROM(definingQuery, SetAliasPrefix + GetNextIndex().ToString(CultureInfo.InvariantCulture));
+            .FROM(definingQuery, SetAliasPrefix + this.setIndex.ToString(CultureInfo.InvariantCulture));
 
          if (selectFormat == null) {
 
@@ -482,10 +481,6 @@ namespace DbExtensions {
          }
 
          return query;
-      }
-
-      int GetNextIndex() {
-         return this.setIndex++;
       }
 
       internal virtual SqlSet CreateSet(SqlBuilder superQuery, Type resultType = null, SqlBuffer? buffer = null) {
