@@ -268,8 +268,6 @@ namespace DbExtensions {
          bool hasSkip = skipBuffer.HasValue;
          bool hasTake = takeBuffer.HasValue;
 
-         SqlBuilder definingQuery = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: selectFormat, args: args);
-
          if (hasSkip) {
 
             SqlBuilder query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: selectFormat, args: args);
@@ -294,9 +292,8 @@ namespace DbExtensions {
             }
 
             return query;
-         }
-
-         if (hasTake) {
+         
+         } else if (hasTake) {
 
             SqlBuilder query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: "TOP({0}) *", args: new object[1] { takeBuffer.Value });
 
@@ -316,10 +313,8 @@ namespace DbExtensions {
             }
 
             return query;
-         }
-
-         if (hasWhere
-            || hasOrderBy) {
+         
+         } else {
 
             SqlBuilder query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: selectFormat, args: args);
 
@@ -338,8 +333,6 @@ namespace DbExtensions {
 
             return query;
          }
-
-         return definingQuery;
       }
 
       SqlBuilder BuildQuery_Oracle(string selectFormat, object[] args) {
@@ -399,10 +392,8 @@ namespace DbExtensions {
             query.IgnoredColumns.Add(0);
 
             return query;
-         }
 
-         if (hasWhere
-            || hasOrderBy) {
+         } else {
 
             SqlBuilder query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: selectFormat, args: args);
 
@@ -416,8 +407,6 @@ namespace DbExtensions {
 
             return query;
          }
-
-         return GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: selectFormat, args: args);
       }
 
       SqlDialect GetConnectionDialect() {
@@ -452,31 +441,23 @@ namespace DbExtensions {
          return conn.GetType().Namespace.Equals("System.Data.OracleClient", StringComparison.Ordinal);
       }
 
-      internal SqlBuilder CreateSuperQuery() {
-         return CreateSuperQuery(null, null);
-      }
+      SqlBuilder CreateSuperQuery(SqlBuilder query, string selectFormat, object[] args) {
 
-      internal SqlBuilder CreateSuperQuery(string selectFormat, params object[] args) {
-         return CreateSuperQuery(GetDefiningQuery(clone: false), selectFormat, args);
-      }
-
-      SqlBuilder CreateSuperQuery(SqlBuilder definingQuery, string selectFormat, object[] args) {
-
-         var query = new SqlBuilder()
+         var superQuery = new SqlBuilder()
             .SELECT(selectFormat ?? "*", args)
-            .FROM(definingQuery, SetAliasPrefix + this.setIndex.ToString(CultureInfo.InvariantCulture));
+            .FROM(query, SetAliasPrefix + this.setIndex.ToString(CultureInfo.InvariantCulture));
 
          if (selectFormat == null) {
 
-            if (definingQuery.HasIgnoredColumns) {
+            if (query.HasIgnoredColumns) {
                
-               foreach (int item in definingQuery.IgnoredColumns) {
-                  query.IgnoredColumns.Add(item);
+               foreach (int item in query.IgnoredColumns) {
+                  superQuery.IgnoredColumns.Add(item);
                } 
             }
          }
 
-         return query;
+         return superQuery;
       }
 
       internal virtual SqlSet CreateSet(SqlBuilder superQuery, Type resultType = null, SqlBuffer? buffer = null) {
