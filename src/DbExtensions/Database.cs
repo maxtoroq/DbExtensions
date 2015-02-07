@@ -184,6 +184,12 @@ namespace DbExtensions {
                this.config.EnableBatchCommands = batch; 
             }
          }
+
+         if (mapping != null) {
+            if (mapping.ProviderType == typeof(System.Data.Linq.SqlClient.Sql2008Provider)) {
+               this.config.SqlDialect = SqlDialect.SqlServer2008;
+            }
+         }
       }
 
       // Standard
@@ -724,6 +730,10 @@ namespace DbExtensions {
          get { return this.Log; }
       }
 
+      SqlDialect? IConnectionContext.SqlDialect {
+         get { return this.config.SqlDialect; }
+      }
+
       DbCommand IConnectionContext.CreateCommand(SqlBuilder query) {
          return CreateCommand(query);
       }
@@ -947,6 +957,8 @@ namespace DbExtensions {
       /// <see cref="SqlTable&lt;TEntity>.AddRange(TEntity[])"/>.
       /// </remarks>
       public bool EnableInsertRecursion { get; set; }
+
+      internal SqlDialect? SqlDialect { get; set; }
 
       internal DatabaseConfiguration(MetaModel mapping) {
          this.mapping = mapping;

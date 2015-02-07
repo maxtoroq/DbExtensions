@@ -33,8 +33,6 @@ namespace DbExtensions {
    public class SqlSet : ISqlSet<SqlSet, object> {
 
       const string SetAliasPrefix = "dbex_set";
-      static readonly object padlock = new object();
-      static readonly IDictionary<Type, SqlDialect> connectionDialect = new Dictionary<Type, SqlDialect>();
 
       // definingQuery should NEVER be modified
 
@@ -202,12 +200,15 @@ namespace DbExtensions {
 
       SqlBuilder BuildQuery(string selectFormat, object[] args) {
 
-         switch (GetConnectionDialect()) {
+         switch (this.context.GetSqlDialect()) {
             case SqlDialect.Default:
                return BuildQuery_Default(selectFormat, args);
                
             case SqlDialect.SqlServer:
                return BuildQuery_SqlServer(selectFormat, args);
+
+            case SqlDialect.SqlServer2008:
+               return BuildQuery_SqlServer2008(selectFormat, args);
 
             case SqlDialect.Oracle:
                return BuildQuery_Oracle(selectFormat, args);
@@ -335,6 +336,92 @@ namespace DbExtensions {
          }
       }
 
+      SqlBuilder BuildQuery_SqlServer2008(string selectFormat, object[] args) {
+
+         SqlFragment whereBuffer = this.buffer.Where;
+         SqlFragment orderByBuffer = this.buffer.OrderBy;
+         int? skipBuffer = this.buffer.Skip;
+         int? takeBuffer = this.buffer.Take;
+
+         bool hasWhere = whereBuffer != null;
+         bool hasOrderBy = orderByBuffer != null;
+         bool hasSkip = skipBuffer.HasValue;
+         bool hasTake = takeBuffer.HasValue;
+
+         if (hasSkip) {
+
+            if (!hasOrderBy) {
+               throw new InvalidOperationException("Must call OrderBy() before Skip().");
+            }
+
+            string queryAlias = SetAliasPrefix + this.setIndex.ToString(CultureInfo.InvariantCulture);
+            string innerQueryAlias = queryAlias + "_rn";
+            const string rowNumberAlias = "dbex_rn";
+
+            int start = (hasSkip) ? skipBuffer.Value : 0;
+            int? end = (hasTake) ? start + takeBuffer.Value : default(int?);
+
+            var innerQuery = new SqlBuilder()
+               .SELECT(String.Concat("ROW_NUMBER() OVER (ORDER BY ", orderByBuffer.Format, ") AS ", rowNumberAlias), orderByBuffer.Args)
+               .SELECT(innerQueryAlias + ".*")
+               .FROM(GetDefiningQuery(clone: false, ignoreBuffer: true), innerQueryAlias);
+
+            if (hasWhere) {
+               innerQuery.WHERE(whereBuffer.Format, whereBuffer.Args);
+            }
+
+            var query = CreateSuperQuery(innerQuery, selectFormat, args);
+
+            if (end.HasValue) {
+               query.WHERE(rowNumberAlias + " BETWEEN {0} AND {1}", (start + 1), end.Value);
+
+            } else {
+               query.WHERE(rowNumberAlias + " > {0}", start);
+            }
+
+            query.ORDER_BY(rowNumberAlias);
+
+            query.IgnoredColumns.Add(0);
+
+            return query;
+
+         } else if (hasTake) {
+
+            SqlBuilder query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: "TOP({0}) *", args: new object[1] { takeBuffer.Value });
+
+            if (hasWhere) {
+               query.WHERE(whereBuffer.Format, whereBuffer.Args);
+            }
+
+            if (hasOrderBy) {
+               query.ORDER_BY(orderByBuffer.Format, orderByBuffer.Args);
+            }
+
+            if (selectFormat != null) {
+
+               // SELECT must be done in super query, it could remove columns used by WHERE/ORDER BY
+
+               query = CreateSuperQuery(query, selectFormat, args);
+            }
+
+            return query;
+
+         } else {
+
+            SqlBuilder query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: selectFormat, args: args);
+
+            if (hasWhere) {
+               query.WHERE(whereBuffer.Format, whereBuffer.Args);
+            }
+
+            if (hasOrderBy) {
+               query.ORDER_BY(orderByBuffer.Format, orderByBuffer.Args);
+            }
+
+            return query;
+         }
+      }
+
       SqlBuilder BuildQuery_Oracle(string selectFormat, object[] args) {
 
          SqlFragment whereBuffer = this.buffer.Where;
@@ -407,38 +494,6 @@ namespace DbExtensions {
 
             return query;
          }
-      }
-
-      SqlDialect GetConnectionDialect() {
-
-         DbConnection conn = this.context.Connection;
-         Type connType = conn.GetType();
-
-         SqlDialect dialect;
-
-         if (!connectionDialect.TryGetValue(connType, out dialect)) {
-            lock (padlock) {
-               if (!connectionDialect.TryGetValue(connType, out dialect)) {
-
-                  dialect = IsSqlServer(conn) ? SqlDialect.SqlServer
-                     : IsOracle(conn) ? SqlDialect.Oracle
-                     : SqlDialect.Default;
-
-                  connectionDialect[connType] = dialect;
-               }
-            }
-         }
-
-         return dialect;
-      }
-
-      static bool IsSqlServer(DbConnection conn) {
-         return conn is System.Data.SqlClient.SqlConnection
-            || conn.GetType().Namespace.Equals("System.Data.SqlServerCe", StringComparison.Ordinal);
-      }
-
-      static bool IsOracle(DbConnection conn) {
-         return conn.GetType().Namespace.Equals("System.Data.OracleClient", StringComparison.Ordinal);
       }
 
       SqlBuilder CreateSuperQuery(SqlBuilder query, string selectFormat, object[] args) {
@@ -1068,11 +1123,7 @@ namespace DbExtensions {
          }
       }
 
-      enum SqlDialect { 
-         Default = 0,
-         SqlServer,
-         Oracle
-      }
+      
 
       #endregion
    }
@@ -1397,6 +1448,54 @@ namespace DbExtensions {
          return command.Map(r => Convert.ToInt32(r[0], CultureInfo.InvariantCulture) != 0, logger)
             .SingleOrDefault();
       }
+
+      internal static SqlDialect GetSqlDialect(this IConnectionContext context) {
+         return GetSqlDialectImpl.GetSqlDialect(context);
+      }
+
+      static class GetSqlDialectImpl {
+
+         static readonly IDictionary<Type, SqlDialect> connectionDialect = new Dictionary<Type, SqlDialect>();
+         static readonly object padlock = new object();
+
+         public static SqlDialect GetSqlDialect(IConnectionContext context) {
+
+            SqlDialect? contextDialect = context.SqlDialect;
+
+            if (contextDialect.HasValue) {
+               return contextDialect.Value;
+            }
+
+            DbConnection conn = context.Connection;
+            Type connType = conn.GetType();
+
+            SqlDialect dialect;
+
+            if (!connectionDialect.TryGetValue(connType, out dialect)) {
+               lock (padlock) {
+                  if (!connectionDialect.TryGetValue(connType, out dialect)) {
+
+                     dialect = IsSqlServer(conn) ? SqlDialect.SqlServer
+                        : IsOracle(conn) ? SqlDialect.Oracle
+                        : SqlDialect.Default;
+
+                     connectionDialect[connType] = dialect;
+                  }
+               }
+            }
+
+            return dialect;
+         }
+
+         static bool IsSqlServer(DbConnection conn) {
+            return conn is System.Data.SqlClient.SqlConnection
+               || conn.GetType().Namespace.Equals("System.Data.SqlServerCe", StringComparison.Ordinal);
+         }
+
+         static bool IsOracle(DbConnection conn) {
+            return conn.GetType().Namespace.Equals("System.Data.OracleClient", StringComparison.Ordinal);
+         }
+      }
    }
 
    interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
@@ -1446,10 +1545,18 @@ namespace DbExtensions {
       TSqlSet Where(string predicate, params object[] parameters);
    }
 
+   enum SqlDialect {
+      Default = 0,
+      SqlServer,
+      SqlServer2008,
+      Oracle
+   }
+
    interface IConnectionContext {
 
       DbConnection Connection { get; }
       TextWriter Log { get; }
+      SqlDialect? SqlDialect { get; }
 
       DbCommand CreateCommand(SqlBuilder query);
    }
@@ -1465,6 +1572,10 @@ namespace DbExtensions {
 
       public TextWriter Log {
          get { return _Log; }
+      }
+
+      public SqlDialect? SqlDialect {
+         get { return null; }
       }
 
       public DbConnectionContext(DbConnection connection, TextWriter log = null) {
