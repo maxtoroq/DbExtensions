@@ -12,7 +12,7 @@ namespace DbExtensions.Tests.Querying {
       readonly Database db = new Database(Database.GetProviderFactory("System.Data.OracleClient").CreateConnection());
 
       [TestMethod]
-      public void Apply_Select_Last() {
+      public void Where_Take_Select() {
 
          SqlSet set = db.From("products")
             .Where("UnitsInStock > 0")

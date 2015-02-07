@@ -11,10 +11,10 @@ namespace DbExtensions.Tests.Querying {
    [TestClass]
    public class SqlSetIncludeBehavior {
 
+      readonly Database db = new Database(System.Data.SqlClient.SqlClientFactory.Instance.CreateSqlServerConnectionForTests_Northwind(), new AttributeMappingSource().GetModel(typeof(SqlSetInclude.Product)));
+
       [TestMethod]
       public void Can_Include_One() {
-
-         var db = new Database(System.Data.SqlClient.SqlClientFactory.Instance.CreateSqlServerConnectionForTests_Northwind(), new AttributeMappingSource().GetModel(typeof(SqlSetInclude.Product)));
 
          SqlSet<SqlSetInclude.Product> set = db.Table<SqlSetInclude.Product>()
             .Where("NOT CategoryID IS NULL AND NOT SupplierID IS NULL")
@@ -30,8 +30,6 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Can_Include_One_Nested() {
 
-         var db = new Database(System.Data.SqlClient.SqlClientFactory.Instance.CreateSqlServerConnectionForTests_Northwind(), new AttributeMappingSource().GetModel(typeof(SqlSetInclude.Product)));
-
          SqlSet<SqlSetInclude.EmployeeTerritory> set = db.Table<SqlSetInclude.EmployeeTerritory>()
             .Include("Territory.Region");
 
@@ -43,8 +41,6 @@ namespace DbExtensions.Tests.Querying {
 
       [TestMethod]
       public void Can_Include_Many() {
-
-         var db = new Database(System.Data.SqlClient.SqlClientFactory.Instance.CreateSqlServerConnectionForTests_Northwind(), new AttributeMappingSource().GetModel(typeof(SqlSetInclude.Product)));
 
          SqlSet<SqlSetInclude.Category> set = db.Table<SqlSetInclude.Category>()
             .Include("Products");
@@ -58,8 +54,6 @@ namespace DbExtensions.Tests.Querying {
 
       [TestMethod]
       public void Can_Include_Many_Multiple() {
-
-         var db = new Database(System.Data.SqlClient.SqlClientFactory.Instance.CreateSqlServerConnectionForTests_Northwind(), new AttributeMappingSource().GetModel(typeof(SqlSetInclude.Product)));
 
          SqlSet<SqlSetInclude.Employee> set1 = db.Table<SqlSetInclude.Employee>()
             .Include("EmployeeTerritories");
@@ -88,8 +82,6 @@ namespace DbExtensions.Tests.Querying {
 
       [TestMethod]
       public void Can_Include_Many_In_One() {
-
-         var db = new Database(System.Data.SqlClient.SqlClientFactory.Instance.CreateSqlServerConnectionForTests_Northwind(), new AttributeMappingSource().GetModel(typeof(SqlSetInclude.Product)));
 
          SqlSet<SqlSetInclude.EmployeeTerritory> set = db.Table<SqlSetInclude.EmployeeTerritory>()
             .Include("Employee.Orders");

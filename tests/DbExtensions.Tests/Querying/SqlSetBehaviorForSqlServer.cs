@@ -41,7 +41,7 @@ namespace DbExtensions.Tests.Querying {
       }
 
       [TestMethod]
-      public void Pagination_Sql2008() {
+      public void Where_OrderBy_Skip_Take_Select_Sql2008() {
 
          Database db = new SqlSetForSqlServer.Sql2008Database();
 
