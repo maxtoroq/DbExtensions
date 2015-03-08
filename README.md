@@ -1,4 +1,4 @@
-[DbExtensions](http://maxtoroq.github.io/DbExtensions/) - The SQL framework for .NET
+[DbExtensions](http://maxtoroq.github.io/DbExtensions/) — The SQL framework for .NET
 ====================================================================================
 DbExtensions is a data-access API with a strong focus on **query composition, granularity and code aesthetics**.
 It supports both POCO and dynamic (untyped) mapping.
@@ -138,8 +138,8 @@ DbExtensions doesn't provide the following functionality:
 Resources
 ---------
 - [Documentation](docs/README.md)
-- [Ask for help](https://github.com/maxtoroq/DbExtensions/issues?labels=question&state=closed)
-- [Report an issue](https://github.com/maxtoroq/DbExtensions/issues?state=open)
+- [Ask for help](https://github.com/maxtoroq/DbExtensions/issues?q=is%3Aissue+label%3Aquestion)
+- [Report an issue](https://github.com/maxtoroq/DbExtensions/issues)
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](http://maxtoroq.github.io/p/donate.html)
 [![Flattr this](https://api.flattr.com/button/flattr-badge-large.png)](http://flattr.com/thing/1761218/DbExtensions)
