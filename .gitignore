@@ -7,5 +7,3 @@
 packages
 *.sl3
 *.[msl]df
-samples/App/x64
-samples/App/x86
