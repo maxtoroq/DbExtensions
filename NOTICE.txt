@@ -6,5 +6,5 @@
 
 DbExtensions
 http://maxtoroq.github.io/DbExtensions/
-Copyright 2009-2014 Max Toro Q.
+Copyright 2009-2015 Max Toro Q.
 
