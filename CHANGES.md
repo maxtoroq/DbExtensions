@@ -1,5 +1,13 @@
 ﻿Changes
 =======
+v5.1.0
+------
+- Improved [#30](https://github.com/maxtoroq/DbExtensions/issues/30): Make SqlBuilder.cs a standalone file
+- Fixed [#31](https://github.com/maxtoroq/DbExtensions/issues/31): SqlTable not handling array members properly
+- Added [#33](https://github.com/maxtoroq/DbExtensions/issues/33): SqlServer 2008 support in SqlSet
+- Fixed [#35](https://github.com/maxtoroq/DbExtensions/issues/35): SqlSet pagination fails against Oracle
+- Moved documentation to source repository
+- Moved samples databases to source repository
 
 v5.0.0
 ------
