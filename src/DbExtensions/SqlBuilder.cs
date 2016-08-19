@@ -768,6 +768,25 @@ namespace DbExtensions {
       }
 
       /// <summary>
+      /// Appends the CROSS JOIN clause using the provided <paramref name="body"/>.
+      /// </summary>
+      /// <param name="body">The body of the CROSS JOIN clause.</param>
+      /// <returns>A reference to this instance after the append operation has completed.</returns>
+      public SqlBuilder CROSS_JOIN(string body) {
+         return CROSS_JOIN(body, null);
+      }
+
+      /// <summary>
+      /// Appends the CROSS JOIN clause using the provided <paramref name="format"/> string and parameters.
+      /// </summary>
+      /// <param name="format">The format string that represents the body of the CROSS JOIN clause.</param>
+      /// <param name="args">The parameters of the clause body.</param>
+      /// <returns>A reference to this instance after the append operation has completed.</returns>
+      public SqlBuilder CROSS_JOIN(string format, params object[] args) {
+         return AppendClause("CROSS JOIN", null, format, args);
+      }
+
+      /// <summary>
       /// Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods,
       /// such as <see cref="_(string)"/> and <see cref="_If(bool, string)"/>.
       /// </summary>
