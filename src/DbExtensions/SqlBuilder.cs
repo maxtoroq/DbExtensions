@@ -772,9 +772,8 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="body">The body of the CROSS JOIN clause.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder CROSS_JOIN(string body)
-      {
-          return CROSS_JOIN(body, null);
+      public SqlBuilder CROSS_JOIN(string body) {
+         return CROSS_JOIN(body, null);
       }
 
       /// <summary>
@@ -783,9 +782,8 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the CROSS JOIN clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder CROSS_JOIN(string format, params object[] args)
-      {
-          return AppendClause("CROSS JOIN", null, format, args);
+      public SqlBuilder CROSS_JOIN(string format, params object[] args) {
+         return AppendClause("CROSS JOIN", null, format, args);
       }
 
       /// <summary>
