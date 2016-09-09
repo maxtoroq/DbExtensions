@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.IO;
 using DbExtensions;
 using Samples.CSharp.Northwind;
 
@@ -12,14 +10,7 @@ namespace Samples.CSharp {
 
       readonly SqlSet<Product> products;
 
-      public SqlSetSamples(DbConnection conn, TextWriter log) {
-
-         var db = new Database(conn) {
-            Configuration = { 
-               Log = log
-            }
-         };
-
+      public SqlSetSamples(Database db) {
          this.products = db.From<Product>("Products");
       }
 

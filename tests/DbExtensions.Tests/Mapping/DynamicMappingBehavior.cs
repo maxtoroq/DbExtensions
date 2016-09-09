@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Data.Common;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DbExtensions.Tests.Mapping {
-   
+
+   using static TestUtil;
+
    [TestClass]
    public class DynamicMappingBehavior {
 
-      readonly DbConnection conn = System.Data.SqlClient.SqlClientFactory.Instance
-         .CreateSqlServerConnectionForTests();
+      readonly Database db = SqlServerDatabase();
 
       [TestMethod, ExpectedException(typeof(ArgumentException))]
       public void Constructor_Parameters_Not_Allowed() {
 
-         var value = conn.CreateCommand(SQL
+         var value = db.Map(SQL
             .SELECT("'foo' AS '1'"))
-            .Map()
             .Single();
       }
    }

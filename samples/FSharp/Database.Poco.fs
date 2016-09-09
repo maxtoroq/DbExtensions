@@ -3,7 +3,6 @@
 open System
 open System.Collections
 open System.Collections.Generic
-open System.IO
 open System.Linq
 open System.Xml
 open DbExtensions
@@ -28,12 +27,7 @@ type MappingToConstructorArgumentsSample(id : int, url : Uri, price : Nullable<M
 
    new(id) = MappingToConstructorArgumentsSample(id, null, new Nullable<Money>())
 
-type DatabasePocoSamples(connectionString : string, log : TextWriter) =
-
-   let db = 
-      let db1 = new Database(connectionString) 
-      db1.Configuration.Log <- log
-      db1
+type DatabasePocoSamples(db : Database) =
 
    member this.SelectWithManyToOne() =
       

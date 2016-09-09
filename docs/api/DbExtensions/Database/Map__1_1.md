@@ -41,7 +41,6 @@ See Also
 #### Reference
 [Database Class][6]  
 [DbExtensions Namespace][1]  
-[Extensions.Map&lt;TResult>(IDbCommand, Func&lt;IDataRecord, TResult>, TextWriter)][7]  
 
 [1]: ../README.md
 [2]: ../SqlBuilder/README.md
@@ -49,4 +48,3 @@ See Also
 [4]: http://msdn.microsoft.com/en-us/library/93wb1heh
 [5]: http://msdn.microsoft.com/en-us/library/9eekhta0
 [6]: README.md
-[7]: ../Extensions/Map__1_2.md

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data.Linq.Mapping;
 
 namespace Samples.CSharp.Northwind {
@@ -24,10 +21,10 @@ namespace Samples.CSharp.Northwind {
       [Column]
       public float Discount { get; set; }
 
-      [Association(ThisKey = "OrderID", IsForeignKey = true)]
+      [Association(ThisKey = nameof(OrderID), IsForeignKey = true)]
       public Order Order { get; set; }
 
-      [Association(ThisKey = "ProductID", IsForeignKey = true)]
+      [Association(ThisKey = nameof(ProductID), IsForeignKey = true)]
       public Product Product { get; set; }
    }
 }

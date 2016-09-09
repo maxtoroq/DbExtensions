@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
 using System.Data.Linq.Mapping;
-using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DbExtensions.Tests.Mapping {
-   
+
+   using static TestUtil;
+
    [TestClass]
    public class EnumMappingBehavior {
-
-      readonly DbConnection conn = System.Data.SqlClient.SqlClientFactory.Instance.CreateSqlServerConnectionForTests_Northwind();
 
       [TestMethod]
       public void Can_Map_Numeric_Column_To_Enum() {
 
-         var db = new Database(conn, new AttributeMappingSource().GetModel(typeof(Enum.ToNumericColumn.Product)));
+         var db = SqlServerNorthwindDatabase(new AttributeMappingSource().GetModel(typeof(Enum.ToNumericColumn.Product)));
 
          var item = db.Table<Enum.ToNumericColumn.Product>()
             .First("CategoryID = {0}", Enum.CategoryEnum.Condiments);
@@ -28,7 +24,7 @@ namespace DbExtensions.Tests.Mapping {
       [TestMethod]
       public void Can_Map_Numeric_Column_To_Nullable_Enum() {
 
-         var db = new Database(conn, new AttributeMappingSource().GetModel(typeof(Enum.NullableToNumericColumn.Product)));
+         var db = SqlServerNorthwindDatabase(new AttributeMappingSource().GetModel(typeof(Enum.NullableToNumericColumn.Product)));
 
          var item = db.Table<Enum.NullableToNumericColumn.Product>()
             .First("CategoryID = {0}", Enum.CategoryEnum.Condiments);
@@ -40,13 +36,13 @@ namespace DbExtensions.Tests.Mapping {
       [TestMethod]
       public void Can_Persist_Enum_To_Numeric_Column() {
 
-         var db = new Database(conn, new AttributeMappingSource().GetModel(typeof(Enum.ToNumericColumn.Product)));
+         var db = SqlServerNorthwindDatabase(new AttributeMappingSource().GetModel(typeof(Enum.ToNumericColumn.Product)));
 
          using (var tx = db.EnsureInTransaction()) {
 
             var table = db.Table<Enum.ToNumericColumn.Product>();
 
-            var item = new Enum.ToNumericColumn.Product { 
+            var item = new Enum.ToNumericColumn.Product {
                CategoryID = Enum.CategoryEnum.Beverages,
                ProductName = ""
             };
@@ -62,7 +58,7 @@ namespace DbExtensions.Tests.Mapping {
       [TestMethod]
       public void Can_Persist_Nullable_Enum_To_Numeric_Column() {
 
-         var db = new Database(conn, new AttributeMappingSource().GetModel(typeof(Enum.NullableToNumericColumn.Product)));
+         var db = SqlServerNorthwindDatabase(new AttributeMappingSource().GetModel(typeof(Enum.NullableToNumericColumn.Product)));
 
          using (var tx = db.EnsureInTransaction()) {
 
@@ -84,7 +80,7 @@ namespace DbExtensions.Tests.Mapping {
       [TestMethod]
       public void Can_Map_Text_Column_To_Enum() {
 
-         var db = new Database(conn, new AttributeMappingSource().GetModel(typeof(Enum.ToTextColumn.Category)));
+         var db = SqlServerNorthwindDatabase(new AttributeMappingSource().GetModel(typeof(Enum.ToTextColumn.Category)));
 
          var item = db.Table<Enum.ToTextColumn.Category>()
             .Single("CategoryName = {0}", Enum.CategoryEnum.Condiments.ToString());
@@ -96,7 +92,7 @@ namespace DbExtensions.Tests.Mapping {
       [TestMethod]
       public void Can_Map_Text_Column_To_Nullable_Enum() {
 
-         var db = new Database(conn, new AttributeMappingSource().GetModel(typeof(Enum.NullableToTextColumn.Category)));
+         var db = SqlServerNorthwindDatabase(new AttributeMappingSource().GetModel(typeof(Enum.NullableToTextColumn.Category)));
 
          var item = db.Table<Enum.NullableToTextColumn.Category>()
             .Single("CategoryName = {0}", Enum.CategoryEnum.Condiments.ToString());
@@ -108,7 +104,7 @@ namespace DbExtensions.Tests.Mapping {
       [TestMethod]
       public void Can_Persist_Enum_To_Text_Column() {
 
-         var db = new Database(conn, new AttributeMappingSource().GetModel(typeof(Enum.ToTextColumn.Category)));
+         var db = SqlServerNorthwindDatabase(new AttributeMappingSource().GetModel(typeof(Enum.ToTextColumn.Category)));
 
          using (var tx = db.EnsureInTransaction()) {
 
@@ -135,7 +131,7 @@ namespace DbExtensions.Tests.Mapping {
       [TestMethod]
       public void Can_Persist_Nullable_Enum_To_Text_Column() {
 
-         var db = new Database(conn, new AttributeMappingSource().GetModel(typeof(Enum.NullableToTextColumn.Category)));
+         var db = SqlServerNorthwindDatabase(new AttributeMappingSource().GetModel(typeof(Enum.NullableToTextColumn.Category)));
 
          using (var tx = db.EnsureInTransaction()) {
 
@@ -159,72 +155,72 @@ namespace DbExtensions.Tests.Mapping {
          }
       }
    }
-}
 
-namespace DbExtensions.Tests.Mapping.Enum {
+   namespace Enum {
 
-   public enum CategoryEnum { 
-      Beverages = 1,
-      Condiments = 2,
-      Foo = 1000,
-      Bar = 1001
-   }
-}
+      public enum CategoryEnum {
+         Beverages = 1,
+         Condiments = 2,
+         Foo = 1000,
+         Bar = 1001
+      }
 
-namespace DbExtensions.Tests.Mapping.Enum.ToNumericColumn {
+      namespace ToNumericColumn {
 
-   [Table(Name = "Products")]
-   public class Product {
+         [Table(Name = "Products")]
+         public class Product {
 
-      [Column(IsPrimaryKey = true, IsDbGenerated = true)]
-      public int ProductID { get; set; }
+            [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+            public int ProductID { get; set; }
 
-      [Column]
-      public string ProductName { get; set; }
+            [Column]
+            public string ProductName { get; set; }
 
-      [Column]
-      public CategoryEnum CategoryID { get; set; }
-   }
-}
+            [Column]
+            public CategoryEnum CategoryID { get; set; }
+         }
+      }
 
-namespace DbExtensions.Tests.Mapping.Enum.NullableToNumericColumn {
+      namespace NullableToNumericColumn {
 
-   [Table(Name = "Products")]
-   public class Product {
+         [Table(Name = "Products")]
+         public class Product {
 
-      [Column(IsPrimaryKey = true, IsDbGenerated = true)]
-      public int ProductID { get; set; }
+            [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+            public int ProductID { get; set; }
 
-      [Column]
-      public string ProductName { get; set; }
+            [Column]
+            public string ProductName { get; set; }
 
-      [Column]
-      public CategoryEnum? CategoryID { get; set; }
-   }
-}
+            [Column]
+            public CategoryEnum? CategoryID { get; set; }
+         }
+      }
 
-namespace DbExtensions.Tests.Mapping.Enum.ToTextColumn {
+      namespace ToTextColumn {
 
-   [Table(Name = "Categories")]
-   public class Category {
+         [Table(Name = "Categories")]
+         public class Category {
 
-      [Column(IsPrimaryKey = true, IsDbGenerated = true)]
-      public int CategoryID { get; set; }
+            [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+            public int CategoryID { get; set; }
 
-      [Column(DbType = "nvarchar(15)")]
-      public CategoryEnum CategoryName { get; set; }
-   }
-}
+            [Column(DbType = "nvarchar(15)")]
+            public CategoryEnum CategoryName { get; set; }
+         }
+      }
 
-namespace DbExtensions.Tests.Mapping.Enum.NullableToTextColumn {
+      namespace NullableToTextColumn {
 
-   [Table(Name = "Categories")]
-   public class Category {
+         [Table(Name = "Categories")]
+         public class Category {
 
-      [Column(IsPrimaryKey = true, IsDbGenerated = true)]
-      public int CategoryID { get; set; }
+            [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+            public int CategoryID { get; set; }
 
-      [Column(DbType = "nvarchar(15)")]
-      public CategoryEnum? CategoryName { get; set; }
+            [Column(DbType = "nvarchar(15)")]
+            public CategoryEnum? CategoryName { get; set; }
+         }
+      }
    }
 }

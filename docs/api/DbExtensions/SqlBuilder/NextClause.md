@@ -1,6 +1,6 @@
 SqlBuilder.NextClause Property
 ==============================
-Gets or sets the next SQL clause. Used by clause continuation methods, such as [AppendToCurrentClause(String)][1] and the methods that start with "_".
+Gets or sets the next SQL clause. Used by clause continuation methods, such as [AppendToCurrentClause(String, Object[])][1] and the methods that start with "_".
 
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions (in DbExtensions.dll)

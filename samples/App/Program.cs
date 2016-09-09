@@ -13,6 +13,8 @@ using DbExtensions;
 
 namespace Samples {
 
+   using static Console;
+
    class Program {
 
       readonly string samplesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..");
@@ -23,8 +25,8 @@ namespace Samples {
 
       void Run() {
 
-         Console.WriteLine("DbExtensions Sample Runner");
-         Console.WriteLine("==========================");
+         WriteLine("DbExtensions Sample Runner");
+         WriteLine("==========================");
 
          var connectionStrings = ConfigurationManager.ConnectionStrings
             .Cast<ConnectionStringSettings>()
@@ -34,18 +36,21 @@ namespace Samples {
 
          int connIndex = GetArrayOption(connectionStrings.Select(c => c.Name).ToArray(), "Select a connection string (or Enter to select the first one):");
          ConnectionStringSettings connSettings = connectionStrings[connIndex];
-         DbProviderFactory provider = Database.GetProviderFactory(connSettings.ProviderName);
-         string connectionString = "name=" + connSettings.Name;
+         DbProviderFactory provider = DbProviderFactories.GetFactory(connSettings.ProviderName);
 
-         Console.WriteLine();
-         Console.WriteLine("Provider: {0}", provider.GetType().AssemblyQualifiedName);
-         Console.WriteLine();
-         Console.WriteLine("Connecting...");
+         WriteLine();
+         WriteLine("Provider: {0}", provider.GetType().AssemblyQualifiedName);
+         WriteLine();
+         WriteLine("Connecting...");
 
          try {
-            DbConnection conn = Database.CreateConnection(connectionString);
-            using (conn.EnsureOpen())
-               Console.WriteLine("Server Version: {0}", conn.ServerVersion);
+
+            Database db = new Database(connSettings.ConnectionString, connSettings.ProviderName);
+
+            using (db.EnsureConnectionOpen()) {
+               WriteLine("Server Version: {0}", ((DbConnection)db.Connection).ServerVersion);
+            }
+
          } catch (Exception ex) {
 
             WriteError(ex, fatal: true);
@@ -64,7 +69,7 @@ namespace Samples {
          object[] samples;
 
          try {
-            samples = GetSamples(samplesLanguage, connectionString, mappingSource, Console.Out).ToArray();
+            samples = GetSamples(samplesLanguage, connSettings, mappingSource, Console.Out).ToArray();
          } catch (Exception ex) {
 
             WriteError(ex, fatal: true);
@@ -86,9 +91,9 @@ namespace Samples {
          string[] continueOnErrorOptions = { "Yes", "No" };
          bool continueOnError = GetArrayOption(continueOnErrorOptions, "Continue on Error:") == 0;
 
-         Console.WriteLine();
-         Console.WriteLine("Press key to begin...");
-         Console.ReadKey();
+         WriteLine();
+         WriteLine("Press key to begin...");
+         ReadKey();
 
          for (int i = 0; i < selectedSamples.Length; i++) {
 
@@ -98,12 +103,13 @@ namespace Samples {
 
             IDisposable disp = sampl as IDisposable;
 
-            if (disp != null)
+            if (disp != null) {
                disp.Dispose();
+            }
 
-            Console.WriteLine();
-            Console.WriteLine((i == selectedSamples.Length - 1) ? "Press key to exit..." : "Press key to continue...");
-            Console.ReadKey();
+            WriteLine();
+            WriteLine((i == selectedSamples.Length - 1) ? "Press key to exit..." : "Press key to continue...");
+            ReadKey();
          }
       }
 
@@ -124,13 +130,14 @@ namespace Samples {
          return projectsDir;
       }
 
-      IEnumerable<object> GetSamples(string language, string connectionString, MappingSource mappingSource, TextWriter log) {
+      IEnumerable<object> GetSamples(string language, ConnectionStringSettings connSettings, MappingSource mappingSource, TextWriter log) {
 
          string projectDir = Path.Combine(this.samplesPath, language);
          string projectFile = Directory.GetFiles(projectDir, String.Format("*.{0}proj", Regex.Replace(language, "[a-z]", ""))).FirstOrDefault();
 
-         if (projectFile == null) 
+         if (projectFile == null) {
             throw new InvalidOperationException("Project file not found.");
+         }
 
          string projectFileName = projectFile.Split(Path.DirectorySeparatorChar).Last();
          string assemblyFileName = String.Join(".", projectFileName.Split('.').Reverse().Skip(1).Reverse()) + ".dll";
@@ -153,20 +160,30 @@ namespace Samples {
             );
          }
 
-         return 
+         return
             from t in samplesAssembly.GetTypes()
             where t.IsPublic
                && t.Name.EndsWith("Samples")
             let parameters = t.GetConstructors().First().GetParameters()
-            let args = 
+            let args =
                from p in parameters
-               select (p.ParameterType == typeof(string) ? connectionString 
-                  : p.ParameterType == typeof(TextWriter) ? log
+               select (p.ParameterType == typeof(TextWriter) ? log
                   : p.ParameterType == typeof(MetaModel) ? mapping
-                  : p.ParameterType == typeof(DbConnection) ? Database.CreateConnection(connectionString)
+                  : p.ParameterType == typeof(DbConnection) ? CreateConnection(connSettings)
+                  : p.ParameterType == typeof(Database) ? new Database(connSettings.ConnectionString, connSettings.ProviderName, mapping) { Configuration = { Log = log } }
                   : p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType)
                   : null)
             select Activator.CreateInstance(t, args.ToArray());
+      }
+
+      DbConnection CreateConnection(ConnectionStringSettings connSettings) {
+
+         DbProviderFactory provider = DbProviderFactories.GetFactory(connSettings.ProviderName);
+
+         DbConnection connection = provider.CreateConnection();
+         connection.ConnectionString = connSettings.ConnectionString;
+
+         return connection;
       }
 
       void RunSamples(object samples, bool continueOnError) {
@@ -188,10 +205,10 @@ namespace Samples {
                continue;
             }
 
-            Console.WriteLine();
-            Console.WriteLine(method.Name);
-            Array.ForEach<char>(method.Name.ToCharArray(), c => Console.Write("="));
-            Console.WriteLine();
+            WriteLine();
+            WriteLine(method.Name);
+            Array.ForEach<char>(method.Name.ToCharArray(), c => Write("="));
+            WriteLine();
 
             object returnValue = null;
 
@@ -222,8 +239,9 @@ namespace Samples {
                      )
                   ).Compile()();
 
-                  if (returnValue is IEnumerable)
+                  if (returnValue is IEnumerable) {
                      returnValue = ((IEnumerable)returnValue).Cast<object>().ToArray();
+                  }
                };
 
                if (continueOnError) {
@@ -242,30 +260,30 @@ namespace Samples {
 
             if (returnValue != null) {
 
-               Console.WriteLine();
+               WriteLine();
 
                var sqlbuilder = returnValue as SqlBuilder;
 
                if (sqlbuilder != null) {
 
-                  Console.WriteLine(returnValue);
+                  WriteLine(returnValue);
 
                   for (int j = 0; j < sqlbuilder.ParameterValues.Count; j++) {
 
                      object value = sqlbuilder.ParameterValues[j];
                      Type type = (value != null) ? value.GetType() : null;
 
-                     Console.WriteLine("-- {0}: {1} [{2}]", j, type, value);
+                     WriteLine("-- {0}: {1} [{2}]", j, type, value);
                   }
 
                } else {
 
-                  ConsoleColor color = Console.ForegroundColor;
-                  Console.ForegroundColor = ConsoleColor.DarkGray;
+                  ConsoleColor color = ForegroundColor;
+                  ForegroundColor = ConsoleColor.DarkGray;
 
-                  ObjectDumper.Write(returnValue, 1, Console.Out);
+                  ObjectDumper.Write(returnValue, 1, Out);
 
-                  Console.ForegroundColor = color;
+                  ForegroundColor = color;
                }
             }
          }
@@ -275,30 +293,32 @@ namespace Samples {
 
          bool firstTry = true;
          int index = -1;
-         int left = Console.CursorLeft;
+         int left = CursorLeft;
 
          while (index < 0 || index >= options.Length) {
 
-            if (!firstTry)
-               Console.WriteLine();
+            if (!firstTry) {
+               WriteLine();
+            }
 
             firstTry = false;
 
-            Console.WriteLine();
-            Console.WriteLine(title);
+            WriteLine();
+            WriteLine(title);
 
             for (int i = 0; i < options.Length; i++) {
 
-               if (i > 0)
-                  Console.Write(", ");
+               if (i > 0) {
+                  Write(", ");
+               }
 
-               Console.Write("[{0}] {1}", i + 1, options[i]);
+               Write("[{0}] {1}", i + 1, options[i]);
             }
 
-            Console.Write(": ");
+            Write(": ");
 
-            left = Console.CursorLeft;
-            var key = Console.ReadKey();
+            left = CursorLeft;
+            var key = ReadKey();
 
             if (key.Key == ConsoleKey.Enter) {
 
@@ -312,29 +332,29 @@ namespace Samples {
             }
          }
 
-         var prevColor = Console.ForegroundColor;
+         var prevColor = ForegroundColor;
 
-         Console.ForegroundColor = ConsoleColor.Green;
+         ForegroundColor = ConsoleColor.Green;
 
-         Console.CursorLeft = left;
-         Console.Write(options[index]);
-         Console.WriteLine();
+         CursorLeft = left;
+         Write(options[index]);
+         WriteLine();
 
-         Console.ForegroundColor = prevColor;
+         ForegroundColor = prevColor;
 
          return index;
       }
 
       void WriteError(Exception ex, bool fatal = false) {
 
-         ConsoleColor prevColor = Console.ForegroundColor;
-         Console.ForegroundColor = ConsoleColor.Red;
-         Console.WriteLine(ex.Message);
-         Console.ForegroundColor = prevColor;
+         ConsoleColor prevColor = ForegroundColor;
+         ForegroundColor = ConsoleColor.Red;
+         WriteLine(ex.Message);
+         ForegroundColor = prevColor;
 
-         Console.WriteLine();
-         Console.WriteLine((fatal) ? "Press key to exit..." : "Press key to continue...");
-         Console.ReadKey();
+         WriteLine();
+         WriteLine((fatal) ? "Press key to exit..." : "Press key to continue...");
+         ReadKey();
       }
    }
 }

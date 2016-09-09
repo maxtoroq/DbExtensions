@@ -7,18 +7,15 @@ Namespace Northwind
    <Table(Name:="CustomerDemographics")>
    Public Class CustomerDemographic
 
-      <Association(OtherKey:="CustomerTypeID")>
-      Public Property CustomerCustomerDemos As Collection(Of CustomerCustomerDemo)
-
       <Column(UpdateCheck:=UpdateCheck.Never)>
       Public Property CustomerDesc As String
 
       <Column(IsPrimaryKey:=True)>
       Public Property CustomerTypeID As String
 
-      Public Sub New()
-         Me.CustomerCustomerDemos = New Collection(Of CustomerCustomerDemo)
-      End Sub
+      <Association(OtherKey:=NameOf(CustomerCustomerDemo.CustomerTypeID))>
+      Public ReadOnly Property CustomerCustomerDemos As New Collection(Of CustomerCustomerDemo)
+
    End Class
 
 End Namespace

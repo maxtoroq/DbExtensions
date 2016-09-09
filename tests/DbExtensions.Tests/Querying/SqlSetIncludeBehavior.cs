@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Linq.Mapping;
 using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DbExtensions.Tests.Querying {
 
+   using static TestUtil;
+
    [TestClass]
    public class SqlSetIncludeBehavior {
 
-      readonly Database db = new Database(System.Data.SqlClient.SqlClientFactory.Instance.CreateSqlServerConnectionForTests_Northwind(), new AttributeMappingSource().GetModel(typeof(SqlSetInclude.Product)));
+      readonly Database db = SqlServerNorthwindDatabase(new AttributeMappingSource().GetModel(typeof(SqlSetInclude.Product)));
 
       [TestMethod]
       public void Can_Include_One() {
@@ -93,142 +93,142 @@ namespace DbExtensions.Tests.Querying {
          //Assert.IsTrue(item.Employee.Orders.All(p => Object.ReferenceEquals(p.Employee, item.Employee)));
       }
    }
-}
 
-namespace DbExtensions.Tests.Querying.SqlSetInclude {
+   namespace SqlSetInclude {
 
-   [Table(Name = "Products")]
-   class Product {
+      [Table(Name = "Products")]
+      class Product {
 
-      [Column(IsPrimaryKey = true)]
-      public int ProductID { get; set; }
+         [Column(IsPrimaryKey = true)]
+         public int ProductID { get; set; }
 
-      [Column]
-      public int? CategoryID { get; set; }
+         [Column]
+         public int? CategoryID { get; set; }
 
-      [Column]
-      public int? SupplierID { get; set; }
+         [Column]
+         public int? SupplierID { get; set; }
 
-      [Association(ThisKey = "CategoryID", IsForeignKey = true)]
-      public Category Category { get; set; }
+         [Association(ThisKey = nameof(CategoryID), IsForeignKey = true)]
+         public Category Category { get; set; }
 
-      [Association(ThisKey = "SupplierID", IsForeignKey = true)]
-      public Supplier Supplier { get; set; }
-   }
+         [Association(ThisKey = nameof(SupplierID), IsForeignKey = true)]
+         public Supplier Supplier { get; set; }
+      }
 
-   [Table(Name = "Categories")]
-   class Category {
+      [Table(Name = "Categories")]
+      class Category {
 
-      [Column(IsPrimaryKey = true)]
-      public int CategoryID { get; set; }
+         [Column(IsPrimaryKey = true)]
+         public int CategoryID { get; set; }
 
-      [Column]
-      public string CategoryName { get; set; }
+         [Column]
+         public string CategoryName { get; set; }
 
-      [Association(OtherKey = "CategoryID")]
-      public Collection<Product> Products { get; private set; }
-   }
+         [Association(OtherKey = nameof(Product.CategoryID))]
+         public Collection<Product> Products { get; private set; }
+      }
 
-   [Table(Name = "Suppliers")]
-   class Supplier {
+      [Table(Name = "Suppliers")]
+      class Supplier {
 
-      [Column(IsPrimaryKey = true)]
-      public int SupplierID { get; set; }
+         [Column(IsPrimaryKey = true)]
+         public int SupplierID { get; set; }
 
-      [Column]
-      public string CompanyName { get; set; }
-   }
+         [Column]
+         public string CompanyName { get; set; }
+      }
 
-   [Table(Name = "Employees")]
-   class Employee {
+      [Table(Name = "Employees")]
+      class Employee {
 
-      [Column(IsPrimaryKey = true, IsDbGenerated = true)]
-      public int EmployeeID { get; set; }
+         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+         public int EmployeeID { get; set; }
 
-      [Column]
-      public string LastName { get; set; }
+         [Column]
+         public string LastName { get; set; }
 
-      [Column]
-      public string FirstName { get; set; }
+         [Column]
+         public string FirstName { get; set; }
 
-      [Association(OtherKey = "EmployeeID")]
-      public Collection<EmployeeTerritory> EmployeeTerritories { get; private set; }
+         [Association(OtherKey = nameof(EmployeeTerritory.EmployeeID))]
+         public Collection<EmployeeTerritory> EmployeeTerritories { get; private set; }
 
-      [Association(OtherKey = "EmployeeID")]
-      public Collection<Order> Orders { get; private set; }
-   }
+         [Association(OtherKey = nameof(EmployeeTerritory.EmployeeID))]
+         public Collection<Order> Orders { get; private set; }
+      }
 
-   [Table(Name = "EmployeeTerritories")]
-   class EmployeeTerritory {
+      [Table(Name = "EmployeeTerritories")]
+      class EmployeeTerritory {
 
-      [Column(IsPrimaryKey = true)]
-      public int EmployeeID { get; set; }
+         [Column(IsPrimaryKey = true)]
+         public int EmployeeID { get; set; }
 
-      [Column(CanBeNull = false, IsPrimaryKey = true)]
-      public string TerritoryID { get; set; }
+         [Column(CanBeNull = false, IsPrimaryKey = true)]
+         public string TerritoryID { get; set; }
 
-      [Association(ThisKey = "EmployeeID", IsForeignKey = true)]
-      public Employee Employee { get; set; }
+         [Association(ThisKey = nameof(EmployeeID), IsForeignKey = true)]
+         public Employee Employee { get; set; }
 
-      [Association(ThisKey = "TerritoryID", IsForeignKey = true)]
-      public Territory Territory { get; set; }
-   }
+         [Association(ThisKey = nameof(TerritoryID), IsForeignKey = true)]
+         public Territory Territory { get; set; }
+      }
 
-   [Table(Name = "Territories")]
-   class Territory {
+      [Table(Name = "Territories")]
+      class Territory {
 
-      [Column(CanBeNull = false, IsPrimaryKey = true)]
-      public string TerritoryID { get; set; }
+         [Column(CanBeNull = false, IsPrimaryKey = true)]
+         public string TerritoryID { get; set; }
 
-      [Column(CanBeNull = false)]
-      public string TerritoryDescription { get; set; }
+         [Column(CanBeNull = false)]
+         public string TerritoryDescription { get; set; }
 
-      [Column]
-      public int RegionID { get; set; }
+         [Column]
+         public int RegionID { get; set; }
 
-      [Association(ThisKey = "RegionID", IsForeignKey = true)]
-      public Region Region { get; set; }
-   }
+         [Association(ThisKey = nameof(RegionID), IsForeignKey = true)]
+         public Region Region { get; set; }
+      }
 
-   [Table(Name = "Region")]
-   class Region {
+      [Table(Name = "Region")]
+      class Region {
 
-      [Column(IsPrimaryKey = true)]
-      public int RegionID { get; set; }
+         [Column(IsPrimaryKey = true)]
+         public int RegionID { get; set; }
 
-      [Column]
-      public string RegionDescription { get; set; }
-   }
+         [Column]
+         public string RegionDescription { get; set; }
+      }
 
-   [Table(Name = "Orders")]
-   class Order {
+      [Table(Name = "Orders")]
+      class Order {
 
-      [Column(IsPrimaryKey = true, IsDbGenerated = true)]
-      public int OrderID { get; set; }
+         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+         public int OrderID { get; set; }
 
-      [Column]
-      public int? EmployeeID { get; set; }
+         [Column]
+         public int? EmployeeID { get; set; }
 
-      [Association(OtherKey = "OrderID")]
-      public Collection<OrderDetail> OrderDetails { get; private set; }
+         [Association(OtherKey = nameof(OrderDetail.OrderID))]
+         public Collection<OrderDetail> OrderDetails { get; private set; }
 
-      [Association(ThisKey = "EmployeeID", IsForeignKey = true)]
-      public Employee Employee { get; set; }
-   }
+         [Association(ThisKey = nameof(EmployeeID), IsForeignKey = true)]
+         public Employee Employee { get; set; }
+      }
 
-   [Table(Name = "Order Details")]
-   class OrderDetail {
+      [Table(Name = "Order Details")]
+      class OrderDetail {
 
-      [Column(IsPrimaryKey = true)]
-      public int OrderID { get; set; }
+         [Column(IsPrimaryKey = true)]
+         public int OrderID { get; set; }
 
-      [Column(IsPrimaryKey = true)]
-      public int ProductID { get; set; }
+         [Column(IsPrimaryKey = true)]
+         public int ProductID { get; set; }
 
-      [Association(ThisKey = "OrderID", IsForeignKey = true)]
-      public Order Order { get; set; }
+         [Association(ThisKey = nameof(OrderID), IsForeignKey = true)]
+         public Order Order { get; set; }
 
-      [Association(ThisKey = "ProductID", IsForeignKey = true)]
-      public Product Product { get; set; }
+         [Association(ThisKey = nameof(ProductID), IsForeignKey = true)]
+         public Product Product { get; set; }
+      }
    }
 }

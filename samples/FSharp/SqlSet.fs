@@ -1,17 +1,11 @@
 ﻿namespace Samples.FSharp
 
 open System
-open System.Data.Common
-open System.IO
 open DbExtensions
 open Samples.FSharp.Northwind
 
-type SqlSetSamples(conn : DbConnection, log : TextWriter) =
+type SqlSetSamples(db : Database) =
    
-   let log = log
-   let db = new Database(conn)
-   let _ = db.Configuration.Log <- log
-
    let products = db.From<Product>("Products")
 
    member this.AreThereAnyProducts() =

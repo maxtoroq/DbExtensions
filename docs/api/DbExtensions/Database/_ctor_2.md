@@ -1,5 +1,5 @@
-Database Constructor (DbConnection, MetaModel)
-==============================================
+Database Constructor (IDbConnection, MetaModel)
+===============================================
 Initializes a new instance of the [Database][1] class using the provided connection and meta model.
 
 **Namespace:** [DbExtensions][2]  
@@ -10,7 +10,7 @@ Syntax
 
 ```csharp
 public Database(
-	DbConnection connection,
+	IDbConnection connection,
 	MetaModel mapping
 )
 ```
@@ -18,7 +18,7 @@ public Database(
 #### Parameters
 
 ##### *connection*
-Type: [System.Data.Common.DbConnection][3]  
+Type: [System.Data.IDbConnection][3]  
 The connection.
 
 ##### *mapping*
@@ -35,5 +35,5 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/c790zwhc
+[3]: http://msdn.microsoft.com/en-us/library/bs16hf60
 [4]: http://msdn.microsoft.com/en-us/library/bb534568

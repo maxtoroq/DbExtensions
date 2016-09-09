@@ -1,8 +1,4 @@
 ﻿Imports System
-Imports System.Collections
-Imports System.Collections.Generic
-Imports System.Data.Common
-Imports System.IO
 Imports DbExtensions
 Imports Samples.VisualBasic.Northwind
 
@@ -10,11 +6,7 @@ Public Class SqlSetSamples
 
    ReadOnly products As SqlSet(Of Product)
 
-   Sub New(ByVal conn As DbConnection, ByVal log As TextWriter)
-
-      Dim db As New Database(conn)
-      db.Configuration.Log = log
-
+   Sub New(ByVal db As Database)
       Me.products = db.From(Of Product)("Products")
    End Sub
 

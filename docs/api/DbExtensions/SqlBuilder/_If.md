@@ -1,6 +1,6 @@
-SqlBuilder._If Method (Boolean, Int32)
-======================================
-Appends *body* to the current clause if *condition* is true.
+SqlBuilder._If Method
+=====================
+Appends *format* to the current clause if *condition* is true.
 
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -11,7 +11,8 @@ Syntax
 ```csharp
 public SqlBuilder _If(
 	bool condition,
-	int body
+	string format,
+	params Object[] args
 )
 ```
 
@@ -19,24 +20,29 @@ public SqlBuilder _If(
 
 ##### *condition*
 Type: [System.Boolean][2]  
-true to append *body* to the current clause; otherwise, false.
+true to append *format* to the current clause; otherwise, false.
 
-##### *body*
-Type: [System.Int32][3]  
-The body of the current clause.
+##### *format*
+Type: [System.String][3]  
+The format string that represents the body of the current clause.
+
+##### *args*
+Type: [System.Object][4][]  
+The parameters of the clause body.
 
 #### Return Value
-Type: [SqlBuilder][4]  
+Type: [SqlBuilder][5]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
+[SqlBuilder Class][5]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: http://msdn.microsoft.com/en-us/library/a28wyd50
-[3]: http://msdn.microsoft.com/en-us/library/td2s409d
-[4]: README.md
+[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[4]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[5]: README.md

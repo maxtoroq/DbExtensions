@@ -3,6 +3,7 @@
 open System
 open System.Collections.ObjectModel
 open System.Data.Linq.Mapping
+open System.Data.Common
 open DbExtensions
 
 [<AllowNullLiteral>]
@@ -369,8 +370,8 @@ type NorthwindDatabase =
    member this.EmployeeTerritories = this.Table<EmployeeTerritory>()
    member this.Regions = this.Table<Region>()
 
-   new(connString : string, mapping : MetaModel) = {
-      inherit Database(connString, mapping)
+   new(connection : DbConnection, mapping : MetaModel) = {
+      inherit Database(connection, mapping)
    }
 
 /// <summary>
@@ -378,6 +379,7 @@ type NorthwindDatabase =
 /// pass a Type that doesn't inherit from DataContext. The workaround is to define a DataContext
 /// type in the same namespace as your entities.
 /// </summary>
+
 type ForXmlMappingSourceOnlyDataContext =
    inherit System.Data.Linq.DataContext
 

@@ -1,8 +1,8 @@
 SqlTable&lt;TEntity>.AddRange Method (IEnumerable&lt;TEntity>)
 ==============================================================
-Recursively executes INSERT commands for the specified *entities* and all its one-to-one and one-to-many associations. Recursion can be disabled by setting [EnableInsertRecursion][1] to false.
+Recursively executes INSERT commands for the specified *entities* and all its one-to-one and one-to-many associations.
 
-**Namespace:** [DbExtensions][2]  
+**Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
 
 Syntax
@@ -17,7 +17,7 @@ public void AddRange(
 #### Parameters
 
 ##### *entities*
-Type: [System.Collections.Generic.IEnumerable][3]&lt;[TEntity][4]>  
+Type: [System.Collections.Generic.IEnumerable][2]&lt;[TEntity][3]>  
 The entities whose INSERT commands are to be executed.
 
 
@@ -25,10 +25,9 @@ See Also
 --------
 
 #### Reference
-[SqlTable&lt;TEntity> Class][4]  
-[DbExtensions Namespace][2]  
+[SqlTable&lt;TEntity> Class][3]  
+[DbExtensions Namespace][1]  
 
-[1]: ../DatabaseConfiguration/EnableInsertRecursion.md
-[2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/9eekhta0
-[4]: README.md
+[1]: ../README.md
+[2]: http://msdn.microsoft.com/en-us/library/9eekhta0
+[3]: README.md

@@ -1,5 +1,5 @@
-SqlSet.FirstOrDefault Method (String)
-=====================================
+SqlSet.FirstOrDefault Method (String, Object[])
+===============================================
 Returns the first element of the set that satisfies a condition or a default value if no such element is found.
 
 **Namespace:** [DbExtensions][1]  
@@ -10,7 +10,8 @@ Syntax
 
 ```csharp
 public Object FirstOrDefault(
-	string predicate
+	string predicate,
+	params Object[] parameters
 )
 ```
 
@@ -19,6 +20,10 @@ public Object FirstOrDefault(
 ##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
+
+##### *parameters*
+Type: [System.Object][3][]  
+The parameters to apply to the *predicate*.
 
 #### Return Value
 Type: [Object][3]  

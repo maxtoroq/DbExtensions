@@ -1,5 +1,5 @@
-SqlSet.Where Method (String)
-============================
+SqlSet.Where Method
+===================
 Filters the set based on a predicate.
 
 **Namespace:** [DbExtensions][1]  
@@ -10,7 +10,8 @@ Syntax
 
 ```csharp
 public SqlSet Where(
-	string predicate
+	string predicate,
+	params Object[] parameters
 )
 ```
 
@@ -20,17 +21,22 @@ public SqlSet Where(
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
 
+##### *parameters*
+Type: [System.Object][3][]  
+The parameters to apply to the *predicate*.
+
 #### Return Value
-Type: [SqlSet][3]  
-A new [SqlSet][3] that contains elements from the current set that satisfy the condition.
+Type: [SqlSet][4]  
+A new [SqlSet][4] that contains elements from the current set that satisfy the condition.
 
 See Also
 --------
 
 #### Reference
-[SqlSet Class][3]  
+[SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[3]: README.md
+[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[4]: README.md

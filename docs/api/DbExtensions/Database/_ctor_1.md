@@ -1,5 +1,5 @@
-Database Constructor (DbConnection)
-===================================
+Database Constructor (IDbConnection)
+====================================
 Initializes a new instance of the [Database][1] class using the provided connection.
 
 **Namespace:** [DbExtensions][2]  
@@ -10,14 +10,14 @@ Syntax
 
 ```csharp
 public Database(
-	DbConnection connection
+	IDbConnection connection
 )
 ```
 
 #### Parameters
 
 ##### *connection*
-Type: [System.Data.Common.DbConnection][3]  
+Type: [System.Data.IDbConnection][3]  
 The connection.
 
 
@@ -30,4 +30,4 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/c790zwhc
+[3]: http://msdn.microsoft.com/en-us/library/bs16hf60

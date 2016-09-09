@@ -1,5 +1,5 @@
-SqlSet.First Method (String)
-============================
+SqlSet.First Method (String, Object[])
+======================================
 Returns the first element in the set that satisfies a specified condition.
 
 **Namespace:** [DbExtensions][1]  
@@ -10,7 +10,8 @@ Syntax
 
 ```csharp
 public Object First(
-	string predicate
+	string predicate,
+	params Object[] parameters
 )
 ```
 
@@ -19,6 +20,10 @@ public Object First(
 ##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
+
+##### *parameters*
+Type: [System.Object][3][]  
+The parameters to apply to the *predicate*.
 
 #### Return Value
 Type: [Object][3]  

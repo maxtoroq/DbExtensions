@@ -35,7 +35,6 @@ See Also
 #### Reference
 [Database Class][6]  
 [DbExtensions Namespace][1]  
-[Extensions.Map(IDbCommand, Type, TextWriter)][7]  
 
 [1]: ../README.md
 [2]: http://msdn.microsoft.com/en-us/library/42892f65
@@ -43,4 +42,3 @@ See Also
 [4]: http://msdn.microsoft.com/en-us/library/9eekhta0
 [5]: http://msdn.microsoft.com/en-us/library/e5kfa45b
 [6]: README.md
-[7]: ../Extensions/Map_3.md

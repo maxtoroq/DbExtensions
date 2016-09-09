@@ -30,11 +30,9 @@ See Also
 #### Reference
 [Database Class][5]  
 [DbExtensions Namespace][1]  
-[Extensions.Map(IDbCommand, TextWriter)][6]  
 
 [1]: ../README.md
 [2]: ../SqlBuilder/README.md
 [3]: http://msdn.microsoft.com/en-us/library/9eekhta0
 [4]: http://msdn.microsoft.com/en-us/library/e5kfa45b
 [5]: README.md
-[6]: ../Extensions/Map_1.md

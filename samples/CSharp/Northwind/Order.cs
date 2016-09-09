@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Linq;
-using System.Text;
 
 namespace Samples.CSharp.Northwind {
 
@@ -53,20 +49,16 @@ namespace Samples.CSharp.Northwind {
       [Column]
       public string ShipCountry { get; set; }
 
-      [Association(OtherKey = "OrderID")]
-      public Collection<OrderDetail> OrderDetails { get; private set; }
+      [Association(OtherKey = nameof(OrderDetail.OrderID))]
+      public Collection<OrderDetail> OrderDetails { get; } = new Collection<OrderDetail>();
 
-      [Association(ThisKey = "CustomerID", IsForeignKey = true)]
+      [Association(ThisKey = nameof(CustomerID), IsForeignKey = true)]
       public Customer Customer { get; set; }
 
-      [Association(ThisKey = "EmployeeID", IsForeignKey = true)]
+      [Association(ThisKey = nameof(EmployeeID), IsForeignKey = true)]
       public Employee Employee { get; set; }
 
-      [Association(ThisKey = "ShipVia", IsForeignKey = true)]
+      [Association(ThisKey = nameof(ShipVia), IsForeignKey = true)]
       public Shipper Shipper { get; set; }
-
-      public Order() {
-         this.OrderDetails = new Collection<OrderDetail>();
-      }
    }
 }

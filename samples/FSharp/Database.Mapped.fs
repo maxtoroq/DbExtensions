@@ -4,15 +4,16 @@ open System
 open System.Collections
 open System.Collections.Generic
 open System.Data.Linq.Mapping
+open System.Data.Common
 open System.IO
 open System.Transactions
 open DbExtensions
 open Samples.FSharp.Northwind
 
-type DatabaseMappedSamples(connectionString : string, mapping : MetaModel, log : TextWriter) =
+type DatabaseMappedSamples(connection : DbConnection, mapping : MetaModel, log : TextWriter) =
 
    let db = 
-      let db1 = new NorthwindDatabase(connectionString, mapping) 
+      let db1 = new NorthwindDatabase(connection, mapping) 
       db1.Configuration.Log <- log
       db1
 

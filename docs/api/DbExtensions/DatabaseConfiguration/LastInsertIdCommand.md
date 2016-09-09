@@ -1,6 +1,6 @@
 DatabaseConfiguration.LastInsertIdCommand Property
 ==================================================
-Gets or sets the SQL command that returns the last identity value generated on the database. The default value is "SELECT @@identity". You can override the default value using a "DbExtensions:{providerInvariantName}:LastInsertIdCommand" entry in the appSettings configuration section, where {providerInvariantName} is replaced with the provider invariant name (e.g. DbExtensions:System.Data.SqlClient:LastInsertIdCommand).
+Gets or sets the SQL command that returns the last identity value generated on the database.
 
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -14,10 +14,6 @@ public string LastInsertIdCommand { get; set; }
 
 #### Property Value
 Type: [String][2]
-
-Remarks
--------
- SQL Server users should consider using "SELECT SCOPE_IDENTITY()" instead. The command for SQLite is "SELECT LAST_INSERT_ROWID()". 
 
 See Also
 --------

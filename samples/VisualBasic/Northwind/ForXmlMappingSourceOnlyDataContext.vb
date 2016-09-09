@@ -1,5 +1,4 @@
 ﻿Imports System
-Imports System.Data.Linq.Mapping
 
 Namespace Northwind
 
@@ -8,6 +7,7 @@ Namespace Northwind
    ''' pass a Type that doesn't inherit from DataContext. The workaround is to define a DataContext
    ''' type in the same namespace as your entities.
    ''' </summary>
+
    Public NotInheritable Class ForXmlMappingSourceOnlyDataContext
       Inherits System.Data.Linq.DataContext
 

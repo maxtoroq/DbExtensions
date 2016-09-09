@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Linq.Mapping;
-using System.Linq;
-using System.Text;
 
 namespace Samples.CSharp.Northwind {
 
@@ -19,11 +16,7 @@ namespace Samples.CSharp.Northwind {
       [Column]
       public string Phone { get; set; }
 
-      [Association(OtherKey = "ShipVia")]
-      public Collection<Order> Orders { get; private set; }
-
-      public Shipper() {
-         this.Orders = new Collection<Order>();
-      }
+      [Association(OtherKey = nameof(Order.ShipVia))]
+      public Collection<Order> Orders { get; } = new Collection<Order>();
    }
 }

@@ -1,27 +1,27 @@
 Database.Transaction Property
 =============================
-Gets or sets a [DbTransaction][1] to associate with all new commands.
+Gets or sets a transaction to associate with new commands.
 
-**Namespace:** [DbExtensions][2]  
+**Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------
 
 ```csharp
-public DbTransaction Transaction { get; set; }
+public IDbTransaction Transaction { get; set; }
 ```
 
 #### Property Value
-Type: [DbTransaction][1]
+Type: [IDbTransaction][2]
 
 See Also
 --------
 
 #### Reference
 [Database Class][3]  
-[DbExtensions Namespace][2]  
+[DbExtensions Namespace][1]  
 
-[1]: http://msdn.microsoft.com/en-us/library/xtczstkw
-[2]: ../README.md
+[1]: ../README.md
+[2]: http://msdn.microsoft.com/en-us/library/yas366ac
 [3]: README.md

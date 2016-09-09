@@ -35,10 +35,8 @@ See Also
 #### Reference
 [SqlBuilder Class][4]  
 [DbExtensions Namespace][1]  
-[StringBuilder.Insert(Int32, String)][5]  
 
 [1]: ../README.md
 [2]: http://msdn.microsoft.com/en-us/library/td2s409d
 [3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
 [4]: README.md
-[5]: http://msdn.microsoft.com/en-us/library/7tyt41s0

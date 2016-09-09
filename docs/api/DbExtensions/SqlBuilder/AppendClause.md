@@ -13,7 +13,7 @@ public SqlBuilder AppendClause(
 	string clauseName,
 	string separator,
 	string format,
-	Object[] args
+	params Object[] args
 )
 ```
 

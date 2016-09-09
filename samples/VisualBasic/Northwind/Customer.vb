@@ -1,6 +1,5 @@
 ﻿Imports System
 Imports System.Collections.ObjectModel
-Imports System.Data.Linq
 Imports System.Data.Linq.Mapping
 
 Namespace Northwind
@@ -8,49 +7,44 @@ Namespace Northwind
    <Table(Name:="Customers")>
    Public Class Customer
 
-      <Column()>
+      <Column>
       Public Property Address As String
 
-      <Column()>
+      <Column>
       Public Property City As String
 
-      <Column()>
+      <Column>
       Public Property CompanyName As String
 
-      <Column()>
+      <Column>
       Public Property ContactName As String
 
-      <Column()>
+      <Column>
       Public Property ContactTitle As String
 
-      <Column()>
+      <Column>
       Public Property Country As String
-
-      <Association(OtherKey:="CustomerID")>
-      Public Property CustomerCustomerDemos As Collection(Of CustomerCustomerDemo)
 
       <Column(IsPrimaryKey:=True)>
       Public Property CustomerID As String
 
-      <Column()>
+      <Column>
       Public Property Fax As String
 
-      <Association(OtherKey:="CustomerID")>
-      Public Property Orders As Collection(Of Order)
-
-      <Column()>
+      <Column>
       Public Property Phone As String
 
-      <Column()>
+      <Column>
       Public Property PostalCode As String
 
-      <Column()>
+      <Column>
       Public Property [Region] As String
 
-      Public Sub New()
-         Me.CustomerCustomerDemos = New Collection(Of CustomerCustomerDemo)
-         Me.Orders = New Collection(Of Order)
-      End Sub
+      <Association(OtherKey:=NameOf(CustomerCustomerDemo.CustomerID))>
+      Public ReadOnly Property CustomerCustomerDemos As New Collection(Of CustomerCustomerDemo)
+
+      <Association(OtherKey:=NameOf(Order.CustomerID))>
+      Public ReadOnly Property Orders As New Collection(Of Order)
 
    End Class
 

@@ -59,6 +59,7 @@ Public Class SqlBuilderSamples
    ''' If there's a large chunk of the query that is static you can pass it to the
    ''' constructor and extend it from there.
    ''' </remarks>
+
    Function ExtendRawSql() As SqlBuilder
 
       Return New SqlBuilder(
@@ -68,14 +69,14 @@ Public Class SqlBuilderSamples
 
    End Function
 
-   Function ArrayArgument() As SqlBuilder
+   Function ListArgument() As SqlBuilder
 
       Dim range = New Integer() {1, 2, 3}
 
       Return SQL _
          .SELECT("p.ProductID, p.CategoryID") _
          .FROM("Products p") _
-         .WHERE("p.CategoryID = {0} AND p.ProductID IN ({1})", 1, range) _
+         .WHERE("p.CategoryID = {0} AND p.ProductID IN ({1})", 1, SQL.List(range)) _
          .WHERE("EXISTS ({0})", SQL _
             .SELECT("ProductID") _
             .FROM("OrderDetails") _
@@ -127,6 +128,7 @@ Public Class SqlBuilderSamples
    ''' WHERE (((Products.Discontinued)=0))
    ''' </summary>
    ''' <remarks>Northwind.Alphabetical list of products</remarks>
+
    Function AlphabeticalListOfProducts() As SqlBuilder
 
       Return SQL _
@@ -144,6 +146,7 @@ Public Class SqlBuilderSamples
    ''' FROM Suppliers
    ''' </summary>
    ''' <remarks>Northwind.Customer and Suppliers by City</remarks>
+
    Function CustomersAndSuppliersByCity() As SqlBuilder
 
       Return SQL _
@@ -161,6 +164,7 @@ Public Class SqlBuilderSamples
    ''' WHERE Products.UnitPrice > (SELECT AVG(UnitPrice) From Products)
    ''' </summary>
    ''' <remarks>Northwind.Products Above Average Price</remarks>
+
    Function ProductsAboveAveragePrice() As SqlBuilder
 
       Return SQL _
@@ -183,6 +187,7 @@ Public Class SqlBuilderSamples
    ''' GROUP BY Categories.CategoryName, Products.ProductName
    ''' </summary>
    ''' <remarks>Northwind.Product Sales for 1997</remarks>
+
    Function ProductSalesFor1997() As SqlBuilder
 
       Return SQL _

@@ -1,8 +1,8 @@
-SqlTable&lt;TEntity>.Remove Method (TEntity)
-============================================
-Executes a DELETE command for the specified *entity*, using the default [ConcurrencyConflictPolicy][1].
+SqlTable&lt;TEntity>.Remove Method
+==================================
+Executes a DELETE command for the specified *entity*.
 
-**Namespace:** [DbExtensions][2]  
+**Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
 
 Syntax
@@ -17,7 +17,7 @@ public void Remove(
 #### Parameters
 
 ##### *entity*
-Type: [TEntity][3]  
+Type: [TEntity][2]  
 The entity whose DELETE command is to be executed.
 
 
@@ -25,9 +25,8 @@ See Also
 --------
 
 #### Reference
-[SqlTable&lt;TEntity> Class][3]  
-[DbExtensions Namespace][2]  
+[SqlTable&lt;TEntity> Class][2]  
+[DbExtensions Namespace][1]  
 
-[1]: ../ConcurrencyConflictPolicy/README.md
-[2]: ../README.md
-[3]: README.md
+[1]: ../README.md
+[2]: README.md

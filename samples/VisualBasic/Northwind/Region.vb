@@ -13,12 +13,9 @@ Namespace Northwind
       <Column(IsPrimaryKey:=True)>
       Public Property RegionID As Integer
 
-      <Association(OtherKey:="RegionID")>
-      Public Property Territories As Collection(Of Territory)
+      <Association(OtherKey:=NameOf(Territory.RegionID))>
+      Public ReadOnly Property Territories As New Collection(Of Territory)
 
-      Public Sub New()
-         Me.Territories = New Collection(Of Territory)
-      End Sub
    End Class
 
 End Namespace

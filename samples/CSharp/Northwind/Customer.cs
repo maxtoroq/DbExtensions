@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Linq.Mapping;
-using System.Linq;
-using System.Text;
 
 namespace Samples.CSharp.Northwind {
 
@@ -43,15 +40,10 @@ namespace Samples.CSharp.Northwind {
       [Column]
       public string Fax { get; set; }
 
-      [Association(OtherKey = "CustomerID")]
-      public Collection<CustomerCustomerDemo> CustomerCustomerDemos { get; private set; }
+      [Association(OtherKey = nameof(CustomerCustomerDemo.CustomerID))]
+      public Collection<CustomerCustomerDemo> CustomerCustomerDemos { get; } = new Collection<CustomerCustomerDemo>();
 
-      [Association(OtherKey = "CustomerID")]
-      public Collection<Order> Orders { get; private set; }
-
-      public Customer() {
-         this.CustomerCustomerDemos = new Collection<CustomerCustomerDemo>();
-         this.Orders = new Collection<Order>();
-      }
+      [Association(OtherKey = nameof(Order.CustomerID))]
+      public Collection<Order> Orders { get; } = new Collection<Order>();
    }
 }

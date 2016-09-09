@@ -1,5 +1,5 @@
-SqlSet.Single Method (String)
-=============================
+SqlSet.Single Method (String, Object[])
+=======================================
 Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.
 
 **Namespace:** [DbExtensions][1]  
@@ -10,7 +10,8 @@ Syntax
 
 ```csharp
 public Object Single(
-	string predicate
+	string predicate,
+	params Object[] parameters
 )
 ```
 
@@ -19,6 +20,10 @@ public Object Single(
 ##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
+
+##### *parameters*
+Type: [System.Object][3][]  
+The parameters to apply to the *predicate*.
 
 #### Return Value
 Type: [Object][3]  

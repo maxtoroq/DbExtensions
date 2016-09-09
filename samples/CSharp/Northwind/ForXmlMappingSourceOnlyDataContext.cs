@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Samples.CSharp.Northwind {
 
@@ -10,6 +7,7 @@ namespace Samples.CSharp.Northwind {
    /// pass a Type that doesn't inherit from DataContext. The workaround is to define a DataContext
    /// type in the same namespace as your entities.
    /// </summary>
+
    public sealed class ForXmlMappingSourceOnlyDataContext : System.Data.Linq.DataContext {
       private ForXmlMappingSourceOnlyDataContext()
          : base((string)null, null) {

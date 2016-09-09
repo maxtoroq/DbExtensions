@@ -35,7 +35,6 @@ See Also
 #### Reference
 [SQL Class][5]  
 [DbExtensions Namespace][2]  
-[SqlBuilder.WITH(SqlBuilder, String)][4]  
 
 [1]: ../SqlBuilder/README.md
 [2]: ../README.md

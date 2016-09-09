@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Xml;
 using DbExtensions;
 using Samples.CSharp.Northwind;
 
@@ -13,13 +11,8 @@ namespace Samples.CSharp {
 
       readonly Database db;
 
-      public DatabasePocoSamples(string connectionString, TextWriter log) {
-
-         this.db = new Database(connectionString) {
-            Configuration = { 
-               Log = log
-            }
-         };
+      public DatabasePocoSamples(Database db) {
+         this.db = db;
       }
 
       public IEnumerable<Product> SelectWithManyToOne() {
@@ -138,5 +131,13 @@ namespace Samples.CSharp {
          this.Amount = amount;
          this.Currency = currency;
       }
+   }
+}
+
+namespace Samples.CSharp.Northwind {
+
+   partial class Product {
+
+      public decimal ValueInStock { get; set; }
    }
 }

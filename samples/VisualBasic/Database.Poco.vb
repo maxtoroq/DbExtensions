@@ -1,9 +1,4 @@
 ﻿Imports System
-Imports System.Collections
-Imports System.Collections.Generic
-Imports System.IO
-Imports System.Linq
-Imports System.Xml
 Imports DbExtensions
 Imports Samples.VisualBasic.Northwind
 
@@ -11,9 +6,8 @@ Public Class DatabasePocoSamples
 
    ReadOnly db As Database
 
-   Sub New(ByVal connectionString As String, ByVal log As TextWriter)
-      Me.db = New Database(connectionString)
-      Me.db.Configuration.Log = log
+   Sub New(ByVal db As Database)
+      Me.db = db
    End Sub
 
    Function SelectWithManyToOne() As IEnumerable(Of Product)
@@ -142,3 +136,11 @@ Public Structure Money
    End Sub
 
 End Structure
+
+Namespace Northwind
+
+   Partial Class Product
+      Public Property ValueInStock As Decimal
+   End Class
+
+End Namespace

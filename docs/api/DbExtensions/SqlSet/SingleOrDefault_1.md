@@ -1,5 +1,5 @@
-SqlSet.SingleOrDefault Method (String)
-======================================
+SqlSet.SingleOrDefault Method (String, Object[])
+================================================
 Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition.
 
 **Namespace:** [DbExtensions][1]  
@@ -10,7 +10,8 @@ Syntax
 
 ```csharp
 public Object SingleOrDefault(
-	string predicate
+	string predicate,
+	params Object[] parameters
 )
 ```
 
@@ -19,6 +20,10 @@ public Object SingleOrDefault(
 ##### *predicate*
 Type: [System.String][2]  
 A SQL expression to test each row for a condition.
+
+##### *parameters*
+Type: [System.Object][3][]  
+The parameters to apply to the *predicate*.
 
 #### Return Value
 Type: [Object][3]  

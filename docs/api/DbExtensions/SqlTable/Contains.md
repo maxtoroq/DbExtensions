@@ -1,6 +1,6 @@
-SqlTable.Contains Method (Object)
-=================================
-Checks the existance of the *entity*, using the primary key value. Version members are ignored.
+SqlTable.Contains Method
+========================
+Checks the existance of the *entity*, using the primary key value.
 
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)

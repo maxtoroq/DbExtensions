@@ -10,21 +10,17 @@ Namespace Northwind
       <Column(IsPrimaryKey:=True, IsDbGenerated:=True)>
       Public Property CategoryID As Integer
 
-      <Column()>
+      <Column>
       Public Property CategoryName As String
 
-      <Column()>
+      <Column>
       Public Property Description As String
 
-      <Column()>
+      <Column>
       Public Property Picture As Byte()
 
-      <Association(OtherKey:="CategoryID")>
-      Public Property Products As Collection(Of Product)
-
-      Public Sub New()
-         Me.Products = New Collection(Of Product)
-      End Sub
+      <Association(OtherKey:=NameOf(Product.CategoryID))>
+      Public ReadOnly Property Products As New Collection(Of Product)
 
    End Class
 

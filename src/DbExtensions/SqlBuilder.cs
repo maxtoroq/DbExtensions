@@ -1,4 +1,4 @@
-﻿// Copyright 2009-2015 Max Toro Q.
+﻿// Copyright 2009-2016 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -26,67 +27,55 @@ namespace DbExtensions {
    /// <summary>
    /// Represents a mutable SQL string.
    /// </summary>
-   /// <seealso href="../../../SqlBuilder.md">SqlBuilder Tutorial</seealso>
+   /// <remarks>For information on how to use SqlBuilder see <see href="http://maxtoroq.github.io/DbExtensions/docs/SqlBuilder.html">SqlBuilder Tutorial</see>.</remarks>
+
    [CLSCompliant(true)]
    [DebuggerDisplay("{Buffer}")]
    public partial class SqlBuilder {
 
-      HashSet<int> _IgnoredColumns;
-
       /// <summary>
       /// The underlying <see cref="StringBuilder"/>.
       /// </summary>
-      public StringBuilder Buffer { get; private set; }
+
+      public StringBuilder Buffer { get; } = new StringBuilder();
 
       /// <summary>
       /// The parameter objects to be included in the database command.
       /// </summary>
-      public Collection<object> ParameterValues { get; private set; }
+
+      public Collection<object> ParameterValues { get; } = new Collection<object>();
 
       /// <summary>
       /// Gets or sets the current SQL clause, used to identify consecutive 
       /// appends to the same clause.
       /// </summary>
+
       public string CurrentClause { get; set; }
 
       /// <summary>
       /// Gets or sets the separator of the current SQL clause body.
       /// </summary>
-      /// <seealso cref="CurrentClause"/>
+
       public string CurrentSeparator { get; set; }
 
       /// <summary>
       /// Gets or sets the next SQL clause. Used by clause continuation methods,
-      /// such as <see cref="AppendToCurrentClause(string)"/> and the methods that start with "_".
+      /// such as <see cref="AppendToCurrentClause(string, object[])"/> and the methods that start with "_".
       /// </summary>
+
       public string NextClause { get; set; }
 
       /// <summary>
       /// Gets or sets the separator of the next SQL clause body.
       /// </summary>
-      /// <seealso cref="NextClause"/>
+
       public string NextSeparator { get; set; }
 
       /// <summary>
       /// Returns true if the buffer is empty.
       /// </summary>
-      public bool IsEmpty {
-         get { return this.Buffer.Length == 0; }
-      }
 
-      internal HashSet<int> IgnoredColumns {
-         get {
-            return _IgnoredColumns
-               ?? (_IgnoredColumns = new HashSet<int>());
-         }
-      }
-
-      internal bool HasIgnoredColumns {
-         get {
-            return _IgnoredColumns != null
-               && _IgnoredColumns.Count > 0;
-         }
-      }
+      public bool IsEmpty => Buffer.Length == 0;
 
       /// <summary>
       /// Concatenates a specified separator <see cref="String"/> between each element of a 
@@ -98,11 +87,12 @@ namespace DbExtensions {
       /// A <see cref="SqlBuilder"/> consisting of the elements of <paramref name="values"/> 
       /// interspersed with the <paramref name="separator"/> string.
       /// </returns>
+
       public static SqlBuilder JoinSql(string separator, params SqlBuilder[] values) {
 
-         if (values == null) throw new ArgumentNullException("values");
+         if (values == null) throw new ArgumentNullException(nameof(values));
 
-         SqlBuilder sql = new SqlBuilder();
+         var sql = new SqlBuilder();
 
          if (values.Length == 0) {
             return sql;
@@ -143,11 +133,12 @@ namespace DbExtensions {
       /// by the <paramref name="separator"/> string. If <paramref name="values"/> has no members, the method returns
       /// an empty <see cref="SqlBuilder"/>.
       /// </returns>
+
       public static SqlBuilder JoinSql(string separator, IEnumerable<SqlBuilder> values) {
 
-         if (values == null) throw new ArgumentNullException("values");
+         if (values == null) throw new ArgumentNullException(nameof(values));
 
-         SqlBuilder sql = new SqlBuilder();
+         var sql = new SqlBuilder();
 
          if (separator == null) {
             separator = "";
@@ -179,19 +170,8 @@ namespace DbExtensions {
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlBuilder"/> class.
       /// </summary>
-      public SqlBuilder() {
 
-         this.Buffer = new StringBuilder();
-         this.ParameterValues = new Collection<object>();
-      }
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="SqlBuilder"/> class
-      /// using the provided SQL string.
-      /// </summary>
-      /// <param name="sql">The SQL string.</param>
-      public SqlBuilder(string sql)
-         : this(sql, null) { }
+      public SqlBuilder() { }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="SqlBuilder"/> class
@@ -199,9 +179,8 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="format">The SQL format string.</param>
       /// <param name="args">The array of parameters.</param>
-      public SqlBuilder(string format, params object[] args)
-         : this() {
 
+      public SqlBuilder(string format, params object[] args) {
          Append(format, args);
       }
 
@@ -214,7 +193,8 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder AppendClause(string clauseName, string separator, string format, object[] args) {
+
+      public SqlBuilder AppendClause(string clauseName, string separator, string format, params object[] args) {
 
          if (separator == null
             || !String.Equals(clauseName, this.CurrentClause, StringComparison.OrdinalIgnoreCase)) {
@@ -244,22 +224,12 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Appends <paramref name="body"/> to the current clause.
-      /// </summary>
-      /// <param name="body">The body of the current clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      /// <seealso cref="CurrentClause"/>
-      public SqlBuilder AppendToCurrentClause(string body) {
-         return AppendToCurrentClause(body, null);
-      }
-
-      /// <summary>
       /// Appends <paramref name="format"/> to the current clause.
       /// </summary>
       /// <param name="format">The format string that represents the body of the current clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
-      /// <seealso cref="CurrentClause"/>
+
       public SqlBuilder AppendToCurrentClause(string format, params object[] args) {
 
          string clause = this.CurrentClause;
@@ -278,17 +248,9 @@ namespace DbExtensions {
       /// <summary>
       /// Appends <paramref name="sql"/> to this instance.
       /// </summary>
-      /// <param name="sql">A SQL string.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder Append(string sql) {
-         return Append(sql, null);
-      }
-
-      /// <summary>
-      /// Appends <paramref name="sql"/> to this instance.
-      /// </summary>
       /// <param name="sql">A <see cref="SqlBuilder"/>.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder Append(SqlBuilder sql) {
 
          this.Buffer.Append(MakeAbsolutePlaceholders(sql));
@@ -300,16 +262,13 @@ namespace DbExtensions {
          return this;
       }
 
-      string MakeAbsolutePlaceholders(SqlBuilder sql) {
-         return String.Format(CultureInfo.InvariantCulture, sql.ToString(), Enumerable.Range(0, sql.ParameterValues.Count).Select(x => Placeholder(this.ParameterValues.Count + x)).ToArray());
-      }
-
       /// <summary>
       /// Appends <paramref name="format"/> to this instance.
       /// </summary>
       /// <param name="format">A SQL format string.</param>
       /// <param name="args">The array of parameters.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder Append(string format, params object[] args) {
 
          if (args == null || args.Length == 0) {
@@ -326,16 +285,16 @@ namespace DbExtensions {
 
             if (obj != null) {
 
-               Array arr = obj as Array;
+               SqlList list = obj as SqlList;
 
-               if (arr != null && arr.Length > 0) {
+               if (list != null) {
 
-                  fargs.Add(String.Join(", ", Enumerable.Range(0, arr.Length).Select(x => Placeholder(this.ParameterValues.Count + x)).ToArray()));
+                  fargs.Add(String.Join(", ", Enumerable.Range(0, list.Count).Select(x => Placeholder(this.ParameterValues.Count + x))));
 
-                  for (int j = 0; j < arr.Length; j++) {
-                     this.ParameterValues.Add(arr.GetValue(j));
+                  for (int j = 0; j < list.Count; j++) {
+                     this.ParameterValues.Add(list[j]);
                   }
-                     
+
                   continue;
 
                } else {
@@ -365,12 +324,16 @@ namespace DbExtensions {
          }
 
          if (format == null) {
-            format = String.Join(" ", Enumerable.Range(0, fargs.Count).Select(i => Placeholder(i)).ToArray());
+            format = String.Join(" ", Enumerable.Range(0, fargs.Count).Select(i => Placeholder(i)));
          }
 
          this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, fargs.Cast<object>().ToArray());
 
          return this;
+      }
+
+      string MakeAbsolutePlaceholders(SqlBuilder sql) {
+         return String.Format(CultureInfo.InvariantCulture, sql.ToString(), Enumerable.Range(0, sql.ParameterValues.Count).Select(x => Placeholder(this.ParameterValues.Count + x)).ToArray());
       }
 
       static string Placeholder(int index) {
@@ -381,6 +344,7 @@ namespace DbExtensions {
       /// Appends the default line terminator to this instance.
       /// </summary>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder AppendLine() {
 
          this.Buffer.AppendLine();
@@ -393,7 +357,7 @@ namespace DbExtensions {
       /// <param name="index">The position in this instance where insertion begins.</param>
       /// <param name="value">The string to insert.</param>
       /// <returns>A reference to this instance after the insert operation has completed.</returns>
-      /// <seealso cref="StringBuilder.Insert(int, string)"/>
+
       public SqlBuilder Insert(int index, string value) {
 
          this.Buffer.Insert(index, value);
@@ -408,6 +372,7 @@ namespace DbExtensions {
       /// <param name="separator">The clause body separator, used for consecutive appends to the same clause.</param>
       /// <returns>A reference to this instance after the operation has completed.</returns>
       /// <seealso cref="CurrentClause"/>
+
       public SqlBuilder SetCurrentClause(string clauseName, string separator) {
 
          this.CurrentClause = clauseName;
@@ -423,6 +388,7 @@ namespace DbExtensions {
       /// <param name="separator">The clause body separator, used for consecutive appends to the same clause.</param>
       /// <returns>A reference to this instance after the operation has completed.</returns>
       /// <seealso cref="NextClause"/>
+
       public SqlBuilder SetNextClause(string clauseName, string separator) {
 
          this.NextClause = clauseName;
@@ -435,6 +401,7 @@ namespace DbExtensions {
       /// Converts the value of this instance to a <see cref="String"/>.
       /// </summary>
       /// <returns>A string whose value is the same as this instance.</returns>
+
       public override string ToString() {
          return this.Buffer.ToString();
       }
@@ -443,6 +410,7 @@ namespace DbExtensions {
       /// Creates and returns a copy of this instance.
       /// </summary>
       /// <returns>A new <see cref="SqlBuilder"/> that is equivalent to this instance.</returns>
+
       public SqlBuilder Clone() {
 
          var clone = new SqlBuilder();
@@ -454,26 +422,7 @@ namespace DbExtensions {
             clone.ParameterValues.Add(item);
          }
 
-         if (this.HasIgnoredColumns) {
-
-            foreach (int item in this.IgnoredColumns) {
-               clone.IgnoredColumns.Add(item);
-            }
-         }
-
          return clone;
-      }
-
-      /// <summary>
-      /// Appends <paramref name="body"/> to the current clause. This method is a shortcut for
-      /// <see cref="AppendToCurrentClause(string)"/>.
-      /// </summary>
-      /// <param name="body">The body of the current clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      /// <seealso cref="AppendToCurrentClause(string)"/>
-      [CLSCompliant(false)]
-      public SqlBuilder _(string body) {
-         return AppendToCurrentClause(body);
       }
 
       /// <summary>
@@ -483,33 +432,10 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the current clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
-      /// <seealso cref="AppendToCurrentClause(string, object[])"/>
+
       [CLSCompliant(false)]
       public SqlBuilder _(string format, params object[] args) {
          return AppendToCurrentClause(format, args);
-      }
-
-      /// <summary>
-      /// Appends <paramref name="body"/> to the current clause if <paramref name="condition"/> is true.
-      /// </summary>
-      /// <param name="condition">true to append <paramref name="body"/> to the current clause; otherwise, false.</param>
-      /// <param name="body">The body of the current clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      [CLSCompliant(false)]
-      public SqlBuilder _If(bool condition, string body) {
-         return _If(condition, body, null);
-      }
-
-      /// <inheritdoc cref="_If(Boolean, String)"/>
-      [CLSCompliant(false)]
-      public SqlBuilder _If(bool condition, int body) {
-         return _If(condition, body.ToString(CultureInfo.InvariantCulture), null);
-      }
-
-      /// <inheritdoc cref="_If(Boolean, String)"/>
-      [CLSCompliant(false)]
-      public SqlBuilder _If(bool condition, long body) {
-         return _If(condition, body.ToString(CultureInfo.InvariantCulture), null);
       }
 
       /// <summary>
@@ -519,6 +445,7 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the current clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       [CLSCompliant(false)]
       public SqlBuilder _If(bool condition, string format, params object[] args) {
          return (condition) ? _(format, args) : this;
@@ -535,12 +462,13 @@ namespace DbExtensions {
       /// <param name="separator">The string to use as separator between each item format.</param>
       /// <param name="parametersFactory">The delegate that extract parameters for each element in <paramref name="items"/>. This parameter can be null.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       [CLSCompliant(false)]
       public SqlBuilder _ForEach<T>(IEnumerable<T> items, string format, string itemFormat, string separator, Func<T, object[]> parametersFactory) {
 
-         if (items == null) throw new ArgumentNullException("items");
-         if (itemFormat == null) throw new ArgumentNullException("itemFormat");
-         if (separator == null) throw new ArgumentNullException("separator");
+         if (items == null) throw new ArgumentNullException(nameof(items));
+         if (itemFormat == null) throw new ArgumentNullException(nameof(itemFormat));
+         if (separator == null) throw new ArgumentNullException(nameof(separator));
 
          string formatStart = "", formatEnd = "";
 
@@ -589,18 +517,10 @@ namespace DbExtensions {
       /// <param name="itemFormat">The format string.</param>
       /// <param name="parametersFactory">The delegate that extract parameters for each element in <paramref name="items"/>.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       [CLSCompliant(false)]
       public SqlBuilder _OR<T>(IEnumerable<T> items, string itemFormat, Func<T, object[]> parametersFactory) {
          return _ForEach(items, "({0})", itemFormat, " OR ", parametersFactory);
-      }
-
-      /// <summary>
-      /// Appends the WITH clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the WITH clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder WITH(string body) {
-         return WITH(body, null);
       }
 
       /// <summary>
@@ -609,6 +529,7 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the WITH clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder WITH(string format, params object[] args) {
          return AppendClause("WITH", null, format, args);
       }
@@ -620,26 +541,19 @@ namespace DbExtensions {
       /// <param name="subQuery">The sub-query to use as the body of the WITH clause.</param>
       /// <param name="alias">The alias of the sub-query.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder WITH(SqlBuilder subQuery, string alias) {
          return WITH(alias + " AS ({0})", subQuery);
       }
 
       /// <summary>
       /// Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods,
-      /// such as <see cref="_(string)"/> and <see cref="_If(bool, string)"/>.
+      /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
       /// </summary>
       /// <returns>A reference to this instance after the operation has completed.</returns>
+
       public SqlBuilder SELECT() {
          return SetNextClause("SELECT", ", ");
-      }
-
-      /// <summary>
-      /// Appends the SELECT clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the SELECT clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder SELECT(string body) {
-         return SELECT(body, null);
       }
 
       /// <summary>
@@ -648,17 +562,9 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the SELECT clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder SELECT(string format, params object[] args) {
          return AppendClause("SELECT", ", ", format, args);
-      }
-
-      /// <summary>
-      /// Appends the FROM clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the FROM clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder FROM(string body) {
-         return FROM(body, null);
       }
 
       /// <summary>
@@ -667,6 +573,7 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the FROM clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder FROM(string format, params object[] args) {
          return AppendClause("FROM", ", ", format, args);
       }
@@ -678,26 +585,19 @@ namespace DbExtensions {
       /// <param name="subQuery">The sub-query to use as the body of the FROM clause.</param>
       /// <param name="alias">The alias of the sub-query.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder FROM(SqlBuilder subQuery, string alias) {
          return FROM("({0}) " + alias, subQuery);
       }
 
       /// <summary>
       /// Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
-      /// such as <see cref="_(string)"/> and <see cref="_If(bool, string)"/>.
+      /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
       /// </summary>
       /// <returns>A reference to this instance after the operation has completed.</returns>
+
       public SqlBuilder JOIN() {
          return SetNextClause("JOIN", null);
-      }
-
-      /// <summary>
-      /// Appends the JOIN clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the JOIN clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder JOIN(string body) {
-         return JOIN(body, null);
       }
 
       /// <summary>
@@ -706,17 +606,9 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the JOIN clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder JOIN(string format, params object[] args) {
          return AppendClause("JOIN", null, format, args);
-      }
-
-      /// <summary>
-      /// Appends the LEFT JOIN clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the LEFT JOIN clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder LEFT_JOIN(string body) {
-         return LEFT_JOIN(body, null);
       }
 
       /// <summary>
@@ -725,17 +617,9 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the LEFT JOIN clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder LEFT_JOIN(string format, params object[] args) {
          return AppendClause("LEFT JOIN", null, format, args);
-      }
-
-      /// <summary>
-      /// Appends the RIGHT JOIN clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the RIGHT JOIN clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder RIGHT_JOIN(string body) {
-         return RIGHT_JOIN(body, null);
       }
 
       /// <summary>
@@ -744,17 +628,9 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the RIGHT JOIN clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder RIGHT_JOIN(string format, params object[] args) {
          return AppendClause("RIGHT JOIN", null, format, args);
-      }
-
-      /// <summary>
-      /// Appends the INNER JOIN clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the INNER JOIN clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder INNER_JOIN(string body) {
-         return INNER_JOIN(body, null);
       }
 
       /// <summary>
@@ -763,17 +639,9 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the INNER JOIN clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder INNER_JOIN(string format, params object[] args) {
          return AppendClause("INNER JOIN", null, format, args);
-      }
-
-      /// <summary>
-      /// Appends the CROSS JOIN clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the CROSS JOIN clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder CROSS_JOIN(string body) {
-         return CROSS_JOIN(body, null);
       }
 
       /// <summary>
@@ -782,26 +650,19 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the CROSS JOIN clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder CROSS_JOIN(string format, params object[] args) {
          return AppendClause("CROSS JOIN", null, format, args);
       }
 
       /// <summary>
       /// Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods,
-      /// such as <see cref="_(string)"/> and <see cref="_If(bool, string)"/>.
+      /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
       /// </summary>
       /// <returns>A reference to this instance after the operation has completed.</returns>
+
       public SqlBuilder WHERE() {
          return SetNextClause("WHERE", " AND ");
-      }
-
-      /// <summary>
-      /// Appends the WHERE clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the WHERE clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder WHERE(string body) {
-         return WHERE(body, null);
       }
 
       /// <summary>
@@ -810,26 +671,19 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the WHERE clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder WHERE(string format, params object[] args) {
          return AppendClause("WHERE", " AND ", format, args);
       }
 
       /// <summary>
       /// Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods,
-      /// such as <see cref="_(string)"/> and <see cref="_If(bool, string)"/>.
+      /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
       /// </summary>
       /// <returns>A reference to this instance after the operation has completed.</returns>
+
       public SqlBuilder GROUP_BY() {
          return SetNextClause("GROUP BY", ", ");
-      }
-
-      /// <summary>
-      /// Appends the GROUP BY clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the GROUP BY clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder GROUP_BY(string body) {
-         return GROUP_BY(body, null);
       }
 
       /// <summary>
@@ -838,26 +692,19 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the GROUP BY clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder GROUP_BY(string format, params object[] args) {
          return AppendClause("GROUP BY", ", ", format, args);
       }
 
       /// <summary>
       /// Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods,
-      /// such as <see cref="_(string)"/> and <see cref="_If(bool, string)"/>.
+      /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
       /// </summary>
       /// <returns>A reference to this instance after the operation has completed.</returns>
+
       public SqlBuilder HAVING() {
          return SetNextClause("HAVING", " AND ");
-      }
-
-      /// <summary>
-      /// Appends the HAVING clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the HAVING clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder HAVING(string body) {
-         return HAVING(body, null);
       }
 
       /// <summary>
@@ -866,26 +713,19 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the HAVING clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder HAVING(string format, params object[] args) {
          return AppendClause("HAVING", " AND ", format, args);
       }
 
       /// <summary>
       /// Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods,
-      /// such as <see cref="_(string)"/> and <see cref="_If(bool, string)"/>.
+      /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
       /// </summary>
       /// <returns>A reference to this instance after the operation has completed.</returns>
+
       public SqlBuilder ORDER_BY() {
          return SetNextClause("ORDER BY", ", ");
-      }
-
-      /// <summary>
-      /// Appends the ORDER BY clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the ORDER BY clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder ORDER_BY(string body) {
-         return ORDER_BY(body, null);
       }
 
       /// <summary>
@@ -894,26 +734,19 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the ORDER BY clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder ORDER_BY(string format, params object[] args) {
          return AppendClause("ORDER BY", ", ", format, args);
       }
 
       /// <summary>
       /// Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods,
-      /// such as <see cref="_(string)"/> and <see cref="_If(bool, string)"/>.
+      /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
       /// </summary>
       /// <returns>A reference to this instance after the operation has completed.</returns>
+
       public SqlBuilder LIMIT() {
          return SetNextClause("LIMIT", null);
-      }
-
-      /// <summary>
-      /// Appends the LIMIT clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the LIMIT clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder LIMIT(string body) {
-         return LIMIT(body, null);
       }
 
       /// <summary>
@@ -922,6 +755,7 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the LIMIT clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder LIMIT(string format, params object[] args) {
          return AppendClause("LIMIT", null, format, args);
       }
@@ -931,26 +765,19 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="maxRecords">The value to use as parameter.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder LIMIT(int maxRecords) {
          return LIMIT("{0}", maxRecords);
       }
 
       /// <summary>
       /// Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods,
-      /// such as <see cref="_(string)"/> and <see cref="_If(bool, string)"/>.
+      /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
       /// </summary>
       /// <returns>A reference to this instance after the operation has completed.</returns>
+
       public SqlBuilder OFFSET() {
          return SetNextClause("OFFSET", null);
-      }
-
-      /// <summary>
-      /// Appends the OFFSET clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the OFFSET clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder OFFSET(string body) {
-         return OFFSET(body, null);
       }
 
       /// <summary>
@@ -959,6 +786,7 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the OFFSET clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder OFFSET(string format, params object[] args) {
          return AppendClause("OFFSET", null, format, args);
       }
@@ -968,6 +796,7 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="startIndex">The value to use as parameter.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder OFFSET(int startIndex) {
          return OFFSET("{0}", startIndex);
       }
@@ -976,17 +805,9 @@ namespace DbExtensions {
       /// Appends the UNION clause.
       /// </summary>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder UNION() {
          return AppendClause("UNION", null, null, null);
-      }
-
-      /// <summary>
-      /// Appends the INSERT INTO clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the INSERT INTO clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder INSERT_INTO(string body) {
-         return INSERT_INTO(body, null);
       }
 
       /// <summary>
@@ -995,17 +816,9 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the INSERT INTO clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder INSERT_INTO(string format, params object[] args) {
          return AppendClause("INSERT INTO", null, format, args);
-      }
-
-      /// <summary>
-      /// Appends the DELETE FROM clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the DELETE FROM clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder DELETE_FROM(string body) {
-         return DELETE_FROM(body, null);
       }
 
       /// <summary>
@@ -1014,17 +827,9 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the DELETE FROM clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder DELETE_FROM(string format, params object[] args) {
          return AppendClause("DELETE FROM", null, format, args);
-      }
-
-      /// <summary>
-      /// Appends the UPDATE clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the UPDATE clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder UPDATE(string body) {
-         return UPDATE(body, null);
       }
 
       /// <summary>
@@ -1033,17 +838,9 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the UPDATE clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder UPDATE(string format, params object[] args) {
          return AppendClause("UPDATE", null, format, args);
-      }
-
-      /// <summary>
-      /// Appends the SET clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the SET clause.</param>
-      /// <returns>A reference to this instance after the append operation has completed.</returns>
-      public SqlBuilder SET(string body) {
-         return SET(body, null);
       }
 
       /// <summary>
@@ -1052,6 +849,7 @@ namespace DbExtensions {
       /// <param name="format">The format string that represents the body of the SET clause.</param>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder SET(string format, params object[] args) {
          return AppendClause("SET", ", ", format, args);
       }
@@ -1061,13 +859,14 @@ namespace DbExtensions {
       /// </summary>
       /// <param name="args">The parameters of the clause body.</param>
       /// <returns>A reference to this instance after the append operation has completed.</returns>
+
       public SqlBuilder VALUES(params object[] args) {
 
          if (args == null || args.Length == 0) {
-            throw new ArgumentException("args cannot be empty", "args");
+            throw new ArgumentException("args cannot be empty", nameof(args));
          }
 
-         return AppendClause("VALUES", null, "({0})", new object[] { args });
+         return AppendClause("VALUES", null, "({0})", SQL.List(args));
       }
    }
 
@@ -1075,20 +874,8 @@ namespace DbExtensions {
    /// Provides a set of static (Shared in Visual Basic) methods to create <see cref="SqlBuilder"/> 
    /// instances.
    /// </summary>
-   public static class SQL {
 
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
-      /// appending the WITH clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the WITH clause.</param>
-      /// <returns>
-      /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(string)"/>.
-      /// </returns>
-      /// <seealso cref="SqlBuilder.WITH(string)"/>
-      public static SqlBuilder WITH(string body) {
-         return new SqlBuilder().WITH(body);
-      }
+   public static class SQL {
 
       /// <summary>
       /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
@@ -1100,7 +887,7 @@ namespace DbExtensions {
       /// <returns>
       /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(string, object[])"/>.
       /// </returns>
-      /// <seealso cref="SqlBuilder.WITH(string, object[])"/>
+
       public static SqlBuilder WITH(string format, params object[] args) {
          return new SqlBuilder().WITH(format, args);
       }
@@ -1115,22 +902,9 @@ namespace DbExtensions {
       /// <returns>
       /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(SqlBuilder, string)"/>.
       /// </returns>
-      /// <seealso cref="SqlBuilder.WITH(SqlBuilder, string)"/>
+
       public static SqlBuilder WITH(SqlBuilder subQuery, string alias) {
          return new SqlBuilder().WITH(subQuery, alias);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
-      /// appending the SELECT clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the SELECT clause.</param>
-      /// <returns>
-      /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.SELECT(string)"/>.
-      /// </returns>
-      /// <seealso cref="SqlBuilder.SELECT(string)"/>
-      public static SqlBuilder SELECT(string body) {
-         return new SqlBuilder().SELECT(body);
       }
 
       /// <summary>
@@ -1143,22 +917,9 @@ namespace DbExtensions {
       /// <returns>
       /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.SELECT(string, object[])"/>.
       /// </returns>
-      /// <seealso cref="SqlBuilder.SELECT(string, object[])"/>
+
       public static SqlBuilder SELECT(string format, params object[] args) {
          return new SqlBuilder().SELECT(format, args);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
-      /// appending the INSERT INTO clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the INSERT INTO clause.</param>
-      /// <returns>
-      /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.INSERT_INTO(string)"/>.
-      /// </returns>
-      /// <seealso cref="SqlBuilder.INSERT_INTO(string)"/>
-      public static SqlBuilder INSERT_INTO(string body) {
-         return new SqlBuilder().INSERT_INTO(body);
       }
 
       /// <summary>
@@ -1171,22 +932,9 @@ namespace DbExtensions {
       /// <returns>
       /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.INSERT_INTO(string, object[])"/>.
       /// </returns>
-      /// <seealso cref="SqlBuilder.INSERT_INTO(string, object[])"/>
+
       public static SqlBuilder INSERT_INTO(string format, params object[] args) {
          return new SqlBuilder().INSERT_INTO(format, args);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
-      /// appending the UPDATE clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the UPDATE clause.</param>
-      /// <returns>
-      /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.UPDATE(string)"/>.
-      /// </returns>
-      /// <seealso cref="SqlBuilder.UPDATE(string)"/>
-      public static SqlBuilder UPDATE(string body) {
-         return new SqlBuilder().UPDATE(body);
       }
 
       /// <summary>
@@ -1199,22 +947,9 @@ namespace DbExtensions {
       /// <returns>
       /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.UPDATE(string, object[])"/>.
       /// </returns>
-      /// <seealso cref="SqlBuilder.UPDATE(string, object[])"/>
+
       public static SqlBuilder UPDATE(string format, params object[] args) {
          return new SqlBuilder().UPDATE(format, args);
-      }
-
-      /// <summary>
-      /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
-      /// appending the DELETE FROM clause using the provided <paramref name="body"/>.
-      /// </summary>
-      /// <param name="body">The body of the DELETE FROM clause.</param>
-      /// <returns>
-      /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.DELETE_FROM(string)"/>.
-      /// </returns>
-      /// <seealso cref="SqlBuilder.DELETE_FROM(string)"/>
-      public static SqlBuilder DELETE_FROM(string body) {
-         return new SqlBuilder().DELETE_FROM(body);
       }
 
       /// <summary>
@@ -1227,66 +962,82 @@ namespace DbExtensions {
       /// <returns>
       /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.DELETE_FROM(string, object[])"/>.
       /// </returns>
-      /// <seealso cref="SqlBuilder.DELETE_FROM(string, object[])"/>
+
       public static SqlBuilder DELETE_FROM(string format, params object[] args) {
          return new SqlBuilder().DELETE_FROM(format, args);
       }
 
+      /// <inheritdoc cref="List(object[])"/>
+
+      public static object List(IEnumerable values) {
+         return new SqlList(values);
+      }
+
       /// <summary>
-      /// Wraps an array parameter to be used with <see cref="SqlBuilder"/>.
+      /// Returns a special parameter value that is expanded into a list of comma-separated placeholder items.
       /// </summary>
-      /// <param name="value">The array parameter.</param>
-      /// <returns>An object to use as parameter with <see cref="SqlBuilder"/>.</returns>
+      /// <param name="values">The values to expand into a list.</param>
+      /// <returns>A special object to be used as parameter in <see cref="SqlBuilder"/>.</returns>
       /// <remarks>
       /// <para>
-      /// By default, <see cref="SqlBuilder"/> treats array parameters as a list of individual parameters.
       /// For example:
       /// </para>
       /// <code>
-      /// var query = new SqlBuilder("SELECT {0} IN ({1})", "a", new string[] { "a", "b", "c" });
+      /// var query = SQL
+      ///    .SELECT("{0} IN ({1})", "a", SQL.List("a", "b", "c"));
       /// 
       /// Console.WriteLine(query.ToString());
       /// </code>
       /// <para>
       /// The above code outputs: <c>SELECT {0} IN ({1}, {2}, {3})</c>
       /// </para>
-      /// <para>
-      /// Use this method if you need to workaround this behavior. A common scenario is working with binary 
-      /// data, usually represented by <see cref="Byte"/> array parameters. For example:
-      /// </para>
-      /// <code>
-      /// byte[] imageData = GetImageData();
-      /// 
-      /// var update = SQL
-      ///    .UPDATE("images")
-      ///    .SET("content = {0}", SQL.Param(imageData))
-      ///    .WHERE("id = {0}", id);
-      /// </code>
-      /// <para>
-      /// NOTE: Use only if you are explicitly specifying the format string, don't use with methods that
-      /// do not take a format string, like <see cref="SqlBuilder.VALUES(object[])"/>.
-      /// Also, don't use if you are already including the parameter inside an array for the default
-      /// list behavior.
-      /// </para>
       /// </remarks>
-      public static object Param(Array value) {
-         return new object[1] { value };
+      /// <exception cref="ArgumentNullException"><paramref name="values"/> cannot be null.</exception>
+      /// <exception cref="ArgumentException"><paramref name="values"/> cannot be empty.</exception>
+
+      public static object List(params object[] values) {
+         return new SqlList(values);
       }
 
       #region Object Members
 
       /// <exclude/>
+
       [EditorBrowsable(EditorBrowsableState.Never)]
       public static new bool Equals(object objectA, object objectB) {
          return Object.Equals(objectA, objectB);
       }
 
       /// <exclude/>
+
       [EditorBrowsable(EditorBrowsableState.Never)]
       public static new bool ReferenceEquals(object objectA, object objectB) {
          return Object.ReferenceEquals(objectA, objectB);
       }
 
       #endregion
+   }
+
+   class SqlList {
+
+      object[] values;
+
+      public object this[int index] => values[index];
+
+      public int Count => values.Length;
+
+      public SqlList(IEnumerable values) {
+
+         if (values == null) {
+            throw new ArgumentNullException(nameof(values));
+         }
+
+         this.values = values.Cast<object>()
+            .ToArray();
+
+         if (this.values.Length == 0) {
+            throw new ArgumentException("values cannot be empty.", nameof(values));
+         }
+      }
    }
 }

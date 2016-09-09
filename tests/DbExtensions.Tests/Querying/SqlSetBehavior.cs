@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DbExtensions.Tests.Querying {
-   
+
+   using static TestUtil;
+
    [TestClass]
    public class SqlSetBehavior {
 
-      readonly Database db = new Database(MySql.Data.MySqlClient.MySqlClientFactory.Instance.CreateConnection());
-
-      Database SqlServerDatabase() {
-         return new Database(System.Data.SqlClient.SqlClientFactory.Instance.CreateSqlServerConnectionForTests());
-      }
+      readonly Database db = MySqlDatabase();
 
       [TestMethod]
       public void AsEnumerable_Reference_Type() {
@@ -293,10 +289,6 @@ namespace DbExtensions.Tests.Querying {
             .OrderBy("c");
 
          string value = set.Single();
-      }
-
-      bool SqlEquals(SqlSet set, SqlBuilder query) {
-         return TestUtil.SqlEquals(set, query);
       }
    }
 }

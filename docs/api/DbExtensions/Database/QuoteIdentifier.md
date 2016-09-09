@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public string QuoteIdentifier(
+public virtual string QuoteIdentifier(
 	string unquotedIdentifier
 )
 ```
@@ -30,9 +30,7 @@ See Also
 #### Reference
 [Database Class][3]  
 [DbExtensions Namespace][1]  
-[DbCommandBuilder.QuoteIdentifier(String)][4]  
 
 [1]: ../README.md
 [2]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
 [3]: README.md
-[4]: http://msdn.microsoft.com/en-us/library/79h5bby0

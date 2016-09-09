@@ -21,7 +21,6 @@
     <Language>en-US</Language>
     <HelpFileFormat>Website</HelpFileFormat>
     <KeepLogFile>False</KeepLogFile>
-    <CopyrightText>&amp;#169%3b 2009-2014 Max Toro Q.</CopyrightText>
     <HelpTitle>DbExtensions</HelpTitle>
     <NamingMethod>MemberName</NamingMethod>
     <SdkLinkTarget>Top</SdkLinkTarget>
@@ -32,7 +31,7 @@
       <DocumentationSource sourceFile="..\..\src\DbExtensions\bin\Release\net40\DbExtensions.xml" />
     </DocumentationSources>
     <NamespaceSummaries>
-      <NamespaceSummaryItem name="DbExtensions" isDocumented="True">Extensions methods for ADO.NET, CRUD and dynamic SQL components. &lt;see cref="T:DbExtensions.Database"/&gt; is the entry point of the &lt;see cref="N:DbExtensions"/&gt; API.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="DbExtensions" isDocumented="True">DbExtensions is a data-access framework with a strong focus on query composition, granularity and code aesthetics. &lt;see cref="T:DbExtensions.Database"/&gt; is the entry point of the &lt;see cref="N:DbExtensions"/&gt; API.</NamespaceSummaryItem>
     </NamespaceSummaries>
     <RootNamespaceContainer>True</RootNamespaceContainer>
     <PresentationStyle>VS2010</PresentationStyle>

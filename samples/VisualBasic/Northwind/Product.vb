@@ -5,19 +5,13 @@ Imports System.Data.Linq.Mapping
 Namespace Northwind
 
    <Table(Name:="Products")>
-   Public Class Product
+   Partial Public Class Product
 
-      <Association(ThisKey:="CategoryID", IsForeignKey:=True)>
-      Public Property Category As Category
-
-      <Column()>
+      <Column>
       Public Property CategoryID As Integer?
 
-      <Column()>
+      <Column>
       Public Property Discontinued As Boolean
-
-      <Association(OtherKey:="ProductID")>
-      Public Property OrderDetails As Collection(Of OrderDetail)
 
       <Column(IsPrimaryKey:=True, IsDbGenerated:=True)>
       Public Property ProductID As Integer
@@ -25,32 +19,33 @@ Namespace Northwind
       <Column(CanBeNull:=False)>
       Public Property ProductName As String
 
-      <Column()>
+      <Column>
       Public Property QuantityPerUnit As String
 
-      <Column()>
+      <Column>
       Public Property ReorderLevel As Short?
 
-      <Association(ThisKey:="SupplierID", IsForeignKey:=True)>
-      Public Property Supplier As Supplier
-
-      <Column()>
+      <Column>
       Public Property SupplierID As Integer?
 
-      <Column()>
+      <Column>
       Public Property UnitPrice As Decimal?
 
-      <Column()>
+      <Column>
       Public Property UnitsInStock As Short?
 
-      <Column()>
+      <Column>
       Public Property UnitsOnOrder As Short?
 
-      Public Property ValueInStock As Decimal
+      <Association(ThisKey:=NameOf(CategoryID), IsForeignKey:=True)>
+      Public Property Category As Category
 
-      Public Sub New()
-         Me.OrderDetails = New Collection(Of OrderDetail)
-      End Sub
+      <Association(OtherKey:=NameOf(OrderDetail.ProductID))>
+      Public ReadOnly Property OrderDetails As New Collection(Of OrderDetail)
+
+      <Association(ThisKey:=NameOf(SupplierID), IsForeignKey:=True)>
+      Public Property Supplier As Supplier
+
    End Class
 
 End Namespace

@@ -51,6 +51,7 @@ type SqlBuilderSamples() =
    /// If there's a large chunk of the query that is static you can pass it to the
    /// constructor and extend it from there.
    /// </remarks>
+   
    member this.ExtendRawSql() =
 
       (new SqlBuilder(@"
@@ -58,14 +59,14 @@ type SqlBuilderSamples() =
          FROM Products"))
          .WHERE("CategoryID = {0}", 1);
 
-   member this.ArrayArgument() =
+   member this.ListArgument() =
 
       let range = [| 1; 2; 3 |]
 
       SQL
          .SELECT("p.ProductID, p.CategoryID")
          .FROM("Products p")
-         .WHERE("p.CategoryID = {0} AND p.ProductID IN ({1})", 1, range)
+         .WHERE("p.CategoryID = {0} AND p.ProductID IN ({1})", 1, SQL.List(range))
          .WHERE("EXISTS ({0})", SQL
             .SELECT("ProductID")
             .FROM("OrderDetails")
@@ -107,6 +108,7 @@ type SqlBuilderSamples() =
    /// WHERE (((Products.Discontinued)=0))
    /// </summary>
    /// <remarks>Northwind.Alphabetical list of products</remarks>
+   
    member this.AlphabeticalListOfProducts() =
 
       SQL
@@ -121,6 +123,7 @@ type SqlBuilderSamples() =
    /// FROM Suppliers
    /// </summary>
    /// <remarks>Northwind.Customer and Suppliers by City</remarks>
+   
    member this.CustomersAndSuppliersByCity() =
 
       SQL
@@ -136,6 +139,7 @@ type SqlBuilderSamples() =
    /// WHERE Products.UnitPrice > (SELECT AVG(UnitPrice) From Products)
    /// </summary>
    /// <remarks>Northwind.Products Above Average Price</remarks>
+   
    member this.ProductsAboveAveragePrice() =
 
       SQL
@@ -157,6 +161,7 @@ type SqlBuilderSamples() =
    /// GROUP BY Categories.CategoryName, Products.ProductName
    /// </summary>
    /// <remarks>Northwind.Product Sales for 1997</remarks>
+   
    member this.ProductSalesFor1997() =
 
       SQL

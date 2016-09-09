@@ -10,18 +10,15 @@ Namespace Northwind
       <Column(CanBeNull:=False)>
       Public Property CompanyName As String
 
-      <Association(OtherKey:="ShipVia")>
-      Public Property Orders As Collection(Of Order)
-
-      <Column()>
+      <Column>
       Public Property Phone As String
 
       <Column(IsPrimaryKey:=True, IsDbGenerated:=True)>
       Public Property ShipperID As Integer
 
-      Public Sub New()
-         Me.Orders = New Collection(Of Order)
-      End Sub
+      <Association(OtherKey:=NameOf(Order.ShipVia))>
+      Public ReadOnly Property Orders As New Collection(Of Order)
+
    End Class
 
 End Namespace

@@ -1,23 +1,18 @@
 ﻿using System;
-using System.Data.Common;
 using System.Data.Linq.Mapping;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DbExtensions.Tests.Querying {
-   
+
+   using static TestUtil;
+
    [TestClass]
    public class SqlTableBehavior {
 
-      DbConnection MySqlConnection() {
-
-         return MySql.Data.MySqlClient.MySqlClientFactory.Instance
-            .CreateConnection();
-      }
+      readonly Database db = MySqlDatabase(new AttributeMappingSource().GetModel(typeof(SqlTable.Product)));
 
       [TestMethod]
       public void Dont_Use_Subqueries_When_Methods_Are_Called_In_Order() {
-
-         var db = new Database(MySqlConnection(), new AttributeMappingSource().GetModel(typeof(SqlTable.Product)));
 
          SqlSet set = db.Table<SqlTable.Product>()
             .Where("UnitsInStock > 0")
@@ -33,19 +28,15 @@ namespace DbExtensions.Tests.Querying {
 
          Assert.IsTrue(SqlEquals(set, expected));
       }
-
-      bool SqlEquals(SqlSet set, SqlBuilder query) {
-         return TestUtil.SqlEquals(set, query);
-      }
    }
-}
 
-namespace DbExtensions.Tests.Querying.SqlTable {
+   namespace SqlTable {
 
-   [Table]
-   class Product {
+      [Table]
+      class Product {
 
-      [Column]
-      public int Id { get; set; }
+         [Column]
+         public int Id { get; set; }
+      }
    }
 }

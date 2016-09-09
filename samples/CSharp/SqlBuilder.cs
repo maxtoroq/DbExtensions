@@ -34,7 +34,7 @@ namespace Samples.CSharp {
 
       public SqlBuilder Or() {
 
-         int[][] parameters = { new[] { 1, 2 }, new[] { 3, 4} };
+         int[][] parameters = { new[] { 1, 2 }, new[] { 3, 4 } };
 
          return SQL
             .SELECT("p.ProductID, p.ProductName")
@@ -58,6 +58,7 @@ namespace Samples.CSharp {
       /// If there's a large chunk of the query that is static you can pass it to the
       /// constructor and extend it from there.
       /// </remarks>
+
       public SqlBuilder ExtendRawSql() {
 
          return new SqlBuilder(@"
@@ -66,21 +67,21 @@ namespace Samples.CSharp {
             .WHERE("CategoryID = {0}", 1);
       }
 
-      public SqlBuilder ArrayArgument() {
+      public SqlBuilder ListArgument() {
 
          int[] range = { 1, 2, 3 };
 
          return SQL
             .SELECT("p.ProductID, p.CategoryID")
             .FROM("Products p")
-            .WHERE("p.CategoryID = {0} AND p.ProductID IN ({1})", 1, range)
+            .WHERE("p.CategoryID = {0} AND p.ProductID IN ({1})", 1, SQL.List(range))
             ._("EXISTS ({0})", SQL
                .SELECT("ProductID")
                .FROM("OrderDetails")
                .WHERE("OrderID = {0}", 77))
             .GROUP_BY("p.ProductID");
       }
-      
+
       public SqlBuilder Insert() {
 
          return SQL
@@ -120,6 +121,7 @@ namespace Samples.CSharp {
       /// WHERE (((Products.Discontinued)=0))
       /// </summary>
       /// <remarks>Northwind.Alphabetical list of products</remarks>
+
       public SqlBuilder AlphabeticalListOfProducts() {
 
          return SQL
@@ -135,6 +137,7 @@ namespace Samples.CSharp {
       /// FROM Suppliers
       /// </summary>
       /// <remarks>Northwind.Customer and Suppliers by City</remarks>
+
       public SqlBuilder CustomersAndSuppliersByCity() {
 
          return SQL
@@ -151,6 +154,7 @@ namespace Samples.CSharp {
       /// WHERE Products.UnitPrice > (SELECT AVG(UnitPrice) From Products)
       /// </summary>
       /// <remarks>Northwind.Products Above Average Price</remarks>
+
       public SqlBuilder ProductsAboveAveragePrice() {
 
          return SQL
@@ -173,6 +177,7 @@ namespace Samples.CSharp {
       /// GROUP BY Categories.CategoryName, Products.ProductName
       /// </summary>
       /// <remarks>Northwind.Product Sales for 1997</remarks>
+
       public SqlBuilder ProductSalesFor1997() {
 
          return SQL

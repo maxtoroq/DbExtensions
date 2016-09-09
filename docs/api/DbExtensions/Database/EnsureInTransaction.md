@@ -18,7 +18,7 @@ Type: [IDbTransaction][2]
 
 Remarks
 -------
- This method returns a virtual transaction that wraps an existing or new transaction. If [Current][3] is not null, this method creates a new [TransactionScope][4] and returns an [IDbTransaction][2] object that wraps it, and by calling [Commit()][5] on this object it will then call [Complete()][6] on the [TransactionScope][4]. If [Current][3] is null, this methods begins a new [DbTransaction][7], or uses an existing transaction created by a previous call to this method, and returns an [IDbTransaction][2] object that wraps it, and by calling [Commit()][5] on this object it will then call [Commit()][8] on the wrapped transaction if the transaction was just created, or do nothing if it was previously created. 
+ This method returns a virtual transaction that wraps an existing or new transaction. If [Current][3] is not null, this method creates a new [TransactionScope][4] and returns an [IDbTransaction][2] object that wraps it, and by calling [Commit()][5] on this object it will then call [Complete()][6] on the [TransactionScope][4]. If [Current][3] is null, this methods begins a new [IDbTransaction][2], or uses an existing transaction created by a previous call to this method, and returns an [IDbTransaction][2] object that wraps it, and by calling [Commit()][5] on this object it will then call [Commit()][5] on the wrapped transaction if the transaction was just created, or do nothing if it was previously created. 
 
 Calls to this method can be nested, like in the following example:
 
@@ -51,7 +51,7 @@ See Also
 --------
 
 #### Reference
-[Database Class][9]  
+[Database Class][7]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
@@ -60,6 +60,4 @@ See Also
 [4]: http://msdn.microsoft.com/en-us/library/h5w5se33
 [5]: http://msdn.microsoft.com/en-us/library/00w6tek6
 [6]: http://msdn.microsoft.com/en-us/library/ms149857
-[7]: http://msdn.microsoft.com/en-us/library/xtczstkw
-[8]: http://msdn.microsoft.com/en-us/library/syk8k1ct
-[9]: README.md
+[7]: README.md

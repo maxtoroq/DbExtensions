@@ -1,4 +1,5 @@
-﻿Imports System.Data.Linq.Mapping
+﻿Imports System.Data.Common
+Imports System.Data.Linq.Mapping
 Imports DbExtensions
 
 Namespace Northwind
@@ -42,12 +43,12 @@ Namespace Northwind
          End Get
       End Property
 
-      Public Sub New(ByVal connectionString As String)
-         MyBase.New(connectionString)
+      Public Sub New(ByVal connection As DbConnection)
+         MyBase.New(connection)
       End Sub
 
-      Public Sub New(ByVal connectionString As String, ByVal mapping As MetaModel)
-         MyBase.New(connectionString, mapping)
+      Public Sub New(ByVal connection As DbConnection, ByVal mapping As MetaModel)
+         MyBase.New(connection, mapping)
       End Sub
 
    End Class

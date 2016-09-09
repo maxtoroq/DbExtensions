@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.Linq.Mapping;
 using System.IO;
 using System.Transactions;
-using DbExtensions;
 using Samples.CSharp.Northwind;
 
 namespace Samples.CSharp {
@@ -12,17 +12,17 @@ namespace Samples.CSharp {
 
       readonly NorthwindDatabase db;
 
-      public DatabaseMappedSamples(string connectionString, MetaModel mapping, TextWriter log) {
+      public DatabaseMappedSamples(DbConnection connection, MetaModel mapping, TextWriter log) {
 
-         this.db = new NorthwindDatabase(connectionString, mapping) {
-            Configuration = { 
+         this.db = new NorthwindDatabase(connection, mapping) {
+            Configuration = {
                Log = log
             }
          };
       }
 
       public IEnumerable<Product> IncludeManyToOne() {
-         
+
          return db.Products
             .Include("Category")
             .Include("Supplier")
@@ -52,7 +52,7 @@ namespace Samples.CSharp {
       public Product Find() {
          return db.Products.Find(1);
       }
-     
+
       public void Transactions_AdoNet() {
 
          using (var tx = db.EnsureInTransaction()) {
@@ -83,7 +83,7 @@ namespace Samples.CSharp {
 
          var order = new Order {
             CustomerID = "ALFKI",
-            OrderDetails = { 
+            OrderDetails = {
                new OrderDetail { ProductID = 77, Quantity = 1 },
                new OrderDetail { ProductID = 41, Quantity = 2 }
             }

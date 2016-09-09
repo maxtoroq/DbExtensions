@@ -7,45 +7,42 @@ Namespace Northwind
    <Table(Name:="Suppliers")>
    Public Class Supplier
 
-      <Column()>
+      <Column>
       Public Property Address As String
 
-      <Column()>
+      <Column>
       Public Property City As String
 
       <Column(CanBeNull:=False)>
       Public Property CompanyName As String
 
-      <Column()>
+      <Column>
       Public Property ContactName As String
 
-      <Column()>
+      <Column>
       Public Property ContactTitle As String
 
-      <Column()>
+      <Column>
       Public Property Country As String
 
-      <Column()>
+      <Column>
       Public Property Fax As String
 
-      <Column()>
+      <Column>
       Public Property Phone As String
 
-      <Column()>
+      <Column>
       Public Property PostalCode As String
 
-      <Association(OtherKey:="SupplierID")>
-      Public Property Products As Collection(Of Product)
-
-      <Column()>
+      <Column>
       Public Property [Region] As String
 
       <Column(IsPrimaryKey:=True, IsDbGenerated:=True)>
       Public Property SupplierID As Integer
 
-      Public Sub New()
-         Me.Products = New Collection(Of Product)
-      End Sub
+      <Association(OtherKey:=NameOf(Product.SupplierID))>
+      Public ReadOnly Property Products As New Collection(Of Product)
+
    End Class
 
 End Namespace

@@ -1,17 +1,16 @@
 ﻿Imports System
-Imports System.Collections.Generic
+Imports System.Data.Common
+Imports System.Data.Linq.Mapping
 Imports System.IO
 Imports System.Transactions
-Imports System.Data.Linq.Mapping
-Imports DbExtensions
 Imports Samples.VisualBasic.Northwind
 
 Public Class DatabaseMappedSamples
 
    ReadOnly db As NorthwindDatabase
 
-   Sub New(ByVal connectionString As String, ByVal mapping As MetaModel, ByVal log As TextWriter)
-      Me.db = New NorthwindDatabase(connectionString, mapping)
+   Sub New(ByVal connection As DbConnection, ByVal mapping As MetaModel, ByVal log As TextWriter)
+      Me.db = New NorthwindDatabase(connection, mapping)
       Me.db.Configuration.Log = log
    End Sub
 

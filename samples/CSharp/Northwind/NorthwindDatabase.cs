@@ -1,42 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.Linq.Mapping;
-using System.Linq;
-using System.Text;
 using DbExtensions;
 
 namespace Samples.CSharp.Northwind {
-   
+
    public class NorthwindDatabase : Database {
 
-      public SqlTable<Product> Products {
-         get { return Table<Product>(); }
-      }
+      public SqlTable<Product> Products => Table<Product>();
 
-      public SqlTable<Order> Orders {
-         get { return Table<Order>(); }
-      }
+      public SqlTable<Order> Orders => Table<Order>();
 
-      public SqlTable<OrderDetail> OrderDetails {
-         get { return Table<OrderDetail>(); }
-      }
+      public SqlTable<OrderDetail> OrderDetails => Table<OrderDetail>();
 
-      public SqlTable<Employee> Employees {
-         get { return Table<Employee>(); }
-      }
+      public SqlTable<Employee> Employees => Table<Employee>();
 
-      public SqlTable<EmployeeTerritory> EmployeeTerritories {
-         get { return Table<EmployeeTerritory>(); }
-      }
+      public SqlTable<EmployeeTerritory> EmployeeTerritories => Table<EmployeeTerritory>();
 
-      public SqlTable<Region> Regions {
-         get { return Table<Region>(); }
-      }
+      public SqlTable<Region> Regions => Table<Region>();
 
-      public NorthwindDatabase(string connectionString) 
-         : base(connectionString) { }
+      public NorthwindDatabase(DbConnection connection)
+         : base(connection) { }
 
-      public NorthwindDatabase(string connectionString, MetaModel mapping)
-         : base(connectionString, mapping) { }
+      public NorthwindDatabase(DbConnection connection, MetaModel mapping)
+         : base(connection, mapping) { }
    }
 }

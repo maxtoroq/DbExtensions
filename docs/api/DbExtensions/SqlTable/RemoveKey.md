@@ -1,8 +1,8 @@
-SqlTable.RemoveKey Method (Object)
-==================================
-Executes a DELETE command for the entity whose primary key matches the *id* parameter, using the default [ConcurrencyConflictPolicy][1].
+SqlTable.RemoveKey Method
+=========================
+Executes a DELETE command for the entity whose primary key matches the *id* parameter.
 
-**Namespace:** [DbExtensions][2]  
+**Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
 
 Syntax
@@ -17,7 +17,7 @@ public void RemoveKey(
 #### Parameters
 
 ##### *id*
-Type: [System.Object][3]  
+Type: [System.Object][2]  
 The primary key value.
 
 
@@ -25,10 +25,9 @@ See Also
 --------
 
 #### Reference
-[SqlTable Class][4]  
-[DbExtensions Namespace][2]  
+[SqlTable Class][3]  
+[DbExtensions Namespace][1]  
 
-[1]: ../ConcurrencyConflictPolicy/README.md
-[2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b
-[4]: README.md
+[1]: ../README.md
+[2]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[3]: README.md
