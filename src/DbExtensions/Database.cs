@@ -264,7 +264,7 @@ namespace DbExtensions {
       /// <param name="affect">The number of records the command should affect. This value is ignored if less or equal to -1.</param>
       /// <param name="exact">true if the number of affected records should exactly match <paramref name="affect"/>; false if a lower number is acceptable.</param>
       /// <returns>The number of affected records.</returns>
-      /// <exception cref="DBConcurrencyException">The number of affected records is not equal to <paramref name="affect"/>.</exception>
+      /// <exception cref="ChangeConflictException">The number of affected records is not equal to <paramref name="affect"/>.</exception>
 
       public int Execute(SqlBuilder nonQuery, int affect = -1, bool exact = false) {
 

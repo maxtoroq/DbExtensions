@@ -37,9 +37,9 @@ The number of affected records.
 Exceptions
 ----------
 
-Exception                   | Condition                                                
---------------------------- | -------------------------------------------------------- 
-[DBConcurrencyException][5] | The number of affected records is not equal to *affect*. 
+Exception                    | Condition                                                
+---------------------------- | -------------------------------------------------------- 
+[ChangeConflictException][5] | The number of affected records is not equal to *affect*. 
 
 
 See Also
@@ -53,5 +53,5 @@ See Also
 [2]: ../SqlBuilder/README.md
 [3]: http://msdn.microsoft.com/en-us/library/td2s409d
 [4]: http://msdn.microsoft.com/en-us/library/a28wyd50
-[5]: http://msdn.microsoft.com/en-us/library/bsdf9tb2
+[5]: ../ChangeConflictException/README.md
 [6]: README.md
