@@ -817,6 +817,7 @@ namespace DbExtensions {
    /// been modified since it was loaded into memory.
    /// </summary>
 
+   [Serializable]
    public class ChangeConflictException : SystemException {
 
       /// <summary>

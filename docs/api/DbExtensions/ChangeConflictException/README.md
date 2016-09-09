@@ -17,6 +17,7 @@ Syntax
 ------
 
 ```csharp
+[SerializableAttribute]
 public class ChangeConflictException : SystemException
 ```
 
