@@ -27,8 +27,8 @@
     <SyntaxFilters>C#, Visual Basic, F#</SyntaxFilters>
     <BinaryTOC>False</BinaryTOC>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\src\DbExtensions\bin\Release\net40\DbExtensions.dll" />
-      <DocumentationSource sourceFile="..\..\src\DbExtensions\bin\Release\net40\DbExtensions.xml" />
+      <DocumentationSource sourceFile="..\..\src\DbExtensions\bin\Release\DbExtensions.dll" />
+      <DocumentationSource sourceFile="..\..\src\DbExtensions\bin\Release\DbExtensions.xml" />
     </DocumentationSources>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="DbExtensions" isDocumented="True">DbExtensions is a data-access framework with a strong focus on query composition, granularity and code aesthetics. &lt;see cref="T:DbExtensions.Database"/&gt; is the entry point of the &lt;see cref="N:DbExtensions"/&gt; API.</NamespaceSummaryItem>
