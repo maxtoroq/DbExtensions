@@ -257,8 +257,8 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Executes the <paramref name="nonQuery"/> command. Optionally uses a transaction scope and validates
-      /// affected records value before completing.
+      /// Executes the <paramref name="nonQuery"/> command. Optionally uses a transaction and validates
+      /// affected records value before committing.
       /// </summary>
       /// <param name="nonQuery">The non-query command to execute.</param>
       /// <param name="affect">The number of records the command should affect. This value is ignored if less or equal to -1.</param>
