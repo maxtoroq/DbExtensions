@@ -102,9 +102,9 @@ function script:NuPack([string]$projName) {
 using System;
 using System.Reflection;
 
-[assembly: AssemblyProduct("DbExtensions")]
-[assembly: AssemblyCompany("$projectUrl")]
-[assembly: AssemblyCopyright("$copyright")]
+[assembly: AssemblyProduct("$($notice.work)")]
+[assembly: AssemblyCompany("$($notice.website)")]
+[assembly: AssemblyCopyright("$($notice.copyright)")]
 [assembly: AssemblyVersion("$AssemblyVersion")]
 [assembly: AssemblyFileVersion("$PackageVersion")]
 [assembly: AssemblyInformationalVersion("$pkgVersion")]
