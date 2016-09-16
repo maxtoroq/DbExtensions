@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Data.Linq.Mapping;
+using DbExtensions;
 
 namespace Samples.CSharp.Northwind {
 

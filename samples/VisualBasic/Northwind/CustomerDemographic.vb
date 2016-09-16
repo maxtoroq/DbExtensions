@@ -1,13 +1,13 @@
 ﻿Imports System
 Imports System.Collections.ObjectModel
-Imports System.Data.Linq.Mapping
+Imports DbExtensions
 
 Namespace Northwind
 
    <Table(Name:="CustomerDemographics")>
    Public Class CustomerDemographic
 
-      <Column(UpdateCheck:=UpdateCheck.Never)>
+      <Column>
       Public Property CustomerDesc As String
 
       <Column(IsPrimaryKey:=True)>

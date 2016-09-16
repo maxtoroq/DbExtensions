@@ -1,6 +1,6 @@
 ﻿Imports System
 Imports System.Collections.ObjectModel
-Imports System.Data.Linq.Mapping
+Imports DbExtensions
 
 Namespace Northwind
 
@@ -16,7 +16,7 @@ Namespace Northwind
       <Column(IsPrimaryKey:=True, IsDbGenerated:=True)>
       Public Property ProductID As Integer
 
-      <Column(CanBeNull:=False)>
+      <Column>
       Public Property ProductName As String
 
       <Column>

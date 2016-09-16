@@ -1,6 +1,6 @@
 ﻿Imports System
 Imports System.Collections.ObjectModel
-Imports System.Data.Linq.Mapping
+Imports DbExtensions
 
 Namespace Northwind
 
@@ -13,7 +13,7 @@ Namespace Northwind
       <Column>
       Public Property City As String
 
-      <Column(CanBeNull:=False)>
+      <Column>
       Public Property CompanyName As String
 
       <Column>

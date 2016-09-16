@@ -1,13 +1,13 @@
 ﻿Imports System
 Imports System.Collections.ObjectModel
-Imports System.Data.Linq.Mapping
+Imports DbExtensions
 
 Namespace Northwind
 
    <Table(Name:="Orders")>
    Public Class Order
 
-      <Column(CanBeNull:=False)>
+      <Column>
       Public Property CustomerID As String
 
       <Column>

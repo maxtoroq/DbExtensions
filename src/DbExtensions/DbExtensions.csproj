@@ -41,13 +41,20 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Mapper.cs" />
+    <Compile Include="Attributes.cs" />
+    <Compile Include="Metadata\Error.cs" />
+    <Compile Include="Metadata\Accessors.cs" />
+    <Compile Include="Metadata\AttributedMetaModel.cs" />
+    <Compile Include="Metadata\MappingSystem.cs" />
+    <Compile Include="Metadata\TypeSystem.cs" />
+    <Compile Include="Metadata\MappingSource.cs" />
+    <Compile Include="Metadata\MetaModel.cs" />
     <Compile Include="PocoMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlBuilder.cs" />

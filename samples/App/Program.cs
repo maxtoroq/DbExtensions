@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Common;
-using System.Data.Linq.Mapping;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -45,7 +44,7 @@ namespace Samples {
 
          try {
 
-            Database db = new Database(connSettings.ConnectionString, connSettings.ProviderName);
+            var db = new Database(connSettings.ConnectionString, connSettings.ProviderName);
 
             using (db.EnsureConnectionOpen()) {
                WriteLine("Server Version: {0}", ((DbConnection)db.Connection).ServerVersion);
@@ -62,14 +61,10 @@ namespace Samples {
          int samplesLangIndex = GetArrayOption(samplesLangs, "Select the samples language (or Enter):");
          string samplesLanguage = samplesLangs[samplesLangIndex];
 
-         MappingSource[] mappingSources = { new AttributeMappingSource(), XmlMappingSource.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("Samples.Northwind.Northwind.xml")) };
-         int mappingSourceIndex = GetArrayOption(mappingSources, "Select the mapping source (or Enter):");
-         MappingSource mappingSource = mappingSources[mappingSourceIndex];
-
          object[] samples;
 
          try {
-            samples = GetSamples(samplesLanguage, connSettings, mappingSource, Console.Out).ToArray();
+            samples = GetSamples(samplesLanguage, connSettings).ToArray();
          } catch (Exception ex) {
 
             WriteError(ex, fatal: true);
@@ -130,7 +125,7 @@ namespace Samples {
          return projectsDir;
       }
 
-      IEnumerable<object> GetSamples(string language, ConnectionStringSettings connSettings, MappingSource mappingSource, TextWriter log) {
+      IEnumerable<object> GetSamples(string language, ConnectionStringSettings connSettings) {
 
          string projectDir = Path.Combine(this.samplesPath, language);
          string projectFile = Directory.GetFiles(projectDir, String.Format("*.{0}proj", Regex.Replace(language, "[a-z]", ""))).FirstOrDefault();
@@ -144,21 +139,12 @@ namespace Samples {
          string assemblyPath = Path.Combine(projectDir, "bin", "Debug", assemblyFileName);
          Assembly samplesAssembly = Assembly.Load(File.ReadAllBytes(assemblyPath));
 
-         MetaModel mapping;
+         Type dbType = samplesAssembly.GetTypes()
+            .Where(t => typeof(Database).IsAssignableFrom(t))
+            .Single();
 
-         if (mappingSource is AttributeMappingSource) {
-            mapping = mappingSource.GetModel(
-               samplesAssembly.GetTypes()
-                  .Where(t => typeof(Database).IsAssignableFrom(t))
-                  .Single()
-            );
-         } else {
-            mapping = mappingSource.GetModel(
-               samplesAssembly.GetTypes()
-                  .Where(t => typeof(System.Data.Linq.DataContext).IsAssignableFrom(t))
-                  .Single()
-            );
-         }
+         Database db = (Database)Activator.CreateInstance(dbType, connSettings.ConnectionString, connSettings.ProviderName);
+         db.Configuration.Log = Out;
 
          return
             from t in samplesAssembly.GetTypes()
@@ -167,23 +153,10 @@ namespace Samples {
             let parameters = t.GetConstructors().First().GetParameters()
             let args =
                from p in parameters
-               select (p.ParameterType == typeof(TextWriter) ? log
-                  : p.ParameterType == typeof(MetaModel) ? mapping
-                  : p.ParameterType == typeof(DbConnection) ? CreateConnection(connSettings)
-                  : p.ParameterType == typeof(Database) ? new Database(connSettings.ConnectionString, connSettings.ProviderName, mapping) { Configuration = { Log = log } }
+               select (typeof(Database).IsAssignableFrom(p.ParameterType) ? db
                   : p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType)
                   : null)
             select Activator.CreateInstance(t, args.ToArray());
-      }
-
-      DbConnection CreateConnection(ConnectionStringSettings connSettings) {
-
-         DbProviderFactory provider = DbProviderFactories.GetFactory(connSettings.ProviderName);
-
-         DbConnection connection = provider.CreateConnection();
-         connection.ConnectionString = connSettings.ConnectionString;
-
-         return connection;
       }
 
       void RunSamples(object samples, bool continueOnError) {

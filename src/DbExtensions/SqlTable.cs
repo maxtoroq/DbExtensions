@@ -17,7 +17,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Linq.Mapping;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -27,91 +26,29 @@ using System.Text;
 
 namespace DbExtensions {
 
+   using Metadata;
+
    partial class Database {
 
       static readonly MethodInfo tableMethod = typeof(Database)
          .GetMethods(BindingFlags.Public | BindingFlags.Instance)
          .Single(m => m.Name == nameof(Table) && m.ContainsGenericParameters && m.GetParameters().Length == 0);
 
+      static readonly MappingSource mappingSource = new AttributeMappingSource();
+
       readonly IDictionary<MetaType, SqlTable> tables = new Dictionary<MetaType, SqlTable>();
       readonly IDictionary<MetaType, ISqlTable> genericTables = new Dictionary<MetaType, ISqlTable>();
 
-      /// <summary>
-      /// Initializes a new instance of the <see cref="Database"/> class
-      /// using the provided meta model.
-      /// </summary>
-      /// <param name="mapping">The meta model.</param>
-
-      public Database(MetaModel mapping)
-         : this() {
-
-         InitializeMapping(mapping);
-      }
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="Database"/> class
-      /// using the provided connection string and meta model.
-      /// </summary>
-      /// <param name="connectionString">The connection string.</param>
-      /// <param name="mapping">The meta model.</param>
-
-      public Database(string connectionString, MetaModel mapping)
-         : this(connectionString) {
-
-         InitializeMapping(mapping);
-      }
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="Database"/> class
-      /// using the provided connection string, provider's invariant name and meta model.
-      /// </summary>
-      /// <param name="connectionString">The connection string.</param>
-      /// <param name="providerInvariantName">The provider's invariant name.</param>
-      /// <param name="mapping">The meta model.</param>
-
-      public Database(string connectionString, string providerInvariantName, MetaModel mapping)
-         : this(connectionString, providerInvariantName) {
-
-         InitializeMapping(mapping);
-      }
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="Database"/> class
-      /// using the provided connection and meta model.
-      /// </summary>
-      /// <param name="connection">The connection.</param>
-      /// <param name="mapping">The meta model.</param>
-
-      public Database(IDbConnection connection, MetaModel mapping)
-         : this(connection) {
-
-         InitializeMapping(mapping);
-      }
-
       partial void Initialize2(string providerInvariantName) {
 
-         this.Configuration.SetMapping(() => {
-
-            Type thisType = GetType();
-
-            if (thisType != typeof(Database)) {
-               return new AttributeMappingSource().GetModel(thisType);
-            }
-
-            return null;
+         this.Configuration.SetModel(() => {
+            return mappingSource.GetModel(GetType());
          });
 
          Initialize3(providerInvariantName);
       }
 
       partial void Initialize3(string providerInvariantName);
-
-      void InitializeMapping(MetaModel mapping) {
-
-         if (mapping != null) {
-            this.Configuration.SetMapping(() => mapping);
-         }
-      }
 
       /// <summary>
       /// Returns the <see cref="SqlTable&lt;TEntity>"/> instance for the specified <typeparamref name="TEntity"/>.
@@ -121,7 +58,7 @@ namespace DbExtensions {
 
       public SqlTable<TEntity> Table<TEntity>() where TEntity : class {
 
-         MetaType metaType = GetMetaType(typeof(TEntity));
+         MetaType metaType = this.Configuration.Model.GetMetaType(typeof(TEntity));
          ISqlTable set;
          SqlTable<TEntity> table;
 
@@ -143,7 +80,7 @@ namespace DbExtensions {
       /// <returns>The <see cref="SqlTable"/> instance for <paramref name="entityType"/>.</returns>
 
       public SqlTable Table(Type entityType) {
-         return Table(GetMetaType(entityType));
+         return Table(this.Configuration.Model.GetMetaType(entityType));
       }
 
       /// <summary>
@@ -152,7 +89,7 @@ namespace DbExtensions {
       /// <param name="metaType">The <see cref="MetaType"/> of the entity.</param>
       /// <returns>The <see cref="SqlTable"/> instance for <paramref name="metaType"/>.</returns>
 
-      protected internal SqlTable Table(MetaType metaType) {
+      internal SqlTable Table(MetaType metaType) {
 
          SqlTable table;
 
@@ -166,17 +103,6 @@ namespace DbExtensions {
          }
 
          return table;
-      }
-
-      internal MetaType GetMetaType(Type entityType) {
-
-         if (entityType == null) throw new ArgumentNullException(nameof(entityType));
-
-         if (this.Configuration.Mapping == null) {
-            throw new InvalidOperationException("There's no MetaModel associated, the operation is not available.");
-         }
-
-         return this.Configuration.Mapping.GetMetaType(entityType);
       }
 
       internal object GetMemberValue(object entity, MetaDataMember member) {
@@ -297,13 +223,13 @@ namespace DbExtensions {
 
    sealed partial class DatabaseConfiguration {
 
-      Lazy<MetaModel> _Mapping;
+      Lazy<MetaModel> _Model;
 
       /// <summary>
       /// Gets the <see cref="MetaModel"/> on which the mapping is based.
       /// </summary>
 
-      public MetaModel Mapping => _Mapping.Value;
+      internal MetaModel Model => _Model.Value;
 
       /// <summary>
       /// true to include version column check in SQL statements' predicates; otherwise, false. The default is true.
@@ -331,8 +257,8 @@ namespace DbExtensions {
 
       public bool EnableBatchCommands { get; set; } = true;
 
-      internal void SetMapping(Func<MetaModel> mappingFn) {
-         _Mapping = new Lazy<MetaModel>(mappingFn);
+      internal void SetModel(Func<MetaModel> modelFn) {
+         _Model = new Lazy<MetaModel>(modelFn);
       }
    }
 
@@ -1398,7 +1324,7 @@ namespace DbExtensions {
             throw new InvalidOperationException("Find operation is not supported on untyped sets.");
          }
 
-         MetaType metaType = db.GetMetaType(resultType);
+         MetaType metaType = db.Configuration.Model.GetMetaType(resultType);
 
          if (metaType == null) {
             throw new InvalidOperationException($"Mapping information was not found for '{resultType.FullName}'.");
@@ -1440,7 +1366,7 @@ namespace DbExtensions {
             throw new InvalidOperationException("Include operation is not supported on untyped sets.");
          }
 
-         MetaType metaType = this.db.GetMetaType(this.ResultType);
+         MetaType metaType = this.db.Configuration.Model.GetMetaType(this.ResultType);
 
          if (metaType == null) {
             throw new InvalidOperationException($"Mapping information was not found for '{this.ResultType.FullName}'.");

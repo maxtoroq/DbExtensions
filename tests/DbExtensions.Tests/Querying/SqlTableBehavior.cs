@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.Linq.Mapping;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DbExtensions.Tests.Querying {
@@ -9,7 +8,7 @@ namespace DbExtensions.Tests.Querying {
    [TestClass]
    public class SqlTableBehavior {
 
-      readonly Database db = MySqlDatabase(new AttributeMappingSource().GetModel(typeof(SqlTable.Product)));
+      readonly Database db = MySqlDatabase();
 
       [TestMethod]
       public void Dont_Use_Subqueries_When_Methods_Are_Called_In_Order() {

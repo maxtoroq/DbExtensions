@@ -1,5 +1,5 @@
 ﻿Imports System
-Imports System.Data.Linq.Mapping
+Imports DbExtensions
 
 Namespace Northwind
 

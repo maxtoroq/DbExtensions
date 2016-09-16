@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Data.Linq.Mapping;
+using DbExtensions;
 
 namespace Samples.CSharp.Northwind {
 
@@ -10,7 +10,7 @@ namespace Samples.CSharp.Northwind {
       [Column(IsPrimaryKey = true, IsDbGenerated = true)]
       public int OrderID { get; set; }
 
-      [Column(CanBeNull = false)]
+      [Column]
       public string CustomerID { get; set; }
 
       [Column]

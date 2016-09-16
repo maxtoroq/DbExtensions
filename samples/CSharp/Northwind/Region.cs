@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Data.Linq.Mapping;
+using DbExtensions;
 
 namespace Samples.CSharp.Northwind {
 
@@ -10,7 +10,7 @@ namespace Samples.CSharp.Northwind {
       [Column(IsPrimaryKey = true)]
       public int RegionID { get; set; }
 
-      [Column(CanBeNull = false)]
+      [Column]
       public string RegionDescription { get; set; }
 
       [Association(OtherKey = nameof(Territory.RegionID))]

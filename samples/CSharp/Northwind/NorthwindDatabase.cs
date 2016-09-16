@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data.Common;
-using System.Data.Linq.Mapping;
 using DbExtensions;
 
 namespace Samples.CSharp.Northwind {
@@ -19,10 +17,7 @@ namespace Samples.CSharp.Northwind {
 
       public SqlTable<Region> Regions => Table<Region>();
 
-      public NorthwindDatabase(DbConnection connection)
-         : base(connection) { }
-
-      public NorthwindDatabase(DbConnection connection, MetaModel mapping)
-         : base(connection, mapping) { }
+      public NorthwindDatabase(string connectionString, string providerInvariantName)
+         : base(connectionString, providerInvariantName) { }
    }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Data.Linq.Mapping;
+using DbExtensions;
 
 namespace Samples.CSharp.Northwind {
 
-   [Table(Name = "CustomerCustomerDemo")]
+   [Table]
    public class CustomerCustomerDemo {
 
       [Column(IsPrimaryKey = true)]

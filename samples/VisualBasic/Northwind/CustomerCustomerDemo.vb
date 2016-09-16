@@ -1,9 +1,9 @@
 ﻿Imports System
-Imports System.Data.Linq.Mapping
+Imports DbExtensions
 
 Namespace Northwind
 
-   <Table(Name:="CustomerCustomerDemo")>
+   <Table>
    Public Class CustomerCustomerDemo
 
       <Column(IsPrimaryKey:=True)>

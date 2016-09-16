@@ -1,13 +1,13 @@
 ﻿Imports System
 Imports System.Collections.ObjectModel
-Imports System.Data.Linq.Mapping
+Imports DbExtensions
 
 Namespace Northwind
 
    <Table(Name:="Region")>
    Public Class [Region]
 
-      <Column(CanBeNull:=False)>
+      <Column>
       Public Property RegionDescription As String
 
       <Column(IsPrimaryKey:=True)>

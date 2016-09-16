@@ -2,8 +2,6 @@
 
 open System
 open System.Collections.ObjectModel
-open System.Data.Linq.Mapping
-open System.Data.Common
 open DbExtensions
 
 [<AllowNullLiteral>]
@@ -29,7 +27,7 @@ type Supplier() =
    [<Column(IsPrimaryKey = true, IsDbGenerated = true)>]
    member val SupplierID = 0 with get,set
 
-   [<Column(CanBeNull = false)>]
+   [<Column>]
    member val CompanyName : string = null with get,set
 
    [<Column>]
@@ -66,7 +64,7 @@ type Product() =
    [<Column(IsPrimaryKey = true, IsDbGenerated = true)>]
    member val ProductID = 0 with get,set
    
-   [<Column(CanBeNull = false)>]
+   [<Column>]
    member val ProductName : string = null with get,set
    
    [<Column>]
@@ -147,10 +145,10 @@ type Employee() =
    [<Column>]
    member val Extension : string = null with get,set
    
-   [<Column(UpdateCheck = UpdateCheck.Never)>]
+   [<Column>]
    member val Photo : Byte[] = null with get,set
    
-   [<Column(UpdateCheck = UpdateCheck.Never)>]
+   [<Column>]
    member val Notes : string = null with get,set
    
    [<Column>]
@@ -163,23 +161,23 @@ type Employee() =
    member val ReportsToEmployee : Employee = null with get,set
 
 [<AllowNullLiteral>]
-[<Table(Name = "Region")>]
+[<Table>]
 type Region() =
 
    [<Column(IsPrimaryKey = true)>]
    member val RegionID = 0 with get,set
    
-   [<Column(CanBeNull = false)>]
+   [<Column>]
    member val RegionDescription : string = null with get,set
 
 [<AllowNullLiteral>]
 [<Table(Name = "Territories")>]
 type Territory() =
 
-   [<Column(IsPrimaryKey = true, CanBeNull = false)>]
+   [<Column(IsPrimaryKey = true)>]
    member val TerritoryID : string = null with get,set
 
-   [<Column(CanBeNull = false)>]
+   [<Column>]
    member val TerritoryDescription : string = null with get,set
    
    [<Column>]
@@ -248,11 +246,11 @@ type CustomerDemographic() =
    [<Column(IsPrimaryKey = true)>]
    member val CustomerTypeID : string = null with get,set
 
-   [<Column(UpdateCheck = UpdateCheck.Never)>]
+   [<Column>]
    member val CustomerDesc : string = null with get,set
 
 [<AllowNullLiteral>]
-[<Table(Name = "CustomerCustomerDemo")>]
+[<Table>]
 type CustomerCustomerDemo() =
 
    [<Column(IsPrimaryKey = true)>]
@@ -274,7 +272,7 @@ type Shipper() =
    [<Column(IsPrimaryKey = true, IsDbGenerated = true)>]
    member val ShipperID = 0 with get,set
 
-   [<Column(CanBeNull = false)>]
+   [<Column>]
    member val CompanyName : string = null with get,set
 
    [<Column>]
@@ -309,7 +307,7 @@ type Order() =
    [<Column(IsPrimaryKey = true, IsDbGenerated = true)>]
    member val OrderID = 0 with get,set
 
-   [<Column(CanBeNull = false)>]
+   [<Column>]
    member val CustomerID : string = null with get,set
 
    [<Column>]
@@ -370,21 +368,6 @@ type NorthwindDatabase =
    member this.EmployeeTerritories = this.Table<EmployeeTerritory>()
    member this.Regions = this.Table<Region>()
 
-   new(connection : DbConnection, mapping : MetaModel) = {
-      inherit Database(connection, mapping)
-   }
-
-/// <summary>
-/// Unlike AttributeMappingSource, XmlMappingSource crashes when you call GetModel and
-/// pass a Type that doesn't inherit from DataContext. The workaround is to define a DataContext
-/// type in the same namespace as your entities.
-/// </summary>
-
-type ForXmlMappingSourceOnlyDataContext =
-   inherit System.Data.Linq.DataContext
-
-   private new() = {
-      inherit System.Data.Linq.DataContext(string null, null)
-        
-      //raise (System.InvalidOperationException())
+   new(connectionString : string, providerInvariantName : string) = {
+      inherit Database(connectionString, providerInvariantName)
    }

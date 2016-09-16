@@ -1,5 +1,5 @@
 ﻿Imports System
-Imports System.Data.Linq.Mapping
+Imports DbExtensions
 
 Namespace Northwind
 
@@ -9,7 +9,7 @@ Namespace Northwind
       <Column(IsPrimaryKey:=True)>
       Public Property EmployeeID As Integer
 
-      <Column(CanBeNull:=False, IsPrimaryKey:=True)>
+      <Column(IsPrimaryKey:=True)>
       Public Property TerritoryID As String
 
       <Association(ThisKey:=NameOf(EmployeeID), IsForeignKey:=True)>

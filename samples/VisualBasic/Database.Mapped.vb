@@ -1,7 +1,4 @@
 ﻿Imports System
-Imports System.Data.Common
-Imports System.Data.Linq.Mapping
-Imports System.IO
 Imports System.Transactions
 Imports Samples.VisualBasic.Northwind
 
@@ -9,9 +6,8 @@ Public Class DatabaseMappedSamples
 
    ReadOnly db As NorthwindDatabase
 
-   Sub New(ByVal connection As DbConnection, ByVal mapping As MetaModel, ByVal log As TextWriter)
-      Me.db = New NorthwindDatabase(connection, mapping)
-      Me.db.Configuration.Log = log
+   Sub New(ByVal db As NorthwindDatabase)
+      Me.db = db
    End Sub
 
    Public Function IncludeManyToOne() As IEnumerable(Of Product)

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Data.Linq.Mapping;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -11,7 +10,7 @@ namespace DbExtensions.Tests.Querying {
    [TestClass]
    public class SqlSetIncludeBehavior {
 
-      readonly Database db = SqlServerNorthwindDatabase(new AttributeMappingSource().GetModel(typeof(SqlSetInclude.Product)));
+      readonly Database db = SqlServerNorthwindDatabase();
 
       [TestMethod]
       public void Can_Include_One() {
@@ -163,7 +162,7 @@ namespace DbExtensions.Tests.Querying {
          [Column(IsPrimaryKey = true)]
          public int EmployeeID { get; set; }
 
-         [Column(CanBeNull = false, IsPrimaryKey = true)]
+         [Column(IsPrimaryKey = true)]
          public string TerritoryID { get; set; }
 
          [Association(ThisKey = nameof(EmployeeID), IsForeignKey = true)]
@@ -176,10 +175,10 @@ namespace DbExtensions.Tests.Querying {
       [Table(Name = "Territories")]
       class Territory {
 
-         [Column(CanBeNull = false, IsPrimaryKey = true)]
+         [Column(IsPrimaryKey = true)]
          public string TerritoryID { get; set; }
 
-         [Column(CanBeNull = false)]
+         [Column]
          public string TerritoryDescription { get; set; }
 
          [Column]
@@ -189,7 +188,7 @@ namespace DbExtensions.Tests.Querying {
          public Region Region { get; set; }
       }
 
-      [Table(Name = "Region")]
+      [Table]
       class Region {
 
          [Column(IsPrimaryKey = true)]

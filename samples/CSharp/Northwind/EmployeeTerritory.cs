@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data.Linq.Mapping;
+using DbExtensions;
 
 namespace Samples.CSharp.Northwind {
 
@@ -9,7 +9,7 @@ namespace Samples.CSharp.Northwind {
       [Column(IsPrimaryKey = true)]
       public int EmployeeID { get; set; }
 
-      [Column(CanBeNull = false, IsPrimaryKey = true)]
+      [Column(IsPrimaryKey = true)]
       public string TerritoryID { get; set; }
 
       [Association(ThisKey = nameof(EmployeeID), IsForeignKey = true)]

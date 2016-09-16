@@ -1,6 +1,6 @@
-Database Constructor (MetaModel)
-================================
-Initializes a new instance of the [Database][1] class using the provided meta model.
+Database Constructor (String, String)
+=====================================
+Initializes a new instance of the [Database][1] class using the provided connection string and provider's invariant name.
 
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -10,15 +10,20 @@ Syntax
 
 ```csharp
 public Database(
-	MetaModel mapping
+	string connectionString,
+	string providerInvariantName
 )
 ```
 
 #### Parameters
 
-##### *mapping*
-Type: [System.Data.Linq.Mapping.MetaModel][3]  
-The meta model.
+##### *connectionString*
+Type: [System.String][3]  
+The connection string.
+
+##### *providerInvariantName*
+Type: [System.String][3]  
+The provider's invariant name.
 
 
 See Also
@@ -30,4 +35,4 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/bb534568
+[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf

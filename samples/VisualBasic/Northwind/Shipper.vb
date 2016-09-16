@@ -1,13 +1,13 @@
 ﻿Imports System
 Imports System.Collections.ObjectModel
-Imports System.Data.Linq.Mapping
+Imports DbExtensions
 
 Namespace Northwind
 
    <Table(Name:="Shippers")>
    Public Class Shipper
 
-      <Column(CanBeNull:=False)>
+      <Column>
       Public Property CompanyName As String
 
       <Column>

@@ -46,7 +46,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -68,7 +67,6 @@
     <Compile Include="Northwind\CustomerDemographic.vb" />
     <Compile Include="Northwind\Employee.vb" />
     <Compile Include="Northwind\EmployeeTerritory.vb" />
-    <Compile Include="Northwind\ForXmlMappingSourceOnlyDataContext.vb" />
     <Compile Include="Northwind\NorthwindDatabase.vb" />
     <Compile Include="Northwind\Order.vb" />
     <Compile Include="Northwind\OrderDetail.vb" />

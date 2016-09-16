@@ -1,6 +1,6 @@
 ﻿Imports System
 Imports System.Collections.ObjectModel
-Imports System.Data.Linq.Mapping
+Imports DbExtensions
 
 Namespace Northwind
 
@@ -37,10 +37,10 @@ Namespace Northwind
       <Column>
       Public Property LastName As String
 
-      <Column(UpdateCheck:=UpdateCheck.Never)>
+      <Column>
       Public Property Notes As String
 
-      <Column(UpdateCheck:=UpdateCheck.Never)>
+      <Column>
       Public Property Photo As Byte()
 
       <Column>

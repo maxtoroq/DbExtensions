@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data.Linq.Mapping;
+using DbExtensions;
 
 namespace Samples.CSharp.Northwind {
 

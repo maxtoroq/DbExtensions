@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Data.Linq.Mapping;
-using System.IO;
 using System.Transactions;
 using Samples.CSharp.Northwind;
 
@@ -12,13 +9,8 @@ namespace Samples.CSharp {
 
       readonly NorthwindDatabase db;
 
-      public DatabaseMappedSamples(DbConnection connection, MetaModel mapping, TextWriter log) {
-
-         this.db = new NorthwindDatabase(connection, mapping) {
-            Configuration = {
-               Log = log
-            }
-         };
+      public DatabaseMappedSamples(NorthwindDatabase db) {
+         this.db = db;
       }
 
       public IEnumerable<Product> IncludeManyToOne() {

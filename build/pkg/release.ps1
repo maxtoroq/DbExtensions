@@ -8,24 +8,11 @@ param(
 $ErrorActionPreference = "Stop"
 Push-Location (Split-Path $script:MyInvocation.MyCommand.Path)
 
-$projectUrl = "http://maxtoroq.github.io/DbExtensions/"
-$copyright = "2009-2016 Max Toro Q."
-
 $solutionPath = Resolve-Path ..\..
 $nuget = Join-Path $solutionPath .nuget\nuget.exe
 
 function script:DownloadNuGet {
-
-   $nugetDir = Split-Path $nuget
-
-   if (-not (Test-Path $nugetDir -PathType Container)) {
-      md $nugetDir | Out-Null
-   }
-
-   if (-not (Test-Path $nuget -PathType Leaf)) {
-      write "Downloading NuGet..."
-      Invoke-WebRequest https://www.nuget.org/nuget.exe -OutFile $nuget
-   }
+   ../ensure-nuget.ps1
 }
 
 function script:RestorePackages {
@@ -41,22 +28,21 @@ function script:NuSpec {
       "<metadata>"
          "<id>$projName</id>"
          "<version>$pkgVersion</version>"
-         "<authors>Max Toro Q.</authors>"
-         "<licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>"
-         "<projectUrl>$projectUrl</projectUrl>"
-         "<iconUrl>$($projectUrl)nuget/icon.png</iconUrl>"
-         "<releaseNotes>For a list of changes see $($projectUrl)docs/changes.html</releaseNotes>"
+         "<authors>$($notice.authors)</authors>"
+         "<licenseUrl>$($notice.license.url)</licenseUrl>"
+         "<projectUrl>$($notice.website)</projectUrl>"
+         "<iconUrl>$($notice.website)nuget/icon.png</iconUrl>"
+         "<releaseNotes>For a list of changes see $($notice.website)docs/changes.html</releaseNotes>"
 
    if ($projName -eq "DbExtensions") {
 
       "<description>DbExtensions is a data-access framework with a strong focus on query composition, granularity and code aesthetics. It supports both POCO and dynamic (untyped) mapping.</description>"
-      "<copyright>$copyright</copyright>"
+      "<copyright>$($notice.copyright)</copyright>"
       "<tags>ado.net orm micro-orm</tags>"
 
       "<frameworkAssemblies>"
          "<frameworkAssembly assemblyName='System.Core'/>"
          "<frameworkAssembly assemblyName='System.Data'/>"
-         "<frameworkAssembly assemblyName='System.Data.Linq'/>"
       "</frameworkAssemblies>"
    }
 
@@ -64,7 +50,7 @@ function script:NuSpec {
 
    "<files>"
       "<file src='$solutionPath\LICENSE.txt'/>"
-      "<file src='$solutionPath\NOTICE.txt'/>"
+      "<file src='$solutionPath\NOTICE.xml'/>"
       "<file src='$projPath\bin\Release\$projName.dll' target='lib\$targetFxMoniker'/>"
       "<file src='$projPath\bin\Release\$projName.pdb' target='lib\$targetFxMoniker'/>"
       "<file src='$solutionPath\build\docs\api\xml\$projName.xml' target='lib\$targetFxMoniker'/>"
@@ -99,7 +85,10 @@ function script:NuPack([string]$projName) {
    $projDoc.PreserveWhitespace = $true
    $projDoc.Load($projFile)
 
-   ## Create nuspec
+   ## Create nuspec using info from project file and notice
+
+   [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
+   $notice = $noticeDoc.DocumentElement
 
    $pkgVersion = "$PackageVersion$(if ($PreRelease) { ""-$PreRelease"" } else { $null })"
    $nuspecPath = "$tempPath\$projName.nuspec"

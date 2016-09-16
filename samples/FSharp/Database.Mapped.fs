@@ -3,19 +3,10 @@
 open System
 open System.Collections
 open System.Collections.Generic
-open System.Data.Linq.Mapping
-open System.Data.Common
-open System.IO
 open System.Transactions
-open DbExtensions
 open Samples.FSharp.Northwind
 
-type DatabaseMappedSamples(connection : DbConnection, mapping : MetaModel, log : TextWriter) =
-
-   let db = 
-      let db1 = new NorthwindDatabase(connection, mapping) 
-      db1.Configuration.Log <- log
-      db1
+type DatabaseMappedSamples(db : NorthwindDatabase) =
 
    member this.IncludeManyToOne() =
          

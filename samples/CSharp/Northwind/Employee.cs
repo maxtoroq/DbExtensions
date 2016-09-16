@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Data.Linq.Mapping;
+using DbExtensions;
 
 namespace Samples.CSharp.Northwind {
 
@@ -49,10 +49,10 @@ namespace Samples.CSharp.Northwind {
       [Column]
       public string Extension { get; set; }
 
-      [Column(UpdateCheck = UpdateCheck.Never)]
+      [Column]
       public byte[] Photo { get; set; }
 
-      [Column(UpdateCheck = UpdateCheck.Never)]
+      [Column]
       public string Notes { get; set; }
 
       [Column]

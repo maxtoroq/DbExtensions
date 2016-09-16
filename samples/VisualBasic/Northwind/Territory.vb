@@ -1,6 +1,6 @@
 ﻿Imports System
 Imports System.Collections.ObjectModel
-Imports System.Data.Linq.Mapping
+Imports DbExtensions
 
 Namespace Northwind
 
@@ -10,10 +10,10 @@ Namespace Northwind
       <Column>
       Public Property RegionID As Integer
 
-      <Column(CanBeNull:=False)>
+      <Column>
       Public Property TerritoryDescription As String
 
-      <Column(CanBeNull:=False, IsPrimaryKey:=True)>
+      <Column(IsPrimaryKey:=True)>
       Public Property TerritoryID As String
 
       <Association(OtherKey:=NameOf(EmployeeTerritory.TerritoryID))>

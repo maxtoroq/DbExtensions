@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Data.Linq.Mapping;
+using DbExtensions;
 
 namespace Samples.CSharp.Northwind {
 
    [Table(Name = "Territories")]
    public class Territory {
 
-      [Column(CanBeNull = false, IsPrimaryKey = true)]
+      [Column(IsPrimaryKey = true)]
       public string TerritoryID { get; set; }
 
-      [Column(CanBeNull = false)]
+      [Column]
       public string TerritoryDescription { get; set; }
 
       [Column]
