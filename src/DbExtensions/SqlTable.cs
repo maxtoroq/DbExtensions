@@ -411,8 +411,8 @@ namespace DbExtensions {
    }
 
    /// <summary>
-   /// A <see cref="SqlSet&lt;TEntity>"/> that provides additional methods for CRUD (Create, Read, Update, Delete)
-   /// operations for entities mapped using the <see cref="N:System.Data.Linq.Mapping"/> API. 
+   /// A <see cref="SqlSet&lt;TEntity>"/> that provides CRUD (Create, Read, Update, Delete)
+   /// operations for annotated classes. 
    /// This class cannot be instantiated, to get an instance use the <see cref="Database.Table&lt;TEntity>"/> method.
    /// </summary>
    /// <typeparam name="TEntity">The type of the entity.</typeparam>
@@ -896,7 +896,7 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Sets all mapped members of <paramref name="entity"/> to their most current persisted value.
+      /// Sets all column members of <paramref name="entity"/> to their most current persisted value.
       /// </summary>
       /// <param name="entity">The entity to refresh.</param>
 
@@ -999,7 +999,7 @@ namespace DbExtensions {
    }
 
    /// <summary>
-   /// Generates SQL commands for entities mapped by <see cref="SqlTable&lt;TEntity>"/> and <see cref="SqlTable"/>.
+   /// Generates SQL commands for annotated classes.
    /// This class cannot be instantiated, to get an instance use the <see cref="SqlTable&lt;TEntity>.CommandBuilder"/>
    /// or <see cref="SqlTable.CommandBuilder"/> properties.
    /// </summary>
@@ -1305,7 +1305,7 @@ namespace DbExtensions {
       /// or null if the <paramref name="id"/> does not exist.
       /// </returns>
       /// <remarks>
-      /// This method can only be used on mapped sets created by <see cref="Database"/>.
+      /// This method can only be used on sets where the result type is an annotated class.
       /// </remarks>
 
       public object Find(object id) {
@@ -1355,7 +1355,7 @@ namespace DbExtensions {
       /// <param name="path">Dot-separated list of related objects to return in the query results.</param>
       /// <returns>A new <see cref="SqlSet"/> with the defined query path.</returns>
       /// <remarks>
-      /// This method can only be used on mapped sets created by <see cref="Database"/>.
+      /// This method can only be used on sets where the result type is an annotated class.
       /// </remarks>
 
       public SqlSet Include(string path) {
