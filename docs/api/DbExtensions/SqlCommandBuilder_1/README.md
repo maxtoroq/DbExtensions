@@ -1,14 +1,14 @@
 SqlCommandBuilder&lt;TEntity> Class
 ===================================
-Generates SQL commands for entities mapped by [SqlTable&lt;TEntity>][1] and [SqlTable][2]. This class cannot be instantiated, to get an instance use the [CommandBuilder][3] or [CommandBuilder][4] properties.
+Generates SQL commands for annotated classes. This class cannot be instantiated, to get an instance use the [CommandBuilder][1] or [CommandBuilder][2] properties.
 
 
 Inheritance Hierarchy
 ---------------------
-[System.Object][5]  
+[System.Object][3]  
   **DbExtensions.SqlCommandBuilder<TEntity>**  
 
-**Namespace:** [DbExtensions][6]  
+**Namespace:** [DbExtensions][4]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
 
 Syntax
@@ -33,38 +33,36 @@ Methods
 
                  | Name                                | Description                                                                                                                                                        
 ---------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ 
-![Public method] | [BuildDeleteStatement][7]           | Creates and returns a DELETE command for the current table that includes the DELETE and FROM clauses.                                                              
-![Public method] | [BuildDeleteStatementForEntity][8]  | Creates and returns a DELETE command for the specified *entity*.                                                                                                   
-![Public method] | [BuildDeleteStatementForKey][9]     | Creates and returns a DELETE command for the entity whose primary key matches the *id* parameter.                                                                  
-![Public method] | [BuildInsertStatementForEntity][10] | Creates and returns an INSERT command for the specified *entity*.                                                                                                  
-![Public method] | [BuildSelectClause()][11]           | Creates and returns a SELECT query for the current table that includes the SELECT clause only.                                                                     
-![Public method] | [BuildSelectClause(String)][12]     | Creates and returns a SELECT query for the current table that includes the SELECT clause only. All column names are qualified with the provided *tableAlias*.      
-![Public method] | [BuildSelectStatement()][13]        | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses.                                                                
-![Public method] | [BuildSelectStatement(String)][14]  | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses. All column names are qualified with the provided *tableAlias*. 
-![Public method] | [BuildUpdateClause][15]             | Creates and returns an UPDATE command for the current table that includes the UPDATE clause.                                                                       
-![Public method] | [BuildUpdateStatementForEntity][16] | Creates and returns an UPDATE command for the specified *entity*.                                                                                                  
+![Public method] | [BuildDeleteStatement][5]           | Creates and returns a DELETE command for the current table that includes the DELETE and FROM clauses.                                                              
+![Public method] | [BuildDeleteStatementForEntity][6]  | Creates and returns a DELETE command for the specified *entity*.                                                                                                   
+![Public method] | [BuildDeleteStatementForKey][7]     | Creates and returns a DELETE command for the entity whose primary key matches the *id* parameter.                                                                  
+![Public method] | [BuildInsertStatementForEntity][8]  | Creates and returns an INSERT command for the specified *entity*.                                                                                                  
+![Public method] | [BuildSelectClause()][9]            | Creates and returns a SELECT query for the current table that includes the SELECT clause only.                                                                     
+![Public method] | [BuildSelectClause(String)][10]     | Creates and returns a SELECT query for the current table that includes the SELECT clause only. All column names are qualified with the provided *tableAlias*.      
+![Public method] | [BuildSelectStatement()][11]        | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses.                                                                
+![Public method] | [BuildSelectStatement(String)][12]  | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses. All column names are qualified with the provided *tableAlias*. 
+![Public method] | [BuildUpdateClause][13]             | Creates and returns an UPDATE command for the current table that includes the UPDATE clause.                                                                       
+![Public method] | [BuildUpdateStatementForEntity][14] | Creates and returns an UPDATE command for the specified *entity*.                                                                                                  
 
 
 See Also
 --------
 
 #### Reference
-[DbExtensions Namespace][6]  
+[DbExtensions Namespace][4]  
 
-[1]: ../SqlTable_1/README.md
-[2]: ../SqlTable/README.md
-[3]: ../SqlTable_1/CommandBuilder.md
-[4]: ../SqlTable/CommandBuilder.md
-[5]: http://msdn.microsoft.com/en-us/library/e5kfa45b
-[6]: ../README.md
-[7]: BuildDeleteStatement.md
-[8]: BuildDeleteStatementForEntity.md
-[9]: BuildDeleteStatementForKey.md
-[10]: BuildInsertStatementForEntity.md
-[11]: BuildSelectClause.md
-[12]: BuildSelectClause_1.md
-[13]: BuildSelectStatement.md
-[14]: BuildSelectStatement_1.md
-[15]: BuildUpdateClause.md
-[16]: BuildUpdateStatementForEntity.md
+[1]: ../SqlTable_1/CommandBuilder.md
+[2]: ../SqlTable/CommandBuilder.md
+[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[4]: ../README.md
+[5]: BuildDeleteStatement.md
+[6]: BuildDeleteStatementForEntity.md
+[7]: BuildDeleteStatementForKey.md
+[8]: BuildInsertStatementForEntity.md
+[9]: BuildSelectClause.md
+[10]: BuildSelectClause_1.md
+[11]: BuildSelectStatement.md
+[12]: BuildSelectStatement_1.md
+[13]: BuildUpdateClause.md
+[14]: BuildUpdateStatementForEntity.md
 [Public method]: ../../_icons/pubmethod.gif "Public method"

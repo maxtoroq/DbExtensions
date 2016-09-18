@@ -26,7 +26,7 @@ Type: [TResult][3]
 
 Remarks
 -------
- This method can only be used on mapped sets created by [Database][4]. 
+ This method can only be used on sets where the result type is an annotated class. 
 
 See Also
 --------
@@ -38,4 +38,3 @@ See Also
 [1]: ../README.md
 [2]: http://msdn.microsoft.com/en-us/library/e5kfa45b
 [3]: README.md
-[4]: ../Database/README.md

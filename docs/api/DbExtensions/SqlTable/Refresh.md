@@ -1,6 +1,6 @@
 SqlTable.Refresh Method
 =======================
-Sets all mapped members of *entity* to their most current persisted value.
+Sets all column members of *entity* to their most current persisted value.
 
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
