@@ -76,7 +76,7 @@ namespace DbExtensions.Tests.Querying {
 
          Assert.IsNotNull(item.Orders);
          Assert.AreNotEqual(0, item.Orders.Count);
-         //Assert.IsTrue(item.Orders.All(p => Object.ReferenceEquals(p.Employee, item)));
+         Assert.IsTrue(item.Orders.All(p => Object.ReferenceEquals(p.Employee, item)));
       }
 
       [TestMethod]
@@ -89,7 +89,7 @@ namespace DbExtensions.Tests.Querying {
 
          Assert.IsNotNull(item.Employee);
          Assert.AreNotEqual(0, item.Employee.Orders.Count);
-         //Assert.IsTrue(item.Employee.Orders.All(p => Object.ReferenceEquals(p.Employee, item.Employee)));
+         Assert.IsTrue(item.Employee.Orders.All(p => Object.ReferenceEquals(p.Employee, item.Employee)));
       }
    }
 
