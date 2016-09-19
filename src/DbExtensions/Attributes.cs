@@ -163,13 +163,13 @@ namespace DbExtensions {
    public sealed class AssociationAttribute : Attribute, IDataAttribute {
 
       /// <summary>
-      /// Gets or sets the name of a column.
+      /// Gets or sets the name of a constraint.
       /// </summary>
 
       public string Name { get; set; }
 
       /// <summary>
-      /// Gets or sets a private storage field to hold the value from a column.
+      /// Gets or sets a private storage field to hold the value for the association property.
       /// </summary>
 
       public string Storage { get; set; }
