@@ -2,7 +2,7 @@
 Imports System.Transactions
 Imports Samples.VisualBasic.Northwind
 
-Public Class DatabaseMappedSamples
+Public Class DatabaseAnnotatedSamples
 
    ReadOnly db As NorthwindDatabase
 

@@ -46,7 +46,7 @@
     <Compile Include="Northwind.fs" />
     <Compile Include="SqlBuilder.fs" />
     <Compile Include="SqlSet.fs" />
-    <Compile Include="Database.Mapped.fs" />
+    <Compile Include="Database.Annotated.fs" />
     <Compile Include="Database.Poco.fs" />
   </ItemGroup>
   <ItemGroup>

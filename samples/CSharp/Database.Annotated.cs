@@ -5,11 +5,11 @@ using Samples.CSharp.Northwind;
 
 namespace Samples.CSharp {
 
-   public class DatabaseMappedSamples {
+   public class DatabaseAnnotatedSamples {
 
       readonly NorthwindDatabase db;
 
-      public DatabaseMappedSamples(NorthwindDatabase db) {
+      public DatabaseAnnotatedSamples(NorthwindDatabase db) {
          this.db = db;
       }
 

@@ -6,7 +6,7 @@ open System.Collections.Generic
 open System.Transactions
 open Samples.FSharp.Northwind
 
-type DatabaseMappedSamples(db : NorthwindDatabase) =
+type DatabaseAnnotatedSamples(db : NorthwindDatabase) =
 
    member this.IncludeManyToOne() =
          

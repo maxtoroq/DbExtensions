@@ -59,7 +59,7 @@
     <Import Include="System.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database.Mapped.vb" />
+    <Compile Include="Database.Annotated.vb" />
     <Compile Include="Database.Poco.vb" />
     <Compile Include="Northwind\Category.vb" />
     <Compile Include="Northwind\Customer.vb" />
