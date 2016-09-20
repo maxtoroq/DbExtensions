@@ -1379,25 +1379,51 @@ namespace DbExtensions {
 
          public static SqlSet Expand(SqlSet source, string path, MetaType metaType) {
 
+            Database db = source.db;
+
+            string[] parts = path.Split('.');
+
+            Func<string, SqlBuilder> selectBuild = alias =>
+               new SqlBuilder().SELECT(db.QuoteIdentifier(alias) + ".*");
+
+            Action<SqlBuilder, string> fromAppend = (sql, alias) =>
+               sql.FROM(source.GetDefiningQuery(), db.QuoteIdentifier(alias));
+
+            MetaAssociation manyAssoc;
+            int manyIndex;
+
+            SqlBuilder query = BuildJoinedQuery(parts, metaType, source.db, selectBuild, fromAppend, out manyAssoc, out manyIndex);
+
+            SqlSet newSet = (query == null) ? source.Clone() : source.CreateSet(query);
+
+            if (manyAssoc != null) {
+               AddManyInclude(newSet, parts, path, manyAssoc, manyIndex);
+            }
+
+            return newSet;
+         }
+
+         static SqlBuilder BuildJoinedQuery(
+               string[] path, MetaType metaType, Database db,
+               Func<string, SqlBuilder> selectBuild, Action<SqlBuilder, string> fromAppend,
+               out MetaAssociation manyAssoc, out int manyIndex) {
+
+            manyAssoc = null;
+            manyIndex = -1;
+
             const string leftAlias = "dbex_l";
             const string rightAlias = "dbex_r";
 
-            Database db = source.db;
+            Func<int, string> rAliasFn = i => rightAlias + (i + 1);
 
-            var query = new SqlBuilder()
-               .SELECT(leftAlias + ".*");
+            SqlBuilder query = selectBuild(leftAlias);
+            MetaType currentType = metaType;
 
             var associations = new List<MetaAssociation>();
 
-            string[] parts = path.Split('.');
-            Func<int, string> rAliasFn = i => rightAlias + (i + 1);
+            for (int i = 0; i < path.Length; i++) {
 
-            MetaType currentType = metaType;
-            MetaAssociation manyAssoc = null;
-
-            for (int i = 0; i < parts.Length; i++) {
-
-               string p = parts[i];
+               string p = path[i];
                string rAlias = rAliasFn(i);
 
                MetaDataMember member = currentType.PersistentDataMembers.SingleOrDefault(m => m.Name == p);
@@ -1414,11 +1440,8 @@ namespace DbExtensions {
 
                if (association.IsMany) {
 
-                  if (i != parts.Length - 1) {
-                     throw new ArgumentException($"One-to-many associations can only be specified in the last segment of an include path ('{path}').", nameof(path));
-                  }
-
                   manyAssoc = association;
+                  manyIndex = i;
                   break;
                }
 
@@ -1426,64 +1449,97 @@ namespace DbExtensions {
 
                query.SELECT(String.Join(", ", association.OtherType.PersistentDataMembers
                   .Where(m => !m.IsAssociation)
-                  .Select(m => $"{rAlias}.{db.QuoteIdentifier(m.MappedName)} AS {String.Join("$", associations.Select(a => a.ThisMember.Name))}${m.Name}")));
+                  .Select(m => $"{db.QuoteIdentifier(rAlias)}.{db.QuoteIdentifier(m.MappedName)} AS {String.Join("$", associations.Select(a => a.ThisMember.Name))}${m.Name}")));
 
                currentType = association.OtherType;
             }
 
-            SqlSet newSet;
-
             if (associations.Count == 0) {
-               newSet = source.Clone();
+               return null;
+            }
+
+            fromAppend(query, leftAlias);
+
+            for (int i = 0; i < associations.Count; i++) {
+
+               MetaAssociation association = associations[i];
+               string lAlias = (i == 0) ? leftAlias : rAliasFn(i - 1);
+               string rAlias = rAliasFn(i);
+
+               var joinPredicate = new StringBuilder();
+
+               for (int j = 0; j < association.ThisKey.Count; j++) {
+
+                  if (j > 0) {
+                     joinPredicate.Append(" AND ");
+                  }
+
+                  MetaDataMember thisMember = association.ThisKey[j];
+                  MetaDataMember otherMember = association.OtherKey[j];
+
+                  joinPredicate.AppendFormat(CultureInfo.InvariantCulture, "{0}.{1} = {2}.{3}", db.QuoteIdentifier(lAlias), db.QuoteIdentifier(thisMember.Name), db.QuoteIdentifier(rAlias), db.QuoteIdentifier(otherMember.MappedName));
+               }
+
+               query.LEFT_JOIN($"{db.QuoteIdentifier(association.OtherType.Table.TableName)} {db.QuoteIdentifier(rAlias)} ON ({joinPredicate.ToString()})");
+            }
+
+            return query;
+         }
+
+         static void AddManyInclude(SqlSet set, string[] path, string originalPath, MetaAssociation manyAssoc, int manyIndex) {
+
+            Debug.Assert(path.Length > 0);
+            Debug.Assert(manyIndex >= 0);
+
+            Database db = set.db;
+            MetaType metaType = manyAssoc.OtherType;
+            SqlTable table = db.Table(metaType);
+
+            string[] manyPath;
+            SqlSet manySource;
+
+            if (manyIndex == path.Length - 1) {
+
+               manyPath = path;
+               manySource = table;
 
             } else {
 
-               query.FROM(source.GetDefiningQuery(), leftAlias);
+               manyPath = new string[manyIndex + 1];
 
-               for (int i = 0; i < associations.Count; i++) {
+               Array.Copy(path, manyPath, manyPath.Length);
 
-                  MetaAssociation association = associations[i];
-                  string lAlias = (i == 0) ? leftAlias : rAliasFn(i - 1);
-                  string rAlias = rAliasFn(i);
+               string[] manyInclude = new string[path.Length - manyIndex - 1];
 
-                  var joinPredicate = new StringBuilder();
+               Array.Copy(path, manyIndex + 1, manyInclude, 0, manyInclude.Length);
 
-                  for (int j = 0; j < association.ThisKey.Count; j++) {
+               Func<string, SqlBuilder> selectBuild = alias =>
+                  table.CommandBuilder.BuildSelectClause(alias);
 
-                     if (j > 0) {
-                        joinPredicate.Append(" AND ");
-                     }
+               Action<SqlBuilder, string> fromAppend = (sql, alias) =>
+                  sql.FROM(db.QuoteIdentifier(metaType.Table.TableName) + " " + alias);
 
-                     MetaDataMember thisMember = association.ThisKey[j];
-                     MetaDataMember otherMember = association.OtherKey[j];
+               MetaAssociation manyInManyAssoc;
+               int manyInManyIndex;
 
-                     joinPredicate.AppendFormat(CultureInfo.InvariantCulture, "{0}.{1} = {2}.{3}", lAlias, db.QuoteIdentifier(thisMember.Name), rAlias, db.QuoteIdentifier(otherMember.MappedName));
-                  }
+               SqlBuilder manyQuery = BuildJoinedQuery(manyInclude, metaType, db, selectBuild, fromAppend, out manyInManyAssoc, out manyInManyIndex);
 
-                  query.LEFT_JOIN($"{db.QuoteIdentifier(association.OtherType.Table.TableName)} {rAlias} ON ({joinPredicate.ToString()})");
+               if (manyInManyAssoc != null) {
+                  throw new ArgumentException($"One-to-many associations can only be specified once in an include path ('{originalPath}').", nameof(path));
                }
 
-               newSet = source.CreateSet(query);
+               manySource = db.From(manyQuery, metaType.Type);
             }
-
-            if (manyAssoc != null) {
-               AddManyInclude(newSet, parts, manyAssoc);
-            }
-
-            return newSet;
-         }
-
-         static void AddManyInclude(SqlSet set, string[] path, MetaAssociation association) {
 
             if (set.ManyIncludes == null) {
                set.ManyIncludes = new Dictionary<string[], CollectionLoader>();
             }
 
-            set.ManyIncludes.Add(path, new CollectionLoader {
+            set.ManyIncludes.Add(manyPath, new CollectionLoader {
                Load = GetMany,
                State = new CollectionLoaderState {
-                  Table = set.db.Table(association.OtherType),
-                  Association = association
+                  Source = manySource,
+                  Association = manyAssoc
                }
             });
          }
@@ -1493,18 +1549,18 @@ namespace DbExtensions {
             var loaderState = (CollectionLoaderState)state;
 
             MetaAssociation association = loaderState.Association;
-            SqlTable table = loaderState.Table;
+            SqlSet set = loaderState.Source;
 
             var predicateValues = new Dictionary<string, object>();
 
             for (int i = 0; i < association.OtherKey.Count; i++) {
-               predicateValues.Add(association.OtherKey[i].MappedName, table.db.GetMemberValue(container, association.ThisKey[i]));
+               predicateValues.Add(association.OtherKey[i].MappedName, set.db.GetMemberValue(container, association.ThisKey[i]));
             }
 
             var parameters = new List<object>();
-            string whereFragment = table.db.BuildPredicateFragment(predicateValues, parameters);
+            string whereFragment = set.db.BuildPredicateFragment(predicateValues, parameters);
 
-            IEnumerable children = table.Where(whereFragment, parameters.ToArray()).AsEnumerable();
+            IEnumerable children = set.Where(whereFragment, parameters.ToArray()).AsEnumerable();
 
             MetaDataMember otherMember = association.OtherMember;
 
@@ -1524,7 +1580,7 @@ namespace DbExtensions {
 
          class CollectionLoaderState {
 
-            public SqlTable Table;
+            public SqlSet Source;
             public MetaAssociation Association;
          }
       }

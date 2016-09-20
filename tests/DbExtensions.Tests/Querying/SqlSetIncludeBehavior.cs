@@ -100,8 +100,18 @@ namespace DbExtensions.Tests.Querying {
 
          SqlSetInclude.Employee item = set.First();
 
+         Assert.IsNotNull(item.EmployeeTerritories);
          Assert.AreNotEqual(0, item.EmployeeTerritories.Count);
          Assert.IsTrue(item.EmployeeTerritories.All(p => p.Territory != null));
+      }
+
+      [TestMethod, ExpectedException(typeof(ArgumentException))]
+      public void Cannot_Include_Many_In_Many() {
+
+         SqlSet<SqlSetInclude.Employee> set = db.Table<SqlSetInclude.Employee>()
+            .Include("Orders.OrderDetails");
+
+         SqlSetInclude.Employee item = set.First();
       }
    }
 
