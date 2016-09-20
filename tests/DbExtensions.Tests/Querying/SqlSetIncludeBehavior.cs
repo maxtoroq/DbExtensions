@@ -91,6 +91,18 @@ namespace DbExtensions.Tests.Querying {
          Assert.AreNotEqual(0, item.Employee.Orders.Count);
          Assert.IsTrue(item.Employee.Orders.All(p => Object.ReferenceEquals(p.Employee, item.Employee)));
       }
+
+      [TestMethod]
+      public void Can_Include_One_In_Many() {
+
+         SqlSet<SqlSetInclude.Employee> set = db.Table<SqlSetInclude.Employee>()
+            .Include("EmployeeTerritories.Territory");
+
+         SqlSetInclude.Employee item = set.First();
+
+         Assert.AreNotEqual(0, item.EmployeeTerritories.Count);
+         Assert.IsTrue(item.EmployeeTerritories.All(p => p.Territory != null));
+      }
    }
 
    namespace SqlSetInclude {
