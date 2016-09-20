@@ -996,13 +996,25 @@ namespace DbExtensions.Metadata {
 
             AssociationAttribute oattr = (AssociationAttribute)Attribute.GetCustomAttribute(omm.Member, typeof(AssociationAttribute));
 
-            if (oattr != null) {
-               if (omm != this.ThisMember
-                  && oattr.Name == attr.Name) {
+            if (oattr == null
+               || omm == this.ThisMember) {
 
-                  this.OtherMember = omm;
-                  break;
-               }
+               continue;
+            }
+
+            if (attr.Name != null
+               && oattr.Name == attr.Name) {
+
+               this.OtherMember = omm;
+               break;
+            }
+
+            bool otherMemberIsMany = TypeSystem.IsSequenceType(omm.Type);
+            Type otherMemberType = (otherMemberIsMany) ? TypeSystem.GetElementType(omm.Type) : omm.Type;
+
+            if (member.DeclaringType.Type == otherMemberType) {
+               this.OtherMember = omm;
+               break;
             }
          }
       }
