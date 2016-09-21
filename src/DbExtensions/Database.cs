@@ -455,6 +455,12 @@ namespace DbExtensions {
 
       public virtual string QuoteIdentifier(string unquotedIdentifier) {
 
+         if (unquotedIdentifier == null) throw new ArgumentNullException(nameof(unquotedIdentifier));
+
+         if (IsQuotedIdentifier(unquotedIdentifier)) {
+            return unquotedIdentifier;
+         }
+
          string quotePrefix = this.Configuration.QuotePrefix;
          string quoteSuffix = this.Configuration.QuoteSuffix;
 
@@ -472,6 +478,21 @@ namespace DbExtensions {
          }
 
          return sb.ToString();
+      }
+
+      bool IsQuotedIdentifier(string identifier) {
+
+         if (identifier == null) throw new ArgumentNullException(nameof(identifier));
+
+         string quotePrefix = this.Configuration.QuotePrefix;
+         string quoteSuffix = this.Configuration.QuoteSuffix;
+
+         if (identifier.Length < (quotePrefix?.Length + quoteSuffix?.Length)) {
+            return false;
+         }
+
+         return (!String.IsNullOrEmpty(quotePrefix) && identifier.StartsWith(quotePrefix, StringComparison.Ordinal))
+             && (!String.IsNullOrEmpty(quoteSuffix) && identifier.EndsWith(quoteSuffix, StringComparison.Ordinal));
       }
 
       internal static string TraceString(IDbCommand command) {
