@@ -8,12 +8,12 @@ namespace DbExtensions.Tests.Querying {
    [TestClass]
    public class SqlTableBehavior {
 
-      readonly Database db = MySqlDatabase();
-
       [TestMethod]
       public void Dont_Use_Subqueries_When_Methods_Are_Called_In_Order() {
 
-         SqlSet set = db.Table<SqlTable.Product>()
+         Database db = MySqlDatabase();
+
+         SqlSet set = db.Table<SqlTable.Model1.Product>()
             .Where("UnitsInStock > 0")
             .Skip(0)
             .Take(5);
@@ -27,15 +27,39 @@ namespace DbExtensions.Tests.Querying {
 
          Assert.IsTrue(SqlEquals(set, expected));
       }
+
+      [TestMethod]
+      public void Can_Use_Multipart_Identifier() {
+
+         Database db = SqlServerNorthwindDatabase();
+
+         db.Table<SqlTable.Model2.Product>().First();
+      }
    }
 
    namespace SqlTable {
 
-      [Table]
-      class Product {
+      namespace Model1 {
 
-         [Column]
-         public int Id { get; set; }
+         [Table]
+         class Product {
+
+            [Column]
+            public int Id { get; set; }
+         }
+      }
+
+      namespace Model2 {
+
+         [Table(Name = "[dbo].[Products]")]
+         class Product {
+
+            [Column(IsPrimaryKey = true)]
+            public int ProductID { get; set; }
+
+            [Column]
+            public string ProductName { get; set; }
+         }
       }
    }
 }
