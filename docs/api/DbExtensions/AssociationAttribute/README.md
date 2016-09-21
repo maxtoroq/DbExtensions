@@ -38,9 +38,9 @@ Properties
 ------------------ | ----------------- | --------------------------------------------------------------------------------------------------------------- 
 ![Public property] | [IsForeignKey][5] | Gets or sets the member as the foreign key in an association representing a database relationship.              
 ![Public property] | [IsUnique][6]     | Gets or sets the indication of a uniqueness constraint on the foreign key.                                      
-![Public property] | [Name][7]         | Gets or sets the name of a column.                                                                              
+![Public property] | [Name][7]         | Gets or sets the name of a constraint.                                                                          
 ![Public property] | [OtherKey][8]     | Gets or sets one or more members of the target entity class as key values on the other side of the association. 
-![Public property] | [Storage][9]      | Gets or sets a private storage field to hold the value from a column.                                           
+![Public property] | [Storage][9]      | Gets or sets a private storage field to hold the value for the association property.                            
 ![Public property] | [ThisKey][10]     | Gets or sets members of this entity class to represent the key values on this side of the association.          
 
 

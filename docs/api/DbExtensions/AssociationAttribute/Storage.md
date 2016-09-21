@@ -1,6 +1,6 @@
 AssociationAttribute.Storage Property
 =====================================
-Gets or sets a private storage field to hold the value from a column.
+Gets or sets a private storage field to hold the value for the association property.
 
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
