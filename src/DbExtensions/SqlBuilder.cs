@@ -992,8 +992,6 @@ namespace DbExtensions {
       /// The above code outputs: <c>SELECT {0} IN ({1}, {2}, {3})</c>
       /// </para>
       /// </remarks>
-      /// <exception cref="ArgumentNullException"><paramref name="values"/> cannot be null.</exception>
-      /// <exception cref="ArgumentException"><paramref name="values"/> cannot be empty.</exception>
 
       public static object List(params object[] values) {
          return new SqlList(values);
@@ -1028,16 +1026,19 @@ namespace DbExtensions {
 
       public SqlList(IEnumerable values) {
 
-         if (values == null) {
-            throw new ArgumentNullException(nameof(values));
-         }
-
-         this.values = values.Cast<object>()
+         object[] arr = values?.Cast<object>()
             .ToArray();
 
-         if (this.values.Length == 0) {
-            throw new ArgumentException("values cannot be empty.", nameof(values));
+         if (arr == null
+            || arr.Length == 0) {
+
+            // ensuring at least one item to avoid building an empty list
+            // e.g. foo IN ()
+
+            arr = new object[1] { null };
          }
+
+         this.values = arr;
       }
    }
 }

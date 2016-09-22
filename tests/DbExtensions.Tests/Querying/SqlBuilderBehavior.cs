@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DbExtensions.Tests.Querying {
-   
+
    [TestClass]
    public class SqlBuilderBehavior {
 
@@ -35,6 +35,17 @@ namespace DbExtensions.Tests.Querying {
 
          Assert.IsTrue(query.ToString().Contains("{3}"));
          Assert.AreEqual(4, query.ParameterValues.Count);
+      }
+
+      [TestMethod]
+      public void Allow_Empty_List() {
+
+         var query = SQL
+            .SELECT("1 IN ({0})", SQL.List());
+
+         Assert.AreEqual("SELECT 1 IN ({0})", query.ToString());
+         Assert.AreEqual(1, query.ParameterValues.Count);
+         Assert.AreEqual(null, query.ParameterValues[0]);
       }
 
       [TestMethod]

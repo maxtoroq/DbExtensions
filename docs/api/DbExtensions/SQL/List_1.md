@@ -24,15 +24,6 @@ The values to expand into a list.
 Type: [Object][2]  
 A special object to be used as parameter in [SqlBuilder][3].
 
-Exceptions
-----------
-
-Exception                  | Condition                 
--------------------------- | ------------------------- 
-[ArgumentNullException][4] | *values* cannot be null.  
-[ArgumentException][5]     | *values* cannot be empty. 
-
-
 Remarks
 -------
 
@@ -52,12 +43,10 @@ See Also
 --------
 
 #### Reference
-[SQL Class][6]  
+[SQL Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: http://msdn.microsoft.com/en-us/library/e5kfa45b
 [3]: ../SqlBuilder/README.md
-[4]: http://msdn.microsoft.com/en-us/library/27426hcy
-[5]: http://msdn.microsoft.com/en-us/library/3w1b3114
-[6]: README.md
+[4]: README.md
