@@ -281,13 +281,11 @@ namespace DbExtensions {
                   affectedRecords = command.ExecuteNonQuery();
                } catch {
 
-                  this.Configuration.Log?.WriteLine("-- ERROR: The following command produced an error");
-                  this.Configuration.Log?.WriteLine(TraceString(command));
-
+                  Trace(command, error: true);
                   throw;
                }
 
-               this.Configuration.Log?.WriteLine(TraceString(command, affectedRecords));
+               Trace(command, affectedRecords);
 
                if (tx != null
                   && affectedRecords != affect) {
@@ -359,7 +357,7 @@ namespace DbExtensions {
 
          object value = command.ExecuteScalar();
 
-         this.Configuration.Log?.WriteLine(TraceString(command));
+         Trace(command);
 
          return value;
       }
@@ -495,28 +493,38 @@ namespace DbExtensions {
              && (!String.IsNullOrEmpty(quoteSuffix) && identifier.EndsWith(quoteSuffix, StringComparison.Ordinal));
       }
 
-      internal static string TraceString(IDbCommand command) {
+      internal void Trace(IDbCommand command, int? affectedRecords = null, bool error = false) {
+         Trace(command, this.Configuration.Log, affectedRecords, error);
+      }
+
+      internal static void Trace(IDbCommand command, TextWriter log, int? affectedRecords = null, bool error = false) {
 
          if (command == null) throw new ArgumentNullException(nameof(command));
 
-         var sb = new StringBuilder(command.CommandText);
+         if (log != null) {
 
-         for (int i = 0; i < command.Parameters.Count; i++) {
+            log.WriteLine();
 
-            IDbDataParameter param = command.Parameters[i] as IDbDataParameter;
+            if (error) {
+               log.WriteLine("-- ERROR: The following command produced an error");
+            }
 
-            if (param != null) {
+            log.WriteLine(command.CommandText);
 
-               sb.AppendLine()
-                  .AppendFormat(CultureInfo.InvariantCulture, "-- {0}: {1} {2} (Size = {3}) [{4}]", param.ParameterName, param.Direction, param.DbType, param.Size, param.Value);
+            for (int i = 0; i < command.Parameters.Count; i++) {
+
+               IDbDataParameter param = command.Parameters[i] as IDbDataParameter;
+
+               if (param != null) {
+
+                  log.WriteLine("-- {0}: {1} {2} (Size = {3}) [{4}]", param.ParameterName, param.Direction, param.DbType, param.Size, param.Value);
+               }
+            }
+
+            if (affectedRecords != null) {
+               log.WriteLine("-- [{0}] records affected.", affectedRecords.Value);
             }
          }
-
-         return sb.ToString();
-      }
-
-      internal static string TraceString(IDbCommand command, int affectedRecords) {
-         return String.Concat(TraceString(command), Environment.NewLine, "-- [", affectedRecords, "] records affected.");
       }
 
       #region IDisposable Members
@@ -917,26 +925,18 @@ namespace DbExtensions {
 
             if (this.reader == null) {
 
-               if (prevStateWasClosed) {
-                  this.command.Connection.Open();
-               }
+               PossiblyOpenConnection();
 
                try {
                   this.reader = this.command.ExecuteReader();
-                  this.logger?.WriteLine(Database.TraceString(this.command, this.reader.RecordsAffected));
+                  Database.Trace(this.command, this.logger, this.reader.RecordsAffected);
 
                } catch {
 
                   try {
-
-                     this.logger?.WriteLine("-- ERROR: The following command produced an error");
-                     this.logger?.WriteLine(Database.TraceString(this.command));
-
+                     Database.Trace(this.command, this.logger, error: true);
                   } finally {
-
-                     if (this.prevStateWasClosed) {
-                        EnsureConnectionClosed();
-                     }
+                     PossiblyCloseConnection();
                   }
 
                   throw;
@@ -948,26 +948,19 @@ namespace DbExtensions {
                return false;
             }
 
-            if (this.reader.Read()) {
-
-               try {
+            try {
+               if (this.reader.Read()) {
                   this.Current = this.mapper(this.reader);
-
-               } catch {
-
-                  if (this.prevStateWasClosed) {
-                     EnsureConnectionClosed();
-                  }
-
-                  throw;
+                  return true;
                }
 
-               return true;
+            } catch {
+
+               PossiblyCloseConnection();
+               throw;
             }
 
-            if (this.prevStateWasClosed) {
-               EnsureConnectionClosed();
-            }
+            PossiblyCloseConnection();
 
             return false;
          }
@@ -980,17 +973,25 @@ namespace DbExtensions {
 
             this.reader?.Dispose();
 
+            PossiblyCloseConnection();
+         }
+
+         void PossiblyOpenConnection() {
+
             if (this.prevStateWasClosed) {
-               EnsureConnectionClosed();
+               this.command.Connection.Open();
             }
          }
 
-         void EnsureConnectionClosed() {
+         void PossiblyCloseConnection() {
 
-            IDbConnection conn = this.command.Connection;
+            if (this.prevStateWasClosed) {
 
-            if (conn.State != ConnectionState.Closed) {
-               conn.Close();
+               IDbConnection conn = this.command.Connection;
+
+               if (conn.State != ConnectionState.Closed) {
+                  conn.Close();
+               }
             }
          }
       }
