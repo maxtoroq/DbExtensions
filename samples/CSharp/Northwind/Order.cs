@@ -52,13 +52,13 @@ namespace Samples.CSharp.Northwind {
       [Association(OtherKey = nameof(OrderDetail.OrderID))]
       public Collection<OrderDetail> OrderDetails { get; } = new Collection<OrderDetail>();
 
-      [Association(ThisKey = nameof(CustomerID), IsForeignKey = true)]
+      [Association(ThisKey = nameof(CustomerID))]
       public Customer Customer { get; set; }
 
-      [Association(ThisKey = nameof(EmployeeID), IsForeignKey = true)]
+      [Association(ThisKey = nameof(EmployeeID))]
       public Employee Employee { get; set; }
 
-      [Association(ThisKey = nameof(ShipVia), IsForeignKey = true)]
+      [Association(ThisKey = nameof(ShipVia))]
       public Shipper Shipper { get; set; }
    }
 }

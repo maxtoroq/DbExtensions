@@ -40,10 +40,10 @@ namespace Samples.CSharp.Northwind {
       [Association(OtherKey = nameof(OrderDetail.ProductID))]
       public Collection<OrderDetail> OrderDetails { get; } = new Collection<OrderDetail>();
 
-      [Association(ThisKey = nameof(CategoryID), IsForeignKey = true)]
+      [Association(ThisKey = nameof(CategoryID))]
       public Category Category { get; set; }
 
-      [Association(ThisKey = nameof(SupplierID), IsForeignKey = true)]
+      [Association(ThisKey = nameof(SupplierID))]
       public Supplier Supplier { get; set; }
    }
 }

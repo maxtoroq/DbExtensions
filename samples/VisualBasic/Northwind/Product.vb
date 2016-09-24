@@ -37,13 +37,13 @@ Namespace Northwind
       <Column>
       Public Property UnitsOnOrder As Short?
 
-      <Association(ThisKey:=NameOf(CategoryID), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(CategoryID))>
       Public Property Category As Category
 
       <Association(OtherKey:=NameOf(OrderDetail.ProductID))>
       Public ReadOnly Property OrderDetails As New Collection(Of OrderDetail)
 
-      <Association(ThisKey:=NameOf(SupplierID), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(SupplierID))>
       Public Property Supplier As Supplier
 
    End Class

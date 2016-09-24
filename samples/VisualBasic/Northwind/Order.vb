@@ -49,16 +49,16 @@ Namespace Northwind
       <Column>
       Public Property ShipVia As Integer?
 
-      <Association(ThisKey:=NameOf(CustomerID), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(CustomerID))>
       Public Property Customer As Customer
 
-      <Association(ThisKey:=NameOf(EmployeeID), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(EmployeeID))>
       Public Property Employee As Employee
 
       <Association(OtherKey:=NameOf(OrderDetail.OrderID))>
       Public ReadOnly Property OrderDetails As New Collection(Of OrderDetail)
 
-      <Association(ThisKey:=NameOf(ShipVia), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(ShipVia))>
       Public Property Shipper As Shipper
 
    End Class

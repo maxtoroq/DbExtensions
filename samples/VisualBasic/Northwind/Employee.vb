@@ -64,7 +64,7 @@ Namespace Northwind
       <Association(OtherKey:=NameOf(Order.EmployeeID))>
       Public ReadOnly Property Orders As New Collection(Of Order)
 
-      <Association(ThisKey:=NameOf(ReportsTo), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(ReportsTo))>
       Public Property ReportsToEmployee As Employee
 
       <Association(OtherKey:=NameOf(Employee.ReportsTo))>

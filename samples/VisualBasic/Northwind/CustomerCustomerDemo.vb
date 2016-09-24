@@ -12,10 +12,10 @@ Namespace Northwind
       <Column(IsPrimaryKey:=True)>
       Public Property CustomerTypeID As String
 
-      <Association(ThisKey:=NameOf(CustomerID), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(CustomerID))>
       Public Property Customer As Customer
 
-      <Association(ThisKey:=NameOf(CustomerTypeID), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(CustomerTypeID))>
       Public Property CustomerDemographic As CustomerDemographic
 
    End Class

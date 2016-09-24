@@ -91,10 +91,10 @@ type Product() =
    [<Column>]
    member val Discontinued = false with get,set
 
-   [<Association(ThisKey = "CategoryID", IsForeignKey = true)>]
+   [<Association(ThisKey = "CategoryID")>]
    member val Category : Category = null with get,set
 
-   [<Association(ThisKey = "SupplierID", IsForeignKey = true)>]
+   [<Association(ThisKey = "SupplierID")>]
    member val Supplier : Supplier = null with get,set
 
    member val ValueInStock = 0m with get,set
@@ -157,7 +157,7 @@ type Employee() =
    [<Column>]
    member val PhotoPath : string = null with get,set
 
-   [<Association(ThisKey = "ReportsTo", IsForeignKey = true)>]
+   [<Association(ThisKey = "ReportsTo")>]
    member val ReportsToEmployee : Employee = null with get,set
 
 [<AllowNullLiteral>]
@@ -183,7 +183,7 @@ type Territory() =
    [<Column>]
    member val RegionID = 0 with get,set
 
-   [<Association(ThisKey = "RegionID", IsForeignKey = true)>]
+   [<Association(ThisKey = "RegionID")>]
    member val Region : Region = null with get,set
 
 [<AllowNullLiteral>]
@@ -196,10 +196,10 @@ type EmployeeTerritory() =
    [<Column(IsPrimaryKey = true)>]
    member val TerritoryID : string = null with get,set
 
-   [<Association(ThisKey = "EmployeeID", IsForeignKey = true)>]
+   [<Association(ThisKey = "EmployeeID")>]
    member val Employee : Employee = null with get,set
 
-   [<Association(ThisKey = "TerritoryID", IsForeignKey = true)>]
+   [<Association(ThisKey = "TerritoryID")>]
    member val Territory : Territory = null with get,set
 
 [<AllowNullLiteral>]
@@ -259,10 +259,10 @@ type CustomerCustomerDemo() =
    [<Column(IsPrimaryKey = true)>]
    member val CustomerTypeID : string = null with get,set
 
-   [<Association(ThisKey = "CustomerTypeID", IsForeignKey = true)>]
+   [<Association(ThisKey = "CustomerTypeID")>]
    member val CustomerDemographic : CustomerDemographic = null with get,set
 
-   [<Association(ThisKey = "CustomerID", IsForeignKey = true)>]
+   [<Association(ThisKey = "CustomerID")>]
    member val Customer : Customer = null with get,set
 
 [<AllowNullLiteral>]
@@ -297,7 +297,7 @@ type OrderDetail() =
    [<Column>]
    member val Discount = 0.0 with get,set
 
-   [<Association(ThisKey = "ProductID", IsForeignKey = true)>]
+   [<Association(ThisKey = "ProductID")>]
    member val Product : Product = null with get,set
 
 [<AllowNullLiteral>]
@@ -349,13 +349,13 @@ type Order() =
    [<Association(OtherKey = "OrderID")>]
    member val OrderDetails = new Collection<OrderDetail>() with get,set
 
-   [<Association(ThisKey = "CustomerID", IsForeignKey = true)>]
+   [<Association(ThisKey = "CustomerID")>]
    member val Customer : Customer = null with get,set
 
-   [<Association(ThisKey = "EmployeeID", IsForeignKey = true)>]
+   [<Association(ThisKey = "EmployeeID")>]
    member val Employee : Employee = null with get,set
 
-   [<Association(ThisKey = "ShipVia", IsForeignKey = true)>]
+   [<Association(ThisKey = "ShipVia")>]
    member val Shipper : Shipper = null with get,set
 
 type NorthwindDatabase =

@@ -19,7 +19,7 @@ Namespace Northwind
       <Association(OtherKey:=NameOf(EmployeeTerritory.TerritoryID))>
       Public ReadOnly Property EmployeeTerritories As New Collection(Of EmployeeTerritory)
 
-      <Association(ThisKey:=NameOf(RegionID), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(RegionID))>
       Public Property [Region] As Region
 
    End Class

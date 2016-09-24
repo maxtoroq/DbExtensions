@@ -60,7 +60,7 @@ namespace DbExtensions {
       /// Gets or sets a private storage field to hold the value from a column.
       /// </summary>
 
-      public string Storage { get; set; }
+      string IDataAttribute.Storage { get; set; }
 
       /// <summary>
       /// Gets or sets the type of the database column.
@@ -172,7 +172,7 @@ namespace DbExtensions {
       /// Gets or sets a private storage field to hold the value for the association property.
       /// </summary>
 
-      public string Storage { get; set; }
+      string IDataAttribute.Storage { get; set; }
 
       /// <summary>
       /// Gets or sets members of this entity class to represent the key values on this side of the association.
@@ -191,13 +191,13 @@ namespace DbExtensions {
       /// </summary>
       /// <remarks>When true, this property indicates a true 1:1 relationship.</remarks>
 
-      public bool IsUnique { get; set; }
+      internal bool IsUnique { get; set; }
 
       /// <summary>
       /// Gets or sets the member as the foreign key in an association representing a database relationship.
       /// </summary>
 
-      public bool IsForeignKey { get; set; }
+      internal bool IsForeignKey { get; set; }
 
       internal string DeleteRule { get; set; }
 

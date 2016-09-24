@@ -61,7 +61,7 @@ namespace Samples.CSharp.Northwind {
       [Column]
       public string PhotoPath { get; set; }
 
-      [Association(ThisKey = nameof(ReportsTo), IsForeignKey = true)]
+      [Association(ThisKey = nameof(ReportsTo))]
       public Employee ReportsToEmployee { get; set; }
 
       [Association(OtherKey = nameof(Employee.ReportsTo))]

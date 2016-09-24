@@ -19,7 +19,7 @@ namespace Samples.CSharp.Northwind {
       [Association(OtherKey = nameof(EmployeeTerritory.TerritoryID))]
       public Collection<EmployeeTerritory> EmployeeTerritories { get; } = new Collection<EmployeeTerritory>();
 
-      [Association(ThisKey = nameof(RegionID), IsForeignKey = true)]
+      [Association(ThisKey = nameof(RegionID))]
       public Region Region { get; set; }
    }
 }

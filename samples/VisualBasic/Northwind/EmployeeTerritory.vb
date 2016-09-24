@@ -12,10 +12,10 @@ Namespace Northwind
       <Column(IsPrimaryKey:=True)>
       Public Property TerritoryID As String
 
-      <Association(ThisKey:=NameOf(EmployeeID), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(EmployeeID))>
       Public Property Employee As Employee
 
-      <Association(ThisKey:=NameOf(TerritoryID), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(TerritoryID))>
       Public Property Territory As Territory
 
    End Class

@@ -21,10 +21,10 @@ Namespace Northwind
       <Column>
       Public Property UnitPrice As Decimal
 
-      <Association(ThisKey:=NameOf(OrderID), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(OrderID))>
       Public Property Order As Order
 
-      <Association(ThisKey:=NameOf(ProductID), IsForeignKey:=True)>
+      <Association(ThisKey:=NameOf(ProductID))>
       Public Property Product As Product
 
    End Class

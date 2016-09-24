@@ -42,7 +42,6 @@ Properties
 ![Public property] | [IsPrimaryKey][8]  | Gets or sets whether this class member represents a column that is part or all of the primary key of the table. 
 ![Public property] | [IsVersion][9]     | Gets or sets whether the column type of the member is a database timestamp or version number.                   
 ![Public property] | [Name][10]         | Gets or sets the name of a column.                                                                              
-![Public property] | [Storage][11]      | Gets or sets a private storage field to hold the value from a column.                                           
 
 
 See Also
@@ -61,6 +60,5 @@ See Also
 [8]: IsPrimaryKey.md
 [9]: IsVersion.md
 [10]: Name.md
-[11]: Storage.md
 [Public method]: ../../_icons/pubmethod.gif "Public method"
 [Public property]: ../../_icons/pubproperty.gif "Public property"

@@ -12,10 +12,10 @@ namespace Samples.CSharp.Northwind {
       [Column(IsPrimaryKey = true)]
       public string CustomerTypeID { get; set; }
 
-      [Association(ThisKey = nameof(CustomerTypeID), IsForeignKey = true)]
+      [Association(ThisKey = nameof(CustomerTypeID))]
       public CustomerDemographic CustomerDemographic { get; set; }
 
-      [Association(ThisKey = nameof(CustomerID), IsForeignKey = true)]
+      [Association(ThisKey = nameof(CustomerID))]
       public Customer Customer { get; set; }
    }
 }

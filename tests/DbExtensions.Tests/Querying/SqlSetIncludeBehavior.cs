@@ -129,10 +129,10 @@ namespace DbExtensions.Tests.Querying {
          [Column]
          public int? SupplierID { get; set; }
 
-         [Association(ThisKey = nameof(CategoryID), IsForeignKey = true)]
+         [Association(ThisKey = nameof(CategoryID))]
          public Category Category { get; set; }
 
-         [Association(ThisKey = nameof(SupplierID), IsForeignKey = true)]
+         [Association(ThisKey = nameof(SupplierID))]
          public Supplier Supplier { get; set; }
       }
 
@@ -187,10 +187,10 @@ namespace DbExtensions.Tests.Querying {
          [Column(IsPrimaryKey = true)]
          public string TerritoryID { get; set; }
 
-         [Association(ThisKey = nameof(EmployeeID), IsForeignKey = true)]
+         [Association(ThisKey = nameof(EmployeeID))]
          public Employee Employee { get; set; }
 
-         [Association(ThisKey = nameof(TerritoryID), IsForeignKey = true)]
+         [Association(ThisKey = nameof(TerritoryID))]
          public Territory Territory { get; set; }
       }
 
@@ -206,7 +206,7 @@ namespace DbExtensions.Tests.Querying {
          [Column]
          public int RegionID { get; set; }
 
-         [Association(ThisKey = nameof(RegionID), IsForeignKey = true)]
+         [Association(ThisKey = nameof(RegionID))]
          public Region Region { get; set; }
       }
 
@@ -232,7 +232,7 @@ namespace DbExtensions.Tests.Querying {
          [Association(OtherKey = nameof(OrderDetail.OrderID))]
          public Collection<OrderDetail> OrderDetails { get; private set; }
 
-         [Association(ThisKey = nameof(EmployeeID), IsForeignKey = true)]
+         [Association(ThisKey = nameof(EmployeeID))]
          public Employee Employee { get; set; }
       }
 
@@ -245,10 +245,10 @@ namespace DbExtensions.Tests.Querying {
          [Column(IsPrimaryKey = true)]
          public int ProductID { get; set; }
 
-         [Association(ThisKey = nameof(OrderID), IsForeignKey = true)]
+         [Association(ThisKey = nameof(OrderID))]
          public Order Order { get; set; }
 
-         [Association(ThisKey = nameof(ProductID), IsForeignKey = true)]
+         [Association(ThisKey = nameof(ProductID))]
          public Product Product { get; set; }
       }
    }

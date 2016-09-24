@@ -21,8 +21,8 @@ namespace DbExtensions.Tests.Metadata {
 
          MetaAssociation assoc = metaType.Associations[1];
 
-         Assert.AreEqual(true, assoc.IsMany);
-         Assert.AreEqual(false, assoc.OtherKeyIsPrimaryKey);
+         Assert.IsTrue(assoc.IsMany);
+         Assert.IsFalse(assoc.OtherKeyIsPrimaryKey);
 
          Assert.AreEqual(typeof(Model.Employee), assoc.ThisMember.DeclaringType.Type);
          Assert.AreEqual(nameof(Model.Employee.EmployeeTerritories), assoc.ThisMember.Name);
@@ -42,8 +42,8 @@ namespace DbExtensions.Tests.Metadata {
 
          MetaAssociation assoc = metaType.Associations[1];
 
-         Assert.AreEqual(true, assoc.IsForeignKey);
-         Assert.AreEqual(true, assoc.OtherKeyIsPrimaryKey);
+         Assert.IsFalse(assoc.IsMany);
+         Assert.IsTrue(assoc.OtherKeyIsPrimaryKey);
 
          Assert.AreEqual(typeof(Model.EmployeeTerritory), assoc.ThisMember.DeclaringType.Type);
          Assert.AreEqual(nameof(Model.EmployeeTerritory.Employee), assoc.ThisMember.Name);
@@ -85,10 +85,10 @@ namespace DbExtensions.Tests.Metadata {
          [Column(IsPrimaryKey = true)]
          public string TerritoryID { get; set; }
 
-         [Association(ThisKey = nameof(TerritoryID), IsForeignKey = true)]
+         [Association(ThisKey = nameof(TerritoryID))]
          public Territory Territory { get; set; }
 
-         [Association(ThisKey = nameof(EmployeeID), IsForeignKey = true)]
+         [Association(ThisKey = nameof(EmployeeID))]
          public Employee Employee { get; set; }
       }
 
@@ -114,7 +114,7 @@ namespace DbExtensions.Tests.Metadata {
          [Association(OtherKey = nameof(OrderDetail.OrderID))]
          public Collection<OrderDetail> OrderDetails { get; private set; }
 
-         [Association(ThisKey = nameof(EmployeeID), IsForeignKey = true)]
+         [Association(ThisKey = nameof(EmployeeID))]
          public Employee Employee { get; set; }
       }
 
