@@ -16,7 +16,6 @@
 #endregion
 
 using System;
-using System.Data;
 
 namespace DbExtensions.Metadata {
 
@@ -52,30 +51,6 @@ namespace DbExtensions.Metadata {
             case TypeCode.Char:
             case TypeCode.String:
             case TypeCode.Boolean:
-               return true;
-         }
-
-         return false;
-      }
-
-      /// <summary>
-      /// Return true if this is a clr type supported as an inheritance discriminator.
-      /// </summary>
-      /// <param name="type"></param>
-      /// <returns></returns>
-
-      internal static bool IsSupportedDiscriminatorType(SqlDbType type) {
-
-         switch (type) {
-            case SqlDbType.BigInt:
-            case SqlDbType.Bit:
-            case SqlDbType.Char:
-            case SqlDbType.Int:
-            case SqlDbType.NChar:
-            case SqlDbType.NVarChar:
-            case SqlDbType.SmallInt:
-            case SqlDbType.TinyInt:
-            case SqlDbType.VarChar:
                return true;
          }
 
@@ -124,28 +99,6 @@ namespace DbExtensions.Metadata {
          }
 
          return false;
-      }
-
-      /// <summary>
-      /// Types that do not support comparison cannot be used as primary keys.  The
-      /// database will restrict this, but we can't rely on that, since it is possible
-      /// to create a key mapping to a column that isn't truly a key in the DB.
-      /// </summary>
-
-      internal static bool IsSupportedIdentityType(SqlDbType type) {
-
-         switch (type) {
-            case SqlDbType.NText:
-            case SqlDbType.Image:
-            case SqlDbType.Xml:
-            case SqlDbType.Text:
-            case SqlDbType.Variant:
-            case SqlDbType.Udt:
-               return false;
-
-            default:
-               return true;
-         }
       }
    }
 }
