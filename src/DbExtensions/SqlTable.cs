@@ -16,7 +16,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -467,20 +466,7 @@ namespace DbExtensions {
             if (idMember != null) {
 
                object id = this.db.LastInsertId();
-
-               if (Convert.IsDBNull(id) || id == null) {
-                  throw new DataException("The last insert id value cannot be null.");
-               }
-
-               object convertedId;
-
-               try {
-                  convertedId = Convert.ChangeType(id, idMember.Type, CultureInfo.InvariantCulture);
-
-               } catch (InvalidCastException ex) {
-                  throw new DataException("Couldn't convert the last insert id value to the appropiate type (see inner exception for details).", ex);
-               }
-
+               object convertedId = Convert.ChangeType(id, idMember.Type, CultureInfo.InvariantCulture);
                object entityObj = (object)entity;
 
                idMember.MemberAccessor.SetBoxedValue(ref entityObj, convertedId);
