@@ -37,7 +37,7 @@ Properties
                    | Name               | Description                                                                                                     
 ------------------ | ------------------ | --------------------------------------------------------------------------------------------------------------- 
 ![Public property] | [AutoSync][5]      | Gets or sets the [AutoSync][5] enumeration.                                                                     
-![Public property] | [DbType][6]        | Gets or sets the type of the database column.                                                                   
+![Public property] | [ConvertTo][6]     | Gets or sets the type to convert this member to before sending to the database.                                 
 ![Public property] | [IsDbGenerated][7] | Gets or sets whether a column contains values that the database auto-generates.                                 
 ![Public property] | [IsPrimaryKey][8]  | Gets or sets whether this class member represents a column that is part or all of the primary key of the table. 
 ![Public property] | [IsVersion][9]     | Gets or sets whether the column type of the member is a database timestamp or version number.                   
@@ -55,7 +55,7 @@ See Also
 [3]: ../README.md
 [4]: _ctor.md
 [5]: AutoSync.md
-[6]: DbType.md
+[6]: ConvertTo.md
 [7]: IsDbGenerated.md
 [8]: IsPrimaryKey.md
 [9]: IsVersion.md

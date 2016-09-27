@@ -1,6 +1,6 @@
-ColumnAttribute.DbType Property
-===============================
-Gets or sets the type of the database column.
+ColumnAttribute.ConvertTo Property
+==================================
+Gets or sets the type to convert this member to before sending to the database.
 
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public string DbType { get; set; }
+public Type ConvertTo { get; set; }
 ```
 
 #### Property Value
-Type: [String][2]
+Type: [Type][2]
 
 See Also
 --------
@@ -23,5 +23,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[2]: http://msdn.microsoft.com/en-us/library/42892f65
 [3]: README.md
