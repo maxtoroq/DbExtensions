@@ -73,10 +73,6 @@ Properties
 ![Public property] | [Transaction][42]   | Gets or sets a transaction to associate with new commands.  
 
 
-Remarks
--------
-**Database** is the entry point of the [DbExtensions][5] API. Some components such as [SqlSet][1] and [SqlBuilder][2] can be used without **Database**. [SqlTable&lt;TEntity>][3] on the other hand depends on **Database**. These components can greatly simplify data access, but you can still use **Database** by providing commands in [String][43] form. **Database** also serves as a state keeper that can be used to execute multiple commands using the same connection, transaction, configuration, profiling, etc. 
-
 See Also
 --------
 
@@ -125,7 +121,6 @@ See Also
 [40]: Table__1.md
 [41]: Configuration.md
 [42]: Transaction.md
-[43]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
 [Public method]: ../../_icons/pubmethod.gif "Public method"
 [Protected method]: ../../_icons/protmethod.gif "Protected method"
 [Code example]: ../../_icons/CodeExample.png "Code example"
