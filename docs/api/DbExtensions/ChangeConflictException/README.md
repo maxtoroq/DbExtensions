@@ -7,10 +7,9 @@ Inheritance Hierarchy
 ---------------------
 [System.Object][1]  
   [System.Exception][2]  
-    [System.SystemException][3]  
-      **DbExtensions.ChangeConflictException**  
+    **DbExtensions.ChangeConflictException**  
 
-**Namespace:** [DbExtensions][4]  
+**Namespace:** [DbExtensions][3]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
 
 Syntax
@@ -18,7 +17,7 @@ Syntax
 
 ```csharp
 [SerializableAttribute]
-public class ChangeConflictException : SystemException
+public class ChangeConflictException : Exception
 ```
 
 The **ChangeConflictException** type exposes the following members.
@@ -29,18 +28,17 @@ Constructors
 
                  | Name                         | Description                                                                                         
 ---------------- | ---------------------------- | --------------------------------------------------------------------------------------------------- 
-![Public method] | [ChangeConflictException][5] | Initializes a new instance of the **ChangeConflictException** class with a specified error message. 
+![Public method] | [ChangeConflictException][4] | Initializes a new instance of the **ChangeConflictException** class with a specified error message. 
 
 
 See Also
 --------
 
 #### Reference
-[DbExtensions Namespace][4]  
+[DbExtensions Namespace][3]  
 
 [1]: http://msdn.microsoft.com/en-us/library/e5kfa45b
 [2]: http://msdn.microsoft.com/en-us/library/c18k6c59
-[3]: http://msdn.microsoft.com/en-us/library/z3h75xk6
-[4]: ../README.md
-[5]: _ctor.md
+[3]: ../README.md
+[4]: _ctor.md
 [Public method]: ../../_icons/pubmethod.gif "Public method"

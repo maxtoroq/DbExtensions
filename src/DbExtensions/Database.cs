@@ -847,7 +847,7 @@ namespace DbExtensions {
    /// </summary>
 
    [Serializable]
-   public class ChangeConflictException : SystemException {
+   public class ChangeConflictException : Exception {
 
       /// <summary>
       /// Initializes a new instance of the <see cref="ChangeConflictException"/> class
