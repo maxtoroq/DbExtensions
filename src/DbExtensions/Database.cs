@@ -742,6 +742,7 @@ namespace DbExtensions {
 
    /// <summary>
    /// Holds configuration options that customize the behavior of <see cref="Database"/>.
+   /// This class cannot be instantiated, to get an instance use the <see cref="Database.Configuration"/> property.
    /// </summary>
 
    public sealed partial class DatabaseConfiguration {
