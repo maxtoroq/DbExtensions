@@ -317,6 +317,8 @@ namespace DbExtensions.Metadata {
       [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "The contexts in which this is available are fairly specific.")]
       public abstract Type Type { get; }
 
+      public abstract Type ConvertToType { get; }
+
       /// <summary>
       /// True if this member is declared by the specified type.
       /// </summary>
@@ -410,6 +412,24 @@ namespace DbExtensions.Metadata {
       /// </summary>
 
       public abstract MetaAssociation Association { get; }
+
+      public object GetValueForDatabase(object instance) {
+
+         object value = this.MemberAccessor.GetBoxedValue(instance);
+
+         return ConvertValueForDatabase(value);
+      }
+
+      public object ConvertValueForDatabase(object value) {
+
+         if (value == null
+            || this.ConvertToType == null) {
+
+            return value;
+         }
+
+         return Convert.ChangeType(value, this.ConvertToType);
+      }
    }
 
    /// <summary>

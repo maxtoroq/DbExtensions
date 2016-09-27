@@ -721,6 +721,8 @@ namespace DbExtensions.Metadata {
 
       public override Type Type { get; }
 
+      public override Type ConvertToType => attrColumn?.ConvertTo;
+
       public override bool IsPersistent => attrColumn != null || attrAssoc != null;
 
       public override bool IsAssociation => attrAssoc != null;
@@ -1260,6 +1262,8 @@ namespace DbExtensions.Metadata {
       public override int Ordinal { get; }
 
       public override Type Type { get; }
+
+      public override Type ConvertToType { get; }
 
       public override MemberInfo StorageMember => Member;
 

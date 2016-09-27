@@ -104,36 +104,11 @@ namespace DbExtensions {
          return table;
       }
 
-      internal object GetMemberValue(object entity, MetaDataMember member) {
-
-         object value = member.MemberAccessor.GetBoxedValue(entity);
-
-         return ConvertMemberValue(member, value);
-      }
-
-      internal object ConvertMemberValue(MetaDataMember member, object value) {
-
-         if (value == null) {
-            return value;
-         }
-
-         if (member.DbType != null
-            && (member.Type.IsEnum || (member.Type.IsGenericType
-               && member.Type.GetGenericTypeDefinition() == typeof(Nullable<>)
-               && Nullable.GetUnderlyingType(member.Type).IsEnum))
-            && member.DbType.IndexOf("char", StringComparison.OrdinalIgnoreCase) > 0) {
-
-            value = Convert.ToString(value, CultureInfo.InvariantCulture);
-         }
-
-         return value;
-      }
-
       internal string BuildPredicateFragment(object entity, ICollection<MetaDataMember> predicateMembers, ICollection<object> parametersBuffer) {
 
          var predicateValues = predicateMembers.ToDictionary(
             m => m.MappedName,
-            m => GetMemberValue(entity, m)
+            m => m.GetValueForDatabase(entity)
          );
 
          return BuildPredicateFragment(predicateValues, parametersBuffer);
@@ -792,7 +767,7 @@ namespace DbExtensions {
 
             MetaDataMember idMember = this.metaType.IdentityMembers[0];
 
-            object[] ids = entities.Select(e => this.db.GetMemberValue(e, idMember)).ToArray();
+            object[] ids = entities.Select(e => idMember.GetValueForDatabase(e)).ToArray();
 
             SqlBuilder sql = this.CommandBuilder
                .BuildDeleteStatement()
@@ -838,7 +813,7 @@ namespace DbExtensions {
 
          IDictionary<string, object> predicateValues = predicateMembers.ToDictionary(
             m => m.MappedName,
-            m => this.db.GetMemberValue(entity, m)
+            m => m.GetValueForDatabase(entity)
          );
 
          return Contains(predicateMembers, predicateValues);
@@ -868,7 +843,7 @@ namespace DbExtensions {
 
          IDictionary<string, object> predicateValues =
             Enumerable.Range(0, predicateMembers.Length)
-               .ToDictionary(i => predicateMembers[i].MappedName, i => this.db.ConvertMemberValue(predicateMembers[i], keyValues[i]));
+               .ToDictionary(i => predicateMembers[i].MappedName, i => predicateMembers[i].ConvertValueForDatabase(keyValues[i]));
 
          return Contains(predicateMembers, predicateValues);
       }
@@ -1086,7 +1061,7 @@ namespace DbExtensions {
              select m).ToArray();
 
          object[] parameters = insertingMembers
-            .Select(m => this.db.GetMemberValue(entity, m))
+            .Select(m => m.GetValueForDatabase(entity))
             .ToArray();
 
          var sb = new StringBuilder()
@@ -1169,7 +1144,7 @@ namespace DbExtensions {
             }
 
             MetaDataMember member = updatingMembers[i];
-            object value = this.db.GetMemberValue(entity, member);
+            object value = member.GetValueForDatabase(entity);
 
             sb.Append(QuoteIdentifier(member.MappedName))
                .Append(" = {")
@@ -1326,7 +1301,7 @@ namespace DbExtensions {
          MetaDataMember idMember = metaType.IdentityMembers[0];
 
          var predicateValues = new Dictionary<string, object> {
-            { idMember.MappedName, db.ConvertMemberValue(idMember, id) }
+            { idMember.MappedName, idMember.ConvertValueForDatabase(id) }
          };
 
          var parameters = new List<object>(predicateValues.Count);
@@ -1540,7 +1515,7 @@ namespace DbExtensions {
             var predicateValues = new Dictionary<string, object>();
 
             for (int i = 0; i < association.OtherKey.Count; i++) {
-               predicateValues.Add(association.OtherKey[i].MappedName, set.db.GetMemberValue(container, association.ThisKey[i]));
+               predicateValues.Add(association.OtherKey[i].MappedName, association.ThisKey[i].GetValueForDatabase(container));
             }
 
             var parameters = new List<object>();

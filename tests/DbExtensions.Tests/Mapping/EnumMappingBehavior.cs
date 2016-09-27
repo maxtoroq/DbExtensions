@@ -204,7 +204,7 @@ namespace DbExtensions.Tests.Mapping {
             [Column(IsPrimaryKey = true, IsDbGenerated = true)]
             public int CategoryID { get; set; }
 
-            [Column(DbType = "nvarchar(15)")]
+            [Column(ConvertTo = typeof(string))]
             public CategoryEnum CategoryName { get; set; }
          }
       }
@@ -217,7 +217,7 @@ namespace DbExtensions.Tests.Mapping {
             [Column(IsPrimaryKey = true, IsDbGenerated = true)]
             public int CategoryID { get; set; }
 
-            [Column(DbType = "nvarchar(15)")]
+            [Column(ConvertTo = typeof(string))]
             public CategoryEnum? CategoryName { get; set; }
          }
       }

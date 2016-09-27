@@ -67,7 +67,13 @@ namespace DbExtensions {
       /// </summary>
 
       [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "Db", Justification = "Conforms to legacy spelling.")]
-      public string DbType { get; set; }
+      internal string DbType { get; set; }
+
+      /// <summary>
+      /// Gets or sets the type to convert this member to before sending to the database.
+      /// </summary>
+
+      public Type ConvertTo { get; set; }
 
       internal string Expression { get; set; }
 
