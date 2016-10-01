@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -37,6 +38,7 @@ namespace DbExtensions.Metadata {
 
       internal override string DatabaseName { get; }
 
+      [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
       internal AttributedMetaModel(MappingSource mappingSource, Type contextType) {
 
          this.MappingSource = mappingSource;
@@ -492,6 +494,7 @@ namespace DbExtensions.Metadata {
          }
       }
 
+      [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
       internal AttributedMetaType(MetaModel model, MetaTable table, Type type, MetaType inheritanceRoot) {
 
          this.Model = model;
@@ -944,6 +947,7 @@ namespace DbExtensions.Metadata {
 
       public override bool DeleteOnNull { get; }
 
+      [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
       internal AttributedMetaAssociation(AttributedMetaDataMember member, AssociationAttribute attr) {
 
          this.ThisMember = member;

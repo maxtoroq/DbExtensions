@@ -40,9 +40,7 @@ namespace DbExtensions {
 
       partial void Initialize2(string providerInvariantName) {
 
-         this.Configuration.SetModel(() => {
-            return mappingSource.GetModel(GetType());
-         });
+         this.Configuration.SetModel(() => mappingSource.GetModel(GetType()));
 
          Initialize3(providerInvariantName);
       }
@@ -883,10 +881,6 @@ namespace DbExtensions {
             return null;
 
          }).SingleOrDefault();
-      }
-
-      string QuoteIdentifier(string unquotedIdentifier) {
-         return this.db.QuoteIdentifier(unquotedIdentifier);
       }
 
       void EnsureEntityType() {
