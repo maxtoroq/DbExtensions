@@ -210,16 +210,6 @@ namespace DbExtensions {
       public bool UseVersionMember { get; set; } = true;
 
       /// <summary>
-      /// true to ignore when a concurrency conflict occurs when executing a DELETE command; otherwise, false. The default is true.
-      /// </summary>
-      /// <remarks>
-      /// This setting affects the behavior of <see cref="SqlTable&lt;TEntity>.Remove(TEntity)"/>,
-      /// <see cref="SqlTable&lt;TEntity>.RemoveKey(object)"/> and <see cref="SqlTable&lt;TEntity>.RemoveRange(TEntity[])"/>.
-      /// </remarks>
-
-      public bool IgnoreDeleteConflicts { get; set; } = true;
-
-      /// <summary>
       /// true to execute batch commands when possible; otherwise, false. The default is true.
       /// </summary>
       /// <remarks>
@@ -701,7 +691,10 @@ namespace DbExtensions {
 
          SqlBuilder deleteSql = this.CommandBuilder.BuildDeleteStatementForEntity(entity);
 
-         this.db.Execute(deleteSql, affect: 1, exact: !this.db.Configuration.IgnoreDeleteConflicts);
+         bool usingVersion = this.db.Configuration.UseVersionMember
+            && this.metaType.VersionMember != null;
+
+         this.db.Execute(deleteSql, affect: 1, exact: usingVersion);
       }
 
       /// <summary>
@@ -714,7 +707,7 @@ namespace DbExtensions {
 
          SqlBuilder deleteSql = this.CommandBuilder.BuildDeleteStatementForKey(id);
 
-         this.db.Execute(deleteSql, affect: 1, exact: !this.db.Configuration.IgnoreDeleteConflicts);
+         this.db.Execute(deleteSql, affect: 1);
       }
 
       /// <summary>
@@ -751,13 +744,11 @@ namespace DbExtensions {
 
          EnsureEntityType();
 
-         bool affectExact = !this.db.Configuration.IgnoreDeleteConflicts;
-
-         bool useVersion = this.db.Configuration.UseVersionMember
+         bool usingVersion = this.db.Configuration.UseVersionMember
             && this.metaType.VersionMember != null;
 
          bool singleStatement = this.metaType.IdentityMembers.Count == 1
-            && !useVersion;
+            && !usingVersion;
 
          bool batch = this.db.Configuration.EnableBatchCommands;
 
@@ -769,15 +760,15 @@ namespace DbExtensions {
 
             SqlBuilder sql = this.CommandBuilder
                .BuildDeleteStatement()
-               .WHERE(this.db.QuoteIdentifier(idMember.MappedName) + " IN ({0})", DbExtensions.SQL.List(ids));
+               .WHERE(this.db.QuoteIdentifier(idMember.MappedName) + " IN ({0})", SQL.List(ids));
 
-            this.db.Execute(sql, affect: entities.Length, exact: affectExact);
+            this.db.Execute(sql, affect: entities.Length);
 
          } else if (batch) {
 
             SqlBuilder batchDelete = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildDeleteStatementForEntity(e)));
 
-            this.db.Execute(batchDelete, affect: entities.Length, exact: affectExact);
+            this.db.Execute(batchDelete, affect: entities.Length, exact: usingVersion);
 
          } else {
 
