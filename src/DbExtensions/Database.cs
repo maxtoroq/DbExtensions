@@ -23,6 +23,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Transactions;
 using IsolationLevel = System.Data.IsolationLevel;
@@ -128,7 +129,10 @@ namespace DbExtensions {
          providerInvariantName = providerInvariantName
             ?? this.Connection.GetType().Namespace;
 
-         this.Configuration = new DatabaseConfiguration(providerInvariantName);
+         this.Configuration = new DatabaseConfiguration(
+            providerInvariantName
+            , () => CreateCommandBuilder(providerInvariantName)
+         );
 
          Initialize2(providerInvariantName);
       }
@@ -163,6 +167,16 @@ namespace DbExtensions {
          DbProviderFactory factory = factories.GetOrAdd(providerInvariantName, n => DbProviderFactories.GetFactory(n));
 
          return factory;
+      }
+
+      DbCommandBuilder CreateCommandBuilder(string providerInvariantName) {
+
+         DbConnection dbConn = this.Connection as DbConnection;
+
+         DbProviderFactory factory = ((dbConn != null) ? DbProviderFactories.GetFactory(dbConn) : null)
+            ?? GetProviderFactory(providerInvariantName);
+
+         return factory.CreateCommandBuilder();
       }
 
       /// <summary>
@@ -738,6 +752,15 @@ namespace DbExtensions {
 
    public sealed partial class DatabaseConfiguration {
 
+      static readonly Func<DbCommandBuilder, int, string> getParameterNameI =
+         (Func<DbCommandBuilder, int, string>)Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, int, string>), typeof(DbCommandBuilder).GetMethod("GetParameterName", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, new[] { typeof(int) }, null));
+
+      static readonly Func<DbCommandBuilder, string, string> getParameterNameS =
+         (Func<DbCommandBuilder, string, string>)Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, string, string>), typeof(DbCommandBuilder).GetMethod("GetParameterName", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, new[] { typeof(string) }, null));
+
+      static readonly Func<DbCommandBuilder, int, string> getParameterPlaceholder =
+         (Func<DbCommandBuilder, int, string>)Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, int, string>), typeof(DbCommandBuilder).GetMethod("GetParameterPlaceholder", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, new[] { typeof(int) }, null));
+
       /// <summary>
       /// The connection string to use as default.
       /// </summary>
@@ -790,7 +813,7 @@ namespace DbExtensions {
 
       internal SqlDialect SqlDialect { get; set; }
 
-      internal DatabaseConfiguration(string providerInvariantName) {
+      internal DatabaseConfiguration(string providerInvariantName, Func<DbCommandBuilder> cbFn = null) {
 
          if (providerInvariantName == null) throw new ArgumentNullException(nameof(providerInvariantName));
 
@@ -820,9 +843,41 @@ namespace DbExtensions {
                   || providerInvariantName.StartsWith("System.Data.SqlServerCe.")) {
 
                   this.SqlDialect = SqlDialect.TSql;
+
+               } else {
+
+                  DbCommandBuilder cb = cbFn?.Invoke();
+
+                  if (cb != null) {
+                     Initialize(cb);
+                  }
                }
 
                break;
+         }
+      }
+
+      void Initialize(DbCommandBuilder cb) {
+
+         string qp = cb.QuotePrefix;
+         string qs = cb.QuoteSuffix;
+
+         if (!String.IsNullOrEmpty(qp)
+            || !String.IsNullOrEmpty(qs)) {
+
+            this.QuotePrefix = qp;
+            this.QuoteSuffix = qs;
+         }
+
+         this.ParameterNameBuilder = (name) => getParameterNameS(cb, name);
+
+         string pName = getParameterNameI(cb, 1);
+         string pPlace = getParameterPlaceholder(cb, 1);
+
+         if (!(Object.ReferenceEquals(pName, pPlace)
+            || pName == pPlace)) {
+
+            this.ParameterPlaceholderBuilder = (paramName) => pPlace.Replace(pName, paramName);
          }
       }
    }
