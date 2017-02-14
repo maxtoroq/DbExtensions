@@ -299,7 +299,8 @@ namespace DbExtensions {
 
                   if (exact) {
                      errorMessage = String.Format(CultureInfo.InvariantCulture, "The number of affected records should be {0}, the actual number is {1}.", affect, affectedRecords);
-                  } else {
+
+                  } else if (affectedRecords > affect) {
                      errorMessage = String.Format(CultureInfo.InvariantCulture, "The number of affected records should be {0} or lower, the actual number is {1}.", affect, affectedRecords);
                   }
 
