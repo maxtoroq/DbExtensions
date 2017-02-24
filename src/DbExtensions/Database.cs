@@ -421,6 +421,12 @@ namespace DbExtensions {
             command.Transaction = transaction;
          }
 
+         int commandTimeout = this.Configuration.CommandTimeout;
+
+         if (commandTimeout > -1) {
+            command.CommandTimeout = commandTimeout;
+         }
+
          if (parameters == null || parameters.Length == 0) {
             command.CommandText = commandText;
             return command;
@@ -811,6 +817,12 @@ namespace DbExtensions {
       /// </summary>
 
       public TextWriter Log { get; set; }
+
+      /// <summary>
+      /// Specifies a timeout to assign to commands. This setting is ignored if less or equal to -1. The default is -1.
+      /// </summary>
+
+      public int CommandTimeout { get; set; } = -1;
 
       internal SqlDialect SqlDialect { get; set; }
 
