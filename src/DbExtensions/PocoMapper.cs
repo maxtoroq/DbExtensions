@@ -370,7 +370,8 @@ namespace DbExtensions {
       }
 
       void SetProperty(ref object instance, object value) {
-         this.Setter.Invoke(instance, new object[1] { value });
+          if (value == null) return;
+          Setter.Invoke(instance, new object[1] { Convert.ChangeType(value, this.UnderlyingType, System.Globalization.CultureInfo.InvariantCulture) });
       }
 
       public override ConstructorInfo[] GetConstructors(BindingFlags bindingAttr) {
