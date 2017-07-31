@@ -37,8 +37,8 @@ Methods
 ![Public method] | [AsEnumerable][12]                                                        | Gets all elements in the set. The query is deferred-executed. (Inherited from [SqlSet][4].)                                                                                                                                            
 ![Public method] | [Cast(Type)][13]                                                          | Casts the elements of the set to the specified type.                                                                                                                                                                                   
 ![Public method] | [Cast&lt;TEntity>()][14]                                                  | Casts the current **SqlTable** to the generic [SqlTable&lt;TEntity>][1] instance.                                                                                                                                                      
-![Public method] | [Contains][15]                                                            | Checks the existance of the *entity*, using the primary key value.                                                                                                                                                                     
-![Public method] | [ContainsKey][16]                                                         | Checks the existance of an entity whose primary matches the *id* parameter.                                                                                                                                                            
+![Public method] | [Contains][15]                                                            | Checks the existance of the *entity*, using the primary key value. (Inherited from [SqlSet][4].)                                                                                                                                       
+![Public method] | [ContainsKey][16]                                                         | Checks the existance of an entity whose primary matches the *id* parameter. (Inherited from [SqlSet][4].)                                                                                                                              
 ![Public method] | [Count()][17]                                                             | Returns the number of elements in the set. (Inherited from [SqlSet][4].)                                                                                                                                                               
 ![Public method] | [Count(String, Object[])][18]                                             | Returns a number that represents how many elements in the set satisfy a condition. (Inherited from [SqlSet][4].)                                                                                                                       
 ![Public method] | [Find][19]                                                                | Gets the entity whose primary key matches the *id* parameter. (Inherited from [SqlSet][4].)                                                                                                                                            
@@ -104,8 +104,8 @@ See Also
 [12]: ../SqlSet/AsEnumerable.md
 [13]: Cast.md
 [14]: Cast__1.md
-[15]: Contains.md
-[16]: ContainsKey.md
+[15]: ../SqlSet/Contains.md
+[16]: ../SqlSet/ContainsKey.md
 [17]: ../SqlSet/Count.md
 [18]: ../SqlSet/Count_1.md
 [19]: ../SqlSet/Find.md

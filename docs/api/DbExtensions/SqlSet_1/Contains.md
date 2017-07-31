@@ -1,6 +1,6 @@
-SqlTable.ContainsKey Method
-===========================
-Checks the existance of an entity whose primary matches the *id* parameter.
+SqlSet&lt;TResult>.Contains Method (Object)
+===========================================
+Checks the existance of the *entity*, using the primary key value.
 
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -9,26 +9,30 @@ Syntax
 ------
 
 ```csharp
-public bool ContainsKey(
-	Object id
+public bool Contains(
+	Object entity
 )
 ```
 
 #### Parameters
 
-##### *id*
+##### *entity*
 Type: [System.Object][2]  
-The primary key value.
+The entity whose existance is to be checked.
 
 #### Return Value
 Type: [Boolean][3]  
 true if the primary key value exists in the database; otherwise false.
 
+Remarks
+-------
+ This method can only be used on sets where the result type is an annotated class. 
+
 See Also
 --------
 
 #### Reference
-[SqlTable Class][4]  
+[SqlSet&lt;TResult> Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
