@@ -409,7 +409,7 @@ namespace DbExtensions {
       /// </remarks>
 
       [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-      public IDbCommand CreateCommand(string commandText, params object[] parameters) {
+      public virtual IDbCommand CreateCommand(string commandText, params object[] parameters) {
 
          if (commandText == null) throw new ArgumentNullException(nameof(commandText));
 
