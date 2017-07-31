@@ -510,7 +510,7 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all its
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all their
       /// one-to-one and one-to-many associations.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
