@@ -24,10 +24,6 @@ The primary key value.
 Type: [Boolean][3]  
 true if the primary key value exists in the database; otherwise false.
 
-Remarks
--------
- This method can only be used on sets where the result type is an annotated class. 
-
 See Also
 --------
 

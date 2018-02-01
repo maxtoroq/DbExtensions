@@ -345,13 +345,13 @@ namespace DbExtensions {
          this.table.RemoveRange(entities);
       }
 
-      /// <inheritdoc cref="SqlSet.Contains(Object)"/>
+      /// <inheritdoc cref="SqlSet.Contains(Object)" select="*[not(self::remarks)]"/>
 
       public new bool Contains(object entity) {
          return base.Contains(entity);
       }
 
-      /// <inheritdoc cref="SqlSet.ContainsKey(Object)"/>
+      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" select="*[not(self::remarks)]"/>
 
       public new bool ContainsKey(object id) {
          return base.ContainsKey(id);
@@ -777,13 +777,13 @@ namespace DbExtensions {
          }
       }
 
-      /// <inheritdoc cref="SqlSet&lt;TEntity>.Contains(TEntity)"/>
+      /// <inheritdoc cref="SqlSet&lt;TEntity>.Contains(TEntity)" select="*[not(self::remarks)]"/>
 
       public new bool Contains(TEntity entity) {
          return base.Contains(entity);
       }
 
-      /// <inheritdoc cref="SqlSet.ContainsKey(Object)"/>
+      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" select="*[not(self::remarks)]"/>
 
       public new bool ContainsKey(object id) {
          return base.ContainsKey(id);
