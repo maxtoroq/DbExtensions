@@ -16,7 +16,7 @@ function script:DownloadNuGet {
 }
 
 function script:RestorePackages {
-   &$nuget restore $solutionPath\DbExtensions.sln
+   ../restore-packages.ps1
 }
 
 function script:NuSpec {
