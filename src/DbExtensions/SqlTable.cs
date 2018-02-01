@@ -345,6 +345,18 @@ namespace DbExtensions {
          this.table.RemoveRange(entities);
       }
 
+      /// <inheritdoc cref="SqlSet.Contains(Object)"/>
+
+      public new bool Contains(object entity) {
+         return base.Contains(entity);
+      }
+
+      /// <inheritdoc cref="SqlSet.ContainsKey(Object)"/>
+
+      public new bool ContainsKey(object id) {
+         return base.ContainsKey(id);
+      }
+
       /// <inheritdoc cref="SqlTable&lt;TEntity>.Refresh(TEntity)"/>
 
       public void Refresh(object entity) {
@@ -763,6 +775,18 @@ namespace DbExtensions {
                tx.Commit();
             }
          }
+      }
+
+      /// <inheritdoc cref="SqlSet&lt;TEntity>.Contains(TEntity)"/>
+
+      public new bool Contains(TEntity entity) {
+         return base.Contains(entity);
+      }
+
+      /// <inheritdoc cref="SqlSet.ContainsKey(Object)"/>
+
+      public new bool ContainsKey(object id) {
+         return base.ContainsKey(id);
       }
 
       /// <summary>
