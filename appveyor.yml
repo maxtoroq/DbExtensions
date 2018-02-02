@@ -4,4 +4,4 @@ before_build:
 version: '{build}'
 
 services:
-  - mssql2014
+  - mssql2012
