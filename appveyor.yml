@@ -1,0 +1,7 @@
+before_build:
+  - ps: .\build\restore-packages.ps1
+
+version: '{build}'
+
+services:
+  - mssql2016
