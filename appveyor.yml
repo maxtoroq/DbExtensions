@@ -3,5 +3,8 @@ before_build:
 
 version: '{build}'
 
+build:
+  verbosity: minimal
+
 services:
-  - mssql2012
+  - mssql2012sp1
