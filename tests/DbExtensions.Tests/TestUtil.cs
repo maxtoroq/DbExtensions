@@ -17,7 +17,7 @@ namespace DbExtensions.Tests {
       public static Database SqlServerDatabase() {
 
          DbConnection conn = System.Data.SqlClient.SqlClientFactory.Instance.CreateConnection();
-         conn.ConnectionString = @"Data Source=(localdb)\v11.0;";
+         conn.ConnectionString = @"Data Source=(localdb)\mssqllocaldb;";
 
          return new Database(conn);
       }
@@ -25,7 +25,7 @@ namespace DbExtensions.Tests {
       public static Database SqlServerNorthwindDatabase() {
 
          DbConnection conn = System.Data.SqlClient.SqlClientFactory.Instance.CreateConnection();
-         conn.ConnectionString = $@"Data Source=(localdb)\v11.0; AttachDbFileName={Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\samples\App\bin\Debug\Northwind\Northwind.mdf"))}; Integrated Security=true; MultipleActiveResultSets=true";
+         conn.ConnectionString = $@"Data Source=(localdb)\mssqllocaldb; AttachDbFileName={Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\samples\App\bin\Debug\Northwind\Northwind.mdf"))}; Integrated Security=true; MultipleActiveResultSets=true";
 
          return new Database(conn);
       }
