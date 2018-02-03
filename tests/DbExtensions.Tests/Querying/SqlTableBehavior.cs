@@ -35,6 +35,32 @@ namespace DbExtensions.Tests.Querying {
 
          db.Table<SqlTable.Model2.Product>().First();
       }
+
+      [TestMethod]
+      public void Can_Update_Assigned_Key() {
+
+         Database db = new SqlTable.Model3.NorthwindDatabase();
+         var table = db.Table<SqlTable.Model3.Customer>();
+
+         string originalId = "FISSA";
+         string newId = "FOO";
+
+         using (var tx = db.EnsureInTransaction()) {
+
+            var cust1 = table.Find(originalId);
+
+            Assert.IsNotNull(cust1);
+
+            cust1.CustomerID = newId;
+
+            table.Update(cust1, originalId);
+
+            Assert.IsTrue(table.ContainsKey(newId));
+            Assert.IsFalse(table.ContainsKey(originalId));
+
+            tx.Rollback();
+         }
+      }
    }
 
    namespace SqlTable {
@@ -59,6 +85,25 @@ namespace DbExtensions.Tests.Querying {
 
             [Column]
             public string ProductName { get; set; }
+         }
+      }
+
+      namespace Model3 {
+
+         public class NorthwindDatabase : Database {
+
+            public NorthwindDatabase()
+               : base(SqlServerNorthwindConnection()) { }
+         }
+
+         [Table(Name = "Customers")]
+         public class Customer {
+
+            [Column(IsPrimaryKey = true)]
+            public string CustomerID { get; set; }
+
+            [Column]
+            public string CompanyName { get; set; }
          }
       }
    }

@@ -31,18 +31,19 @@ The **SqlCommandBuilder<TEntity>** type exposes the following members.
 Methods
 -------
 
-                 | Name                                | Description                                                                                                                                                        
----------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ 
-![Public method] | [BuildDeleteStatement][5]           | Creates and returns a DELETE command for the current table that includes the DELETE and FROM clauses.                                                              
-![Public method] | [BuildDeleteStatementForEntity][6]  | Creates and returns a DELETE command for the specified *entity*.                                                                                                   
-![Public method] | [BuildDeleteStatementForKey][7]     | Creates and returns a DELETE command for the entity whose primary key matches the *id* parameter.                                                                  
-![Public method] | [BuildInsertStatementForEntity][8]  | Creates and returns an INSERT command for the specified *entity*.                                                                                                  
-![Public method] | [BuildSelectClause()][9]            | Creates and returns a SELECT query for the current table that includes the SELECT clause only.                                                                     
-![Public method] | [BuildSelectClause(String)][10]     | Creates and returns a SELECT query for the current table that includes the SELECT clause only. All column names are qualified with the provided *tableAlias*.      
-![Public method] | [BuildSelectStatement()][11]        | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses.                                                                
-![Public method] | [BuildSelectStatement(String)][12]  | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses. All column names are qualified with the provided *tableAlias*. 
-![Public method] | [BuildUpdateClause][13]             | Creates and returns an UPDATE command for the current table that includes the UPDATE clause.                                                                       
-![Public method] | [BuildUpdateStatementForEntity][14] | Creates and returns an UPDATE command for the specified *entity*.                                                                                                  
+                 | Name                                                 | Description                                                                                                                                                        
+---------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ 
+![Public method] | [BuildDeleteStatement][5]                            | Creates and returns a DELETE command for the current table that includes the DELETE and FROM clauses.                                                              
+![Public method] | [BuildDeleteStatementForEntity][6]                   | Creates and returns a DELETE command for the specified *entity*.                                                                                                   
+![Public method] | [BuildDeleteStatementForKey][7]                      | Creates and returns a DELETE command for the entity whose primary key matches the *id* parameter.                                                                  
+![Public method] | [BuildInsertStatementForEntity][8]                   | Creates and returns an INSERT command for the specified *entity*.                                                                                                  
+![Public method] | [BuildSelectClause()][9]                             | Creates and returns a SELECT query for the current table that includes the SELECT clause only.                                                                     
+![Public method] | [BuildSelectClause(String)][10]                      | Creates and returns a SELECT query for the current table that includes the SELECT clause only. All column names are qualified with the provided *tableAlias*.      
+![Public method] | [BuildSelectStatement()][11]                         | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses.                                                                
+![Public method] | [BuildSelectStatement(String)][12]                   | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses. All column names are qualified with the provided *tableAlias*. 
+![Public method] | [BuildUpdateClause][13]                              | Creates and returns an UPDATE command for the current table that includes the UPDATE clause.                                                                       
+![Public method] | [BuildUpdateStatementForEntity(TEntity)][14]         | Creates and returns an UPDATE command for the specified *entity*.                                                                                                  
+![Public method] | [BuildUpdateStatementForEntity(TEntity, Object)][15] | Creates and returns an UPDATE command for the specified *entity*.                                                                                                  
 
 
 See Also
@@ -65,4 +66,5 @@ See Also
 [12]: BuildSelectStatement_1.md
 [13]: BuildUpdateClause.md
 [14]: BuildUpdateStatementForEntity.md
+[15]: BuildUpdateStatementForEntity_1.md
 [Public method]: ../../_icons/pubmethod.gif "Public method"

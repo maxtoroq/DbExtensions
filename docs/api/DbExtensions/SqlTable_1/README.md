@@ -78,10 +78,11 @@ Methods
 ![Public method] | [ToArray][46]                                                             | Creates an array from the set. (Inherited from [SqlSet&lt;TResult>][1].)                                                                                                                                                                           
 ![Public method] | [ToList][47]                                                              | Creates a List&lt;TResult> from the set. (Inherited from [SqlSet&lt;TResult>][1].)                                                                                                                                                                 
 ![Public method] | [ToString][48]                                                            | Returns the SQL query of the set. (Inherited from [SqlSet][4].)                                                                                                                                                                                    
-![Public method] | [Update][49]                                                              | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                             
-![Public method] | [UpdateRange(IEnumerable&lt;TEntity>)][50]                                | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                             
-![Public method] | [UpdateRange(TEntity[])][51]                                              | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                             
-![Public method] | [Where][52]                                                               | Filters the set based on a predicate. (Inherited from [SqlSet&lt;TResult>][1].)                                                                                                                                                                    
+![Public method] | [Update(TEntity)][49]                                                     | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                             
+![Public method] | [Update(TEntity, Object)][50]                                             | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                             
+![Public method] | [UpdateRange(IEnumerable&lt;TEntity>)][51]                                | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                             
+![Public method] | [UpdateRange(TEntity[])][52]                                              | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                             
+![Public method] | [Where][53]                                                               | Filters the set based on a predicate. (Inherited from [SqlSet&lt;TResult>][1].)                                                                                                                                                                    
 
 
 Properties
@@ -89,8 +90,8 @@ Properties
 
                    | Name                 | Description                                                                                    
 ------------------ | -------------------- | ---------------------------------------------------------------------------------------------- 
-![Public property] | [CommandBuilder][53] | Gets a [SqlCommandBuilder&lt;TEntity>][54] object for the current table.                       
-![Public property] | [ResultType][55]     | The type of objects this set returns. This property can be null. (Inherited from [SqlSet][4].) 
+![Public property] | [CommandBuilder][54] | Gets a [SqlCommandBuilder&lt;TEntity>][55] object for the current table.                       
+![Public property] | [ResultType][56]     | The type of objects this set returns. This property can be null. (Inherited from [SqlSet][4].) 
 
 
 See Also
@@ -148,11 +149,12 @@ See Also
 [47]: ../SqlSet_1/ToList.md
 [48]: ../SqlSet/ToString.md
 [49]: Update.md
-[50]: UpdateRange.md
-[51]: UpdateRange_1.md
-[52]: ../SqlSet_1/Where.md
-[53]: CommandBuilder.md
-[54]: ../SqlCommandBuilder_1/README.md
-[55]: ../SqlSet/ResultType.md
+[50]: Update_1.md
+[51]: UpdateRange.md
+[52]: UpdateRange_1.md
+[53]: ../SqlSet_1/Where.md
+[54]: CommandBuilder.md
+[55]: ../SqlCommandBuilder_1/README.md
+[56]: ../SqlSet/ResultType.md
 [Public method]: ../../_icons/pubmethod.gif "Public method"
 [Public property]: ../../_icons/pubproperty.gif "Public property"

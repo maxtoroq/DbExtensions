@@ -96,11 +96,15 @@ namespace DbExtensions {
          return table;
       }
 
-      internal string BuildPredicateFragment(object entity, ICollection<MetaDataMember> predicateMembers, ICollection<object> parametersBuffer) {
+      internal string BuildPredicateFragment(
+            object entity,
+            ICollection<MetaDataMember> predicateMembers,
+            ICollection<object> parametersBuffer,
+            Func<MetaDataMember, object> getValueFn = null) {
 
          var predicateValues = predicateMembers.ToDictionary(
             m => m.MappedName,
-            m => m.GetValueForDatabase(entity)
+            m => (getValueFn != null) ? getValueFn(m) : m.GetValueForDatabase(entity)
          );
 
          return BuildPredicateFragment(predicateValues, parametersBuffer);
@@ -307,6 +311,12 @@ namespace DbExtensions {
 
       public void Update(object entity) {
          this.table.Update(entity);
+      }
+
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Update(TEntity, Object)"/>
+
+      public void Update(object entity, object originalId) {
+         this.table.Update(entity, originalId);
       }
 
       /// <inheritdoc cref="SqlTable&lt;TEntity>.UpdateRange(IEnumerable&lt;TEntity>)"/>
@@ -593,10 +603,18 @@ namespace DbExtensions {
       /// <param name="entity">The entity whose UPDATE command is to be executed.</param>
 
       public void Update(TEntity entity) {
+         Update(entity, null);
+      }
+
+      /// <inheritdoc cref="Update(TEntity)"/>
+      /// <param name="originalId">The original primary key value.</param>
+      /// <remarks>This overload is helpful when the entity uses an assigned primary key.</remarks>
+
+      public void Update(TEntity entity, object originalId) {
 
          if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-         SqlBuilder updateSql = this.CommandBuilder.BuildUpdateStatementForEntity(entity);
+         SqlBuilder updateSql = this.CommandBuilder.BuildUpdateStatementForEntity(entity, originalId);
 
          MetaDataMember[] syncMembers =
             (from m in this.metaType.PersistentDataMembers
@@ -847,6 +865,10 @@ namespace DbExtensions {
          Update((TEntity)entity);
       }
 
+      void ISqlTable.Update(object entity, object originalId) {
+         Update((TEntity)entity, originalId);
+      }
+
       void ISqlTable.UpdateRange(IEnumerable<object> entities) {
          UpdateRange((IEnumerable<TEntity>)entities);
       }
@@ -1039,6 +1061,14 @@ namespace DbExtensions {
       /// <returns>The UPDATE command for <paramref name="entity"/>.</returns>
 
       public SqlBuilder BuildUpdateStatementForEntity(TEntity entity) {
+         return BuildUpdateStatementForEntity(entity, null);
+      }
+
+      /// <inheritdoc cref="BuildUpdateStatementForEntity(TEntity)"/>
+      /// <param name="originalId">The original primary key value.</param>
+      /// <remarks>This overload is helpful when the entity uses an assigned primary key.</remarks>
+
+      public SqlBuilder BuildUpdateStatementForEntity(TEntity entity, object originalId) {
 
          if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -1053,6 +1083,12 @@ namespace DbExtensions {
             (from m in this.metaType.PersistentDataMembers
              where m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember)
              select m).ToArray();
+
+         if (originalId != null
+            && predicateMembers.Count(m => m.IsPrimaryKey) > 1) {
+
+            throw new InvalidOperationException("The operation is not supported for entities with more than one identity member.");
+         }
 
          var parametersBuffer = new List<object>(updatingMembers.Length + predicateMembers.Length);
 
@@ -1079,9 +1115,18 @@ namespace DbExtensions {
             parametersBuffer.Add(value);
          }
 
+         Func<MetaDataMember, object> getValuefn = null;
+
+         if (originalId != null) {
+
+            getValuefn = m => (m.IsPrimaryKey) ?
+               m.ConvertValueForDatabase(originalId)
+               : m.GetValueForDatabase(entity);
+         }
+
          sb.AppendLine()
             .Append("WHERE ")
-            .Append(this.db.BuildPredicateFragment(entity, predicateMembers, parametersBuffer));
+            .Append(this.db.BuildPredicateFragment(entity, predicateMembers, parametersBuffer, getValuefn));
 
          return new SqlBuilder(sb.ToString(), parametersBuffer.ToArray());
       }
@@ -1586,6 +1631,7 @@ namespace DbExtensions {
       void Refresh(object entity);
 
       void Update(object entity);
+      void Update(object entity, object originalId);
       void UpdateRange(IEnumerable<object> entities);
       void UpdateRange(params object[] entities);
    }

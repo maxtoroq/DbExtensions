@@ -35,7 +35,7 @@ namespace DbExtensions.Tests {
          return new Database(conn);
       }
 
-      public static Database SqlServerNorthwindDatabase() {
+      public static DbConnection SqlServerNorthwindConnection() {
 
          var builder = new SqlConnectionStringBuilder();
          builder.DataSource = @"(localdb)\mssqllocaldb";
@@ -52,7 +52,11 @@ namespace DbExtensions.Tests {
          DbConnection conn = SqlClientFactory.Instance.CreateConnection();
          conn.ConnectionString = builder.ToString();
 
-         return new Database(conn);
+         return conn;
+      }
+
+      public static Database SqlServerNorthwindDatabase() {
+         return new Database(SqlServerNorthwindConnection());
       }
 
       public static bool SqlEquals(SqlSet set, SqlBuilder query) {
