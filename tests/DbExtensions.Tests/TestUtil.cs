@@ -15,7 +15,10 @@ namespace DbExtensions.Tests {
 
          DbConnection conn = MySqlClientFactory.Instance.CreateConnection();
 
-         return new Database(conn);
+         var db = new Database(conn);
+         db.Configuration.Log = Console.Out;
+
+         return db;
       }
 
       public static Database SqlServerDatabase() {
@@ -32,7 +35,10 @@ namespace DbExtensions.Tests {
          DbConnection conn = SqlClientFactory.Instance.CreateConnection();
          conn.ConnectionString = builder.ToString();
 
-         return new Database(conn);
+         var db = new Database(conn);
+         db.Configuration.Log = Console.Out;
+
+         return db;
       }
 
       public static DbConnection SqlServerNorthwindConnection() {
@@ -56,7 +62,11 @@ namespace DbExtensions.Tests {
       }
 
       public static Database SqlServerNorthwindDatabase() {
-         return new Database(SqlServerNorthwindConnection());
+
+         var db = new Database(SqlServerNorthwindConnection());
+         db.Configuration.Log = Console.Out;
+
+         return db;
       }
 
       public static bool SqlEquals(SqlSet set, SqlBuilder query) {

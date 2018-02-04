@@ -1307,12 +1307,11 @@ namespace DbExtensions {
 
          MetaType metaType = predicateMembers[0].DeclaringType;
 
-         SqlCommandBuilder<object> cmdBuilder = this.db.Table(metaType).CommandBuilder;
+         var predicateParams = new List<object>(predicateValues.Count);
 
-         SqlBuilder query = cmdBuilder.BuildSelectStatement(new[] { predicateMembers[0] });
-         query.WHERE(this.db.BuildPredicateFragment(predicateValues, query.ParameterValues));
-
-         return this.db.From(query).Any();
+         return Where(this.db.BuildPredicateFragment(predicateValues, predicateParams), predicateParams.ToArray())
+            .Select(this.db.SelectBody(metaType, predicateMembers, null))
+            .Any();
       }
 
       /// <summary>
