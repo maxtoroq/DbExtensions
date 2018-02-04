@@ -76,6 +76,7 @@
     <Compile Include="Querying\SqlSetBehavior.cs" />
     <Compile Include="Querying\SqlSetIncludeBehavior.cs" />
     <Compile Include="Querying\SqlTableBehavior.cs" />
+    <Compile Include="Querying\SqlSetAnnotatedBehavior.cs" />
     <Compile Include="TestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
