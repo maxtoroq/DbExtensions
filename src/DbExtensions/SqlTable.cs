@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2016 Max Toro Q.
+﻿// Copyright 2012-2018 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -80,12 +80,6 @@ namespace DbExtensions {
          return Table(this.Configuration.Model.GetMetaType(entityType));
       }
 
-      /// <summary>
-      /// Returns the <see cref="SqlTable"/> instance for the specified <paramref name="metaType"/>.
-      /// </summary>
-      /// <param name="metaType">The <see cref="MetaType"/> of the entity.</param>
-      /// <returns>The <see cref="SqlTable"/> instance for <paramref name="metaType"/>.</returns>
-
       internal SqlTable Table(MetaType metaType) {
 
          SqlTable table;
@@ -102,11 +96,15 @@ namespace DbExtensions {
          return table;
       }
 
-      internal string BuildPredicateFragment(object entity, ICollection<MetaDataMember> predicateMembers, ICollection<object> parametersBuffer) {
+      internal string BuildPredicateFragment(
+            object entity,
+            ICollection<MetaDataMember> predicateMembers,
+            ICollection<object> parametersBuffer,
+            Func<MetaDataMember, object> getValueFn = null) {
 
          var predicateValues = predicateMembers.ToDictionary(
             m => m.MappedName,
-            m => m.GetValueForDatabase(entity)
+            m => (getValueFn != null) ? getValueFn(m) : m.GetValueForDatabase(entity)
          );
 
          return BuildPredicateFragment(predicateValues, parametersBuffer);
@@ -315,6 +313,12 @@ namespace DbExtensions {
          this.table.Update(entity);
       }
 
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.Update(TEntity, Object)"/>
+
+      public void Update(object entity, object originalId) {
+         this.table.Update(entity, originalId);
+      }
+
       /// <inheritdoc cref="SqlTable&lt;TEntity>.UpdateRange(IEnumerable&lt;TEntity>)"/>
 
       public void UpdateRange(IEnumerable<object> entities) {
@@ -351,16 +355,16 @@ namespace DbExtensions {
          this.table.RemoveRange(entities);
       }
 
-      /// <inheritdoc cref="SqlTable&lt;TEntity>.Contains(TEntity)"/>
+      /// <inheritdoc cref="SqlSet.Contains(Object)" select="*[not(self::remarks)]"/>
 
-      public bool Contains(object entity) {
-         return this.table.Contains(entity);
+      public new bool Contains(object entity) {
+         return base.Contains(entity);
       }
 
-      /// <inheritdoc cref="SqlTable&lt;TEntity>.ContainsKey(Object)"/>
+      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" select="*[not(self::remarks)]"/>
 
-      public bool ContainsKey(object id) {
-         return this.table.ContainsKey(id);
+      public new bool ContainsKey(object id) {
+         return base.ContainsKey(id);
       }
 
       /// <inheritdoc cref="SqlTable&lt;TEntity>.Refresh(TEntity)"/>
@@ -430,7 +434,7 @@ namespace DbExtensions {
 
                object id = this.db.LastInsertId();
                object convertedId = Convert.ChangeType(id, idMember.Type, CultureInfo.InvariantCulture);
-               object entityObj = (object)entity;
+               object entityObj = entity;
 
                idMember.MemberAccessor.SetBoxedValue(ref entityObj, convertedId);
             }
@@ -528,7 +532,7 @@ namespace DbExtensions {
       }
 
       /// <summary>
-      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all its
+      /// Recursively executes INSERT commands for the specified <paramref name="entities"/> and all their
       /// one-to-one and one-to-many associations.
       /// </summary>
       /// <param name="entities">The entities whose INSERT commands are to be executed.</param>
@@ -599,10 +603,18 @@ namespace DbExtensions {
       /// <param name="entity">The entity whose UPDATE command is to be executed.</param>
 
       public void Update(TEntity entity) {
+         Update(entity, null);
+      }
+
+      /// <inheritdoc cref="Update(TEntity)"/>
+      /// <param name="originalId">The original primary key value.</param>
+      /// <remarks>This overload is helpful when the entity uses an assigned primary key.</remarks>
+
+      public void Update(TEntity entity, object originalId) {
 
          if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-         SqlBuilder updateSql = this.CommandBuilder.BuildUpdateStatementForEntity(entity);
+         SqlBuilder updateSql = this.CommandBuilder.BuildUpdateStatementForEntity(entity, originalId);
 
          MetaDataMember[] syncMembers =
             (from m in this.metaType.PersistentDataMembers
@@ -783,66 +795,16 @@ namespace DbExtensions {
          }
       }
 
-      /// <summary>
-      /// Checks the existance of the <paramref name="entity"/>, using the primary key value.
-      /// </summary>
-      /// <param name="entity">The entity whose existance is to be checked.</param>
-      /// <returns>true if the primary key value exists in the database; otherwise false.</returns>
+      /// <inheritdoc cref="SqlSet&lt;TEntity>.Contains(TEntity)" select="*[not(self::remarks)]"/>
 
-      public bool Contains(TEntity entity) {
-
-         if (entity == null) throw new ArgumentNullException(nameof(entity));
-
-         EnsureEntityType();
-
-         MetaDataMember[] predicateMembers =
-            (from m in this.metaType.PersistentDataMembers
-             where m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember)
-             select m).ToArray();
-
-         IDictionary<string, object> predicateValues = predicateMembers.ToDictionary(
-            m => m.MappedName,
-            m => m.GetValueForDatabase(entity)
-         );
-
-         return Contains(predicateMembers, predicateValues);
+      public new bool Contains(TEntity entity) {
+         return base.Contains(entity);
       }
 
-      /// <summary>
-      /// Checks the existance of an entity whose primary matches the <paramref name="id"/> parameter.
-      /// </summary>
-      /// <param name="id">The primary key value.</param>
-      /// <returns>true if the primary key value exists in the database; otherwise false.</returns>
+      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" select="*[not(self::remarks)]"/>
 
-      public bool ContainsKey(object id) {
-         return ContainsKey(new object[1] { id });
-      }
-
-      bool ContainsKey(object[] keyValues) {
-
-         if (keyValues == null) throw new ArgumentNullException(nameof(keyValues));
-
-         EnsureEntityType();
-
-         MetaDataMember[] predicateMembers = this.metaType.IdentityMembers.ToArray();
-
-         if (keyValues.Length != predicateMembers.Length) {
-            throw new ArgumentException("The Length of keyValues must match the number of identity members.", nameof(keyValues));
-         }
-
-         IDictionary<string, object> predicateValues =
-            Enumerable.Range(0, predicateMembers.Length)
-               .ToDictionary(i => predicateMembers[i].MappedName, i => predicateMembers[i].ConvertValueForDatabase(keyValues[i]));
-
-         return Contains(predicateMembers, predicateValues);
-      }
-
-      bool Contains(MetaDataMember[] predicateMembers, IDictionary<string, object> predicateValues) {
-
-         SqlBuilder query = this.CommandBuilder.BuildSelectStatement(new[] { predicateMembers[0] });
-         query.WHERE(this.db.BuildPredicateFragment(predicateValues, query.ParameterValues));
-
-         return this.db.From(query).Any();
+      public new bool ContainsKey(object id) {
+         return base.ContainsKey(id);
       }
 
       /// <summary>
@@ -865,7 +827,7 @@ namespace DbExtensions {
 
          Mapper mapper = this.db.CreatePocoMapper(this.metaType.Type);
 
-         object entityObj = (object)entity;
+         object entityObj = entity;
 
          this.db.Map<object>(query, r => {
             mapper.Load(ref entityObj, r);
@@ -903,6 +865,10 @@ namespace DbExtensions {
          Update((TEntity)entity);
       }
 
+      void ISqlTable.Update(object entity, object originalId) {
+         Update((TEntity)entity, originalId);
+      }
+
       void ISqlTable.UpdateRange(IEnumerable<object> entities) {
          UpdateRange((IEnumerable<TEntity>)entities);
       }
@@ -931,10 +897,6 @@ namespace DbExtensions {
          if (entities == null) throw new ArgumentNullException(nameof(entities));
 
          RemoveRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
-      }
-
-      bool ISqlTable.Contains(object entity) {
-         return Contains((TEntity)entity);
       }
 
       void ISqlTable.Refresh(object entity) {
@@ -1099,6 +1061,14 @@ namespace DbExtensions {
       /// <returns>The UPDATE command for <paramref name="entity"/>.</returns>
 
       public SqlBuilder BuildUpdateStatementForEntity(TEntity entity) {
+         return BuildUpdateStatementForEntity(entity, null);
+      }
+
+      /// <inheritdoc cref="BuildUpdateStatementForEntity(TEntity)"/>
+      /// <param name="originalId">The original primary key value.</param>
+      /// <remarks>This overload is helpful when the entity uses an assigned primary key.</remarks>
+
+      public SqlBuilder BuildUpdateStatementForEntity(TEntity entity, object originalId) {
 
          if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -1113,6 +1083,12 @@ namespace DbExtensions {
             (from m in this.metaType.PersistentDataMembers
              where m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember)
              select m).ToArray();
+
+         if (originalId != null
+            && predicateMembers.Count(m => m.IsPrimaryKey) > 1) {
+
+            throw new InvalidOperationException("The operation is not supported for entities with more than one identity member.");
+         }
 
          var parametersBuffer = new List<object>(updatingMembers.Length + predicateMembers.Length);
 
@@ -1139,9 +1115,18 @@ namespace DbExtensions {
             parametersBuffer.Add(value);
          }
 
+         Func<MetaDataMember, object> getValuefn = null;
+
+         if (originalId != null) {
+
+            getValuefn = m => (m.IsPrimaryKey) ?
+               m.ConvertValueForDatabase(originalId)
+               : m.GetValueForDatabase(entity);
+         }
+
          sb.AppendLine()
             .Append("WHERE ")
-            .Append(this.db.BuildPredicateFragment(entity, predicateMembers, parametersBuffer));
+            .Append(this.db.BuildPredicateFragment(entity, predicateMembers, parametersBuffer, getValuefn));
 
          return new SqlBuilder(sb.ToString(), parametersBuffer.ToArray());
       }
@@ -1242,6 +1227,94 @@ namespace DbExtensions {
 
    partial class SqlSet {
 
+      MetaType EnsureEntityType(int maxIdMembers = -1) {
+
+         Type resultType = this.ResultType;
+
+         if (resultType == null) {
+            throw new InvalidOperationException("The operation is not supported on untyped sets.");
+         }
+
+         MetaType metaType = this.db.Configuration.Model.GetMetaType(resultType);
+
+         if (metaType == null) {
+            throw new InvalidOperationException($"Mapping information was not found for '{resultType.FullName}'.");
+         }
+
+         SqlTable.EnsureEntityType(metaType);
+
+         if (maxIdMembers > 0
+            && metaType.IdentityMembers.Count > maxIdMembers) {
+
+            throw new InvalidOperationException("The operation is not supported for entities with more than one identity member.");
+         }
+
+         return metaType;
+      }
+
+      /// <summary>
+      /// Checks the existance of the <paramref name="entity"/>, using the primary key value.
+      /// </summary>
+      /// <param name="entity">The entity whose existance is to be checked.</param>
+      /// <returns>true if the primary key value exists in the database; otherwise false.</returns>
+      /// <remarks>
+      /// This method can only be used on sets where the result type is an annotated class.
+      /// </remarks>
+
+      public bool Contains(object entity) {
+
+         if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+         MetaType metaType = EnsureEntityType();
+
+         MetaDataMember[] predicateMembers =
+            (from m in metaType.PersistentDataMembers
+             where m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember)
+             select m).ToArray();
+
+         IDictionary<string, object> predicateValues = predicateMembers.ToDictionary(
+            m => m.MappedName,
+            m => m.GetValueForDatabase(entity)
+         );
+
+         return ContainsImpl(predicateMembers, predicateValues);
+      }
+
+      /// <summary>
+      /// Checks the existance of an entity whose primary matches the <paramref name="id"/> parameter.
+      /// </summary>
+      /// <param name="id">The primary key value.</param>
+      /// <returns>true if the primary key value exists in the database; otherwise false.</returns>
+      /// <remarks>
+      /// This method can only be used on sets where the result type is an annotated class.
+      /// </remarks>
+
+      public bool ContainsKey(object id) {
+
+         MetaType metaType = EnsureEntityType(maxIdMembers: 1);
+         MetaDataMember idMember = metaType.IdentityMembers[0];
+
+         MetaDataMember[] predicateMembers = new[] { idMember };
+
+         var predicateValues = new Dictionary<string, object> {
+            { idMember.MappedName, idMember.ConvertValueForDatabase(id) }
+         };
+
+         return ContainsImpl(predicateMembers, predicateValues);
+      }
+
+      bool ContainsImpl(MetaDataMember[] predicateMembers, IDictionary<string, object> predicateValues) {
+
+         MetaType metaType = predicateMembers[0].DeclaringType;
+
+         SqlCommandBuilder<object> cmdBuilder = this.db.Table(metaType).CommandBuilder;
+
+         SqlBuilder query = cmdBuilder.BuildSelectStatement(new[] { predicateMembers[0] });
+         query.WHERE(this.db.BuildPredicateFragment(predicateValues, query.ParameterValues));
+
+         return this.db.From(query).Any();
+      }
+
       /// <summary>
       /// Gets the entity whose primary key matches the <paramref name="id"/> parameter.
       /// </summary>
@@ -1255,34 +1328,14 @@ namespace DbExtensions {
       /// </remarks>
 
       public object Find(object id) {
-         return FindImpl(this, id).SingleOrDefault();
+         return FindImpl(id).SingleOrDefault();
       }
 
-      internal static SqlSet FindImpl(SqlSet source, object id) {
+      internal SqlSet FindImpl(object id) {
 
-         if (source == null) throw new ArgumentNullException(nameof(source));
          if (id == null) throw new ArgumentNullException(nameof(id));
 
-         Database db = source.db;
-         Type resultType = source.ResultType;
-
-         if (resultType == null) {
-            throw new InvalidOperationException("Find operation is not supported on untyped sets.");
-         }
-
-         MetaType metaType = db.Configuration.Model.GetMetaType(resultType);
-
-         if (metaType == null) {
-            throw new InvalidOperationException($"Mapping information was not found for '{resultType.FullName}'.");
-         }
-
-         if (metaType.IdentityMembers.Count == 0) {
-            throw new InvalidOperationException("The entity has no identity members defined.");
-
-         } else if (metaType.IdentityMembers.Count > 1) {
-            throw new InvalidOperationException("Cannot call this method when the entity has more than one identity member.");
-         }
-
+         MetaType metaType = EnsureEntityType(maxIdMembers: 1);
          MetaDataMember idMember = metaType.IdentityMembers[0];
 
          var predicateValues = new Dictionary<string, object> {
@@ -1292,7 +1345,7 @@ namespace DbExtensions {
          var parameters = new List<object>(predicateValues.Count);
          string predicate = db.BuildPredicateFragment(predicateValues, parameters);
 
-         return source.Where(predicate, parameters.ToArray());
+         return Where(predicate, parameters.ToArray());
       }
 
       /// <summary>
@@ -1534,11 +1587,24 @@ namespace DbExtensions {
 
    partial class SqlSet<TResult> {
 
+      /// <inheritdoc cref="SqlSet.Contains(Object)"/>
+
+      [EditorBrowsable(EditorBrowsableState.Never)]
+      public new bool Contains(object entity) {
+         return Contains((TResult)entity);
+      }
+
+      /// <inheritdoc cref="SqlSet.Contains(Object)"/>
+
+      public bool Contains(TResult entity) {
+         return base.Contains(entity);
+      }
+
       /// <inheritdoc cref="SqlSet.Find(Object)"/>
 
       [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Need to keep result type same as input type.")]
       public new TResult Find(object id) {
-         return ((SqlSet<TResult>)FindImpl(this, id)).SingleOrDefault();
+         return ((SqlSet<TResult>)FindImpl(id)).SingleOrDefault();
       }
 
       /// <inheritdoc cref="SqlSet.Include(String)"/>
@@ -1551,9 +1617,6 @@ namespace DbExtensions {
    }
 
    interface ISqlTable {
-
-      bool Contains(object entity);
-      bool ContainsKey(object id);
 
       void Remove(object entity);
       void RemoveKey(object id);
@@ -1568,6 +1631,7 @@ namespace DbExtensions {
       void Refresh(object entity);
 
       void Update(object entity);
+      void Update(object entity, object originalId);
       void UpdateRange(IEnumerable<object> entities);
       void UpdateRange(params object[] entities);
    }

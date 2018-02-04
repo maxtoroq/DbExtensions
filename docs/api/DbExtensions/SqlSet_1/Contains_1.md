@@ -1,5 +1,5 @@
-SqlTable&lt;TEntity>.Contains Method (TEntity)
-==============================================
+SqlSet&lt;TResult>.Contains Method (TResult)
+============================================
 Checks the existance of the *entity*, using the primary key value.
 
 **Namespace:** [DbExtensions][1]  
@@ -10,25 +10,29 @@ Syntax
 
 ```csharp
 public bool Contains(
-	TEntity entity
+	TResult entity
 )
 ```
 
 #### Parameters
 
 ##### *entity*
-Type: [TEntity][2]  
+Type: [TResult][2]  
 The entity whose existance is to be checked.
 
 #### Return Value
 Type: [Boolean][3]  
 true if the primary key value exists in the database; otherwise false.
 
+Remarks
+-------
+ This method can only be used on sets where the result type is an annotated class. 
+
 See Also
 --------
 
 #### Reference
-[SqlTable&lt;TEntity> Class][2]  
+[SqlSet&lt;TResult> Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md

@@ -1,5 +1,5 @@
-SqlTable&lt;TEntity>.Update Method (TEntity)
-============================================
+SqlTable&lt;TEntity>.Update Method (TEntity, Object)
+====================================================
 Executes an UPDATE command for the specified *entity*.
 
 **Namespace:** [DbExtensions][1]  
@@ -10,7 +10,8 @@ Syntax
 
 ```csharp
 public void Update(
-	TEntity entity
+	TEntity entity,
+	Object originalId
 )
 ```
 
@@ -20,6 +21,14 @@ public void Update(
 Type: [TEntity][2]  
 The entity whose UPDATE command is to be executed.
 
+##### *originalId*
+Type: [System.Object][3]  
+The original primary key value.
+
+
+Remarks
+-------
+This overload is helpful when the entity uses an assigned primary key.
 
 See Also
 --------
@@ -30,3 +39,4 @@ See Also
 
 [1]: ../README.md
 [2]: README.md
+[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b

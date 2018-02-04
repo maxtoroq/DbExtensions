@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public IDbCommand CreateCommand(
+public virtual IDbCommand CreateCommand(
 	string commandText,
 	params Object[] parameters
 )

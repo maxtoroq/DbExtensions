@@ -29,8 +29,8 @@ Methods
                  | Name                                                                      | Description                                                                                                                                                                                                                            
 ---------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 ![Public method] | [Add][6]                                                                  | Recursively executes INSERT commands for the specified *entity* and all its one-to-one and one-to-many associations.                                                                                                                   
-![Public method] | [AddRange(IEnumerable&lt;Object>)][7]                                     | Recursively executes INSERT commands for the specified *entities* and all its one-to-one and one-to-many associations.                                                                                                                 
-![Public method] | [AddRange(Object[])][8]                                                   | Recursively executes INSERT commands for the specified *entities* and all its one-to-one and one-to-many associations.                                                                                                                 
+![Public method] | [AddRange(IEnumerable&lt;Object>)][7]                                     | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations.                                                                                                               
+![Public method] | [AddRange(Object[])][8]                                                   | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations.                                                                                                               
 ![Public method] | [All][9]                                                                  | Determines whether all elements of the set satisfy a condition. (Inherited from [SqlSet][4].)                                                                                                                                          
 ![Public method] | [Any()][10]                                                               | Determines whether the set contains any elements. (Inherited from [SqlSet][4].)                                                                                                                                                        
 ![Public method] | [Any(String, Object[])][11]                                               | Determines whether any element of the set satisfies a condition. (Inherited from [SqlSet][4].)                                                                                                                                         
@@ -69,10 +69,11 @@ Methods
 ![Public method] | [ToArray][45]                                                             | Creates an array from the set. (Inherited from [SqlSet][4].)                                                                                                                                                                           
 ![Public method] | [ToList][46]                                                              | Creates a List&lt;object> from the set. (Inherited from [SqlSet][4].)                                                                                                                                                                  
 ![Public method] | [ToString][47]                                                            | Returns the SQL query of the set. (Inherited from [SqlSet][4].)                                                                                                                                                                        
-![Public method] | [Update][48]                                                              | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                 
-![Public method] | [UpdateRange(IEnumerable&lt;Object>)][49]                                 | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                 
-![Public method] | [UpdateRange(Object[])][50]                                               | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                 
-![Public method] | [Where][51]                                                               | Filters the set based on a predicate. (Inherited from [SqlSet][4].)                                                                                                                                                                    
+![Public method] | [Update(Object)][48]                                                      | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                 
+![Public method] | [Update(Object, Object)][49]                                              | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                 
+![Public method] | [UpdateRange(IEnumerable&lt;Object>)][50]                                 | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                 
+![Public method] | [UpdateRange(Object[])][51]                                               | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                 
+![Public method] | [Where][52]                                                               | Filters the set based on a predicate. (Inherited from [SqlSet][4].)                                                                                                                                                                    
 
 
 Properties
@@ -80,8 +81,8 @@ Properties
 
                    | Name                 | Description                                                                                    
 ------------------ | -------------------- | ---------------------------------------------------------------------------------------------- 
-![Public property] | [CommandBuilder][52] | Gets a [SqlCommandBuilder&lt;TEntity>][53] object for the current table.                       
-![Public property] | [ResultType][54]     | The type of objects this set returns. This property can be null. (Inherited from [SqlSet][4].) 
+![Public property] | [CommandBuilder][53] | Gets a [SqlCommandBuilder&lt;TEntity>][54] object for the current table.                       
+![Public property] | [ResultType][55]     | The type of objects this set returns. This property can be null. (Inherited from [SqlSet][4].) 
 
 
 See Also
@@ -138,11 +139,12 @@ See Also
 [46]: ../SqlSet/ToList.md
 [47]: ../SqlSet/ToString.md
 [48]: Update.md
-[49]: UpdateRange.md
-[50]: UpdateRange_1.md
-[51]: ../SqlSet/Where.md
-[52]: CommandBuilder.md
-[53]: ../SqlCommandBuilder_1/README.md
-[54]: ../SqlSet/ResultType.md
+[49]: Update_1.md
+[50]: UpdateRange.md
+[51]: UpdateRange_1.md
+[52]: ../SqlSet/Where.md
+[53]: CommandBuilder.md
+[54]: ../SqlCommandBuilder_1/README.md
+[55]: ../SqlSet/ResultType.md
 [Public method]: ../../_icons/pubmethod.gif "Public method"
 [Public property]: ../../_icons/pubproperty.gif "Public property"

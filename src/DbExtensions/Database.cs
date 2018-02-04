@@ -1,4 +1,4 @@
-﻿// Copyright 2009-2016 Max Toro Q.
+﻿// Copyright 2009-2018 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -409,7 +409,7 @@ namespace DbExtensions {
       /// </remarks>
 
       [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-      public IDbCommand CreateCommand(string commandText, params object[] parameters) {
+      public virtual IDbCommand CreateCommand(string commandText, params object[] parameters) {
 
          if (commandText == null) throw new ArgumentNullException(nameof(commandText));
 
@@ -419,6 +419,12 @@ namespace DbExtensions {
 
          if (transaction != null) {
             command.Transaction = transaction;
+         }
+
+         int commandTimeout = this.Configuration.CommandTimeout;
+
+         if (commandTimeout > -1) {
+            command.CommandTimeout = commandTimeout;
          }
 
          if (parameters == null || parameters.Length == 0) {
@@ -811,6 +817,12 @@ namespace DbExtensions {
       /// </summary>
 
       public TextWriter Log { get; set; }
+
+      /// <summary>
+      /// Specifies a timeout to assign to commands. This setting is ignored if less or equal to -1. The default is -1.
+      /// </summary>
+
+      public int CommandTimeout { get; set; } = -1;
 
       internal SqlDialect SqlDialect { get; set; }
 
