@@ -136,8 +136,9 @@ namespace Samples {
 
          string projectFileName = projectFile.Split(Path.DirectorySeparatorChar).Last();
          string assemblyFileName = String.Join(".", projectFileName.Split('.').Reverse().Skip(1).Reverse()) + ".dll";
-         string assemblyPath = Path.Combine(projectDir, "bin", "Debug", assemblyFileName);
-         Assembly samplesAssembly = Assembly.Load(File.ReadAllBytes(assemblyPath));
+         string assemblyPath = new Uri(Path.Combine(projectDir, "bin", "Debug", assemblyFileName)).LocalPath;
+
+         Assembly samplesAssembly = Assembly.LoadFrom(assemblyPath);
 
          Type dbType = samplesAssembly.GetTypes()
             .Where(t => typeof(Database).IsAssignableFrom(t))
