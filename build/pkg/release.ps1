@@ -10,13 +10,15 @@ Push-Location (Split-Path $script:MyInvocation.MyCommand.Path)
 
 $solutionPath = Resolve-Path ..\..
 $nuget = Join-Path $solutionPath .nuget\nuget.exe
+$configuration = "Release"
 
-function script:DownloadNuGet {
-   ../ensure-nuget.ps1
+function script:ProjectPath([string]$projName) {
+   Resolve-Path $solutionPath\src\$projName
 }
 
-function script:RestorePackages {
-   ../restore-packages.ps1
+function script:ProjectFile([string]$projName) {
+   $projPath = ProjectPath $projName
+   return "$projPath\$projName.csproj"
 }
 
 function script:NuSpec {
@@ -41,8 +43,8 @@ function script:NuSpec {
       "<tags>ado.net orm micro-orm</tags>"
 
       "<frameworkAssemblies>"
-         "<frameworkAssembly assemblyName='System.Core'/>"
-         "<frameworkAssembly assemblyName='System.Data'/>"
+         "<frameworkAssembly assemblyName='System.Core' targetFramework='$targetFxMoniker'/>"
+         "<frameworkAssembly assemblyName='System.Data' targetFramework='$targetFxMoniker'/>"
       "</frameworkAssemblies>"
    }
 
@@ -54,15 +56,62 @@ function script:NuSpec {
       "<file src='$projPath\bin\Release\$projName.dll' target='lib\$targetFxMoniker'/>"
       "<file src='$projPath\bin\Release\$projName.pdb' target='lib\$targetFxMoniker'/>"
       "<file src='$solutionPath\build\docs\api\xml\$projName.xml' target='lib\$targetFxMoniker'/>"
+
+   if ($projName -eq "DbExtensions") {
+
+      $coreTargetFx = $coreProjDoc.DocumentElement.SelectSingleNode("*/*[local-name() = 'TargetFramework']").InnerText
+      $coreTargetFxMoniker = $coreTargetFx
+
+      "<file src='$coreProjPath\bin\Release\$coreTargetFxMoniker\$projName.dll' target='lib\$coreTargetFxMoniker'/>"
+      "<file src='$coreProjPath\bin\Release\$coreTargetFxMoniker\$projName.pdb' target='lib\$coreTargetFxMoniker'/>"
+      "<file src='$solutionPath\build\docs\api\xml\$projName.xml' target='lib\$coreTargetFxMoniker'/>"
+   }
+
    "</files>"
 
    "</package>"
 }
 
+function script:Build([xml]$projDoc, [string]$projFile) {
+
+   ## Add signature to project file
+
+   $signatureXml = "<ItemGroup $(if ($projFile.Contains("core")) { $null } else { "xmlns='http://schemas.microsoft.com/developer/msbuild/2003'" })>
+      <Compile Include='$signaturePath'>
+         <Link>AssemblySignature.cs</Link>
+      </Compile>
+   </ItemGroup>"
+
+   $signatureReader = [Xml.XmlReader]::Create((New-Object IO.StringReader $signatureXml))
+   $signatureReader.MoveToContent() | Out-Null
+
+   $signatureNode = $projDoc.ReadNode($signatureReader)
+
+   $projDoc.DocumentElement.AppendChild($signatureNode) | Out-Null
+   $signatureNode.RemoveAttribute("xmlns")
+
+   $projDoc.Save($projFile)
+
+   ## Build project and remove signature
+
+   MSBuild $projFile /p:Configuration=Release /p:BuildProjectReferences=false
+
+   $projDoc.DocumentElement.RemoveChild($signatureNode) | Out-Null
+   $projDoc.Save($projFile)
+}
+
 function script:NuPack([string]$projName) {
 
+   $pkgVersion = "$PackageVersion$(if ($PreRelease) { ""-$PreRelease"" } else { $null })"
    $projPath = Resolve-Path $solutionPath\src\$projName
    $projFile = "$projPath\$projName.csproj"
+
+   $coreProjName = "$($projName).netcore"
+   $coreProjPath = Resolve-Path $solutionPath\src\$coreProjName
+   $coreProjFile = "$coreProjPath\$coreProjName.csproj"
+
+   [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
+   $notice = $noticeDoc.DocumentElement
 
    if (-not (Test-Path temp -PathType Container)) {
       md temp | Out-Null
@@ -85,15 +134,9 @@ function script:NuPack([string]$projName) {
    $projDoc.PreserveWhitespace = $true
    $projDoc.Load($projFile)
 
-   ## Create nuspec using info from project file and notice
-
-   [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
-   $notice = $noticeDoc.DocumentElement
-
-   $pkgVersion = "$PackageVersion$(if ($PreRelease) { ""-$PreRelease"" } else { $null })"
-   $nuspecPath = "$tempPath\$projName.nuspec"
-
-   NuSpec | Out-File $nuspecPath -Encoding utf8
+   $coreProjDoc = New-Object Xml.XmlDocument
+   $coreProjDoc.PreserveWhitespace = $true
+   $coreProjDoc.Load($coreProjFile)
 
    ## Create assembly signature file
 
@@ -112,30 +155,16 @@ using System.Reflection;
 
    $signature | Out-File $signaturePath -Encoding utf8
 
-   ## Add signature to project file
+   ## Build project
 
-   $signatureXml = "<ItemGroup xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
-      <Compile Include='$signaturePath'>
-         <Link>AssemblySignature.cs</Link>
-      </Compile>
-   </ItemGroup>"
+   Build $projDoc $projFile
+   Build $coreProjDoc $coreProjFile
 
-   $signatureReader = [Xml.XmlReader]::Create((New-Object IO.StringReader $signatureXml))
-   $signatureReader.MoveToContent() | Out-Null
+   ## Create nuspec using info from project file and notice
 
-   $signatureNode = $projDoc.ReadNode($signatureReader)
+   $nuspecPath = "$tempPath\$projName.nuspec"
 
-   $projDoc.DocumentElement.AppendChild($signatureNode) | Out-Null
-   $signatureNode.RemoveAttribute("xmlns")
-
-   $projDoc.Save($projFile)
-
-   ## Build project and remove signature
-
-   MSBuild $projFile /p:Configuration=Release /p:BuildProjectReferences=false
-
-   $projDoc.DocumentElement.RemoveChild($signatureNode) | Out-Null
-   $projDoc.Save($projFile)
+   NuSpec | Out-File $nuspecPath -Encoding utf8
 
    ## Create package
 
@@ -144,8 +173,8 @@ using System.Reflection;
 
 try {
 
-   DownloadNuGet
-   RestorePackages
+   ../ensure-nuget.ps1
+   ../restore-packages.ps1
 
    if ($ProjectName -eq '*') {
       NuPack DbExtensions
