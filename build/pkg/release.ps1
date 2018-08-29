@@ -53,8 +53,8 @@ function script:NuSpec {
    "<files>"
       "<file src='$solutionPath\LICENSE.txt'/>"
       "<file src='$solutionPath\NOTICE.xml'/>"
-      "<file src='$projPath\bin\Release\$projName.dll' target='lib\$targetFxMoniker'/>"
-      "<file src='$projPath\bin\Release\$projName.pdb' target='lib\$targetFxMoniker'/>"
+      "<file src='$projPath\bin\$configuration\$projName.dll' target='lib\$targetFxMoniker'/>"
+      "<file src='$projPath\bin\$configuration\$projName.pdb' target='lib\$targetFxMoniker'/>"
       "<file src='$solutionPath\build\docs\api\xml\$projName.xml' target='lib\$targetFxMoniker'/>"
 
    if ($projName -eq "DbExtensions") {
@@ -62,8 +62,8 @@ function script:NuSpec {
       $coreTargetFx = $coreProjDoc.DocumentElement.SelectSingleNode("*/*[local-name() = 'TargetFramework']").InnerText
       $coreTargetFxMoniker = $coreTargetFx
 
-      "<file src='$coreProjPath\bin\Release\$coreTargetFxMoniker\$projName.dll' target='lib\$coreTargetFxMoniker'/>"
-      "<file src='$coreProjPath\bin\Release\$coreTargetFxMoniker\$projName.pdb' target='lib\$coreTargetFxMoniker'/>"
+      "<file src='$coreProjPath\bin\$configuration\$coreTargetFxMoniker\$projName.dll' target='lib\$coreTargetFxMoniker'/>"
+      "<file src='$coreProjPath\bin\$configuration\$coreTargetFxMoniker\$projName.pdb' target='lib\$coreTargetFxMoniker'/>"
       "<file src='$solutionPath\build\docs\api\xml\$projName.xml' target='lib\$coreTargetFxMoniker'/>"
    }
 
@@ -94,7 +94,7 @@ function script:Build([xml]$projDoc, [string]$projFile) {
 
    ## Build project and remove signature
 
-   MSBuild $projFile /p:Configuration=Release /p:BuildProjectReferences=false
+   MSBuild $projFile /p:Configuration=$configuration /p:BuildProjectReferences=false
 
    $projDoc.DocumentElement.RemoveChild($signatureNode) | Out-Null
    $projDoc.Save($projFile)
