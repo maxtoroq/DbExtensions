@@ -96,6 +96,137 @@ namespace DbExtensions {
          return table;
       }
 
+      /// <inheritdoc cref="SqlTable.Add(Object)"/>
+      /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Add(entity)</c>.</remarks>
+      /// <seealso cref="SqlTable.Add(Object)"/>
+
+      public void Add(object entity) {
+
+         if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+         Table(entity.GetType())
+            .Add(entity);
+      }
+
+      /// <inheritdoc cref="SqlSet&lt;TEntity>.Find(Object)" select="*[not(self::remarks)]"/>
+      /// <typeparam name="TEntity">The type of the entity.</typeparam>
+      /// <remarks>This method is a shortcut for <c>db.Table&lt;TEntity>().Find(id)</c>.</remarks>
+      /// <seealso cref="SqlSet&lt;TEntity>.Find(Object)"/>
+
+      public TEntity Find<TEntity>(object id) where TEntity : class {
+
+         return Table<TEntity>()
+            .Find(id);
+      }
+
+      /// <inheritdoc cref="SqlSet.Find(Object)" select="*[not(self::remarks)]"/>
+      /// <param name="entityType">The type of the entity.</param>
+      /// <remarks>This method is a shortcut for <c>db.Table(entityType).Find(id)</c>.</remarks>
+      /// <seealso cref="SqlSet.Find(Object)"/>
+
+      public object Find(Type entityType, object id) {
+
+         if (entityType == null) throw new ArgumentNullException(nameof(entityType));
+
+         return Table(entityType)
+            .Find(id);
+      }
+
+      /// <inheritdoc cref="SqlSet.Contains(Object)" select="*[not(self::remarks)]"/>
+      /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Contains(entity)</c>.</remarks>
+      /// <seealso cref="SqlSet.Contains(Object)"/>
+
+      public bool Contains(object entity) {
+
+         if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+         return Table(entity.GetType())
+            .Contains(entity);
+      }
+
+      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" select="*[not(self::remarks)]"/>
+      /// <typeparam name="TEntity">The type of the entity.</typeparam>
+      /// <remarks>This method is a shortcut for <c>db.Table&lt;TEntity>().ContainsKey(id)</c>.</remarks>
+      /// <seealso cref="SqlSet.ContainsKey(Object)"/>
+
+      public bool ContainsKey<TEntity>(object id) where TEntity : class {
+
+         return Table<TEntity>()
+            .ContainsKey(id);
+      }
+
+      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" select="*[not(self::remarks)]"/>
+      /// <param name="entityType">The type of the entity.</param>
+      /// <remarks>This method is a shortcut for <c>db.Table(entityType).ContainsKey(id)</c>.</remarks>
+      /// <seealso cref="SqlSet.ContainsKey(Object)"/>
+
+      public bool ContainsKey(Type entityType, object id) {
+
+         if (entityType == null) throw new ArgumentNullException(nameof(entityType));
+
+         return Table(entityType)
+            .ContainsKey(id);
+      }
+
+      /// <inheritdoc cref="SqlTable.Update(Object)"/>
+      /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Update(entity)</c>.</remarks>
+      /// <seealso cref="SqlTable.Update(Object)"/>
+
+      public void Update(object entity) {
+
+         if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+         Table(entity.GetType())
+            .Update(entity);
+      }
+
+      /// <inheritdoc cref="SqlTable.Update(Object, Object)"/>
+      /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Update(entity, originalId)</c>.</remarks>
+      /// <seealso cref="SqlTable.Update(Object, Object)"/>
+
+      public void Update(object entity, object originalId) {
+
+         if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+         Table(entity.GetType())
+            .Update(entity, originalId);
+      }
+
+      /// <inheritdoc cref="SqlTable.Remove(Object)"/>
+      /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Remove(entity)</c>.</remarks>
+      /// <seealso cref="SqlTable.Remove(Object)"/>
+
+      public void Remove(object entity) {
+
+         if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+         Table(entity.GetType())
+            .Remove(entity);
+      }
+
+      /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveKey(Object)"/>
+      /// <remarks>This method is a shortcut for <c>db.Table&lt;TEntity>().RemoveKey(id)</c>.</remarks>
+      /// <seealso cref="SqlTable&lt;TEntity>.RemoveKey(Object)"/>
+
+      public void RemoveKey<TEntity>(object id) where TEntity : class {
+
+         Table<TEntity>()
+            .RemoveKey(id);
+      }
+
+      /// <inheritdoc cref="SqlTable.RemoveKey(Object)"/>
+      /// <param name="entityType">The type of the entity.</param>
+      /// <remarks>This method is a shortcut for <c>db.Table(entityType).RemoveKey(id)</c>.</remarks>
+      /// <seealso cref="SqlTable.RemoveKey(Object)"/>
+
+      public void RemoveKey(Type entityType, object id) {
+
+         if (entityType == null) throw new ArgumentNullException(nameof(entityType));
+
+         Table(entityType)
+            .RemoveKey(id);
+      }
+
       internal string BuildPredicateFragment(
             object entity,
             ICollection<MetaDataMember> predicateMembers,
@@ -384,8 +515,7 @@ namespace DbExtensions {
    /// <typeparam name="TEntity">The type of the entity.</typeparam>
 
    [DebuggerDisplay("{metaType.Name}")]
-   public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable
-      where TEntity : class {
+   public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity : class {
 
       readonly MetaType metaType;
 
