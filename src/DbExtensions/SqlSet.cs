@@ -23,6 +23,13 @@ using System.Collections;
 
 namespace DbExtensions {
 
+   partial class SqlBuilder {
+
+      partial void GetDefiningQueryFromObject(object obj, ref SqlBuilder definingQuery) {
+         definingQuery = (obj as SqlSet)?.GetDefiningQuery();
+      }
+   }
+
    partial class Database {
 
       /// <summary>
