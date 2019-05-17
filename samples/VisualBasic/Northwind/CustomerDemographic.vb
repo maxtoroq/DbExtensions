@@ -8,15 +8,14 @@ Namespace Northwind
    Public Class CustomerDemographic
 
       <Column>
-      Public Property CustomerDesc As String
+      Property CustomerDesc As String
 
       <Column(IsPrimaryKey:=True)>
-      Public Property CustomerTypeID As String
+      Property CustomerTypeID As String
 
       <Association(OtherKey:=NameOf(CustomerCustomerDemo.CustomerTypeID))>
-      Public ReadOnly Property CustomerCustomerDemos As New Collection(Of CustomerCustomerDemo)
+      ReadOnly Property CustomerCustomerDemos As New Collection(Of CustomerCustomerDemo)
 
    End Class
 
 End Namespace
-

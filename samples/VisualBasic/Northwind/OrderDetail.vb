@@ -7,27 +7,26 @@ Namespace Northwind
    Public Class OrderDetail
 
       <Column>
-      Public Property Discount As Single
+      Property Discount As Single
 
       <Column(IsPrimaryKey:=True)>
-      Public Property OrderID As Integer
+      Property OrderID As Integer
 
       <Column(IsPrimaryKey:=True)>
-      Public Property ProductID As Integer
+      Property ProductID As Integer
 
       <Column>
-      Public Property Quantity As Short
+      Property Quantity As Short
 
       <Column>
-      Public Property UnitPrice As Decimal
+      Property UnitPrice As Decimal
 
       <Association(ThisKey:=NameOf(OrderID))>
-      Public Property Order As Order
+      Property Order As Order
 
       <Association(ThisKey:=NameOf(ProductID))>
-      Public Property Product As Product
+      Property Product As Product
 
    End Class
 
 End Namespace
-

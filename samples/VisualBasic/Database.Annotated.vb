@@ -10,7 +10,7 @@ Public Class DatabaseAnnotatedSamples
       Me.db = db
    End Sub
 
-   Public Function IncludeManyToOne() As IEnumerable(Of Product)
+   Function IncludeManyToOne() As IEnumerable(Of Product)
 
       Return db.Products _
          .Include("Category") _
@@ -20,7 +20,7 @@ Public Class DatabaseAnnotatedSamples
 
    End Function
 
-   Public Function IncludeManyToOneNested() As IEnumerable(Of EmployeeTerritory)
+   Function IncludeManyToOneNested() As IEnumerable(Of EmployeeTerritory)
 
       Return db.EmployeeTerritories _
          .Include("Territory.Region") _
@@ -29,7 +29,7 @@ Public Class DatabaseAnnotatedSamples
 
    End Function
 
-   Public Function IncludeOneToMany() As Region
+   Function IncludeOneToMany() As Region
 
       Return db.Regions _
          .Include("Territories") _

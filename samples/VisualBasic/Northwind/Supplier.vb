@@ -8,42 +8,41 @@ Namespace Northwind
    Public Class Supplier
 
       <Column>
-      Public Property Address As String
+      Property Address As String
 
       <Column>
-      Public Property City As String
+      Property City As String
 
       <Column>
-      Public Property CompanyName As String
+      Property CompanyName As String
 
       <Column>
-      Public Property ContactName As String
+      Property ContactName As String
 
       <Column>
-      Public Property ContactTitle As String
+      Property ContactTitle As String
 
       <Column>
-      Public Property Country As String
+      Property Country As String
 
       <Column>
-      Public Property Fax As String
+      Property Fax As String
 
       <Column>
-      Public Property Phone As String
+      Property Phone As String
 
       <Column>
-      Public Property PostalCode As String
+      Property PostalCode As String
 
       <Column>
-      Public Property [Region] As String
+      Property [Region] As String
 
       <Column(IsPrimaryKey:=True, IsDbGenerated:=True)>
-      Public Property SupplierID As Integer
+      Property SupplierID As Integer
 
       <Association(OtherKey:=NameOf(Product.SupplierID))>
-      Public ReadOnly Property Products As New Collection(Of Product)
+      ReadOnly Property Products As New Collection(Of Product)
 
    End Class
 
 End Namespace
-
