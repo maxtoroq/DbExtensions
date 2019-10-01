@@ -82,7 +82,7 @@ function script:Build([xml]$projDoc, [string]$projFile) {
 
    ## Add signature to project file
 
-   $signatureXml = "<ItemGroup $(if ($projFile.Contains(".net")) { $null } else { "xmlns='http://schemas.microsoft.com/developer/msbuild/2003'" })>
+   $signatureXml = "<ItemGroup xmlns='$($projDoc.DocumentElement.NamespaceURI)'>
       <Compile Include='$signaturePath'>
          <Link>AssemblySignature.cs</Link>
       </Compile>
