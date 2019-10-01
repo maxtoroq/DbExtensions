@@ -8,18 +8,17 @@ Namespace Northwind
    Public Class Shipper
 
       <Column>
-      Public Property CompanyName As String
+      Property CompanyName As String
 
       <Column>
-      Public Property Phone As String
+      Property Phone As String
 
       <Column(IsPrimaryKey:=True, IsDbGenerated:=True)>
-      Public Property ShipperID As Integer
+      Property ShipperID As Integer
 
       <Association(OtherKey:=NameOf(Order.ShipVia))>
-      Public ReadOnly Property Orders As New Collection(Of Order)
+      ReadOnly Property Orders As New Collection(Of Order)
 
    End Class
 
 End Namespace
-

@@ -131,6 +131,10 @@ namespace Samples.CSharp {
          this.Amount = amount;
          this.Currency = currency;
       }
+
+      public override string ToString() {
+         return this.Currency + this.Amount.ToString();
+      }
    }
 }
 

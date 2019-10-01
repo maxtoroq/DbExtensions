@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <CodeAnalysisRuleSet>..\DbExtensions.ruleset</CodeAnalysisRuleSet>
     <TargetFrameworkProfile />
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,7 +26,6 @@
     <DocumentationFile>bin\Debug\DbExtensions.xml</DocumentationFile>
     <NoWarn>1573</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

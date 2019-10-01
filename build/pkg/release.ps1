@@ -31,15 +31,16 @@ function script:NuSpec {
          "<id>$projName</id>"
          "<version>$pkgVersion</version>"
          "<authors>$($notice.authors)</authors>"
-         "<licenseUrl>$($notice.license.url)</licenseUrl>"
+         "<license type='expression'>$($notice.license.name)</license>"
          "<projectUrl>$($notice.website)</projectUrl>"
+         "<copyright>$($notice.copyright)</copyright>"
          "<iconUrl>$($notice.website)nuget/icon.png</iconUrl>"
+         "<repository type='git' url='https://github.com/maxtoroq/DbExtensions' commit='$(git rev-parse HEAD)'/>"
          "<releaseNotes>For a list of changes see $($notice.website)docs/changes.html</releaseNotes>"
 
    if ($projName -eq "DbExtensions") {
 
       "<description>DbExtensions is a data-access framework with a strong focus on query composition, granularity and code aesthetics. It supports both POCO and dynamic (untyped) mapping.</description>"
-      "<copyright>$($notice.copyright)</copyright>"
       "<tags>ado.net orm micro-orm</tags>"
 
       "<frameworkAssemblies>"
@@ -59,12 +60,17 @@ function script:NuSpec {
 
    if ($projName -eq "DbExtensions") {
 
-      $coreTargetFx = $coreProjDoc.DocumentElement.SelectSingleNode("*/*[local-name() = 'TargetFramework']").InnerText
-      $coreTargetFxMoniker = $coreTargetFx
+      $coreTargetFxMoniker = $coreProjDoc.DocumentElement.SelectSingleNode("*/*[local-name() = 'TargetFramework']").InnerText
 
       "<file src='$coreProjPath\bin\$configuration\$coreTargetFxMoniker\$projName.dll' target='lib\$coreTargetFxMoniker'/>"
       "<file src='$coreProjPath\bin\$configuration\$coreTargetFxMoniker\$projName.pdb' target='lib\$coreTargetFxMoniker'/>"
       "<file src='$solutionPath\build\docs\api\xml\$projName.xml' target='lib\$coreTargetFxMoniker'/>"
+
+      $stdTargetFxMoniker = $stdProjDoc.DocumentElement.SelectSingleNode("*/*[local-name() = 'TargetFramework']").InnerText
+
+      "<file src='$stdProjPath\bin\Release\$stdTargetFxMoniker\$projName.dll' target='lib\$stdTargetFxMoniker'/>"
+      "<file src='$stdProjPath\bin\Release\$stdTargetFxMoniker\$projName.pdb' target='lib\$stdTargetFxMoniker'/>"
+      "<file src='$solutionPath\build\docs\api\xml\$projName.xml' target='lib\$stdTargetFxMoniker'/>"
    }
 
    "</files>"
@@ -106,10 +112,6 @@ function script:NuPack([string]$projName) {
    $projPath = Resolve-Path $solutionPath\src\$projName
    $projFile = "$projPath\$projName.csproj"
 
-   $coreProjName = "$($projName).netcore"
-   $coreProjPath = Resolve-Path $solutionPath\src\$coreProjName
-   $coreProjFile = "$coreProjPath\$coreProjName.csproj"
-
    [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
    $notice = $noticeDoc.DocumentElement
 
@@ -134,9 +136,24 @@ function script:NuPack([string]$projName) {
    $projDoc.PreserveWhitespace = $true
    $projDoc.Load($projFile)
 
-   $coreProjDoc = New-Object Xml.XmlDocument
-   $coreProjDoc.PreserveWhitespace = $true
-   $coreProjDoc.Load($coreProjFile)
+   if ($projName -eq "DbExtensions") {
+
+      $coreProjName = "$($projName).netcore"
+      $coreProjPath = Resolve-Path $solutionPath\src\$coreProjName
+      $coreProjFile = "$coreProjPath\$coreProjName.csproj"
+
+      $coreProjDoc = New-Object Xml.XmlDocument
+      $coreProjDoc.PreserveWhitespace = $true
+      $coreProjDoc.Load($coreProjFile)
+
+      $stdProjName = "$($projName).netstd"
+      $stdProjPath = Resolve-Path $solutionPath\src\$stdProjName
+      $stdProjFile = "$stdProjPath\$stdProjName.csproj"
+
+      $stdProjDoc = New-Object Xml.XmlDocument
+      $stdProjDoc.PreserveWhitespace = $true
+      $stdProjDoc.Load($stdProjFile)
+   }
 
    ## Create assembly signature file
 
@@ -158,7 +175,11 @@ using System.Reflection;
    ## Build project
 
    Build $projDoc $projFile
-   Build $coreProjDoc $coreProjFile
+
+   if ($projName -eq "DbExtensions") {
+      Build $coreProjDoc $coreProjFile
+      Build $stdProjDoc $stdProjFile
+   }
 
    ## Create nuspec using info from project file and notice
 
@@ -173,8 +194,8 @@ using System.Reflection;
 
 try {
 
-   ../ensure-nuget.ps1
-   ../restore-packages.ps1
+   ..\ensure-nuget.ps1
+   ..\restore-packages.ps1
 
    if ($ProjectName -eq '*') {
       NuPack DbExtensions

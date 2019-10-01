@@ -8,15 +8,14 @@ Namespace Northwind
    Public Class [Region]
 
       <Column>
-      Public Property RegionDescription As String
+      Property RegionDescription As String
 
       <Column(IsPrimaryKey:=True)>
-      Public Property RegionID As Integer
+      Property RegionID As Integer
 
       <Association(OtherKey:=NameOf(Territory.RegionID))>
-      Public ReadOnly Property Territories As New Collection(Of Territory)
+      ReadOnly Property Territories As New Collection(Of Territory)
 
    End Class
 
 End Namespace
-

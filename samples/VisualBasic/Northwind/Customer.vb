@@ -8,45 +8,44 @@ Namespace Northwind
    Public Class Customer
 
       <Column>
-      Public Property Address As String
+      Property Address As String
 
       <Column>
-      Public Property City As String
+      Property City As String
 
       <Column>
-      Public Property CompanyName As String
+      Property CompanyName As String
 
       <Column>
-      Public Property ContactName As String
+      Property ContactName As String
 
       <Column>
-      Public Property ContactTitle As String
+      Property ContactTitle As String
 
       <Column>
-      Public Property Country As String
+      Property Country As String
 
       <Column(IsPrimaryKey:=True)>
-      Public Property CustomerID As String
+      Property CustomerID As String
 
       <Column>
-      Public Property Fax As String
+      Property Fax As String
 
       <Column>
-      Public Property Phone As String
+      Property Phone As String
 
       <Column>
-      Public Property PostalCode As String
+      Property PostalCode As String
 
       <Column>
-      Public Property [Region] As String
+      Property [Region] As String
 
       <Association(OtherKey:=NameOf(CustomerCustomerDemo.CustomerID))>
-      Public ReadOnly Property CustomerCustomerDemos As New Collection(Of CustomerCustomerDemo)
+      ReadOnly Property CustomerCustomerDemos As New Collection(Of CustomerCustomerDemo)
 
       <Association(OtherKey:=NameOf(Order.CustomerID))>
-      Public ReadOnly Property Orders As New Collection(Of Order)
+      ReadOnly Property Orders As New Collection(Of Order)
 
    End Class
 
 End Namespace
-

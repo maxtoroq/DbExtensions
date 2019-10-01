@@ -110,13 +110,13 @@ Public Class MappingToConstructorArgumentsSample
 
    Property Id As Integer
    Property Url As Uri
-   Property Price As Nullable(Of Money)
+   Property Price As Money?
 
    Sub New(id As Integer)
       Me.Id = id
    End Sub
 
-   Sub New(id As Integer, url As Uri, price As Nullable(Of Money))
+   Sub New(id As Integer, url As Uri, price As Money?)
       Me.New(id)
 
       Me.Url = url
@@ -135,12 +135,16 @@ Public Structure Money
       Me.Currency = currency
    End Sub
 
+   Overrides Function ToString() As String
+      Return Me.Currency + Me.Amount.ToString()
+   End Function
+
 End Structure
 
 Namespace Northwind
 
    Partial Class Product
-      Public Property ValueInStock As Decimal
+      Property ValueInStock As Decimal
    End Class
 
 End Namespace

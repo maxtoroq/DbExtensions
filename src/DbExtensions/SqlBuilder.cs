@@ -301,6 +301,10 @@ namespace DbExtensions {
 
                   var sqlb = obj as SqlBuilder;
 
+                  if (sqlb == null) {
+                     GetDefiningQueryFromObject(obj, ref sqlb);
+                  }
+
                   if (sqlb != null) {
 
                      var sqlfrag = new StringBuilder()
@@ -331,6 +335,8 @@ namespace DbExtensions {
 
          return this;
       }
+
+      partial void GetDefiningQueryFromObject(object obj, ref SqlBuilder definingQuery);
 
       string MakeAbsolutePlaceholders(SqlBuilder sql) {
          return String.Format(CultureInfo.InvariantCulture, sql.ToString(), Enumerable.Range(0, sql.ParameterValues.Count).Select(x => Placeholder(this.ParameterValues.Count + x)).ToArray());

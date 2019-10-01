@@ -67,5 +67,31 @@ namespace DbExtensions.Tests.Querying {
 
          Assert.AreEqual(1, query.ParameterValues.Count);
       }
+
+      [TestMethod]
+      public void Treat_SqlBuilder_As_SubQuery() {
+
+         var query = SQL
+            .SELECT("*")
+            .FROM("({0}) AS t0", SQL
+               .SELECT("{0}", 5));
+
+         Assert.AreEqual(1, query.ParameterValues.Count);
+         Assert.AreEqual(5, query.ParameterValues[0]);
+      }
+
+      [TestMethod]
+      public void Treat_SqlSet_As_SubQuery() {
+
+         var db = TestUtil.MySqlDatabase();
+
+         var query = SQL
+            .SELECT("*")
+            .FROM("({0}) AS t0", db.From(SQL
+               .SELECT("{0}", 5)));
+
+         Assert.AreEqual(1, query.ParameterValues.Count);
+         Assert.AreEqual(5, query.ParameterValues[0]);
+      }
    }
 }
