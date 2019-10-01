@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbExtensions.SqlSet", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbExtensions.netcore", "src\DbExtensions.netcore\DbExtensions.netcore.csproj", "{A33C7593-7CBB-4452-B88C-87A235AD2F82}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbExtensions.netstd", "src\DbExtensions.netstd\DbExtensions.netstd.csproj", "{5D8C0B69-AE03-456D-8BAE-4AD16161F31A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{A33C7593-7CBB-4452-B88C-87A235AD2F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A33C7593-7CBB-4452-B88C-87A235AD2F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A33C7593-7CBB-4452-B88C-87A235AD2F82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D8C0B69-AE03-456D-8BAE-4AD16161F31A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D8C0B69-AE03-456D-8BAE-4AD16161F31A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D8C0B69-AE03-456D-8BAE-4AD16161F31A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D8C0B69-AE03-456D-8BAE-4AD16161F31A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +89,7 @@ Global
 		{8FF5AACD-E8C4-483A-9B28-47C054B5F0F4} = {0796ED40-13E3-479B-BF86-4E451C52BA82}
 		{1FEA5F3E-4A62-4C61-A8B1-F6780B1B9D1F} = {0796ED40-13E3-479B-BF86-4E451C52BA82}
 		{A33C7593-7CBB-4452-B88C-87A235AD2F82} = {0796ED40-13E3-479B-BF86-4E451C52BA82}
+		{5D8C0B69-AE03-456D-8BAE-4AD16161F31A} = {0796ED40-13E3-479B-BF86-4E451C52BA82}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EA24D927-CCB4-4542-A972-0D435D5CF0A0}
