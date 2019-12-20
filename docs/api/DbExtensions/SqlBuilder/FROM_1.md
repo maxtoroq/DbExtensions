@@ -1,6 +1,6 @@
-SqlBuilder.FROM Method (String, Object[])
-=========================================
-Appends the FROM clause using the provided *format* string and parameters.
+SqlBuilder.FROM Method (SqlSet, String)
+=======================================
+Appends the FROM clause using the provided *subQuery* as body named after *alias*.
 
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -10,20 +10,20 @@ Syntax
 
 ```csharp
 public SqlBuilder FROM(
-	string format,
-	params Object[] args
+	SqlSet subQuery,
+	string alias
 )
 ```
 
 #### Parameters
 
-##### *format*
-Type: [System.String][2]  
-The format string that represents the body of the FROM clause.
+##### *subQuery*
+Type: [DbExtensions.SqlSet][2]  
+The sub-query to use as the body of the FROM clause.
 
-##### *args*
-Type: [System.Object][3][]  
-The parameters of the clause body.
+##### *alias*
+Type: [System.String][3]  
+The alias of the sub-query.
 
 #### Return Value
 Type: [SqlBuilder][4]  
@@ -37,6 +37,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[2]: ../SqlSet/README.md
+[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
 [4]: README.md

@@ -49,40 +49,42 @@ Methods
 ![Public method]                 | [DELETE_FROM][16]                                 | Appends the DELETE FROM clause using the provided *format* string and parameters.                                                                                          
 ![Public method]                 | [FROM(String, Object[])][17]                      | Appends the FROM clause using the provided *format* string and parameters.                                                                                                 
 ![Public method]                 | [FROM(SqlBuilder, String)][18]                    | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                                         
-![Public method]                 | [GROUP_BY()][19]                                  | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8]. 
-![Public method]                 | [GROUP_BY(String, Object[])][20]                  | Appends the GROUP BY clause using the provided *format* string and parameters.                                                                                             
-![Public method]                 | [HAVING()][21]                                    | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8].   
-![Public method]                 | [HAVING(String, Object[])][22]                    | Appends the HAVING clause using the provided *format* string and parameters.                                                                                               
-![Public method]                 | [INNER_JOIN][23]                                  | Appends the INNER JOIN clause using the provided *format* string and parameters.                                                                                           
-![Public method]                 | [Insert][24]                                      | Inserts a string into this instance at the specified character position.                                                                                                   
-![Public method]                 | [INSERT_INTO][25]                                 | Appends the INSERT INTO clause using the provided *format* string and parameters.                                                                                          
-![Public method]                 | [JOIN()][26]                                      | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8].     
-![Public method]                 | [JOIN(String, Object[])][27]                      | Appends the JOIN clause using the provided *format* string and parameters.                                                                                                 
-![Public method]![Static member] | [JoinSql(String, SqlBuilder[])][28]               | Concatenates a specified separator [String][29] between each element of a specified **SqlBuilder** array, yielding a single concatenated **SqlBuilder**.                   
-![Public method]![Static member] | [JoinSql(String, IEnumerable&lt;SqlBuilder>)][30] | Concatenates the members of a constructed [IEnumerable&lt;T>][31] collection of type **SqlBuilder**, using the specified *separator* between each member.                  
-![Public method]                 | [LEFT_JOIN][32]                                   | Appends the LEFT JOIN clause using the provided *format* string and parameters.                                                                                            
-![Public method]                 | [LIMIT()][33]                                     | Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8].    
-![Public method]                 | [LIMIT(Int32)][34]                                | Appends the LIMIT clause using the provided *maxRecords* parameter.                                                                                                        
-![Public method]                 | [LIMIT(String, Object[])][35]                     | Appends the LIMIT clause using the provided *format* string and parameters.                                                                                                
-![Public method]                 | [OFFSET()][36]                                    | Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8].   
-![Public method]                 | [OFFSET(Int32)][37]                               | Appends the OFFSET clause using the provided *startIndex* parameter.                                                                                                       
-![Public method]                 | [OFFSET(String, Object[])][38]                    | Appends the OFFSET clause using the provided *format* string and parameters.                                                                                               
-![Public method]                 | [ORDER_BY()][39]                                  | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8]. 
-![Public method]                 | [ORDER_BY(String, Object[])][40]                  | Appends the ORDER BY clause using the provided *format* string and parameters.                                                                                             
-![Public method]                 | [RIGHT_JOIN][41]                                  | Appends the RIGHT JOIN clause using the provided *format* string and parameters.                                                                                           
-![Public method]                 | [SELECT()][42]                                    | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8].   
-![Public method]                 | [SELECT(String, Object[])][43]                    | Appends the SELECT clause using the provided *format* string and parameters.                                                                                               
-![Public method]                 | [SET][44]                                         | Appends the SET clause using the provided *format* string and parameters.                                                                                                  
-![Public method]                 | [SetCurrentClause][45]                            | Sets *clauseName* as the current SQL clause.                                                                                                                               
-![Public method]                 | [SetNextClause][46]                               | Sets *clauseName* as the next SQL clause.                                                                                                                                  
-![Public method]                 | [ToString][47]                                    | Converts the value of this instance to a [String][29]. (Overrides [Object.ToString()][48].)                                                                                
-![Public method]                 | [UNION][49]                                       | Appends the UNION clause.                                                                                                                                                  
-![Public method]                 | [UPDATE][50]                                      | Appends the UPDATE clause using the provided *format* string and parameters.                                                                                               
-![Public method]                 | [VALUES][51]                                      | Appends the VALUES clause using the provided parameters.                                                                                                                   
-![Public method]                 | [WHERE()][52]                                     | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8].    
-![Public method]                 | [WHERE(String, Object[])][53]                     | Appends the WHERE clause using the provided *format* string and parameters.                                                                                                
-![Public method]                 | [WITH(String, Object[])][54]                      | Appends the WITH clause using the provided *format* string and parameters.                                                                                                 
-![Public method]                 | [WITH(SqlBuilder, String)][55]                    | Appends the WITH clause using the provided *subQuery* as body named after *alias*.                                                                                         
+![Public method]                 | [FROM(SqlSet, String)][19]                        | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                                         
+![Public method]                 | [GROUP_BY()][20]                                  | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8]. 
+![Public method]                 | [GROUP_BY(String, Object[])][21]                  | Appends the GROUP BY clause using the provided *format* string and parameters.                                                                                             
+![Public method]                 | [HAVING()][22]                                    | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8].   
+![Public method]                 | [HAVING(String, Object[])][23]                    | Appends the HAVING clause using the provided *format* string and parameters.                                                                                               
+![Public method]                 | [INNER_JOIN][24]                                  | Appends the INNER JOIN clause using the provided *format* string and parameters.                                                                                           
+![Public method]                 | [Insert][25]                                      | Inserts a string into this instance at the specified character position.                                                                                                   
+![Public method]                 | [INSERT_INTO][26]                                 | Appends the INSERT INTO clause using the provided *format* string and parameters.                                                                                          
+![Public method]                 | [JOIN()][27]                                      | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8].     
+![Public method]                 | [JOIN(String, Object[])][28]                      | Appends the JOIN clause using the provided *format* string and parameters.                                                                                                 
+![Public method]![Static member] | [JoinSql(String, SqlBuilder[])][29]               | Concatenates a specified separator [String][30] between each element of a specified **SqlBuilder** array, yielding a single concatenated **SqlBuilder**.                   
+![Public method]![Static member] | [JoinSql(String, IEnumerable&lt;SqlBuilder>)][31] | Concatenates the members of a constructed [IEnumerable&lt;T>][32] collection of type **SqlBuilder**, using the specified *separator* between each member.                  
+![Public method]                 | [LEFT_JOIN][33]                                   | Appends the LEFT JOIN clause using the provided *format* string and parameters.                                                                                            
+![Public method]                 | [LIMIT()][34]                                     | Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8].    
+![Public method]                 | [LIMIT(Int32)][35]                                | Appends the LIMIT clause using the provided *maxRecords* parameter.                                                                                                        
+![Public method]                 | [LIMIT(String, Object[])][36]                     | Appends the LIMIT clause using the provided *format* string and parameters.                                                                                                
+![Public method]                 | [OFFSET()][37]                                    | Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8].   
+![Public method]                 | [OFFSET(Int32)][38]                               | Appends the OFFSET clause using the provided *startIndex* parameter.                                                                                                       
+![Public method]                 | [OFFSET(String, Object[])][39]                    | Appends the OFFSET clause using the provided *format* string and parameters.                                                                                               
+![Public method]                 | [ORDER_BY()][40]                                  | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8]. 
+![Public method]                 | [ORDER_BY(String, Object[])][41]                  | Appends the ORDER BY clause using the provided *format* string and parameters.                                                                                             
+![Public method]                 | [RIGHT_JOIN][42]                                  | Appends the RIGHT JOIN clause using the provided *format* string and parameters.                                                                                           
+![Public method]                 | [SELECT()][43]                                    | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8].   
+![Public method]                 | [SELECT(String, Object[])][44]                    | Appends the SELECT clause using the provided *format* string and parameters.                                                                                               
+![Public method]                 | [SET][45]                                         | Appends the SET clause using the provided *format* string and parameters.                                                                                                  
+![Public method]                 | [SetCurrentClause][46]                            | Sets *clauseName* as the current SQL clause.                                                                                                                               
+![Public method]                 | [SetNextClause][47]                               | Sets *clauseName* as the next SQL clause.                                                                                                                                  
+![Public method]                 | [ToString][48]                                    | Converts the value of this instance to a [String][30]. (Overrides [Object.ToString()][49].)                                                                                
+![Public method]                 | [UNION][50]                                       | Appends the UNION clause.                                                                                                                                                  
+![Public method]                 | [UPDATE][51]                                      | Appends the UPDATE clause using the provided *format* string and parameters.                                                                                               
+![Public method]                 | [VALUES][52]                                      | Appends the VALUES clause using the provided parameters.                                                                                                                   
+![Public method]                 | [WHERE()][53]                                     | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][5] and [_If(Boolean, String, Object[])][8].    
+![Public method]                 | [WHERE(String, Object[])][54]                     | Appends the WHERE clause using the provided *format* string and parameters.                                                                                                
+![Public method]                 | [WITH(String, Object[])][55]                      | Appends the WITH clause using the provided *format* string and parameters.                                                                                                 
+![Public method]                 | [WITH(SqlBuilder, String)][56]                    | Appends the WITH clause using the provided *subQuery* as body named after *alias*.                                                                                         
+![Public method]                 | [WITH(SqlSet, String)][57]                        | Appends the WITH clause using the provided *subQuery* as body named after *alias*.                                                                                         
 
 
 Properties
@@ -90,18 +92,18 @@ Properties
 
                    | Name                   | Description                                                                                                                                                      
 ------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- 
-![Public property] | [Buffer][56]           | The underlying [StringBuilder][57].                                                                                                                              
-![Public property] | [CurrentClause][58]    | Gets or sets the current SQL clause, used to identify consecutive appends to the same clause.                                                                    
-![Public property] | [CurrentSeparator][59] | Gets or sets the separator of the current SQL clause body.                                                                                                       
-![Public property] | [IsEmpty][60]          | Returns true if the buffer is empty.                                                                                                                             
-![Public property] | [NextClause][61]       | Gets or sets the next SQL clause. Used by clause continuation methods, such as [AppendToCurrentClause(String, Object[])][6] and the methods that start with "_". 
-![Public property] | [NextSeparator][62]    | Gets or sets the separator of the next SQL clause body.                                                                                                          
-![Public property] | [ParameterValues][63]  | The parameter objects to be included in the database command.                                                                                                    
+![Public property] | [Buffer][58]           | The underlying [StringBuilder][59].                                                                                                                              
+![Public property] | [CurrentClause][60]    | Gets or sets the current SQL clause, used to identify consecutive appends to the same clause.                                                                    
+![Public property] | [CurrentSeparator][61] | Gets or sets the separator of the current SQL clause body.                                                                                                       
+![Public property] | [IsEmpty][62]          | Returns true if the buffer is empty.                                                                                                                             
+![Public property] | [NextClause][63]       | Gets or sets the next SQL clause. Used by clause continuation methods, such as [AppendToCurrentClause(String, Object[])][6] and the methods that start with "_". 
+![Public property] | [NextSeparator][64]    | Gets or sets the separator of the next SQL clause body.                                                                                                          
+![Public property] | [ParameterValues][65]  | The parameter objects to be included in the database command.                                                                                                    
 
 
 Remarks
 -------
-For information on how to use SqlBuilder see [SqlBuilder Tutorial][64].
+For information on how to use SqlBuilder see [SqlBuilder Tutorial][66].
 
 See Also
 --------
@@ -125,54 +127,56 @@ See Also
 [14]: Clone.md
 [15]: CROSS_JOIN.md
 [16]: DELETE_FROM.md
-[17]: FROM_1.md
+[17]: FROM_2.md
 [18]: FROM.md
-[19]: GROUP_BY.md
-[20]: GROUP_BY_1.md
-[21]: HAVING.md
-[22]: HAVING_1.md
-[23]: INNER_JOIN.md
-[24]: Insert.md
-[25]: INSERT_INTO.md
-[26]: JOIN.md
-[27]: JOIN_1.md
-[28]: JoinSql.md
-[29]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[30]: JoinSql_1.md
-[31]: http://msdn.microsoft.com/en-us/library/9eekhta0
-[32]: LEFT_JOIN.md
-[33]: LIMIT.md
-[34]: LIMIT_1.md
-[35]: LIMIT_2.md
-[36]: OFFSET.md
-[37]: OFFSET_1.md
-[38]: OFFSET_2.md
-[39]: ORDER_BY.md
-[40]: ORDER_BY_1.md
-[41]: RIGHT_JOIN.md
-[42]: SELECT.md
-[43]: SELECT_1.md
-[44]: SET.md
-[45]: SetCurrentClause.md
-[46]: SetNextClause.md
-[47]: ToString.md
-[48]: http://msdn.microsoft.com/en-us/library/7bxwbwt2
-[49]: UNION.md
-[50]: UPDATE.md
-[51]: VALUES.md
-[52]: WHERE.md
-[53]: WHERE_1.md
-[54]: WITH_1.md
-[55]: WITH.md
-[56]: Buffer.md
-[57]: http://msdn.microsoft.com/en-us/library/y9sxk6fy
-[58]: CurrentClause.md
-[59]: CurrentSeparator.md
-[60]: IsEmpty.md
-[61]: NextClause.md
-[62]: NextSeparator.md
-[63]: ParameterValues.md
-[64]: http://maxtoroq.github.io/DbExtensions/docs/SqlBuilder.html
+[19]: FROM_1.md
+[20]: GROUP_BY.md
+[21]: GROUP_BY_1.md
+[22]: HAVING.md
+[23]: HAVING_1.md
+[24]: INNER_JOIN.md
+[25]: Insert.md
+[26]: INSERT_INTO.md
+[27]: JOIN.md
+[28]: JOIN_1.md
+[29]: JoinSql.md
+[30]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[31]: JoinSql_1.md
+[32]: http://msdn.microsoft.com/en-us/library/9eekhta0
+[33]: LEFT_JOIN.md
+[34]: LIMIT.md
+[35]: LIMIT_1.md
+[36]: LIMIT_2.md
+[37]: OFFSET.md
+[38]: OFFSET_1.md
+[39]: OFFSET_2.md
+[40]: ORDER_BY.md
+[41]: ORDER_BY_1.md
+[42]: RIGHT_JOIN.md
+[43]: SELECT.md
+[44]: SELECT_1.md
+[45]: SET.md
+[46]: SetCurrentClause.md
+[47]: SetNextClause.md
+[48]: ToString.md
+[49]: http://msdn.microsoft.com/en-us/library/7bxwbwt2
+[50]: UNION.md
+[51]: UPDATE.md
+[52]: VALUES.md
+[53]: WHERE.md
+[54]: WHERE_1.md
+[55]: WITH_2.md
+[56]: WITH.md
+[57]: WITH_1.md
+[58]: Buffer.md
+[59]: http://msdn.microsoft.com/en-us/library/y9sxk6fy
+[60]: CurrentClause.md
+[61]: CurrentSeparator.md
+[62]: IsEmpty.md
+[63]: NextClause.md
+[64]: NextSeparator.md
+[65]: ParameterValues.md
+[66]: http://maxtoroq.github.io/DbExtensions/docs/SqlBuilder.html
 [Public method]: ../../_icons/pubmethod.gif "Public method"
 [Static member]: ../../_icons/static.gif "Static member"
 [Public property]: ../../_icons/pubproperty.gif "Public property"

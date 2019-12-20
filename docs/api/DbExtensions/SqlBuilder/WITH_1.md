@@ -1,6 +1,6 @@
-SqlBuilder.WITH Method (String, Object[])
-=========================================
-Appends the WITH clause using the provided *format* string and parameters.
+SqlBuilder.WITH Method (SqlSet, String)
+=======================================
+Appends the WITH clause using the provided *subQuery* as body named after *alias*.
 
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -10,20 +10,20 @@ Syntax
 
 ```csharp
 public SqlBuilder WITH(
-	string format,
-	params Object[] args
+	SqlSet subQuery,
+	string alias
 )
 ```
 
 #### Parameters
 
-##### *format*
-Type: [System.String][2]  
-The format string that represents the body of the WITH clause.
+##### *subQuery*
+Type: [DbExtensions.SqlSet][2]  
+The sub-query to use as the body of the WITH clause.
 
-##### *args*
-Type: [System.Object][3][]  
-The parameters of the clause body.
+##### *alias*
+Type: [System.String][3]  
+The alias of the sub-query.
 
 #### Return Value
 Type: [SqlBuilder][4]  
@@ -37,6 +37,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[2]: ../SqlSet/README.md
+[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
 [4]: README.md
