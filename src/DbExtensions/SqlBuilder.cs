@@ -881,7 +881,7 @@ namespace DbExtensions {
    /// instances.
    /// </summary>
 
-   public static class SQL {
+   public static partial class SQL {
 
       /// <summary>
       /// Creates and returns a new <see cref="SqlBuilder"/> initialized by

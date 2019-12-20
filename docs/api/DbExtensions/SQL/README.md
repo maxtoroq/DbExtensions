@@ -34,6 +34,7 @@ Methods
 ![Public method]![Static member] | [UPDATE][9]                    | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *format* and *args*.      
 ![Public method]![Static member] | [WITH(String, Object[])][10]   | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *format* and *args*.        
 ![Public method]![Static member] | [WITH(SqlBuilder, String)][11] | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.     
+![Public method]![Static member] | [WITH(SqlSet, String)][12]     | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.     
 
 
 See Also
@@ -51,7 +52,8 @@ See Also
 [7]: List_1.md
 [8]: SELECT.md
 [9]: UPDATE.md
-[10]: WITH_1.md
+[10]: WITH_2.md
 [11]: WITH.md
+[12]: WITH_1.md
 [Public method]: ../../_icons/pubmethod.gif "Public method"
 [Static member]: ../../_icons/static.gif "Static member"

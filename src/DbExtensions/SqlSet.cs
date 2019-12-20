@@ -25,8 +25,50 @@ namespace DbExtensions {
 
    partial class SqlBuilder {
 
+      /// <summary>
+      /// Appends the WITH clause using the provided <paramref name="subQuery"/> as body named after
+      /// <paramref name="alias"/>.
+      /// </summary>
+      /// <param name="subQuery">The sub-query to use as the body of the WITH clause.</param>
+      /// <param name="alias">The alias of the sub-query.</param>
+      /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+      public SqlBuilder WITH(SqlSet subQuery, string alias) {
+         return WITH(alias + " AS ({0})", subQuery);
+      }
+
+      /// <summary>
+      /// Appends the FROM clause using the provided <paramref name="subQuery"/> as body named after
+      /// <paramref name="alias"/>.
+      /// </summary>
+      /// <param name="subQuery">The sub-query to use as the body of the FROM clause.</param>
+      /// <param name="alias">The alias of the sub-query.</param>
+      /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+      public SqlBuilder FROM(SqlSet subQuery, string alias) {
+         return FROM("({0}) " + alias, subQuery);
+      }
+
       partial void GetDefiningQueryFromObject(object obj, ref SqlBuilder definingQuery) {
          definingQuery = (obj as SqlSet)?.GetDefiningQuery();
+      }
+   }
+
+   static partial class SQL {
+
+      /// <summary>
+      /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
+      /// appending the WITH clause using the provided <paramref name="subQuery"/>
+      /// and <paramref name="alias"/>.
+      /// </summary>
+      /// <param name="subQuery">The sub-query to use as the body of the WITH clause.</param>
+      /// <param name="alias">The alias of the sub-query.</param>
+      /// <returns>
+      /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(SqlSet, string)"/>.
+      /// </returns>
+
+      public static SqlBuilder WITH(SqlSet subQuery, string alias) {
+         return new SqlBuilder().WITH(subQuery, alias);
       }
    }
 
