@@ -7,7 +7,7 @@ Inheritance Hierarchy
 ---------------------
 [System.Object][2]  
   [DbExtensions.SqlSet][3]  
-    **DbExtensions.SqlSet<TResult>**  
+    **DbExtensions.SqlSet&lt;TResult>**  
       [DbExtensions.SqlTable&lt;TEntity>][4]  
 
 **Namespace:** [DbExtensions][5]  
@@ -26,7 +26,7 @@ public class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
 ##### *TResult*
 The type of objects to map the results to.
 
-The **SqlSet<TResult>** type exposes the following members.
+The **SqlSet&lt;TResult>** type exposes the following members.
 
 
 Methods
@@ -132,5 +132,5 @@ See Also
 [41]: Where.md
 [42]: ../SqlSet/ResultType.md
 [43]: http://maxtoroq.github.io/DbExtensions/docs/SqlSet.html
-[Public method]: ../../_icons/pubmethod.gif "Public method"
-[Public property]: ../../_icons/pubproperty.gif "Public property"
+[Public method]: ../../icons/pubmethod.gif "Public method"
+[Public property]: ../../icons/pubproperty.gif "Public property"

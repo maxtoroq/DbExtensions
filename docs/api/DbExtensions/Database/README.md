@@ -143,7 +143,7 @@ See Also
 [51]: Update_1.md
 [52]: Configuration.md
 [53]: Transaction.md
-[Public method]: ../../_icons/pubmethod.gif "Public method"
-[Protected method]: ../../_icons/protmethod.gif "Protected method"
-[Code example]: ../../_icons/CodeExample.png "Code example"
-[Public property]: ../../_icons/pubproperty.gif "Public property"
+[Public method]: ../../icons/pubmethod.gif "Public method"
+[Protected method]: ../../icons/protmethod.gif "Protected method"
+[Code example]: ../../icons/CodeExample.png "Code example"
+[Public property]: ../../icons/pubproperty.gif "Public property"

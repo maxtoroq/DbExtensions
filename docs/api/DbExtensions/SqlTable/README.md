@@ -146,5 +146,5 @@ See Also
 [53]: CommandBuilder.md
 [54]: ../SqlCommandBuilder_1/README.md
 [55]: ../SqlSet/ResultType.md
-[Public method]: ../../_icons/pubmethod.gif "Public method"
-[Public property]: ../../_icons/pubproperty.gif "Public property"
+[Public method]: ../../icons/pubmethod.gif "Public method"
+[Public property]: ../../icons/pubproperty.gif "Public property"

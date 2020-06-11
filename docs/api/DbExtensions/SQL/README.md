@@ -55,5 +55,5 @@ See Also
 [10]: WITH_2.md
 [11]: WITH.md
 [12]: WITH_1.md
-[Public method]: ../../_icons/pubmethod.gif "Public method"
-[Static member]: ../../_icons/static.gif "Static member"
+[Public method]: ../../icons/pubmethod.gif "Public method"
+[Static member]: ../../icons/static.gif "Static member"

@@ -60,5 +60,5 @@ See Also
 [8]: IsPrimaryKey.md
 [9]: IsVersion.md
 [10]: Name.md
-[Public method]: ../../_icons/pubmethod.gif "Public method"
-[Public property]: ../../_icons/pubproperty.gif "Public property"
+[Public method]: ../../icons/pubmethod.gif "Public method"
+[Public property]: ../../icons/pubproperty.gif "Public property"

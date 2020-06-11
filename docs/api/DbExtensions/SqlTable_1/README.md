@@ -8,7 +8,7 @@ Inheritance Hierarchy
 [System.Object][3]  
   [DbExtensions.SqlSet][4]  
     [DbExtensions.SqlSet][1]&lt;**TEntity**>  
-      **DbExtensions.SqlTable<TEntity>**  
+      **DbExtensions.SqlTable&lt;TEntity>**  
 
 **Namespace:** [DbExtensions][5]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -28,7 +28,7 @@ where TEntity : class
 ##### *TEntity*
 The type of the entity.
 
-The **SqlTable<TEntity>** type exposes the following members.
+The **SqlTable&lt;TEntity>** type exposes the following members.
 
 
 Methods
@@ -156,5 +156,5 @@ See Also
 [54]: CommandBuilder.md
 [55]: ../SqlCommandBuilder_1/README.md
 [56]: ../SqlSet/ResultType.md
-[Public method]: ../../_icons/pubmethod.gif "Public method"
-[Public property]: ../../_icons/pubproperty.gif "Public property"
+[Public method]: ../../icons/pubmethod.gif "Public method"
+[Public property]: ../../icons/pubproperty.gif "Public property"

@@ -41,4 +41,4 @@ See Also
 [2]: http://msdn.microsoft.com/en-us/library/c18k6c59
 [3]: ../README.md
 [4]: _ctor.md
-[Public method]: ../../_icons/pubmethod.gif "Public method"
+[Public method]: ../../icons/pubmethod.gif "Public method"

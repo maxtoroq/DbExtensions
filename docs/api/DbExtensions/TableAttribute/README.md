@@ -49,5 +49,5 @@ See Also
 [3]: ../README.md
 [4]: _ctor.md
 [5]: Name.md
-[Public method]: ../../_icons/pubmethod.gif "Public method"
-[Public property]: ../../_icons/pubproperty.gif "Public property"
+[Public method]: ../../icons/pubmethod.gif "Public method"
+[Public property]: ../../icons/pubproperty.gif "Public property"

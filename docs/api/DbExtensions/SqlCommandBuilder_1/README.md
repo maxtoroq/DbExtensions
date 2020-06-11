@@ -6,7 +6,7 @@ Generates SQL commands for annotated classes. This class cannot be instantiated,
 Inheritance Hierarchy
 ---------------------
 [System.Object][3]  
-  **DbExtensions.SqlCommandBuilder<TEntity>**  
+  **DbExtensions.SqlCommandBuilder&lt;TEntity>**  
 
 **Namespace:** [DbExtensions][4]  
 **Assembly:** DbExtensions (in DbExtensions.dll)
@@ -25,7 +25,7 @@ where TEntity : class
 ##### *TEntity*
 The type of the entity to generate commands for.
 
-The **SqlCommandBuilder<TEntity>** type exposes the following members.
+The **SqlCommandBuilder&lt;TEntity>** type exposes the following members.
 
 
 Methods
@@ -67,4 +67,4 @@ See Also
 [13]: BuildUpdateClause.md
 [14]: BuildUpdateStatementForEntity.md
 [15]: BuildUpdateStatementForEntity_1.md
-[Public method]: ../../_icons/pubmethod.gif "Public method"
+[Public method]: ../../icons/pubmethod.gif "Public method"

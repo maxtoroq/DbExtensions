@@ -177,6 +177,6 @@ See Also
 [64]: NextSeparator.md
 [65]: ParameterValues.md
 [66]: http://maxtoroq.github.io/DbExtensions/docs/SqlBuilder.html
-[Public method]: ../../_icons/pubmethod.gif "Public method"
-[Static member]: ../../_icons/static.gif "Static member"
-[Public property]: ../../_icons/pubproperty.gif "Public property"
+[Public method]: ../../icons/pubmethod.gif "Public method"
+[Static member]: ../../icons/static.gif "Static member"
+[Public property]: ../../icons/pubproperty.gif "Public property"
