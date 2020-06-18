@@ -1,9 +1,9 @@
 SqlSet.ToList Method
 ====================
-Creates a List&lt;object> from the set.
+  Creates a List&lt;object> from the set.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

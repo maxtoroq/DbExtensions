@@ -1,9 +1,9 @@
 SqlSet.Select Method (String, Object[])
 =======================================
-Projects each element of the set into a new form.
+  Projects each element of the set into a new form.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

@@ -1,9 +1,9 @@
 SqlSet.Single Method
 ====================
-The single element of the set.
+  The single element of the set.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

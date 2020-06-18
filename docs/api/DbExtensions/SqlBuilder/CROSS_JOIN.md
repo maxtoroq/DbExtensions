@@ -1,9 +1,9 @@
 SqlBuilder.CROSS_JOIN Method
 ============================
-Appends the CROSS JOIN clause using the provided *format* string and parameters.
+  Appends the CROSS JOIN clause using the provided *format* string and parameters.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

@@ -1,9 +1,9 @@
 SqlSet.Count Method (String, Object[])
 ======================================
-Returns a number that represents how many elements in the set satisfy a condition.
+  Returns a number that represents how many elements in the set satisfy a condition.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

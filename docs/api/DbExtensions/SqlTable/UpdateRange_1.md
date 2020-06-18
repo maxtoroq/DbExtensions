@@ -1,9 +1,9 @@
 SqlTable.UpdateRange Method (Object[])
 ======================================
-Executes UPDATE commands for the specified *entities*.
+  Executes UPDATE commands for the specified *entities*.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

@@ -1,9 +1,9 @@
 SqlCommandBuilder&lt;TEntity>.BuildSelectStatement Method
 =========================================================
-Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses.
+  Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

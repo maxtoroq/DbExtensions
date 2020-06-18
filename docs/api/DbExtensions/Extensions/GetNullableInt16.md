@@ -1,9 +1,9 @@
 Extensions.GetNullableInt16 Method (IDataRecord, Int32)
 =======================================================
-Gets the value of the specified column as a [Nullable&lt;T>][1] of [Int16][2].
+  Gets the value of the specified column as a [Nullable&lt;T>][1] of [Int16][2].
 
-**Namespace:** [DbExtensions][3]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][3]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

@@ -1,9 +1,9 @@
 SqlCommandBuilder&lt;TEntity>.BuildUpdateClause Method
 ======================================================
-Creates and returns an UPDATE command for the current table that includes the UPDATE clause.
+  Creates and returns an UPDATE command for the current table that includes the UPDATE clause.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

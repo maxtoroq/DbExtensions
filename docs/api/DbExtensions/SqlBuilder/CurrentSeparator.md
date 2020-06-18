@@ -1,9 +1,9 @@
 SqlBuilder.CurrentSeparator Property
 ====================================
-Gets or sets the separator of the current SQL clause body.
+  Gets or sets the separator of the current SQL clause body.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

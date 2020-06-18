@@ -1,9 +1,9 @@
 Extensions.GetNullableDouble Method (IDataRecord, String)
 =========================================================
-Gets the value of the specified column as a [Nullable&lt;T>][1] of [Double][2].
+  Gets the value of the specified column as a [Nullable&lt;T>][1] of [Double][2].
 
-**Namespace:** [DbExtensions][3]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][3]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

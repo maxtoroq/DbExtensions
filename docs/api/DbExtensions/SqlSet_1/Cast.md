@@ -1,9 +1,9 @@
 SqlSet&lt;TResult>.Cast Method (Type)
 =====================================
-Casts the elements of the set to the specified type.
+  Casts the elements of the set to the specified type.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

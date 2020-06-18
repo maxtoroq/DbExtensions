@@ -1,6 +1,6 @@
 SQL Class
 =========
-Provides a set of static (Shared in Visual Basic) methods to create [SqlBuilder][1] instances.
+  Provides a set of static (Shared in Visual Basic) methods to create [SqlBuilder][1] instances.
 
 
 Inheritance Hierarchy
@@ -8,8 +8,8 @@ Inheritance Hierarchy
 [System.Object][2]  
   **DbExtensions.SQL**  
 
-**Namespace:** [DbExtensions][3]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][3]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

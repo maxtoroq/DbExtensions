@@ -1,9 +1,9 @@
 SQL.SELECT Method
 =================
-Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *format* and *args*.
+  Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *format* and *args*.
 
-**Namespace:** [DbExtensions][2]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][2]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

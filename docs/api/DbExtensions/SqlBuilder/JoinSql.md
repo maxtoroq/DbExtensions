@@ -1,9 +1,9 @@
 SqlBuilder.JoinSql Method (String, SqlBuilder[])
 ================================================
-Concatenates a specified separator [String][1] between each element of a specified [SqlBuilder][2] array, yielding a single concatenated [SqlBuilder][2].
+  Concatenates a specified separator [String][1] between each element of a specified [SqlBuilder][2] array, yielding a single concatenated [SqlBuilder][2].
 
-**Namespace:** [DbExtensions][3]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][3]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

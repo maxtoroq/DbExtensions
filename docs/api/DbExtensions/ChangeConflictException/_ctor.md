@@ -1,9 +1,9 @@
 ChangeConflictException Constructor
 ===================================
-Initializes a new instance of the [ChangeConflictException][1] class with a specified error message.
+  Initializes a new instance of the [ChangeConflictException][1] class with a specified error message.
 
-**Namespace:** [DbExtensions][2]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][2]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

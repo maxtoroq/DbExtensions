@@ -1,9 +1,9 @@
 Database.Table Method (Type)
 ============================
-Returns the [SqlTable][1] instance for the specified *entityType*.
+  Returns the [SqlTable][1] instance for the specified *entityType*.
 
-**Namespace:** [DbExtensions][2]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][2]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

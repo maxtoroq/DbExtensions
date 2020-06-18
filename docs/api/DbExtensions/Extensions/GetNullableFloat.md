@@ -1,9 +1,9 @@
 Extensions.GetNullableFloat Method (IDataRecord, Int32)
 =======================================================
-Gets the value of the specified column as a [Nullable&lt;T>][1] of [Single][2].
+  Gets the value of the specified column as a [Nullable&lt;T>][1] of [Single][2].
 
-**Namespace:** [DbExtensions][3]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][3]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

@@ -1,9 +1,9 @@
 SqlBuilder.UPDATE Method
 ========================
-Appends the UPDATE clause using the provided *format* string and parameters.
+  Appends the UPDATE clause using the provided *format* string and parameters.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

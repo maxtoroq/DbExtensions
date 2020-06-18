@@ -1,9 +1,9 @@
 SQL.WITH Method (SqlSet, String)
 ================================
-Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.
+  Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.
 
-**Namespace:** [DbExtensions][2]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][2]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

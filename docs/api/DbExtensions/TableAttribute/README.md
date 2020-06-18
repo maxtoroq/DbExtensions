@@ -1,6 +1,6 @@
 TableAttribute Class
 ====================
-Designates a class as an entity class that is associated with a database table.
+  Designates a class as an entity class that is associated with a database table.
 
 
 Inheritance Hierarchy
@@ -9,8 +9,8 @@ Inheritance Hierarchy
   [System.Attribute][2]  
     **DbExtensions.TableAttribute**  
 
-**Namespace:** [DbExtensions][3]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][3]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

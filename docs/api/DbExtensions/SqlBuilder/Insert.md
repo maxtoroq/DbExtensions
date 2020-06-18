@@ -1,9 +1,9 @@
 SqlBuilder.Insert Method
 ========================
-Inserts a string into this instance at the specified character position.
+  Inserts a string into this instance at the specified character position.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

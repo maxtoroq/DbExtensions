@@ -1,9 +1,9 @@
 SqlSet.Any Method
 =================
-Determines whether the set contains any elements.
+  Determines whether the set contains any elements.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

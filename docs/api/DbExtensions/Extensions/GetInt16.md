@@ -1,9 +1,9 @@
 Extensions.GetInt16 Method
 ==========================
-Gets the value of the specified column as an [Int16][1].
+  Gets the value of the specified column as an [Int16][1].
 
-**Namespace:** [DbExtensions][2]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][2]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

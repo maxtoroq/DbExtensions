@@ -1,9 +1,9 @@
 Database.Map&lt;TResult> Method (SqlBuilder)
 ============================================
-Maps the results of the *query* to TResult objects. The query is deferred-executed.
+  Maps the results of the *query* to TResult objects. The query is deferred-executed.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

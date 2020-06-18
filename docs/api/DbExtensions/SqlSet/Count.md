@@ -1,9 +1,9 @@
 SqlSet.Count Method
 ===================
-Returns the number of elements in the set.
+  Returns the number of elements in the set.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

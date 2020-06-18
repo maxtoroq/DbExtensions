@@ -1,6 +1,6 @@
 DatabaseConfiguration Class
 ===========================
-Holds configuration options that customize the behavior of [Database][1]. This class cannot be instantiated, to get an instance use the [Configuration][2] property.
+  Holds configuration options that customize the behavior of [Database][1]. This class cannot be instantiated, to get an instance use the [Configuration][2] property.
 
 
 Inheritance Hierarchy
@@ -8,8 +8,8 @@ Inheritance Hierarchy
 [System.Object][3]  
   **DbExtensions.DatabaseConfiguration**  
 
-**Namespace:** [DbExtensions][4]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][4]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

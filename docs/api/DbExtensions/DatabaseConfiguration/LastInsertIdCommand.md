@@ -1,9 +1,9 @@
 DatabaseConfiguration.LastInsertIdCommand Property
 ==================================================
-Gets or sets the SQL command that returns the last identity value generated on the database.
+  Gets or sets the SQL command that returns the last identity value generated on the database.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

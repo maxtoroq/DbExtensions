@@ -1,9 +1,9 @@
 SqlTable.RemoveRange Method (Object[])
 ======================================
-Executes DELETE commands for the specified *entities*.
+  Executes DELETE commands for the specified *entities*.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

@@ -1,9 +1,9 @@
 SqlSet.LongCount Method (String, Object[])
 ==========================================
-Returns an [Int64][1] that represents how many elements in the set satisfy a condition.
+  Returns an [Int64][1] that represents how many elements in the set satisfy a condition.
 
-**Namespace:** [DbExtensions][2]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][2]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

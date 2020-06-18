@@ -1,9 +1,9 @@
 Database.Contains Method
 ========================
-Checks the existance of the *entity*, using the primary key value.
+  Checks the existance of the *entity*, using the primary key value.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

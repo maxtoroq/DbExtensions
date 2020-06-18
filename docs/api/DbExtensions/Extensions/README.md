@@ -1,6 +1,6 @@
 Extensions Class
 ================
-Provides extension methods for common ADO.NET objects.
+  Provides extension methods for common ADO.NET objects.
 
 
 Inheritance Hierarchy
@@ -8,8 +8,8 @@ Inheritance Hierarchy
 [System.Object][1]  
   **DbExtensions.Extensions**  
 
-**Namespace:** [DbExtensions][2]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][2]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

@@ -1,9 +1,9 @@
 SqlBuilder Constructor
 ======================
-Initializes a new instance of the [SqlBuilder][1] class.
+  Initializes a new instance of the [SqlBuilder][1] class.
 
-**Namespace:** [DbExtensions][2]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][2]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

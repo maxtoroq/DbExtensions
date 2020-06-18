@@ -1,6 +1,6 @@
 AssociationAttribute Class
 ==========================
-Designates a property to represent a database association, such as a foreign key relationship.
+  Designates a property to represent a database association, such as a foreign key relationship.
 
 
 Inheritance Hierarchy
@@ -9,15 +9,14 @@ Inheritance Hierarchy
   [System.Attribute][2]  
     **DbExtensions.AssociationAttribute**  
 
-**Namespace:** [DbExtensions][3]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][3]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------
 
 ```csharp
-public sealed class AssociationAttribute : Attribute, 
-	IDataAttribute
+public sealed class AssociationAttribute : Attribute
 ```
 
 The **AssociationAttribute** type exposes the following members.

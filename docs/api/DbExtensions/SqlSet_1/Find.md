@@ -1,9 +1,9 @@
 SqlSet&lt;TResult>.Find Method
 ==============================
-Gets the entity whose primary key matches the *id* parameter.
+  Gets the entity whose primary key matches the *id* parameter.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

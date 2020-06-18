@@ -1,9 +1,9 @@
 ColumnAttribute.IsPrimaryKey Property
 =====================================
-Gets or sets whether this class member represents a column that is part or all of the primary key of the table.
+  Gets or sets whether this class member represents a column that is part or all of the primary key of the table.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

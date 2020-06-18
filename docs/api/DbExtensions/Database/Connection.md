@@ -1,9 +1,9 @@
 Database.Connection Property
 ============================
-Gets the connection to associate with new commands.
+  Gets the connection to associate with new commands.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

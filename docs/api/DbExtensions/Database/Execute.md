@@ -1,9 +1,9 @@
 Database.Execute Method (SqlBuilder, Int32, Boolean)
 ====================================================
-Executes the *nonQuery* command. Optionally uses a transaction and validates affected records value before committing.
+  Executes the *nonQuery* command. Optionally uses a transaction and validates affected records value before committing.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

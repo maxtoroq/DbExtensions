@@ -1,9 +1,9 @@
 Database.From&lt;TResult> Method (String)
 =========================================
-Creates and returns a new [SqlSet&lt;TResult>][1] using the provided table name.
+  Creates and returns a new [SqlSet&lt;TResult>][1] using the provided table name.
 
-**Namespace:** [DbExtensions][2]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][2]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

@@ -1,9 +1,9 @@
 Database.LastInsertId Method
 ============================
-Gets the identity value of the last inserted record.
+  Gets the identity value of the last inserted record.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

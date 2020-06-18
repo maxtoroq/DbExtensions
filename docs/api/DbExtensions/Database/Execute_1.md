@@ -1,9 +1,9 @@
 Database.Execute Method (String, Object[])
 ==========================================
-Creates and executes an [IDbCommand][1] using the provided *commandText* as a composite format string (as used on [Format(String, Object[])][2]), where the format items are replaced with appropiate parameter names, and the objects in the *parameters* array are added to the command's [Parameters][3] collection.
+  Creates and executes an [IDbCommand][1] using the provided *commandText* as a composite format string (as used on [Format(String, Object[])][2]), where the format items are replaced with appropiate parameter names, and the objects in the *parameters* array are added to the command's [Parameters][3] collection.
 
-**Namespace:** [DbExtensions][4]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][4]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

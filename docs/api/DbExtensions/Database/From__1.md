@@ -1,9 +1,9 @@
 Database.From&lt;TResult> Method (SqlBuilder)
 =============================================
-Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining query.
+  Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining query.
 
-**Namespace:** [DbExtensions][2]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][2]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

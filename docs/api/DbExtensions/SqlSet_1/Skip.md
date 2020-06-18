@@ -1,9 +1,9 @@
 SqlSet&lt;TResult>.Skip Method
 ==============================
-Bypasses a specified number of elements in the set and then returns the remaining elements.
+  Bypasses a specified number of elements in the set and then returns the remaining elements.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

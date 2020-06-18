@@ -1,9 +1,9 @@
 AssociationAttribute.Name Property
 ==================================
-Gets or sets the name of a constraint.
+  Gets or sets the name of a constraint.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

@@ -9,7 +9,11 @@ try {
    $nuget = "..\..\.nuget\nuget.exe"
 
    if (-not (Test-Path EWSoftware.SHFB -PathType Container)) {
-      &$nuget install EWSoftware.SHFB -Version 2014.11.22 -ExcludeVersion
+      &$nuget install EWSoftware.SHFB -Version 2019.6.24 -ExcludeVersion
+   }
+
+   if (-not (Test-Path EWSoftware.SHFB.NETFramework -PathType Container)) {
+      &$nuget install EWSoftware.SHFB.NETFramework -Version 4.6.0 -ExcludeVersion
    }
 
    &$nuget restore sandcastle-md\sandcastle-md.sln

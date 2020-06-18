@@ -1,9 +1,9 @@
 SqlBuilder.JoinSql Method (String, IEnumerable&lt;SqlBuilder>)
 ==============================================================
-Concatenates the members of a constructed [IEnumerable&lt;T>][1] collection of type [SqlBuilder][2], using the specified *separator* between each member.
+  Concatenates the members of a constructed [IEnumerable&lt;T>][1] collection of type [SqlBuilder][2], using the specified *separator* between each member.
 
-**Namespace:** [DbExtensions][3]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][3]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

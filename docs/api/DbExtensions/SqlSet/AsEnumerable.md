@@ -1,9 +1,9 @@
 SqlSet.AsEnumerable Method
 ==========================
-Gets all elements in the set. The query is deferred-executed.
+  Gets all elements in the set. The query is deferred-executed.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

@@ -1,9 +1,9 @@
 SqlBuilder.OFFSET Method (Int32)
 ================================
-Appends the OFFSET clause using the provided *startIndex* parameter.
+  Appends the OFFSET clause using the provided *startIndex* parameter.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

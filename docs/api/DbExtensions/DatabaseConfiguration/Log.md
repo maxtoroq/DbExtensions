@@ -1,9 +1,9 @@
 DatabaseConfiguration.Log Property
 ==================================
-Specifies the destination to write the SQL query or command.
+  Specifies the destination to write the SQL query or command.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

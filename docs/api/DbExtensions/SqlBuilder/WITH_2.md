@@ -1,9 +1,9 @@
 SqlBuilder.WITH Method (String, Object[])
 =========================================
-Appends the WITH clause using the provided *format* string and parameters.
+  Appends the WITH clause using the provided *format* string and parameters.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

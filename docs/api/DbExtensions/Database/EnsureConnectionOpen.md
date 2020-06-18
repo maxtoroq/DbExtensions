@@ -1,9 +1,9 @@
 Database.EnsureConnectionOpen Method
 ====================================
-Opens [Connection][1] (if it's not open) and returns an [IDisposable][2] object you can use to close it (if it wasn't open).
+  Opens [Connection][1] (if it's not open) and returns an [IDisposable][2] object you can use to close it (if it wasn't open).
 
-**Namespace:** [DbExtensions][3]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][3]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

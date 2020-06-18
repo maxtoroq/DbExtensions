@@ -1,9 +1,9 @@
 SqlTable.Cast&lt;TEntity> Method
 ================================
-Casts the current [SqlTable][1] to the generic [SqlTable&lt;TEntity>][2] instance.
+  Casts the current [SqlTable][1] to the generic [SqlTable&lt;TEntity>][2] instance.
 
-**Namespace:** [DbExtensions][3]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][3]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

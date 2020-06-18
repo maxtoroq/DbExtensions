@@ -1,9 +1,9 @@
 SqlTable.AddRange Method (IEnumerable&lt;Object>)
 =================================================
-Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations.
+  Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

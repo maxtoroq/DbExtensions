@@ -1,9 +1,9 @@
 SqlBuilder.WITH Method (SqlSet, String)
 =======================================
-Appends the WITH clause using the provided *subQuery* as body named after *alias*.
+  Appends the WITH clause using the provided *subQuery* as body named after *alias*.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

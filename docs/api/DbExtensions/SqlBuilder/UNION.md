@@ -1,9 +1,9 @@
 SqlBuilder.UNION Method
 =======================
-Appends the UNION clause.
+  Appends the UNION clause.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

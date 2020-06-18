@@ -1,9 +1,9 @@
 SqlCommandBuilder&lt;TEntity>.BuildDeleteStatementForKey Method
 ===============================================================
-Creates and returns a DELETE command for the entity whose primary key matches the *id* parameter.
+  Creates and returns a DELETE command for the entity whose primary key matches the *id* parameter.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

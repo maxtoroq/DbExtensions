@@ -1,9 +1,9 @@
 SqlSet.Take Method
 ==================
-Returns a specified number of contiguous elements from the start of the set.
+  Returns a specified number of contiguous elements from the start of the set.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

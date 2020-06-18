@@ -1,9 +1,9 @@
 Extensions.GetBoolean Method
 ============================
-Gets the value of the specified column as a [Boolean][1].
+  Gets the value of the specified column as a [Boolean][1].
 
-**Namespace:** [DbExtensions][2]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][2]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

@@ -1,9 +1,9 @@
 SqlSet.OrderBy Method
 =====================
-Sorts the elements of the set according to the *columnList*.
+  Sorts the elements of the set according to the *columnList*.
 
-**Namespace:** [DbExtensions][1]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][1]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------

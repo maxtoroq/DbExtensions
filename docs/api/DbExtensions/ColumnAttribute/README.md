@@ -1,6 +1,6 @@
 ColumnAttribute Class
 =====================
-Associates a property with a column in a database table.
+  Associates a property with a column in a database table.
 
 
 Inheritance Hierarchy
@@ -9,15 +9,14 @@ Inheritance Hierarchy
   [System.Attribute][2]  
     **DbExtensions.ColumnAttribute**  
 
-**Namespace:** [DbExtensions][3]  
-**Assembly:** DbExtensions (in DbExtensions.dll)
+  **Namespace:**  [DbExtensions][3]  
+  **Assembly:**  DbExtensions (in DbExtensions.dll)
 
 Syntax
 ------
 
 ```csharp
-public sealed class ColumnAttribute : Attribute, 
-	IDataAttribute
+public sealed class ColumnAttribute : Attribute
 ```
 
 The **ColumnAttribute** type exposes the following members.
