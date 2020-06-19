@@ -1,6 +1,6 @@
 SqlSet&lt;TResult>.SingleOrDefault Method
 =========================================
-  Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.
+Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

@@ -1,6 +1,6 @@
 SqlBuilder.GROUP_BY Method (String, Object[])
 =============================================
-  Appends the GROUP BY clause using the provided *format* string and parameters.
+Appends the GROUP BY clause using the provided *format* string and parameters.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

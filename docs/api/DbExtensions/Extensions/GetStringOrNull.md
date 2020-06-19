@@ -1,6 +1,6 @@
 Extensions.GetStringOrNull Method (IDataRecord, Int32)
 ======================================================
-  Gets the value of the specified column as a [String][1], or null (Nothing in Visual Basic).
+Gets the value of the specified column as a [String][1], or null (Nothing in Visual Basic).
 
   **Namespace:**  [DbExtensions][2]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

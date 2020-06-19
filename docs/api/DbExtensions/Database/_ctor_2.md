@@ -1,6 +1,6 @@
 Database Constructor (String)
 =============================
-  Initializes a new instance of the [Database][1] class using the provided connection string.
+Initializes a new instance of the [Database][1] class using the provided connection string.
 
   **Namespace:**  [DbExtensions][2]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

@@ -1,6 +1,6 @@
 SqlBuilder.ParameterValues Property
 ===================================
-  The parameter objects to be included in the database command.
+The parameter objects to be included in the database command.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

@@ -1,6 +1,6 @@
 Extensions.GetInt32 Method
 ==========================
-  Gets the value of the specified column as an [Int32][1].
+Gets the value of the specified column as an [Int32][1].
 
   **Namespace:**  [DbExtensions][2]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

@@ -1,6 +1,6 @@
 SqlBuilder.CurrentClause Property
 =================================
-  Gets or sets the current SQL clause, used to identify consecutive appends to the same clause.
+Gets or sets the current SQL clause, used to identify consecutive appends to the same clause.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

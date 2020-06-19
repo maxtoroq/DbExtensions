@@ -1,6 +1,6 @@
 DatabaseConfiguration.EnableBatchCommands Property
 ==================================================
-  true to execute batch commands when possible; otherwise, false. The default is true.
+true to execute batch commands when possible; otherwise, false. The default is true.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

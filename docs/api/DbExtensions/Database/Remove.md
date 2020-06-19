@@ -1,6 +1,6 @@
 Database.Remove Method
 ======================
-  Executes a DELETE command for the specified *entity*.
+Executes a DELETE command for the specified *entity*.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

@@ -1,6 +1,6 @@
 Database.RemoveKey&lt;TEntity> Method (Object)
 ==============================================
-  Executes a DELETE command for the entity whose primary key matches the *id* parameter.
+Executes a DELETE command for the entity whose primary key matches the *id* parameter.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

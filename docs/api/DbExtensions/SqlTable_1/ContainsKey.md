@@ -1,6 +1,6 @@
 SqlTable&lt;TEntity>.ContainsKey Method
 =======================================
-  Checks the existance of an entity whose primary matches the *id* parameter.
+Checks the existance of an entity whose primary matches the *id* parameter.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

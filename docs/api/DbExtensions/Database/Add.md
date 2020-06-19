@@ -1,6 +1,6 @@
 Database.Add Method
 ===================
-  Recursively executes INSERT commands for the specified *entity* and all its one-to-one and one-to-many associations.
+Recursively executes INSERT commands for the specified *entity* and all its one-to-one and one-to-many associations.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

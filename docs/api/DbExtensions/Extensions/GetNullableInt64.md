@@ -1,6 +1,6 @@
 Extensions.GetNullableInt64 Method (IDataRecord, Int32)
 =======================================================
-  Gets the value of the specified column as a [Nullable&lt;T>][1] of [Int64][2].
+Gets the value of the specified column as a [Nullable&lt;T>][1] of [Int64][2].
 
   **Namespace:**  [DbExtensions][3]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

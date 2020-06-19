@@ -1,6 +1,6 @@
 SQL.List Method (Object[])
 ==========================
-  Returns a special parameter value that is expanded into a list of comma-separated placeholder items.
+Returns a special parameter value that is expanded into a list of comma-separated placeholder items.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

@@ -1,6 +1,6 @@
 ColumnAttribute.Name Property
 =============================
-  Gets or sets the name of a column.
+Gets or sets the name of a column.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

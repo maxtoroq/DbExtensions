@@ -1,6 +1,6 @@
 TableAttribute.Name Property
 ============================
-  Gets or sets the name of the table or view.
+Gets or sets the name of the table or view.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

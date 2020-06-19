@@ -1,6 +1,6 @@
 SqlBuilder.AppendClause Method
 ==============================
-  Appends the SQL clause specified by *clauseName* using the provided *format* string and parameters.
+Appends the SQL clause specified by *clauseName* using the provided *format* string and parameters.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

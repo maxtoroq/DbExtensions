@@ -1,6 +1,6 @@
 AssociationAttribute Class
 ==========================
-  Designates a property to represent a database association, such as a foreign key relationship.
+Designates a property to represent a database association, such as a foreign key relationship.
 
 
 Inheritance Hierarchy

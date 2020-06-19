@@ -1,6 +1,6 @@
 Extensions Class
 ================
-  Provides extension methods for common ADO.NET objects.
+Provides extension methods for common ADO.NET objects.
 
 
 Inheritance Hierarchy

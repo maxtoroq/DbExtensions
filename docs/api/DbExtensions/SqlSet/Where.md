@@ -1,6 +1,6 @@
 SqlSet.Where Method
 ===================
-  Filters the set based on a predicate.
+Filters the set based on a predicate.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

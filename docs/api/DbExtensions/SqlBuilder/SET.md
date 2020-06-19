@@ -1,6 +1,6 @@
 SqlBuilder.SET Method
 =====================
-  Appends the SET clause using the provided *format* string and parameters.
+Appends the SET clause using the provided *format* string and parameters.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

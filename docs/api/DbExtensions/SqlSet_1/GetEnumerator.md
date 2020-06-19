@@ -1,6 +1,6 @@
 SqlSet&lt;TResult>.GetEnumerator Method
 =======================================
-  Returns an enumerator that iterates through the set.
+Returns an enumerator that iterates through the set.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

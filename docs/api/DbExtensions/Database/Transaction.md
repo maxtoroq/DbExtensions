@@ -1,6 +1,6 @@
 Database.Transaction Property
 =============================
-  Gets or sets a transaction to associate with new commands.
+Gets or sets a transaction to associate with new commands.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

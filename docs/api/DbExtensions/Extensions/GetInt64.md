@@ -1,6 +1,6 @@
 Extensions.GetInt64 Method
 ==========================
-  Gets the value of the specified column as an [Int64][1].
+Gets the value of the specified column as an [Int64][1].
 
   **Namespace:**  [DbExtensions][2]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

@@ -1,6 +1,6 @@
 SqlBuilder.SELECT Method (String, Object[])
 ===========================================
-  Appends the SELECT clause using the provided *format* string and parameters.
+Appends the SELECT clause using the provided *format* string and parameters.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

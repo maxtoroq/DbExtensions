@@ -1,6 +1,6 @@
 SqlCommandBuilder&lt;TEntity>.BuildDeleteStatement Method
 =========================================================
-  Creates and returns a DELETE command for the current table that includes the DELETE and FROM clauses.
+Creates and returns a DELETE command for the current table that includes the DELETE and FROM clauses.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

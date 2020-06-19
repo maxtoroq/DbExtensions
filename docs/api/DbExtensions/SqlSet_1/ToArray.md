@@ -1,6 +1,6 @@
 SqlSet&lt;TResult>.ToArray Method
 =================================
-  Creates an array from the set.
+Creates an array from the set.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

@@ -1,6 +1,6 @@
 Extensions.GetDateTime Method
 =============================
-  Gets the value of the specified column as a [DateTime][1].
+Gets the value of the specified column as a [DateTime][1].
 
   **Namespace:**  [DbExtensions][2]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

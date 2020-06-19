@@ -1,6 +1,6 @@
 Database.CreateCommand Method (SqlBuilder)
 ==========================================
-  Creates and returns an [IDbCommand][1] object from the specified *sqlBuilder*.
+Creates and returns an [IDbCommand][1] object from the specified *sqlBuilder*.
 
   **Namespace:**  [DbExtensions][2]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

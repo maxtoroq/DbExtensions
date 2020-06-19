@@ -1,6 +1,6 @@
 SqlBuilder.RIGHT_JOIN Method
 ============================
-  Appends the RIGHT JOIN clause using the provided *format* string and parameters.
+Appends the RIGHT JOIN clause using the provided *format* string and parameters.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

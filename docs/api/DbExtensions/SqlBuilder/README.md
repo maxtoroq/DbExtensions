@@ -1,6 +1,6 @@
 SqlBuilder Class
 ================
-  Represents a mutable SQL string.
+Represents a mutable SQL string.
 
 
 Inheritance Hierarchy

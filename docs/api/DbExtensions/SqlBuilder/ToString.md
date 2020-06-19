@@ -1,6 +1,6 @@
 SqlBuilder.ToString Method
 ==========================
-  Converts the value of this instance to a [String][1].
+Converts the value of this instance to a [String][1].
 
   **Namespace:**  [DbExtensions][2]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

@@ -1,6 +1,6 @@
 SqlSet&lt;TResult>.First Method
 ===============================
-  Returns the first element of the set.
+Returns the first element of the set.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

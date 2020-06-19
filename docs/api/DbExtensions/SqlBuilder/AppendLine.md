@@ -1,6 +1,6 @@
 SqlBuilder.AppendLine Method
 ============================
-  Appends the default line terminator to this instance.
+Appends the default line terminator to this instance.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

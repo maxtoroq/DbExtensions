@@ -1,6 +1,6 @@
 SqlBuilder.Buffer Property
 ==========================
-  The underlying [StringBuilder][1].
+The underlying [StringBuilder][1].
 
   **Namespace:**  [DbExtensions][2]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

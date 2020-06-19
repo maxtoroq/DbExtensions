@@ -1,6 +1,6 @@
 SqlSet&lt;TResult>.Include Method
 =================================
-  Specifies the related objects to include in the query results.
+Specifies the related objects to include in the query results.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

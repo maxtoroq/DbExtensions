@@ -1,6 +1,6 @@
 SqlTable.Update Method (Object)
 ===============================
-  Executes an UPDATE command for the specified *entity*.
+Executes an UPDATE command for the specified *entity*.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

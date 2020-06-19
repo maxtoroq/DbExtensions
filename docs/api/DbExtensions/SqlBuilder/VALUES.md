@@ -1,6 +1,6 @@
 SqlBuilder.VALUES Method
 ========================
-  Appends the VALUES clause using the provided parameters.
+Appends the VALUES clause using the provided parameters.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

@@ -1,6 +1,6 @@
 SqlBuilder.Append Method (SqlBuilder)
 =====================================
-  Appends *sql* to this instance.
+Appends *sql* to this instance.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

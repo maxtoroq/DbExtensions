@@ -1,6 +1,6 @@
 SqlCommandBuilder&lt;TEntity>.BuildDeleteStatementForEntity Method
 ==================================================================
-  Creates and returns a DELETE command for the specified *entity*.
+Creates and returns a DELETE command for the specified *entity*.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

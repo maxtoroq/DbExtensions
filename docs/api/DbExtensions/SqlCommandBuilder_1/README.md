@@ -1,6 +1,6 @@
 SqlCommandBuilder&lt;TEntity> Class
 ===================================
-  Generates SQL commands for annotated classes. This class cannot be instantiated, to get an instance use the [CommandBuilder][1] or [CommandBuilder][2] properties.
+Generates SQL commands for annotated classes. This class cannot be instantiated, to get an instance use the [CommandBuilder][1] or [CommandBuilder][2] properties.
 
 
 Inheritance Hierarchy

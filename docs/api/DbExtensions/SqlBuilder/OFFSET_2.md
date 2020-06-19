@@ -1,6 +1,6 @@
 SqlBuilder.OFFSET Method (String, Object[])
 ===========================================
-  Appends the OFFSET clause using the provided *format* string and parameters.
+Appends the OFFSET clause using the provided *format* string and parameters.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

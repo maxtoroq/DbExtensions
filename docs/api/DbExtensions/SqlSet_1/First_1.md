@@ -1,6 +1,6 @@
 SqlSet&lt;TResult>.First Method (String, Object[])
 ==================================================
-  Returns the first element in the set that satisfies a specified condition.
+Returns the first element in the set that satisfies a specified condition.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

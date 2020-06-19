@@ -1,6 +1,6 @@
 SqlBuilder.JOIN Method (String, Object[])
 =========================================
-  Appends the JOIN clause using the provided *format* string and parameters.
+Appends the JOIN clause using the provided *format* string and parameters.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

@@ -1,6 +1,6 @@
 SqlBuilder.SetCurrentClause Method
 ==================================
-  Sets *clauseName* as the current SQL clause.
+Sets *clauseName* as the current SQL clause.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

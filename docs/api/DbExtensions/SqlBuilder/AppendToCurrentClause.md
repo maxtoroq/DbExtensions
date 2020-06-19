@@ -1,6 +1,6 @@
 SqlBuilder.AppendToCurrentClause Method
 =======================================
-  Appends *format* to the current clause.
+Appends *format* to the current clause.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

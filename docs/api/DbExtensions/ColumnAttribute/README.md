@@ -1,6 +1,6 @@
 ColumnAttribute Class
 =====================
-  Associates a property with a column in a database table.
+Associates a property with a column in a database table.
 
 
 Inheritance Hierarchy

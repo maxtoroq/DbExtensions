@@ -1,6 +1,6 @@
 SqlBuilder._If Method
 =====================
-  Appends *format* to the current clause if *condition* is true.
+Appends *format* to the current clause if *condition* is true.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

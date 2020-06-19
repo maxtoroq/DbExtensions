@@ -1,6 +1,6 @@
 Database.Table&lt;TEntity> Method
 =================================
-  Returns the [SqlTable&lt;TEntity>][1] instance for the specified TEntity.
+Returns the [SqlTable&lt;TEntity>][1] instance for the specified TEntity.
 
   **Namespace:**  [DbExtensions][2]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

@@ -1,6 +1,6 @@
 Database.Map&lt;TResult> Method (SqlBuilder, Func&lt;IDataRecord, TResult>)
 ===========================================================================
-  Maps the results of the *query* to TResult objects, using the provided *mapper* delegate.
+Maps the results of the *query* to TResult objects, using the provided *mapper* delegate.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

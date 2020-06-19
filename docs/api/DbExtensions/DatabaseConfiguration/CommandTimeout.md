@@ -1,6 +1,6 @@
 DatabaseConfiguration.CommandTimeout Property
 =============================================
-  Specifies a timeout to assign to commands. This setting is ignored if less or equal to -1. The default is -1.
+Specifies a timeout to assign to commands. This setting is ignored if less or equal to -1. The default is -1.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

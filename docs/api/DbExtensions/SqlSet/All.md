@@ -1,6 +1,6 @@
 SqlSet.All Method
 =================
-  Determines whether all elements of the set satisfy a condition.
+Determines whether all elements of the set satisfy a condition.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

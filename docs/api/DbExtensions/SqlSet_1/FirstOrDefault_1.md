@@ -1,6 +1,6 @@
 SqlSet&lt;TResult>.FirstOrDefault Method (String, Object[])
 ===========================================================
-  Returns the first element of the set that satisfies a condition or a default value if no such element is found.
+Returns the first element of the set that satisfies a condition or a default value if no such element is found.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

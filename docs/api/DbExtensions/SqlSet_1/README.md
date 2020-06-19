@@ -1,6 +1,6 @@
 SqlSet&lt;TResult> Class
 ========================
-  Represents an immutable, connected SQL query that maps to TResult objects. This class cannot be instantiated, to get an instance use the [From&lt;TResult>(String)][1] method.
+Represents an immutable, connected SQL query that maps to TResult objects. This class cannot be instantiated, to get an instance use the [From&lt;TResult>(String)][1] method.
 
 
 Inheritance Hierarchy

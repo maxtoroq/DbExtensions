@@ -1,6 +1,6 @@
 SqlCommandBuilder&lt;TEntity>.BuildUpdateStatementForEntity Method (TEntity)
 ============================================================================
-  Creates and returns an UPDATE command for the specified *entity*.
+Creates and returns an UPDATE command for the specified *entity*.
 
   **Namespace:**  [DbExtensions][1]  
   **Assembly:**  DbExtensions (in DbExtensions.dll)

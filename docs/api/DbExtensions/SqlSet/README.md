@@ -1,6 +1,6 @@
 SqlSet Class
 ============
-  Represents an immutable, connected SQL query. This class cannot be instantiated, to get an instance use the [From(String)][1] method.
+Represents an immutable, connected SQL query. This class cannot be instantiated, to get an instance use the [From(String)][1] method.
 
 
 Inheritance Hierarchy
