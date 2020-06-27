@@ -1,6 +1,7 @@
 /.vs/
 /.nuget/
 /packages/
+/docs/api/_toc.xml
 
 [Bb]in
 [Oo]bj
