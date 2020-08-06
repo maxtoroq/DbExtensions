@@ -8,10 +8,10 @@ namespace DbExtensions.Tests.Querying {
    [TestClass]
    public class SqlSetAnnotatedBehavior {
 
+      readonly Database db = RealDatabase();
+
       [TestMethod]
       public void Contains() {
-
-         var db = SqlServerNorthwindDatabase();
 
          SqlSet<SqlSetAnnotated.Model1.Product> table = db.Table<SqlSetAnnotated.Model1.Product>();
 
@@ -24,8 +24,6 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void ContainsKey() {
 
-         var db = SqlServerNorthwindDatabase();
-
          SqlSet<SqlSetAnnotated.Model1.Product> table = db.Table<SqlSetAnnotated.Model1.Product>();
 
          Assert.IsTrue(table.ContainsKey(1));
@@ -34,8 +32,6 @@ namespace DbExtensions.Tests.Querying {
 
       [TestMethod]
       public void Find() {
-
-         var db = SqlServerNorthwindDatabase();
 
          SqlSet<SqlSetAnnotated.Model1.Product> table = db.Table<SqlSetAnnotated.Model1.Product>();
 

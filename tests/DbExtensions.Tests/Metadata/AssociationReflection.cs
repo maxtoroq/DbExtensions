@@ -10,7 +10,7 @@ namespace DbExtensions.Tests.Metadata {
    [TestClass]
    public class AssociationReflection {
 
-      readonly Database db = SqlServerDatabase();
+      readonly Database db = MockDatabase();
 
       [TestMethod]
       public void One_To_Many() {

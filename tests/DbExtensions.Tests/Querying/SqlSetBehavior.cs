@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DbExtensions.Tests.Querying {
@@ -8,10 +9,16 @@ namespace DbExtensions.Tests.Querying {
    [TestClass]
    public class SqlSetBehavior {
 
-      readonly Database db = MySqlDatabase();
+      readonly Database db = MockDatabase();
 
       [TestMethod]
       public void AsEnumerable_Reference_Type() {
+
+         var data = new Dictionary<string, object> {
+            { "a", "a" }
+         };
+
+         Database db = MockQuery(data);
 
          SqlSet<string> set = db.From(SQL
             .SELECT("'a'")
@@ -26,6 +33,12 @@ namespace DbExtensions.Tests.Querying {
 
       [TestMethod]
       public void AsEnumerable_Value_Type() {
+
+         var data = new Dictionary<string, object> {
+            { "0", 0 }
+         };
+
+         Database db = MockQuery(data);
 
          SqlSet<int> set = db.From(SQL
             .SELECT("0")
@@ -269,7 +282,11 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Dont_Require_Type_For_Select() {
 
-         Database db = SqlServerDatabase();
+         var data = new Dictionary<string, object> {
+            { "foo", "a" }
+         };
+
+         Database db = MockQuery(data);
 
          dynamic value = db.From(SQL.SELECT("'a' AS foo, 'b' AS bar"))
             .Select("foo")
@@ -281,7 +298,11 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Remember_Mapper() {
 
-         Database db = SqlServerDatabase();
+         var data = new Dictionary<string, object> {
+            { "c", "a" }
+         };
+
+         Database db = MockQuery(data);
 
          SqlSet<string> set = db.From(SQL
             .SELECT("'a' AS c")

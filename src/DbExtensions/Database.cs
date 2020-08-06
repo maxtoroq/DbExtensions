@@ -124,6 +124,15 @@ namespace DbExtensions {
          Initialize(null);
       }
 
+      internal Database(IDbConnection connection, string providerInvariantName) {
+
+         if (connection == null) throw new ArgumentNullException(nameof(connection));
+
+         this.Connection = connection;
+
+         Initialize(providerInvariantName);
+      }
+
       void Initialize(string providerInvariantName) {
 
          providerInvariantName = providerInvariantName

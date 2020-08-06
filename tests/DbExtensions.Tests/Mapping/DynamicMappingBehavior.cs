@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -9,10 +10,14 @@ namespace DbExtensions.Tests.Mapping {
    [TestClass]
    public class DynamicMappingBehavior {
 
-      readonly Database db = SqlServerDatabase();
-
       [TestMethod, ExpectedException(typeof(ArgumentException))]
       public void Constructor_Parameters_Not_Allowed() {
+
+         var data = new Dictionary<string, object> {
+            { "1", "foo" }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map(SQL
             .SELECT("'foo' AS '1'"))

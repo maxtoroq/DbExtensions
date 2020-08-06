@@ -5,6 +5,3 @@ version: '{build}'
 
 build:
   verbosity: minimal
-
-services:
-  - mssql2012sp1

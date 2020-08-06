@@ -8,3 +8,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("DbExtensions.dll")]
 [assembly: AssemblyDescription("DbExtensions.dll")]
 [assembly: InternalsVisibleTo("DbExtensions.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

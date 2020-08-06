@@ -83,7 +83,7 @@ namespace DbExtensions.Tests.Querying {
       [TestMethod]
       public void Treat_SqlSet_As_SubQuery() {
 
-         var db = TestUtil.MySqlDatabase();
+         var db = TestUtil.MockDatabase();
 
          var query = SQL
             .SELECT("*")

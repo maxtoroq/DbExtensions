@@ -10,7 +10,7 @@ namespace DbExtensions.Tests.Querying {
    [TestClass]
    public class SqlSetIncludeBehavior {
 
-      readonly Database db = SqlServerNorthwindDatabase();
+      readonly Database db = RealDatabase();
 
       [TestMethod]
       public void Can_Include_One() {
