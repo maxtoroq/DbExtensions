@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="Mapping\DynamicMappingBehavior.cs" />
     <Compile Include="Mapping\EnumMappingBehavior.cs" />
+    <Compile Include="Mapping\PersistentComplexPropertiesBehavior.cs" />
     <Compile Include="Mapping\PocoMappingBehavior.cs" />
     <Compile Include="Metadata\AssociationReflection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

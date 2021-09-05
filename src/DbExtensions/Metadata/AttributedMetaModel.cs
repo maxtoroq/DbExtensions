@@ -529,17 +529,25 @@ namespace DbExtensions.Metadata {
 
             this.dataMemberMap = new Dictionary<MetaPosition, MetaDataMember>();
 
-            int ordinal = 0;
+            InitDataMembersImpl(this.Type);
+
+            this.dataMembers = new List<MetaDataMember>(this.dataMemberMap.Values).AsReadOnly();
+         }
+      }
+
+      void InitDataMembersImpl(Type containerType, MetaComplexProperty containerCp = null) {
+         { // preserving indentation for cleaner diff
+
             BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 
-            FieldInfo[] fis = TypeSystem.GetAllFields(this.Type, flags).ToArray();
+            FieldInfo[] fis = TypeSystem.GetAllFields(containerType, flags).ToArray();
 
             if (fis != null) {
 
                for (int i = 0, n = fis.Length; i < n; i++) {
 
                   FieldInfo fi = fis[i];
-                  MetaDataMember mm = new AttributedMetaDataMember(this, fi, ordinal);
+                  MetaDataMember mm = new AttributedMetaDataMember(this, fi, this.dataMemberMap.Count, null);
                   ValidatePrimaryKeyMember(mm);
 
                   // must be public or persistent
@@ -548,7 +556,6 @@ namespace DbExtensions.Metadata {
                   }
 
                   this.dataMemberMap.Add(new MetaPosition(fi), mm);
-                  ordinal++;
 
                   // must be persistent for the rest
 
@@ -560,14 +567,15 @@ namespace DbExtensions.Metadata {
                }
             }
 
-            PropertyInfo[] pis = TypeSystem.GetAllProperties(this.Type, flags).ToArray();
+            PropertyInfo[] pis = TypeSystem.GetAllProperties(containerType, flags).ToArray();
 
             if (pis != null) {
 
                for (int i = 0, n = pis.Length; i < n; i++) {
 
                   PropertyInfo pi = pis[i];
-                  MetaDataMember mm = new AttributedMetaDataMember(this, pi, ordinal);
+
+                  MetaDataMember mm = new AttributedMetaDataMember(this, pi, this.dataMemberMap.Count, containerCp);
                   ValidatePrimaryKeyMember(mm);
 
                   // must be public or persistent
@@ -580,8 +588,31 @@ namespace DbExtensions.Metadata {
                      continue;
                   }
 
+                  if (!mm.IsPersistent) {
+
+                     ComplexPropertyAttribute cpAttr = (ComplexPropertyAttribute)Attribute.GetCustomAttribute(pi, typeof(ComplexPropertyAttribute));
+
+                     if (cpAttr != null) {
+
+                        Type complexPropType = pi.PropertyType;
+
+                        if (!complexPropType.IsClass) {
+                           throw new InvalidOperationException("A persistent complex property must be a class.");
+                        }
+
+                        if (complexPropType.IsAbstract) {
+                           throw new InvalidOperationException("A persistent complex property cannot be an abstract type.");
+                        }
+
+                        var metaCp = new MetaComplexProperty(pi, cpAttr, containerCp);
+
+                        InitDataMembersImpl(complexPropType, metaCp);
+
+                        continue;
+                     }
+                  }
+
                   this.dataMemberMap.Add(new MetaPosition(pi), mm);
-                  ordinal++;
 
                   // must be persistent for the rest
 
@@ -592,8 +623,6 @@ namespace DbExtensions.Metadata {
                   InitSpecialMember(mm);
                }
             }
-
-            this.dataMembers = new List<MetaDataMember>(this.dataMemberMap.Values).AsReadOnly();
          }
       }
 
@@ -712,6 +741,8 @@ namespace DbExtensions.Metadata {
       bool isNullableType;
       object locktarget = new object(); // Hold locks on private object rather than public MetaType.
 
+      MetaComplexProperty containerCp;
+
       public override MetaType DeclaringType { get; }
 
       public override MemberInfo Member { get; }
@@ -740,7 +771,22 @@ namespace DbExtensions.Metadata {
 
       public override UpdateCheck UpdateCheck => attrColumn?.UpdateCheck ?? UpdateCheck.Never;
 
-      public override string MappedName => attrColumn?.Name ?? attrAssoc?.Name ?? Member.Name;
+      public override string MappedName {
+         get {
+            string n = attrColumn?.Name ?? attrAssoc?.Name ?? Member.Name;
+
+            if (containerCp != null) {
+               return containerCp.FullMappedName + containerCp.Separator + n;
+            }
+
+            return n;
+         }
+      }
+
+      public override string QueryPath =>
+         (containerCp != null) ?
+            containerCp.QueryPath + MetaComplexProperty.QueryPathSeparator + Name
+            : Name;
 
       internal override bool IsDiscriminator => attrColumn?.IsDiscriminator ?? false;
 
@@ -833,7 +879,7 @@ namespace DbExtensions.Metadata {
          }
       }
 
-      internal AttributedMetaDataMember(AttributedMetaType metaType, MemberInfo mi, int ordinal) {
+      internal AttributedMetaDataMember(AttributedMetaType metaType, MemberInfo mi, int ordinal, MetaComplexProperty containerCp) {
 
          this.memberDeclaringType = mi.DeclaringType;
          this.DeclaringType = metaType;
@@ -870,6 +916,8 @@ namespace DbExtensions.Metadata {
                throw Error.IncorrectAutoSyncSpecification(mi.Name);
             }
          }
+
+         this.containerCp = containerCp;
       }
 
       void InitAccessors() {
@@ -907,6 +955,20 @@ namespace DbExtensions.Metadata {
          return acc;
       }
 
+      public override object GetValueForDatabase(object instance) {
+
+         if (this.containerCp != null) {
+
+            instance = this.containerCp.GetValueFromRoot(instance);
+
+            if (instance == null) {
+               return null;
+            }
+         }
+
+         return base.GetValueForDatabase(instance);
+      }
+
       public override bool IsDeclaredBy(MetaType declaringMetaType) {
 
          if (declaringMetaType == null) throw Error.ArgumentNull(nameof(declaringMetaType));
@@ -916,6 +978,89 @@ namespace DbExtensions.Metadata {
 
       public override string ToString() {
          return this.DeclaringType.ToString() + ":" + this.Member.ToString();
+      }
+   }
+
+   class MetaComplexProperty {
+
+      internal const string QueryPathSeparator = "$";
+
+      readonly ComplexPropertyAttribute cpAttr;
+
+      MetaAccessor accPublic;
+      bool hasAccessors;
+      object locktarget = new object();
+
+      public PropertyInfo Member { get; }
+
+      public string Separator => cpAttr.Separator;
+
+      public string MappedName => cpAttr.Name ?? Member.Name;
+
+      public string FullMappedName =>
+         (Parent != null) ?
+            Parent.FullMappedName + Parent.Separator + MappedName
+            : MappedName;
+
+      public string QueryPath =>
+         (Parent != null) ?
+            Parent.QueryPath + QueryPathSeparator + Member.Name
+            : Member.Name;
+
+      public MetaComplexProperty Parent { get; }
+
+      public MetaAccessor MemberAccessor {
+         get {
+            InitAccessors();
+            return accPublic;
+         }
+      }
+
+      public MetaComplexProperty(PropertyInfo member, ComplexPropertyAttribute cpAttr, MetaComplexProperty parent) {
+
+         this.Member = member;
+         this.cpAttr = cpAttr;
+         this.Parent = parent;
+      }
+
+      void InitAccessors() {
+
+         if (!this.hasAccessors) {
+            lock (this.locktarget) {
+               if (!this.hasAccessors) {
+
+                  this.accPublic = PropertyAccessor.Create(this.Member.ReflectedType, this.Member, null);
+                  this.hasAccessors = true;
+               }
+            }
+         }
+      }
+
+      public object GetValueFromRoot(object root) {
+
+         var cpStack = new Stack<MetaComplexProperty>();
+         cpStack.Push(this);
+
+         MetaComplexProperty current = this;
+
+         while (current.Parent != null) {
+            cpStack.Push(current.Parent);
+            current = current.Parent;
+         }
+
+         object obj = root;
+
+         while (cpStack.Count > 0) {
+
+            MetaComplexProperty cp = cpStack.Pop();
+            obj = cp.MemberAccessor.GetBoxedValue(obj);
+
+            if (obj == null) {
+               break;
+            }
+         }
+
+         return obj;
       }
    }
 
