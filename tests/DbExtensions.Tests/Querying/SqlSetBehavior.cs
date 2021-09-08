@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace DbExtensions.Tests.Querying {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class SqlSetBehavior {
 
       readonly Database db = MockDatabase();
 
-      [TestMethod]
+      [Test]
       public void AsEnumerable_Reference_Type() {
 
          var data = new Dictionary<string, object> {
@@ -31,7 +30,7 @@ namespace DbExtensions.Tests.Querying {
          untypedSet.AsEnumerable();
       }
 
-      [TestMethod]
+      [Test]
       public void AsEnumerable_Value_Type() {
 
          var data = new Dictionary<string, object> {
@@ -51,7 +50,7 @@ namespace DbExtensions.Tests.Querying {
          untypedSet.AsEnumerable();
       }
 
-      [TestMethod]
+      [Test]
       public void Dont_Use_Subqueries_When_Methods_Are_Called_In_Order() {
 
          SqlSet set = db.From("products")
@@ -69,7 +68,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Apply_Where_After_Where_Call() {
 
          SqlSet set = db.From("products")
@@ -87,7 +86,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Apply_Where_After_OrderBy_Call() {
 
          SqlSet set = db.From("products")
@@ -105,7 +104,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Apply_Where_After_Skip_Call() {
 
          SqlSet set = db.From("products")
@@ -123,7 +122,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Apply_Where_After_Take_Call() {
 
          SqlSet set = db.From("products")
@@ -141,7 +140,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Apply_OrderBy_After_OrderBy_Call() {
 
          SqlSet set = db.From("products")
@@ -159,7 +158,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Apply_OrderBy_After_Skip_Call() {
 
          SqlSet set = db.From("products")
@@ -177,7 +176,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Apply_OrderBy_After_Take_Call() {
 
          SqlSet set = db.From("products")
@@ -195,7 +194,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Apply_Skip_After_Skip_Call() {
 
          SqlSet set = db.From("products")
@@ -213,7 +212,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Apply_Skip_After_Take_Call() {
 
          SqlSet set = db.From("products")
@@ -231,7 +230,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Apply_Take_After_Take_Call() {
 
          SqlSet set = db.From("products")
@@ -249,7 +248,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Dont_Use_Subquery_For_Cast() {
 
          SqlSet set = db.From("products")
@@ -264,7 +263,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Dont_Use_Subquery_For_Cast_Generic() {
 
          SqlSet set = db.From("products")
@@ -279,7 +278,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Dont_Require_Type_For_Select() {
 
          var data = new Dictionary<string, object> {
@@ -295,7 +294,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.AreEqual("a", value.foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Remember_Mapper() {
 
          var data = new Dictionary<string, object> {

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbExtensions.Tests.Mapping {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class PocoMappingBehavior {
 
-      [TestMethod]
+      [Test]
       public void Map_Property() {
 
          var data = new Dictionary<string, object> {
@@ -26,7 +26,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual("a", value.Foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Null_Property() {
 
          var data = new Dictionary<string, object> {
@@ -42,7 +42,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Property_Private_Setter() {
 
          var data = new Dictionary<string, object> {
@@ -58,7 +58,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual("a", value.Foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Ignore_Unmapped_Property() {
 
          var data = new Dictionary<string, object> {
@@ -73,7 +73,7 @@ namespace DbExtensions.Tests.Mapping {
             .Single();
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Complex_Property() {
 
          var data = new Dictionary<string, object> {
@@ -90,7 +90,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual("b", value.Bar.Foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Null_Complex_Property() {
 
          var data = new Dictionary<string, object> {
@@ -106,7 +106,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Bar);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Complex_Property_To_Null_When_All_Subproperties_Are_Null() {
 
          var data = new Dictionary<string, object> {
@@ -124,7 +124,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Nested);
       }
 
-      [TestMethod]
+      [Test]
       public void Load_Complex_Property() {
 
          var data = new Dictionary<string, object> {
@@ -140,7 +140,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual(1, value.Foo.A);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Constructor() {
 
          var data = new Dictionary<string, object> {
@@ -156,7 +156,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual("http://example.com", value.OriginalString);
       }
 
-      [TestMethod, ExpectedException(typeof(InvalidOperationException))]
+      [Test]
       public void Fail_When_Multiple_Constructors_With_Same_Number_Of_Parameters() {
 
          var data = new Dictionary<string, object> {
@@ -166,12 +166,12 @@ namespace DbExtensions.Tests.Mapping {
 
          Database db = MockQuery(data);
 
-         var value = db.Map<Uri>(SQL
+         Assert.Throws<InvalidOperationException>(() => db.Map<Uri>(SQL
             .SELECT("'http://example.com' AS '1', 1 AS '2'"))
-            .Single();
+            .Single());
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Constructor_Complex_Property() {
 
          var data = new Dictionary<string, object> {
@@ -188,7 +188,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual("http://example.com", value.Url.OriginalString);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Constructor_Nullable_Complex_Property() {
 
          var data = new Dictionary<string, object> {
@@ -207,7 +207,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Foo2);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Constructor_Complex_Property_To_Null_When_All_Arguments_And_Subproperties_Are_Null() {
 
          var data = new Dictionary<string, object> {
@@ -225,7 +225,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Constructor_Complex_Argument_To_Null_When_All_Arguments_And_Subproperties_Are_Null() {
 
          var data = new Dictionary<string, object> {
@@ -243,7 +243,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Load_Constructor_Complex_Property() {
 
          var data = new Dictionary<string, object> {
@@ -263,7 +263,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual(1, value.Foo.Bar.A);
       }
 
-      [TestMethod]
+      [Test]
       public void Load_Constructor_Complex_Argument() {
 
          var data = new Dictionary<string, object> {
@@ -281,7 +281,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual(1, value.Foo.Bar.A);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Null_Constructor_Argument() {
 
          var data = new Dictionary<string, object> {
@@ -299,7 +299,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Url);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Constructor_Nested() {
 
          var data = new Dictionary<string, object> {

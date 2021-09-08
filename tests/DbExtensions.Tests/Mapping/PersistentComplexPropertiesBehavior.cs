@@ -1,16 +1,15 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace DbExtensions.Tests.Mapping {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class PersistentComplexPropertiesBehavior {
 
       readonly Database db = RealDatabase();
 
-      [TestMethod]
+      [Test]
       public void Can_Read_Default_Name() {
 
          var entity = db.Table<PersistentComplexProperties.DefaultName.Customer>()
@@ -22,7 +21,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual("Owner", entity.Contact.Title);
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Read_Custom_Name() {
 
          var entity = db.Table<PersistentComplexProperties.CustomName.Customer>()
@@ -34,7 +33,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual("Owner", entity.CustomerContact.Title);
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Insert() {
 
          using (var tx = db.EnsureInTransaction()) {
@@ -63,7 +62,7 @@ namespace DbExtensions.Tests.Mapping {
          }
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Update() {
 
          using (var tx = db.EnsureInTransaction()) {
@@ -86,7 +85,7 @@ namespace DbExtensions.Tests.Mapping {
          }
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Update_Null_Complex_Property() {
 
          using (var tx = db.EnsureInTransaction()) {

@@ -16,7 +16,7 @@ namespace Samples {
 
    class Program {
 
-      readonly string samplesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..");
+      readonly string samplesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..");
 
       static void Main() {
          new Program().Run();
@@ -113,7 +113,7 @@ namespace Samples {
          string appDir = AppDomain.CurrentDomain.BaseDirectory
             .Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries)
             .Reverse()
-            .Skip(2)
+            .Skip(3)
             .First();
 
          string[] projectsDir = Directory
@@ -135,8 +135,9 @@ namespace Samples {
          }
 
          string projectFileName = projectFile.Split(Path.DirectorySeparatorChar).Last();
-         string assemblyFileName = String.Join(".", projectFileName.Split('.').Reverse().Skip(1).Reverse()) + ".dll";
-         string assemblyPath = new Uri(Path.Combine(projectDir, "bin", "Debug", assemblyFileName)).LocalPath;
+         string assemblyName = String.Join(".", projectFileName.Split('.').Reverse().Skip(1).Reverse());
+         string assemblyDir = Directory.GetDirectories(Path.Combine(projectDir, "bin", "Debug"), "net*").First();
+         string assemblyPath = new Uri(Path.Combine(assemblyDir, assemblyName + ".dll")).LocalPath;
 
          Assembly samplesAssembly = Assembly.LoadFrom(assemblyPath);
 

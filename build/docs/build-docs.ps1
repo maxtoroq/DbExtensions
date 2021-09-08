@@ -1,12 +1,11 @@
-$ErrorActionPreference = "Stop"
+param([switch]$NoBuildProj, [switch]$XmlOnly)
 
+$ErrorActionPreference = "Stop"
 Push-Location (Split-Path $script:MyInvocation.MyCommand.Path)
 
 try {
 
-   ../ensure-nuget.ps1
-
-   $nuget = "..\..\.nuget\nuget.exe"
+   $nuget = ..\ensure-nuget.ps1
 
    if (-not (Test-Path EWSoftware.SHFB -PathType Container)) {
       &$nuget install EWSoftware.SHFB -Version 2019.6.24 -ExcludeVersion
@@ -16,17 +15,23 @@ try {
       &$nuget install EWSoftware.SHFB.NETFramework -Version 4.6.0 -ExcludeVersion
    }
 
-   &$nuget restore sandcastle-md\sandcastle-md.sln
-   
-   MSBuild.exe sandcastle-md\sandcastle-md.sln
-   MSBuild.exe ..\..\src\DbExtensions\DbExtensions.csproj /p:Configuration=Release
-   MSBuild.exe DbExtensions.shfbproj
-   
-   if (Test-Path ..\..\docs\api -PathType Container) {
-      rm ..\..\docs\api -Recurse
+   if (-not $NoBuildProj) {
+      MSBuild.exe ..\..\src\DbExtensions\DbExtensions.csproj /v:minimal /p:Configuration=Release
    }
-   
-   sandcastle-md\src\sandcastle-md\bin\Debug\sandcastle-md.exe api\html ..\..\docs\api
+
+   MSBuild.exe DbExtensions.shfbproj /v:minimal
+
+   if (-not $XmlOnly) {
+
+      &$nuget restore sandcastle-md\sandcastle-md.sln
+      MSBuild.exe sandcastle-md\sandcastle-md.sln /v:minimal
+
+      if (Test-Path ..\..\docs\api -PathType Container) {
+         rm ..\..\docs\api -Recurse
+      }
+
+      sandcastle-md\src\sandcastle-md\bin\Debug\sandcastle-md.exe api\html ..\..\docs\api
+   }
 
 } finally {
    Pop-Location

@@ -1,16 +1,15 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace DbExtensions.Tests.Mapping {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class EnumMappingBehavior {
 
       readonly Database db = RealDatabase();
 
-      [TestMethod]
+      [Test]
       public void Can_Map_Numeric_Column_To_Enum() {
 
          var item = db.Table<Enum.ToNumericColumn.Product>()
@@ -20,7 +19,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual((int)Enum.CategoryEnum.Condiments, (int)item.CategoryID);
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Map_Numeric_Column_To_Nullable_Enum() {
 
          var item = db.Table<Enum.NullableToNumericColumn.Product>()
@@ -30,7 +29,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual((int)Enum.CategoryEnum.Condiments, (int)item.CategoryID);
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Persist_Enum_To_Numeric_Column() {
 
          using (var tx = db.EnsureInTransaction()) {
@@ -50,7 +49,7 @@ namespace DbExtensions.Tests.Mapping {
          }
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Persist_Nullable_Enum_To_Numeric_Column() {
 
          using (var tx = db.EnsureInTransaction()) {
@@ -70,7 +69,7 @@ namespace DbExtensions.Tests.Mapping {
          }
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Map_Text_Column_To_Enum() {
 
          var item = db.Table<Enum.ToTextColumn.Category>()
@@ -80,7 +79,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual(Enum.CategoryEnum.Condiments.ToString(), item.CategoryName.ToString());
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Map_Text_Column_To_Nullable_Enum() {
 
          var item = db.Table<Enum.NullableToTextColumn.Category>()
@@ -90,7 +89,7 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual(Enum.CategoryEnum.Condiments.ToString(), item.CategoryName.ToString());
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Persist_Enum_To_Text_Column() {
 
          using (var tx = db.EnsureInTransaction()) {
@@ -115,7 +114,7 @@ namespace DbExtensions.Tests.Mapping {
          }
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Persist_Nullable_Enum_To_Text_Column() {
 
          using (var tx = db.EnsureInTransaction()) {

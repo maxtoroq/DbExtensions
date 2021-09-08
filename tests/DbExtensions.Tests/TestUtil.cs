@@ -71,7 +71,7 @@ namespace DbExtensions.Tests {
       public static Database RealDatabase() {
 
          var builder = new SQLiteConnectionStringBuilder {
-            DataSource = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\samples\App\bin\Debug\Northwind\Northwind.sl3")),
+            DataSource = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\..\samples\App\bin\Debug\net472\Northwind\Northwind.sl3")),
             FailIfMissing = true
          };
 

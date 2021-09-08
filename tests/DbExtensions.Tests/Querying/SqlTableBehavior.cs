@@ -1,14 +1,13 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace DbExtensions.Tests.Querying {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class SqlTableBehavior {
 
-      [TestMethod]
+      [Test]
       public void Dont_Use_Subqueries_When_Methods_Are_Called_In_Order() {
 
          Database db = MockDatabase();
@@ -28,7 +27,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Use_Multipart_Identifier() {
 
          Database db = MockDatabase("System.Data.SqlClient");
@@ -42,7 +41,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Update_Assigned_Key() {
 
          Database db = RealDatabase();

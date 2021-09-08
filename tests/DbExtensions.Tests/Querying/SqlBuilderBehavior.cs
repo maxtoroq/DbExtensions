@@ -1,12 +1,12 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbExtensions.Tests.Querying {
 
-   [TestClass]
+   [TestFixture]
    public class SqlBuilderBehavior {
 
-      [TestMethod]
+      [Test]
       public void Multiple_Parameters() {
 
          var query = SQL
@@ -16,7 +16,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.AreEqual(2, query.ParameterValues.Count);
       }
 
-      [TestMethod]
+      [Test]
       public void Expand_List_Parameter() {
 
          var query = SQL
@@ -26,7 +26,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(query.ToString().Contains("{2}"));
       }
 
-      [TestMethod]
+      [Test]
       public void Adjust_Other_Placeholders_When_Using_List_Parameter() {
 
          var query = SQL
@@ -37,7 +37,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.AreEqual(4, query.ParameterValues.Count);
       }
 
-      [TestMethod]
+      [Test]
       public void Allow_Empty_List() {
 
          var query = SQL
@@ -48,7 +48,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.AreEqual(null, query.ParameterValues[0]);
       }
 
-      [TestMethod]
+      [Test]
       public void Use_Parameter_On_Limit_Clause() {
 
          var query = SQL
@@ -58,7 +58,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.AreEqual(1, query.ParameterValues.Count);
       }
 
-      [TestMethod]
+      [Test]
       public void Use_Parameter_On_Offset_Clause() {
 
          var query = SQL
@@ -68,7 +68,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.AreEqual(1, query.ParameterValues.Count);
       }
 
-      [TestMethod]
+      [Test]
       public void Treat_SqlBuilder_As_SubQuery() {
 
          var query = SQL
@@ -80,7 +80,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.AreEqual(5, query.ParameterValues[0]);
       }
 
-      [TestMethod]
+      [Test]
       public void Treat_SqlSet_As_SubQuery() {
 
          var db = TestUtil.MockDatabase();

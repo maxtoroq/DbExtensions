@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbExtensions.Tests.Mapping {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class DynamicMappingBehavior {
 
-      [TestMethod, ExpectedException(typeof(ArgumentException))]
+      [Test]
       public void Constructor_Parameters_Not_Allowed() {
 
          var data = new Dictionary<string, object> {
@@ -19,9 +19,9 @@ namespace DbExtensions.Tests.Mapping {
 
          Database db = MockQuery(data);
 
-         var value = db.Map(SQL
+         Assert.Throws<ArgumentException>(() => db.Map(SQL
             .SELECT("'foo' AS '1'"))
-            .Single();
+            .Single());
       }
    }
 }
