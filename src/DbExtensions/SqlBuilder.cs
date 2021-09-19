@@ -33,6 +33,8 @@ namespace DbExtensions {
    [DebuggerDisplay("{Buffer}")]
    public partial class SqlBuilder {
 
+      bool? ifCondition;
+
       /// <summary>
       /// The underlying <see cref="StringBuilder"/>.
       /// </summary>
@@ -219,6 +221,7 @@ namespace DbExtensions {
 
          this.NextClause = null;
          this.NextSeparator = null;
+         this.ifCondition = null;
 
          return this;
       }
@@ -399,6 +402,7 @@ namespace DbExtensions {
 
          this.NextClause = clauseName;
          this.NextSeparator = separator;
+         this.ifCondition = null;
 
          return this;
       }
@@ -454,7 +458,55 @@ namespace DbExtensions {
 
       [CLSCompliant(false)]
       public SqlBuilder _If(bool condition, string format, params object[] args) {
-         return (condition) ? _(format, args) : this;
+
+         if (condition) {
+            _(format, args);
+         }
+
+         this.ifCondition = condition;
+
+         return this;
+      }
+
+      /// <summary>
+      /// Appends <paramref name="format"/> to the current clause if <paramref name="condition"/> is true
+      /// and an antecedent call to <see cref="_If(bool, string, object[])"/> or <see cref="_ElseIf(bool, string, object[])"/>
+      /// used a false condition.
+      /// </summary>
+      /// <inheritdoc cref="_If(bool, string, object[])" select="*[not(self::summary)]"/>
+
+      [CLSCompliant(false)]
+      public SqlBuilder _ElseIf(bool condition, string format, params object[] args) {
+
+         if (this.ifCondition == false) {
+
+            if (condition) {
+               _(format, args);
+            }
+
+            this.ifCondition = condition;
+         }
+
+         return this;
+      }
+
+      /// <summary>
+      /// Appends <paramref name="format"/> to the current clause if an antecedent call to
+      /// <see cref="_If(bool, string, object[])"/> or <see cref="_ElseIf(bool, string, object[])"/>
+      /// used a false condition.
+      /// </summary>
+      /// <param name="format">The format string that represents the body of the current clause.</param>
+      /// <param name="args">The parameters of the clause body.</param>
+      /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+      [CLSCompliant(false)]
+      public SqlBuilder _Else(string format, params object[] args) {
+
+         if (this.ifCondition == false) {
+            _(format, args);
+         }
+
+         return this;
       }
 
       /// <summary>
