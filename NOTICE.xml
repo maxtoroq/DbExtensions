@@ -9,7 +9,7 @@
 <notice>
    <work>DbExtensions</work>
    <website>http://maxtoroq.github.io/DbExtensions/</website>
-   <copyright>2009-2019 Max Toro Q.</copyright>
+   <copyright>2009-2021 Max Toro Q.</copyright>
    <authors>Max Toro Q.</authors>
    <license name="Apache-2.0" src="LICENSE.txt"/>
    <foreign-work type="source">
