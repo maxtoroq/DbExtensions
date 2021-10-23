@@ -251,4 +251,26 @@ namespace DbExtensions {
 
       string Storage { get; set; }
    }
+
+   /// <summary>
+   /// Designates a property as a complex property that groups columns of a table that share the same base name.
+   /// </summary>
+
+   [AttributeUsage(AttributeTargets.Property)]
+   public sealed class ComplexPropertyAttribute : Attribute {
+
+      /// <summary>
+      /// The base name for the columns on the complex property.
+      /// The default is the property name.
+      /// </summary>
+
+      public string Name { get; set; }
+
+      /// <summary>
+      /// The separator to use between the base name and the complex property's columns.
+      /// The default is null, which means no separator is used.
+      /// </summary>
+
+      public string Separator { get; set; }
+   }
 }

@@ -1,22 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbExtensions.Tests.Mapping {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class DynamicMappingBehavior {
 
-      readonly Database db = SqlServerDatabase();
-
-      [TestMethod, ExpectedException(typeof(ArgumentException))]
+      [Test]
       public void Constructor_Parameters_Not_Allowed() {
 
-         var value = db.Map(SQL
+         var data = new Dictionary<string, object> {
+            { "1", "foo" }
+         };
+
+         Database db = MockQuery(data);
+
+         Assert.Throws<ArgumentException>(() => db.Map(SQL
             .SELECT("'foo' AS '1'"))
-            .Single();
+            .Single());
       }
    }
 }

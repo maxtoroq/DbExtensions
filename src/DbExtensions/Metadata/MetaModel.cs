@@ -304,6 +304,8 @@ namespace DbExtensions.Metadata {
 
       public abstract string MappedName { get; }
 
+      public virtual string QueryPath => Name;
+
       /// <summary>
       /// The oridinal position of this member in the default layout of query results.
       /// </summary>
@@ -413,7 +415,7 @@ namespace DbExtensions.Metadata {
 
       public abstract MetaAssociation Association { get; }
 
-      public object GetValueForDatabase(object instance) {
+      public virtual object GetValueForDatabase(object instance) {
 
          object value = this.MemberAccessor.GetBoxedValue(instance);
 

@@ -1,76 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{51847777-C71E-40C7-9E55-A94F508DB7BE}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Samples.CSharp</RootNamespace>
-    <AssemblyName>Samples.CSharp</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworks>net45;netcoreapp2.1;netstandard2.1</TargetFrameworks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
+
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <Reference Include="System.Transactions" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Database.Poco.cs" />
-    <Compile Include="Database.Annotated.cs" />
-    <Compile Include="Northwind\Category.cs" />
-    <Compile Include="Northwind\Customer.cs" />
-    <Compile Include="Northwind\CustomerCustomerDemo.cs" />
-    <Compile Include="Northwind\CustomerDemographic.cs" />
-    <Compile Include="Northwind\Employee.cs" />
-    <Compile Include="Northwind\EmployeeTerritory.cs" />
-    <Compile Include="Northwind\NorthwindDatabase.cs" />
-    <Compile Include="Northwind\Order.cs" />
-    <Compile Include="Northwind\OrderDetail.cs" />
-    <Compile Include="Northwind\Product.cs" />
-    <Compile Include="Northwind\Region.cs" />
-    <Compile Include="Northwind\Shipper.cs" />
-    <Compile Include="Northwind\Supplier.cs" />
-    <Compile Include="Northwind\Territory.cs" />
-    <Compile Include="SqlBuilder.cs" />
-    <Compile Include="SqlSet.cs" />
+    <ProjectReference Include="..\..\src\DbExtensions\DbExtensions.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\DbExtensions\DbExtensions.csproj">
-      <Project>{00835184-82d5-4720-8750-f99a7209730a}</Project>
-      <Name>DbExtensions</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

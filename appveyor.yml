@@ -1,3 +1,5 @@
+image: Visual Studio 2019
+
 before_build:
   - ps: .\build\restore-packages.ps1
 
@@ -5,6 +7,3 @@ version: '{build}'
 
 build:
   verbosity: minimal
-
-services:
-  - mssql2012sp1

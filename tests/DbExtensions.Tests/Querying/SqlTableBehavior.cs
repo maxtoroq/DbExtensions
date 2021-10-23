@@ -1,17 +1,16 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace DbExtensions.Tests.Querying {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class SqlTableBehavior {
 
-      [TestMethod]
+      [Test]
       public void Dont_Use_Subqueries_When_Methods_Are_Called_In_Order() {
 
-         Database db = MySqlDatabase();
+         Database db = MockDatabase();
 
          SqlSet set = db.Table<SqlTable.Model1.Product>()
             .Where("UnitsInStock > 0")
@@ -28,18 +27,24 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Use_Multipart_Identifier() {
 
-         Database db = SqlServerNorthwindDatabase();
+         Database db = MockDatabase("System.Data.SqlClient");
 
-         db.Table<SqlTable.Model2.Product>().First();
+         SqlSet set = db.Table<SqlTable.Model2.Product>();
+
+         SqlBuilder expected = SQL
+            .SELECT("[ProductID], [ProductName]")
+            .FROM("[dbo].[Products]");
+
+         Assert.IsTrue(SqlEquals(set, expected));
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Update_Assigned_Key() {
 
-         Database db = new SqlTable.Model3.NorthwindDatabase();
+         Database db = RealDatabase();
          var table = db.Table<SqlTable.Model3.Customer>();
 
          string originalId = "FISSA";
@@ -89,12 +94,6 @@ namespace DbExtensions.Tests.Querying {
       }
 
       namespace Model3 {
-
-         public class NorthwindDatabase : Database {
-
-            public NorthwindDatabase()
-               : base(SqlServerNorthwindConnection()) { }
-         }
 
          [Table(Name = "Customers")]
          public class Customer {

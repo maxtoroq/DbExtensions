@@ -286,7 +286,7 @@ namespace DbExtensions {
          while (enumerator.MoveNext()) {
 
             string mappedName = enumerator.Current.MappedName;
-            string memberName = enumerator.Current.Name;
+            string memberName = enumerator.Current.QueryPath;
             string columnAlias = !String.Equals(mappedName, memberName, StringComparison.Ordinal) ?
                memberName : null;
 

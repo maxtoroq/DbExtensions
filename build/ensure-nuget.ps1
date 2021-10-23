@@ -12,9 +12,11 @@ try {
    }
 
    if (-not (Test-Path $nuget -PathType Leaf)) {
-      write "Downloading NuGet..."
+      Write-Host "Downloading NuGet..."
       Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $nuget
    }
+
+   Resolve-Path $nuget
 
 } finally {
    Pop-Location

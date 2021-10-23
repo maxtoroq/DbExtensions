@@ -1,17 +1,16 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace DbExtensions.Tests.Mapping {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class EnumMappingBehavior {
 
-      [TestMethod]
-      public void Can_Map_Numeric_Column_To_Enum() {
+      readonly Database db = RealDatabase();
 
-         var db = SqlServerNorthwindDatabase();
+      [Test]
+      public void Can_Map_Numeric_Column_To_Enum() {
 
          var item = db.Table<Enum.ToNumericColumn.Product>()
             .First("CategoryID = {0}", Enum.CategoryEnum.Condiments);
@@ -20,10 +19,8 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual((int)Enum.CategoryEnum.Condiments, (int)item.CategoryID);
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Map_Numeric_Column_To_Nullable_Enum() {
-
-         var db = SqlServerNorthwindDatabase();
 
          var item = db.Table<Enum.NullableToNumericColumn.Product>()
             .First("CategoryID = {0}", Enum.CategoryEnum.Condiments);
@@ -32,10 +29,8 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual((int)Enum.CategoryEnum.Condiments, (int)item.CategoryID);
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Persist_Enum_To_Numeric_Column() {
-
-         var db = SqlServerNorthwindDatabase();
 
          using (var tx = db.EnsureInTransaction()) {
 
@@ -54,10 +49,8 @@ namespace DbExtensions.Tests.Mapping {
          }
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Persist_Nullable_Enum_To_Numeric_Column() {
-
-         var db = SqlServerNorthwindDatabase();
 
          using (var tx = db.EnsureInTransaction()) {
 
@@ -76,10 +69,8 @@ namespace DbExtensions.Tests.Mapping {
          }
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Map_Text_Column_To_Enum() {
-
-         var db = SqlServerNorthwindDatabase();
 
          var item = db.Table<Enum.ToTextColumn.Category>()
             .Single("CategoryName = {0}", Enum.CategoryEnum.Condiments.ToString());
@@ -88,10 +79,8 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual(Enum.CategoryEnum.Condiments.ToString(), item.CategoryName.ToString());
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Map_Text_Column_To_Nullable_Enum() {
-
-         var db = SqlServerNorthwindDatabase();
 
          var item = db.Table<Enum.NullableToTextColumn.Category>()
             .Single("CategoryName = {0}", Enum.CategoryEnum.Condiments.ToString());
@@ -100,10 +89,8 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual(Enum.CategoryEnum.Condiments.ToString(), item.CategoryName.ToString());
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Persist_Enum_To_Text_Column() {
-
-         var db = SqlServerNorthwindDatabase();
 
          using (var tx = db.EnsureInTransaction()) {
 
@@ -127,10 +114,8 @@ namespace DbExtensions.Tests.Mapping {
          }
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Persist_Nullable_Enum_To_Text_Column() {
-
-         var db = SqlServerNorthwindDatabase();
 
          using (var tx = db.EnsureInTransaction()) {
 

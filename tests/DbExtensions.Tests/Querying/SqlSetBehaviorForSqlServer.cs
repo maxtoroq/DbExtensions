@@ -1,16 +1,15 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace DbExtensions.Tests.Querying {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class SqlSetBehaviorForSqlServer {
 
-      readonly Database db = SqlServerDatabase();
+      readonly Database db = MockDatabase("System.Data.SqlClient");
 
-      [TestMethod]
+      [Test]
       public void Use_Parameter_On_Skip() {
 
          var query = db.From(SQL.SELECT("1"))
@@ -20,7 +19,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.AreEqual(1, query.ParameterValues.Count);
       }
 
-      [TestMethod]
+      [Test]
       public void Use_Parameter_On_Take() {
 
          var query = db.From(SQL.SELECT("1"))
@@ -30,7 +29,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.AreEqual(1, query.ParameterValues.Count);
       }
 
-      [TestMethod]
+      [Test]
       public void Use_Parameter_On_Skip_And_Take() {
 
          var query = db.From(SQL.SELECT("1"))

@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.ObjectModel;
+using NUnit.Framework;
 using DbExtensions.Metadata;
 
 namespace DbExtensions.Tests.Metadata {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class AssociationReflection {
 
-      readonly Database db = SqlServerDatabase();
+      readonly Database db = MockDatabase();
 
-      [TestMethod]
+      [Test]
       public void One_To_Many() {
 
          MetaType metaType = db.Configuration.Model.GetMetaType(typeof(Model.Employee));
@@ -33,7 +32,7 @@ namespace DbExtensions.Tests.Metadata {
          Assert.AreEqual(typeof(Model.Employee), assoc.OtherMember.Type);
       }
 
-      [TestMethod]
+      [Test]
       public void Many_To_One() {
 
          MetaType metaType = db.Configuration.Model.GetMetaType(typeof(Model.EmployeeTerritory));

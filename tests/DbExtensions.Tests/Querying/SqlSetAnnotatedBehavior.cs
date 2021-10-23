@@ -1,17 +1,16 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace DbExtensions.Tests.Querying {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class SqlSetAnnotatedBehavior {
 
-      [TestMethod]
-      public void Contains() {
+      readonly Database db = RealDatabase();
 
-         var db = SqlServerNorthwindDatabase();
+      [Test]
+      public void Contains() {
 
          SqlSet<SqlSetAnnotated.Model1.Product> table = db.Table<SqlSetAnnotated.Model1.Product>();
 
@@ -21,10 +20,8 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsFalse(table.Where("ProductID = 2").Contains(prod1));
       }
 
-      [TestMethod]
+      [Test]
       public void ContainsKey() {
-
-         var db = SqlServerNorthwindDatabase();
 
          SqlSet<SqlSetAnnotated.Model1.Product> table = db.Table<SqlSetAnnotated.Model1.Product>();
 
@@ -32,10 +29,8 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsFalse(table.Where("ProductID = 2").ContainsKey(1));
       }
 
-      [TestMethod]
+      [Test]
       public void Find() {
-
-         var db = SqlServerNorthwindDatabase();
 
          SqlSet<SqlSetAnnotated.Model1.Product> table = db.Table<SqlSetAnnotated.Model1.Product>();
 

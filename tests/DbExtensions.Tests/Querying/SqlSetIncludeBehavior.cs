@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbExtensions.Tests.Querying {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class SqlSetIncludeBehavior {
 
-      readonly Database db = SqlServerNorthwindDatabase();
+      readonly Database db = RealDatabase();
 
-      [TestMethod]
+      [Test]
       public void Can_Include_One() {
 
          SqlSet<SqlSetInclude.Product> set = db.Table<SqlSetInclude.Product>()
@@ -26,7 +26,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsNotNull(item.Supplier);
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Include_One_Nested() {
 
          SqlSet<SqlSetInclude.EmployeeTerritory> set = db.Table<SqlSetInclude.EmployeeTerritory>()
@@ -38,7 +38,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsNotNull(item.Territory.Region);
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Include_Many() {
 
          SqlSet<SqlSetInclude.Category> set = db.Table<SqlSetInclude.Category>()
@@ -51,7 +51,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(item.Products.All(p => Object.ReferenceEquals(p.Category, item)));
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Include_Many_Multiple() {
 
          SqlSet<SqlSetInclude.Employee> set1 = db.Table<SqlSetInclude.Employee>()
@@ -79,7 +79,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(item.Orders.All(p => Object.ReferenceEquals(p.Employee, item)));
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Include_Many_In_One() {
 
          SqlSet<SqlSetInclude.EmployeeTerritory> set = db.Table<SqlSetInclude.EmployeeTerritory>()
@@ -92,7 +92,7 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(item.Employee.Orders.All(p => Object.ReferenceEquals(p.Employee, item.Employee)));
       }
 
-      [TestMethod]
+      [Test]
       public void Can_Include_One_In_Many() {
 
          SqlSet<SqlSetInclude.Employee> set = db.Table<SqlSetInclude.Employee>()
@@ -105,13 +105,11 @@ namespace DbExtensions.Tests.Querying {
          Assert.IsTrue(item.EmployeeTerritories.All(p => p.Territory != null));
       }
 
-      [TestMethod, ExpectedException(typeof(ArgumentException))]
+      [Test]
       public void Cannot_Include_Many_In_Many() {
 
-         SqlSet<SqlSetInclude.Employee> set = db.Table<SqlSetInclude.Employee>()
-            .Include("Orders.OrderDetails");
-
-         SqlSetInclude.Employee item = set.First();
+         Assert.Throws<ArgumentException>(() => db.Table<SqlSetInclude.Employee>()
+            .Include("Orders.OrderDetails"));
       }
    }
 

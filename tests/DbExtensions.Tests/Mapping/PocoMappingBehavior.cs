@@ -1,18 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DbExtensions.Tests.Mapping {
 
    using static TestUtil;
 
-   [TestClass]
+   [TestFixture]
    public class PocoMappingBehavior {
 
-      readonly Database db = SqlServerDatabase();
-
-      [TestMethod]
+      [Test]
       public void Map_Property() {
+
+         var data = new Dictionary<string, object> {
+            { "Foo", "a" }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Property>(SQL
             .SELECT("'a' AS Foo"))
@@ -21,8 +26,14 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual("a", value.Foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Null_Property() {
+
+         var data = new Dictionary<string, object> {
+            { "Foo", null }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Null_Property>(SQL
             .SELECT("NULL AS Foo"))
@@ -31,8 +42,14 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Property_Private_Setter() {
+
+         var data = new Dictionary<string, object> {
+            { "Foo", "a" }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Property_Private_Setter>(SQL
             .SELECT("'a' AS Foo"))
@@ -41,16 +58,29 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual("a", value.Foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Ignore_Unmapped_Property() {
+
+         var data = new Dictionary<string, object> {
+            { "Foo", "a" },
+            { "Bar", "b" }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Ignore_Unmapped_Property>(SQL
             .SELECT("'a' AS Foo, 'b' AS Bar"))
             .Single();
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Complex_Property() {
+
+         var data = new Dictionary<string, object> {
+            { "Bar$Foo", "b" }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Complex_Property>(SQL
             .SELECT("'b' AS Bar$Foo"))
@@ -60,8 +90,14 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual("b", value.Bar.Foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Null_Complex_Property() {
+
+         var data = new Dictionary<string, object> {
+            { "Bar", null }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Null_Complex_Property>(SQL
             .SELECT("NULL AS Bar"))
@@ -70,8 +106,15 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Bar);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Complex_Property_To_Null_When_All_Subproperties_Are_Null() {
+
+         var data = new Dictionary<string, object> {
+            { "Nested$Foo", null },
+            { "Nested$Bar", null }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Complex_Property_To_Null_When_All_Subproperties_Are_Null>(SQL
             .SELECT("NULL AS Nested$Foo")
@@ -81,8 +124,14 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Nested);
       }
 
-      [TestMethod]
+      [Test]
       public void Load_Complex_Property() {
+
+         var data = new Dictionary<string, object> {
+            { "Foo$B", 2 }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Load_Complex_Property>(SQL
             .SELECT("2 AS Foo$B"))
@@ -91,8 +140,14 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual(1, value.Foo.A);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Constructor() {
+
+         var data = new Dictionary<string, object> {
+            { "1", "http://example.com" }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<Uri>(SQL
             .SELECT("'http://example.com' AS '1'"))
@@ -101,16 +156,29 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual("http://example.com", value.OriginalString);
       }
 
-      [TestMethod, ExpectedException(typeof(InvalidOperationException))]
+      [Test]
       public void Fail_When_Multiple_Constructors_With_Same_Number_Of_Parameters() {
 
-         var value = db.Map<Uri>(SQL
+         var data = new Dictionary<string, object> {
+            { "1", "http://example.com" },
+            { "2", 1 }
+         };
+
+         Database db = MockQuery(data);
+
+         Assert.Throws<InvalidOperationException>(() => db.Map<Uri>(SQL
             .SELECT("'http://example.com' AS '1', 1 AS '2'"))
-            .Single();
+            .Single());
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Constructor_Complex_Property() {
+
+         var data = new Dictionary<string, object> {
+            { "Url$1", "http://example.com" }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Complex_Property>(SQL
             .SELECT("'http://example.com' AS Url$1"))
@@ -120,8 +188,15 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual("http://example.com", value.Url.OriginalString);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Constructor_Nullable_Complex_Property() {
+
+         var data = new Dictionary<string, object> {
+            { "Foo1$1", 1 },
+            { "Foo2", null }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Nullable_Complex_Property>(SQL
             .SELECT("1 AS Foo1$1")
@@ -132,8 +207,15 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Foo2);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Constructor_Complex_Property_To_Null_When_All_Arguments_And_Subproperties_Are_Null() {
+
+         var data = new Dictionary<string, object> {
+            { "Foo$1", null },
+            { "Foo$Foo", null }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Complex_Property_To_Null_When_All_Arguments_And_Subproperties_Are_Null>(SQL
             .SELECT("NULL AS Foo$1")
@@ -143,8 +225,15 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Constructor_Complex_Argument_To_Null_When_All_Arguments_And_Subproperties_Are_Null() {
+
+         var data = new Dictionary<string, object> {
+            { "1$1", null },
+            { "1$Foo", null }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Complex_Argument_To_Null_When_All_Arguments_And_Subproperties_Are_Null>(SQL
             .SELECT("NULL AS '1$1'")
@@ -154,8 +243,16 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Foo);
       }
 
-      [TestMethod]
+      [Test]
       public void Load_Constructor_Complex_Property() {
+
+         var data = new Dictionary<string, object> {
+            { "1", 1 },
+            { "Foo$A", 2 },
+            { "Foo$Bar$B", 2 }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Load_Constructor_Complex_Property>(SQL
             .SELECT("1 AS '1'")
@@ -166,8 +263,15 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual(1, value.Foo.Bar.A);
       }
 
-      [TestMethod]
+      [Test]
       public void Load_Constructor_Complex_Argument() {
+
+         var data = new Dictionary<string, object> {
+            { "1$A", 2 },
+            { "1$Bar$B", 2 }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Load_Constructor_Complex_Argument>(SQL
             .SELECT("2 AS '1$A'")
@@ -177,8 +281,15 @@ namespace DbExtensions.Tests.Mapping {
          Assert.AreEqual(1, value.Foo.Bar.A);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Null_Constructor_Argument() {
+
+         var data = new Dictionary<string, object> {
+            { "1", 1 },
+            { "2", null }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Null_Constructor_Argument>(SQL
             .SELECT("1 AS '1'")
@@ -188,8 +299,14 @@ namespace DbExtensions.Tests.Mapping {
          Assert.IsNull(value.Url);
       }
 
-      [TestMethod]
+      [Test]
       public void Map_Constructor_Nested() {
+
+         var data = new Dictionary<string, object> {
+            { "1$1", "http://example.com" }
+         };
+
+         Database db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Nested>(SQL
             .SELECT("'http://example.com' AS '1$1'"))
