@@ -60,6 +60,10 @@ namespace DbExtensions {
 
    class DynamicMapper : Mapper {
 
+      protected override bool CanUseConstructorMapping {
+         get { return false; }
+      }
+
       protected override Node CreateRootNode() {
          return DynamicNode.Root();
       }
