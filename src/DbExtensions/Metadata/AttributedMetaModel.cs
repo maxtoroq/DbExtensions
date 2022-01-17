@@ -983,7 +983,7 @@ namespace DbExtensions.Metadata {
 
    class MetaComplexProperty {
 
-      internal const string QueryPathSeparator = "$";
+      internal static readonly string QueryPathSeparator = new string(Mapper._pathSeparator);
 
       readonly ComplexPropertyAttribute cpAttr;
 

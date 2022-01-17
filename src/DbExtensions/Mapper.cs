@@ -61,6 +61,8 @@ namespace DbExtensions {
 
    abstract class Mapper {
 
+      internal static readonly char[] _pathSeparator = { '$' };
+
       Node rootNode;
       IDictionary<CollectionNode, CollectionLoader> manyLoaders;
 
@@ -79,7 +81,7 @@ namespace DbExtensions {
          MapGroup[] groups =
             (from i in Enumerable.Range(0, record.FieldCount)
              let columnName = record.GetName(i)
-             let path = columnName.Split('$')
+             let path = columnName.Split(_pathSeparator)
              let property = (path.Length == 1) ? columnName : path[path.Length - 1]
              let assoc = (path.Length == 1) ? "" : path[path.Length - 2]
              let parent = (path.Length <= 2) ? "" : path[path.Length - 3]

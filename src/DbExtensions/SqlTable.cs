@@ -1505,11 +1505,13 @@ namespace DbExtensions {
 
       static class IncludeImpl {
 
+         static readonly char[] _pathSeparator = { '.' };
+
          public static SqlSet Expand(SqlSet source, string path, MetaType metaType) {
 
             Database db = source.db;
 
-            string[] parts = path.Split('.');
+            string[] parts = path.Split(_pathSeparator);
 
             Func<string, SqlBuilder> selectBuild = alias =>
                new SqlBuilder().SELECT(db.QuoteIdentifier(alias) + ".*");
