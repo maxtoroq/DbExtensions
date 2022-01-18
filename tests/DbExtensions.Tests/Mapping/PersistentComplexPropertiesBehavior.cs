@@ -109,6 +109,60 @@ namespace DbExtensions.Tests.Mapping {
             tx.Rollback();
          }
       }
+
+      [Test]
+      public void Can_Configure_Default_Separator() {
+
+         var db = MockDatabase();
+         db.Configuration.DefaultComplexPropertySeparator = "$";
+
+         var expected = SQL
+            .SELECT(db.QuoteIdentifier("CustomerID"))
+            ._(db.QuoteIdentifier("CompanyName"))
+            ._(db.QuoteIdentifier("Contact$Name"))
+            ._(db.QuoteIdentifier("Contact$Title"))
+            .FROM(db.QuoteIdentifier("Customers"));
+
+         var actual = db.Table<PersistentComplexProperties.ConfigureSeparator.Customer>();
+
+         Assert.IsTrue(SqlEquals(actual, expected));
+      }
+
+      [Test]
+      public void Can_Override_Default_Separator() {
+
+         var db = MockDatabase();
+         db.Configuration.DefaultComplexPropertySeparator = "$";
+
+         var expected = SQL
+            .SELECT(db.QuoteIdentifier("CustomerID"))
+            ._(db.QuoteIdentifier("CompanyName"))
+            ._(db.QuoteIdentifier("Contact_Name") + " AS " + db.QuoteIdentifier("Contact$Name"))
+            ._(db.QuoteIdentifier("Contact_Title") + " AS " + db.QuoteIdentifier("Contact$Title"))
+            .FROM(db.QuoteIdentifier("Customers"));
+
+         var actual = db.Table<PersistentComplexProperties.OverrideSeparator.Customer>();
+
+         Assert.IsTrue(SqlEquals(actual, expected));
+      }
+
+      [Test]
+      public void Can_Override_Default_Separator_With_Empty_String() {
+
+         var db = MockDatabase();
+         db.Configuration.DefaultComplexPropertySeparator = "$";
+
+         var expected = SQL
+            .SELECT(db.QuoteIdentifier("CustomerID"))
+            ._(db.QuoteIdentifier("CompanyName"))
+            ._(db.QuoteIdentifier("ContactName") + " AS " + db.QuoteIdentifier("Contact$Name"))
+            ._(db.QuoteIdentifier("ContactTitle") + " AS " + db.QuoteIdentifier("Contact$Title"))
+            .FROM(db.QuoteIdentifier("Customers"));
+
+         var actual = db.Table<PersistentComplexProperties.OverrideSeparatorEmptyString.Customer>();
+
+         Assert.IsTrue(SqlEquals(actual, expected));
+      }
    }
 
    namespace PersistentComplexProperties {
@@ -225,6 +279,81 @@ namespace DbExtensions.Tests.Mapping {
             public string CompanyName { get; set; }
 
             [ComplexProperty]
+            public Contact Contact { get; set; }
+         }
+
+         class Contact {
+
+            [Column]
+            public string Name { get; set; }
+
+            [Column]
+            public string Title { get; set; }
+         }
+      }
+
+      namespace ConfigureSeparator {
+
+         [Table(Name = "Customers")]
+         class Customer {
+
+            [Column(IsPrimaryKey = true)]
+            public string CustomerID { get; set; }
+
+            [Column]
+            public string CompanyName { get; set; }
+
+            [ComplexProperty]
+            public Contact Contact { get; set; }
+         }
+
+         class Contact {
+
+            [Column]
+            public string Name { get; set; }
+
+            [Column]
+            public string Title { get; set; }
+         }
+      }
+
+      namespace OverrideSeparator {
+
+         [Table(Name = "Customers")]
+         class Customer {
+
+            [Column(IsPrimaryKey = true)]
+            public string CustomerID { get; set; }
+
+            [Column]
+            public string CompanyName { get; set; }
+
+            [ComplexProperty(Separator = "_")]
+            public Contact Contact { get; set; }
+         }
+
+         class Contact {
+
+            [Column]
+            public string Name { get; set; }
+
+            [Column]
+            public string Title { get; set; }
+         }
+      }
+
+      namespace OverrideSeparatorEmptyString {
+
+         [Table(Name = "Customers")]
+         class Customer {
+
+            [Column(IsPrimaryKey = true)]
+            public string CustomerID { get; set; }
+
+            [Column]
+            public string CompanyName { get; set; }
+
+            [ComplexProperty(Separator = "")]
             public Contact Contact { get; set; }
          }
 

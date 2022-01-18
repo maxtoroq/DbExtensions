@@ -61,7 +61,7 @@ namespace DbExtensions.Metadata {
          }
       }
 
-      public override MetaTable GetTable(Type rowType) {
+      public override MetaTable GetTable(Type rowType, MetaTableConfiguration config) {
 
          if (rowType == null) throw Error.ArgumentNull(nameof(rowType));
 
@@ -80,7 +80,7 @@ namespace DbExtensions.Metadata {
          @lock.AcquireWriterLock(Timeout.Infinite);
 
          try {
-            table = GetTableNoLocks(rowType);
+            table = GetTableNoLocks(rowType, config);
          } finally {
             @lock.ReleaseWriterLock();
          }
@@ -88,7 +88,7 @@ namespace DbExtensions.Metadata {
          return table;
       }
 
-      internal MetaTable GetTableNoLocks(Type rowType) {
+      internal MetaTable GetTableNoLocks(Type rowType, MetaTableConfiguration config) {
 
          MetaTable table;
 
@@ -103,7 +103,7 @@ namespace DbExtensions.Metadata {
 
                if (!this.metaTables.TryGetValue(root, out table)) {
 
-                  table = new AttributedMetaTable(this, attrs[0], root);
+                  table = new AttributedMetaTable(this, attrs[0], root, config);
 
                   foreach (MetaType mt in table.RowType.InheritanceTypes) {
                      this.metaTables.Add(mt.Type, table);
@@ -138,7 +138,7 @@ namespace DbExtensions.Metadata {
          return null;
       }
 
-      public override MetaType GetMetaType(Type type) {
+      public override MetaType GetMetaType(Type type, MetaTableConfiguration config) {
 
          if (type == null) throw Error.ArgumentNull(nameof(type));
 
@@ -157,7 +157,7 @@ namespace DbExtensions.Metadata {
          // Attributed meta model allows us to learn about tables we did not
          // statically know about
 
-         MetaTable tab = GetTable(type);
+         MetaTable tab = GetTable(type, config);
 
          if (tab != null) {
             return tab.RowType.GetInheritanceType(type);
@@ -186,7 +186,12 @@ namespace DbExtensions.Metadata {
 
       public override MetaType RowType { get; }
 
-      internal AttributedMetaTable(AttributedMetaModel model, TableAttribute attr, Type rowType) {
+      internal MetaTableConfiguration Configuration { get; private set; }
+
+      internal AttributedMetaTable(AttributedMetaModel model, TableAttribute attr, Type rowType, MetaTableConfiguration config) {
+
+         // set this first
+         this.Configuration = new MetaTableConfiguration(config);
 
          this.Model = model;
          this.TableName = String.IsNullOrEmpty(attr.Name) ? rowType.Name : attr.Name;
@@ -604,7 +609,7 @@ namespace DbExtensions.Metadata {
                            throw new InvalidOperationException("A persistent complex property cannot be an abstract type.");
                         }
 
-                        var metaCp = new MetaComplexProperty(pi, cpAttr, containerCp);
+                        var metaCp = new MetaComplexProperty(this, pi, cpAttr, containerCp);
 
                         InitDataMembersImpl(complexPropType, metaCp);
 
@@ -1016,11 +1021,21 @@ namespace DbExtensions.Metadata {
          }
       }
 
-      public MetaComplexProperty(PropertyInfo member, ComplexPropertyAttribute cpAttr, MetaComplexProperty parent) {
+      public MetaComplexProperty(AttributedMetaType metaType, PropertyInfo member, ComplexPropertyAttribute cpAttr, MetaComplexProperty parent) {
 
          this.Member = member;
          this.cpAttr = cpAttr;
          this.Parent = parent;
+
+         string defaultSeparator;
+
+         if (cpAttr.Separator == null
+            && (defaultSeparator = ((AttributedMetaTable)metaType.Table).Configuration.DefaultComplexPropertySeparator) != null) {
+
+            this.cpAttr = new ComplexPropertyAttribute(this.cpAttr) {
+               Separator = defaultSeparator
+            };
+         }
       }
 
       void InitAccessors() {
@@ -1100,7 +1115,7 @@ namespace DbExtensions.Metadata {
 
          Type ot = (this.IsMany) ? TypeSystem.GetElementType(this.ThisMember.Type) : this.ThisMember.Type;
 
-         this.OtherType = this.ThisMember.DeclaringType.Model.GetMetaType(ot);
+         this.OtherType = this.ThisMember.DeclaringType.Model.GetMetaType(ot, ((AttributedMetaTable)this.ThisMember.DeclaringType.Table).Configuration);
          this.ThisKey = (attr.ThisKey != null) ? MakeKeys(this.ThisMember.DeclaringType, attr.ThisKey) : this.ThisMember.DeclaringType.IdentityMembers;
          this.OtherKey = (attr.OtherKey != null) ? MakeKeys(this.OtherType, attr.OtherKey) : this.OtherType.IdentityMembers;
          this.ThisKeyIsPrimaryKey = AreEqual(this.ThisKey, this.ThisMember.DeclaringType.IdentityMembers);
