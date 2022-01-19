@@ -391,6 +391,14 @@ namespace DbExtensions {
       readonly MetaType metaType;
 
       /// <summary>
+      /// Gets the name of the table.
+      /// </summary>
+
+      public string Name {
+         get { return metaType.Table.TableName; }
+      }
+
+      /// <summary>
       /// Gets a <see cref="SqlCommandBuilder&lt;Object>"/> object for the current table.
       /// </summary>
 
@@ -541,6 +549,12 @@ namespace DbExtensions {
    public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity : class {
 
       readonly MetaType metaType;
+
+      /// <inheritdoc cref="SqlTable.Name"/>
+
+      public string Name {
+         get { return metaType.Table.TableName; }
+      }
 
       /// <summary>
       /// Gets a <see cref="SqlCommandBuilder&lt;TEntity>"/> object for the current table.
@@ -1771,6 +1785,8 @@ namespace DbExtensions {
    }
 
    interface ISqlTable {
+
+      string Name { get; }
 
       void Remove(object entity);
       void RemoveKey(object id);
