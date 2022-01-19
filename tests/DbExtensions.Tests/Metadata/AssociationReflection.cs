@@ -14,7 +14,7 @@ namespace DbExtensions.Tests.Metadata {
       [Test]
       public void One_To_Many() {
 
-         MetaType metaType = db.Configuration.Model.GetMetaType(typeof(Model.Employee));
+         MetaType metaType = db.Configuration.GetMetaType(typeof(Model.Employee));
 
          Assert.AreEqual(2, metaType.Associations.Count);
 
@@ -35,7 +35,7 @@ namespace DbExtensions.Tests.Metadata {
       [Test]
       public void Many_To_One() {
 
-         MetaType metaType = db.Configuration.Model.GetMetaType(typeof(Model.EmployeeTerritory));
+         MetaType metaType = db.Configuration.GetMetaType(typeof(Model.EmployeeTerritory));
 
          Assert.AreEqual(2, metaType.Associations.Count);
 

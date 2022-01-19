@@ -1,4 +1,4 @@
-﻿// Copyright 2010-2018 Max Toro Q.
+﻿// Copyright 2010-2022 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -80,6 +80,10 @@ namespace DbExtensions {
    class PocoMapper : Mapper {
 
       readonly Type type;
+
+      protected override bool CanUseConstructorMapping {
+         get { return true; }
+      }
 
       public PocoMapper(Type type) {
 

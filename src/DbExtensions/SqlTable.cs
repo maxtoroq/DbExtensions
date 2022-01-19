@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2018 Max Toro Q.
+﻿// Copyright 2012-2022 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,7 +41,6 @@ namespace DbExtensions {
       partial void Initialize2(string providerInvariantName) {
 
          this.Configuration.SetModel(() => mappingSource.GetModel(GetType()));
-
          Initialize3(providerInvariantName);
       }
 
@@ -55,7 +54,7 @@ namespace DbExtensions {
 
       public SqlTable<TEntity> Table<TEntity>() where TEntity : class {
 
-         MetaType metaType = this.Configuration.Model.GetMetaType(typeof(TEntity));
+         MetaType metaType = this.Configuration.GetMetaType(typeof(TEntity));
          ISqlTable set;
          SqlTable<TEntity> table;
 
@@ -77,7 +76,7 @@ namespace DbExtensions {
       /// <returns>The <see cref="SqlTable"/> instance for <paramref name="entityType"/>.</returns>
 
       public SqlTable Table(Type entityType) {
-         return Table(this.Configuration.Model.GetMetaType(entityType));
+         return Table(this.Configuration.GetMetaType(entityType));
       }
 
       internal SqlTable Table(MetaType metaType) {
@@ -325,6 +324,7 @@ namespace DbExtensions {
    sealed partial class DatabaseConfiguration {
 
       Lazy<MetaModel> _Model;
+      MetaTableConfiguration _defaultMetaTableConfig;
 
       /// <summary>
       /// Gets the <see cref="MetaModel"/> on which the mapping is based.
@@ -348,8 +348,31 @@ namespace DbExtensions {
 
       public bool EnableBatchCommands { get; set; } = true;
 
+      /// <summary>
+      /// The default separator to use when mapping complex properties.
+      /// The default value is null, which means no separator is used, unless an explicit separator
+      /// is specified on <see cref="ComplexPropertyAttribute.Separator"/>.
+      /// </summary>
+
+      public string DefaultComplexPropertySeparator { get; set; }
+
+      internal MetaTableConfiguration DefaultMetaTableConfig {
+         get {
+            if (_defaultMetaTableConfig == null) {
+               _defaultMetaTableConfig = new MetaTableConfiguration {
+                  DefaultComplexPropertySeparator = this.DefaultComplexPropertySeparator
+               };
+            }
+            return _defaultMetaTableConfig;
+         }
+      }
+
       internal void SetModel(Func<MetaModel> modelFn) {
          _Model = new Lazy<MetaModel>(modelFn);
+      }
+
+      internal MetaType GetMetaType(Type type) {
+         return this.Model.GetMetaType(type, this.DefaultMetaTableConfig);
       }
    }
 
@@ -366,6 +389,14 @@ namespace DbExtensions {
 
       readonly ISqlTable table;
       readonly MetaType metaType;
+
+      /// <summary>
+      /// Gets the name of the table.
+      /// </summary>
+
+      public string Name {
+         get { return metaType.Table.TableName; }
+      }
 
       /// <summary>
       /// Gets a <see cref="SqlCommandBuilder&lt;Object>"/> object for the current table.
@@ -518,6 +549,12 @@ namespace DbExtensions {
    public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity : class {
 
       readonly MetaType metaType;
+
+      /// <inheritdoc cref="SqlTable.Name"/>
+
+      public string Name {
+         get { return metaType.Table.TableName; }
+      }
 
       /// <summary>
       /// Gets a <see cref="SqlCommandBuilder&lt;TEntity>"/> object for the current table.
@@ -1365,7 +1402,7 @@ namespace DbExtensions {
             throw new InvalidOperationException("The operation is not supported on untyped sets.");
          }
 
-         MetaType metaType = this.db.Configuration.Model.GetMetaType(resultType);
+         MetaType metaType = this.db.Configuration.GetMetaType(resultType);
 
          if (metaType == null) {
             throw new InvalidOperationException($"Mapping information was not found for '{resultType.FullName}'.");
@@ -1494,7 +1531,7 @@ namespace DbExtensions {
             throw new InvalidOperationException("Include operation is not supported on untyped sets.");
          }
 
-         MetaType metaType = this.db.Configuration.Model.GetMetaType(this.ResultType);
+         MetaType metaType = this.db.Configuration.GetMetaType(this.ResultType);
 
          if (metaType == null) {
             throw new InvalidOperationException($"Mapping information was not found for '{this.ResultType.FullName}'.");
@@ -1505,11 +1542,13 @@ namespace DbExtensions {
 
       static class IncludeImpl {
 
+         static readonly char[] _pathSeparator = { '.' };
+
          public static SqlSet Expand(SqlSet source, string path, MetaType metaType) {
 
             Database db = source.db;
 
-            string[] parts = path.Split('.');
+            string[] parts = path.Split(_pathSeparator);
 
             Func<string, SqlBuilder> selectBuild = alias =>
                new SqlBuilder().SELECT(db.QuoteIdentifier(alias) + ".*");
@@ -1746,6 +1785,8 @@ namespace DbExtensions {
    }
 
    interface ISqlTable {
+
+      string Name { get; }
 
       void Remove(object entity);
       void RemoveKey(object id);

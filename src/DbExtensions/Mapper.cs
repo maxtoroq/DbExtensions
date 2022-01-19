@@ -1,4 +1,4 @@
-﻿// Copyright 2010-2018 Max Toro Q.
+﻿// Copyright 2010-2022 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -61,6 +61,8 @@ namespace DbExtensions {
 
    abstract class Mapper {
 
+      internal static readonly char[] _pathSeparator = { '$' };
+
       Node rootNode;
       IDictionary<CollectionNode, CollectionLoader> manyLoaders;
 
@@ -70,6 +72,8 @@ namespace DbExtensions {
 
       public bool SingleResult { get; set; }
 
+      protected abstract bool CanUseConstructorMapping { get; }
+
       protected Mapper() { }
 
       void ReadMapping(IDataRecord record, Node rootNode) {
@@ -77,7 +81,7 @@ namespace DbExtensions {
          MapGroup[] groups =
             (from i in Enumerable.Range(0, record.FieldCount)
              let columnName = record.GetName(i)
-             let path = columnName.Split('$')
+             let path = columnName.Split(_pathSeparator)
              let property = (path.Length == 1) ? columnName : path[path.Length - 1]
              let assoc = (path.Length == 1) ? "" : path[path.Length - 2]
              let parent = (path.Length <= 2) ? "" : path[path.Length - 3]
@@ -101,10 +105,13 @@ namespace DbExtensions {
       void ReadMapping(IDataRecord record, MapGroup[] groups, MapGroup currentGroup, Node instance) {
 
          var constructorParameters = new Dictionary<MapParam, Node>();
+         var unmapped = new Dictionary<string, int>();
 
          foreach (var pair in currentGroup.Properties) {
 
-            Node property = CreateSimpleProperty(instance, pair.Value, pair.Key);
+            string propertyName = pair.Value;
+            int columnOrdinal = pair.Key;
+            Node property = CreateSimpleProperty(instance, propertyName, columnOrdinal);
 
             if (property != null) {
                property.Container = instance;
@@ -114,10 +121,11 @@ namespace DbExtensions {
 
             uint valueAsNumber;
 
-            if (UInt32.TryParse(pair.Value, out valueAsNumber)) {
-               constructorParameters.Add(new MapParam(valueAsNumber, pair.Key), null);
+            if (UInt32.TryParse(propertyName, out valueAsNumber)) {
+               constructorParameters.Add(new MapParam(valueAsNumber, columnOrdinal), null);
             } else {
-               this.Log?.WriteLine("-- WARNING: Couldn't find property '{0}' on type '{1}'. Ignoring column.", pair.Value, instance.TypeName);
+               unmapped.Add(propertyName, columnOrdinal);
+               this.Log?.WriteLine("-- WARNING: Couldn't find property '{0}' on type '{1}'. Ignoring column.", propertyName, instance.TypeName);
             }
          }
 
@@ -126,10 +134,13 @@ namespace DbExtensions {
              where m.Depth == currentGroup.Depth + 1 && m.Parent == currentGroup.Name
              select m).ToArray();
 
+         var unmappedGroups = new Dictionary<string, MapGroup>();
+
          for (int i = 0; i < nextLevels.Length; i++) {
 
             MapGroup nextLevel = nextLevels[i];
-            Node property = CreateComplexProperty(instance, nextLevel.Name);
+            string propertyName = nextLevel.Name;
+            Node property = CreateComplexProperty(instance, propertyName);
 
             if (property != null) {
 
@@ -143,16 +154,17 @@ namespace DbExtensions {
 
             uint valueAsNumber;
 
-            if (UInt32.TryParse(nextLevel.Name, out valueAsNumber)) {
+            if (UInt32.TryParse(propertyName, out valueAsNumber)) {
                constructorParameters.Add(new MapParam(valueAsNumber, nextLevel), null);
             } else {
-               this.Log?.WriteLine("-- WARNING: Couldn't find property '{0}' on type '{1}'. Ignoring column(s).", nextLevel.Name, instance.TypeName);
+               unmappedGroups.Add(propertyName, nextLevel);
+               this.Log?.WriteLine("-- WARNING: Couldn't find property '{0}' on type '{1}'. Ignoring column(s).", propertyName, instance.TypeName);
             }
          }
 
          if (constructorParameters.Count > 0) {
 
-            instance.Constructor = GetConstructor(instance, constructorParameters.Count);
+            instance.Constructor = ChooseConstructor(GetConstructors(instance), instance, constructorParameters.Count);
             ParameterInfo[] parameters = instance.Constructor.GetParameters();
 
             int i = 0;
@@ -188,6 +200,64 @@ namespace DbExtensions {
                instance.ConstructorParameters.Add(pair.Key.ParameterIndex, paramNode);
 
                i++;
+            }
+
+         } else {
+
+            ConstructorInfo[] constructors;
+            ParameterInfo[] parameters;
+
+            if (this.CanUseConstructorMapping
+               && (constructors = GetConstructors(instance)).Length == 1
+               && (parameters = constructors[0].GetParameters()).Length > 0) {
+
+               foreach (ParameterInfo param in parameters) {
+
+                  uint paramIndex = (uint)param.Position;
+
+                  int columnOrdinal;
+
+                  if (unmapped.TryGetValue(param.Name, out columnOrdinal)) {
+
+                     Node paramNode = CreateParameterNode(columnOrdinal, param);
+                     instance.ConstructorParameters.Add(paramIndex, paramNode);
+                     continue;
+                  }
+
+                  Node property = instance.Properties
+                     .FirstOrDefault(p => !p.IsComplex && p.PropertyName == param.Name);
+
+                  if (property != null) {
+
+                     Node paramNode = CreateParameterNode(property.ColumnOrdinal, param);
+
+                     instance.Properties.Remove(property);
+                     instance.ConstructorParameters.Add(paramIndex, paramNode);
+                     continue;
+                  }
+
+                  MapGroup group;
+
+                  if (unmappedGroups.TryGetValue(param.Name, out group)) {
+
+                     Node paramNode = CreateParameterNode(param);
+                     ReadMapping(record, groups, group, paramNode);
+
+                     instance.ConstructorParameters.Add(paramIndex, paramNode);
+                  }
+               }
+
+               if (parameters.Length != instance.ConstructorParameters.Count) {
+                  throw new InvalidOperationException(
+                     String.Format(CultureInfo.InvariantCulture,
+                        "There are missing arguments for constructor with {0} parameter(s) for type '{1}'.",
+                        parameters.Length,
+                        instance.TypeName
+                     )
+                  );
+               }
+
+               instance.Constructor = constructors[0];
             }
          }
 
@@ -293,12 +363,19 @@ namespace DbExtensions {
 
       protected abstract CollectionNode CreateCollectionNode(Node container, string propertyName);
 
-      static ConstructorInfo GetConstructor(Node node, int parameterLength) {
+      static ConstructorInfo[] GetConstructors(Node node) {
 
          ConstructorInfo[] constructors = node
-            .GetConstructors(BindingFlags.Public | BindingFlags.Instance)
-            .Where(c => c.GetParameters().Length == parameterLength)
-            .ToArray();
+            .GetConstructors(BindingFlags.Public | BindingFlags.Instance);
+
+         return constructors;
+      }
+
+      static ConstructorInfo ChooseConstructor(ConstructorInfo[] constructors, Node node, int parameterLength) {
+
+         constructors = constructors
+           .Where(c => c.GetParameters().Length == parameterLength)
+           .ToArray();
 
          if (constructors.Length == 0) {
             throw new InvalidOperationException(

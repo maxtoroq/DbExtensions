@@ -1,4 +1,4 @@
-﻿// Copyright 2016-2018 Max Toro Q.
+﻿// Copyright 2016-2022 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -268,9 +268,21 @@ namespace DbExtensions {
 
       /// <summary>
       /// The separator to use between the base name and the complex property's columns.
-      /// The default is null, which means no separator is used.
+      /// The default is null, which means the separator is taken from <see cref="DatabaseConfiguration.DefaultComplexPropertySeparator"/>.
+      /// To use no separator and override the default configuration, use an empty <see cref="string"/>.
       /// </summary>
 
       public string Separator { get; set; }
+
+      /// <summary>
+      /// Initializes a new instance of the <see cref="ComplexPropertyAttribute"/> class
+      /// </summary>
+
+      public ComplexPropertyAttribute() { }
+
+      internal ComplexPropertyAttribute(ComplexPropertyAttribute other) {
+         this.Name = other.Name;
+         this.Separator = other.Separator;
+      }
    }
 }

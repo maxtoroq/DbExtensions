@@ -1,4 +1,4 @@
-// Copyright 2016-2018 Max Toro Q.
+// Copyright 2016-2022 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ namespace DbExtensions.Metadata {
       /// <param name="rowType">The CLR row type.</param>
       /// <returns>The MetaTable if one exists, otherwise null.</returns>
 
-      public abstract MetaTable GetTable(Type rowType);
+      public abstract MetaTable GetTable(Type rowType, MetaTableConfiguration config);
 
       /// <summary>
       /// Get an enumeration of all tables.
@@ -67,7 +67,7 @@ namespace DbExtensions.Metadata {
       /// This method discovers the MetaType for the given Type.
       /// </summary>
 
-      public abstract MetaType GetMetaType(Type type);
+      public abstract MetaType GetMetaType(Type type, MetaTableConfiguration config);
    }
 
    /// <summary>
@@ -94,6 +94,18 @@ namespace DbExtensions.Metadata {
 
       public abstract MetaType RowType { get; }
    }
+
+   class MetaTableConfiguration {
+
+      public string DefaultComplexPropertySeparator { get; internal set; }
+
+      public MetaTableConfiguration() { }
+
+      internal MetaTableConfiguration(MetaTableConfiguration other) {
+         this.DefaultComplexPropertySeparator = other.DefaultComplexPropertySeparator;
+      }
+   }
+
 
    /// <summary>
    /// A MetaType represents the mapping of a domain object type onto a database table's columns.
