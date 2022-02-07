@@ -24,9 +24,13 @@ Dot-separated list of related objects to return in the query results.
 Type: [SqlSet][3]&lt;[TResult][3]>  
 A new [SqlSet&lt;TResult>][3] with the defined query path.
 
-Remarks
--------
- This method can only be used on sets where the result type is an annotated class. 
+Exceptions
+----------
+
+Exception                      | Condition                                                                         
+------------------------------ | --------------------------------------------------------------------------------- 
+[InvalidOperationException][4] | This method can only be used on sets where the result type is an annotated class. 
+
 
 See Also
 --------
@@ -38,3 +42,4 @@ See Also
 [1]: ../README.md
 [2]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
 [3]: README.md
+[4]: http://msdn.microsoft.com/en-us/library/2asft85a
