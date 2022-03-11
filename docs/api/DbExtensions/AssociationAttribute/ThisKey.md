@@ -3,7 +3,7 @@ AssociationAttribute.ThisKey Property
 Gets or sets members of this entity class to represent the key values on this side of the association.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

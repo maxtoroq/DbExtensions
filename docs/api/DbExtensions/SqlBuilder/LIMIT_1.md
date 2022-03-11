@@ -3,7 +3,7 @@ SqlBuilder.LIMIT Method (Int32)
 Appends the LIMIT clause using the provided *maxRecords* parameter.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

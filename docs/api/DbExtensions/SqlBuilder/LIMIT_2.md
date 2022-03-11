@@ -3,7 +3,7 @@ SqlBuilder.LIMIT Method (String, Object[])
 Appends the LIMIT clause using the provided *format* string and parameters.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

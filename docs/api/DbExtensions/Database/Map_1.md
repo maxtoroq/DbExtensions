@@ -3,7 +3,7 @@ Database.Map Method (Type, SqlBuilder)
 Maps the results of the *query* to objects of type specified by the *resultType* parameter. The query is deferred-executed.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

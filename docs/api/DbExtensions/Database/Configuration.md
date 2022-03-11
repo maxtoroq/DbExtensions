@@ -3,7 +3,7 @@ Database.Configuration Property
 Provides access to configuration options for this instance.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

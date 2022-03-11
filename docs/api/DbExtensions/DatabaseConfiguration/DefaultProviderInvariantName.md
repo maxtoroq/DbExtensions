@@ -3,7 +3,7 @@ DatabaseConfiguration.DefaultProviderInvariantName Property
 The provider's invariant name to use as default.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

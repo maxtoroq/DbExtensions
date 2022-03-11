@@ -3,7 +3,7 @@ ColumnAttribute.IsVersion Property
 Gets or sets whether the column type of the member is a database timestamp or version number.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

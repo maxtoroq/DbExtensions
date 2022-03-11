@@ -3,7 +3,7 @@ AutoSync Enumeration
 Used to specify for during INSERT and UPDATE operations when a data member should be read back after the operation completes.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

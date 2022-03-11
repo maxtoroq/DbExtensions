@@ -3,7 +3,7 @@ ColumnAttribute.IsDbGenerated Property
 Gets or sets whether a column contains values that the database auto-generates.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

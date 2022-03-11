@@ -3,7 +3,7 @@ SqlTable.Name Property
 Gets the name of the table.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

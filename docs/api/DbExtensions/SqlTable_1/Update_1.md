@@ -3,7 +3,7 @@ SqlTable&lt;TEntity>.Update Method (TEntity, Object)
 Executes an UPDATE command for the specified *entity*.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

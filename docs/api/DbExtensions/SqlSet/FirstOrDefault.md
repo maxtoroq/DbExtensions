@@ -3,7 +3,7 @@ SqlSet.FirstOrDefault Method
 Returns the first element of the set, or a default value if the set contains no elements.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

@@ -3,7 +3,7 @@ Database.Dispose Method (Boolean)
 Releases the resources used by this [Database][1] instance.
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

@@ -3,7 +3,7 @@ SqlSet.ToString Method
 Returns the SQL query of the set.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

@@ -3,7 +3,7 @@ ColumnAttribute.ConvertTo Property
 Gets or sets the type to convert this member to before sending to the database.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

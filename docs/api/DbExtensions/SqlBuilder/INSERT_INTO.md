@@ -3,7 +3,7 @@ SqlBuilder.INSERT_INTO Method
 Appends the INSERT INTO clause using the provided *format* string and parameters.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

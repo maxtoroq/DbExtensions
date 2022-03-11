@@ -3,7 +3,7 @@ SqlBuilder._ForEach&lt;T> Method
 Appends to the current clause the string made by concatenating an *itemFormat* for each element in *items*, interspersed with *separator*.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

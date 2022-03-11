@@ -3,7 +3,7 @@ DatabaseConfiguration.DefaultConnectionString Property
 The connection string to use as default.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

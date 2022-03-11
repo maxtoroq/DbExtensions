@@ -3,7 +3,7 @@ Extensions.GetChar Method
 Gets the value of the specified column as a [Char][1].
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

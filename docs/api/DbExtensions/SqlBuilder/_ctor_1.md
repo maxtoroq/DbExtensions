@@ -3,7 +3,7 @@ SqlBuilder Constructor (String, Object[])
 Initializes a new instance of the [SqlBuilder][1] class using the provided format string and parameters.
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

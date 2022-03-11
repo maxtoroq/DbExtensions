@@ -3,7 +3,7 @@ Extensions.GetFloat Method
 Gets the value of the specified column as a [Single][1].
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

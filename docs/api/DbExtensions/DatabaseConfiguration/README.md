@@ -9,7 +9,7 @@ Inheritance Hierarchy
   **DbExtensions.DatabaseConfiguration**  
 
   **Namespace:**  [DbExtensions][4]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

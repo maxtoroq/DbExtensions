@@ -3,7 +3,7 @@ Extensions.GetValue Method
 Gets the value of the specified column.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

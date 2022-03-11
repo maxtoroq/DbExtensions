@@ -3,7 +3,7 @@ Database.Find&lt;TEntity> Method (Object)
 Gets the entity whose primary key matches the *id* parameter.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

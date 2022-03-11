@@ -3,7 +3,7 @@ SqlBuilder.SELECT Method
 Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][1] and [_If(Boolean, String, Object[])][2].
 
   **Namespace:**  [DbExtensions][3]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

@@ -3,7 +3,7 @@ Database.Dispose Method
 Releases all resources used by the current instance of the [Database][1] class.
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

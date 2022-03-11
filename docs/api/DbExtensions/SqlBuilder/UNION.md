@@ -3,7 +3,7 @@ SqlBuilder.UNION Method
 Appends the UNION clause.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

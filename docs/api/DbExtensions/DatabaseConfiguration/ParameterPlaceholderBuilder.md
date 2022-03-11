@@ -3,7 +3,7 @@ DatabaseConfiguration.ParameterPlaceholderBuilder Property
 Specifies a function that builds a parameter placeholder to be used in SQL statements.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

@@ -3,7 +3,7 @@ ComplexPropertyAttribute.Name Property
 The base name for the columns on the complex property. The default is the property name.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

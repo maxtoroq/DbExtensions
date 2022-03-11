@@ -3,7 +3,7 @@ SqlSet.Any Method
 Determines whether the set contains any elements.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

@@ -3,7 +3,7 @@ SqlSet.ResultType Property
 The type of objects this set returns. This property can be null.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

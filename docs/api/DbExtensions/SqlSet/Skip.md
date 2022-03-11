@@ -3,7 +3,7 @@ SqlSet.Skip Method
 Bypasses a specified number of elements in the set and then returns the remaining elements.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

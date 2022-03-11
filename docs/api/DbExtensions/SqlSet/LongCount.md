@@ -3,7 +3,7 @@ SqlSet.LongCount Method
 Returns an [Int64][1] that represents the total number of elements in the set.
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

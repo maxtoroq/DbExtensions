@@ -3,7 +3,7 @@ Database.EnsureInTransaction Method
 Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

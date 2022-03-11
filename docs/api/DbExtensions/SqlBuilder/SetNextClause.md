@@ -3,7 +3,7 @@ SqlBuilder.SetNextClause Method
 Sets *clauseName* as the next SQL clause.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

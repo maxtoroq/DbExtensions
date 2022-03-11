@@ -3,7 +3,7 @@ SqlTable.RemoveRange Method (IEnumerable&lt;Object>)
 Executes DELETE commands for the specified *entities*.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

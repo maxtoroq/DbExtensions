@@ -3,7 +3,7 @@ SqlTable&lt;TEntity>.UpdateRange Method (IEnumerable&lt;TEntity>)
 Executes UPDATE commands for the specified *entities*.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

@@ -11,7 +11,7 @@ Inheritance Hierarchy
     [DbExtensions.SqlTable][4]  
 
   **Namespace:**  [DbExtensions][5]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

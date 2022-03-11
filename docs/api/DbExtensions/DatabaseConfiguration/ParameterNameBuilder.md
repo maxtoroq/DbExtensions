@@ -3,7 +3,7 @@ DatabaseConfiguration.ParameterNameBuilder Property
 Specifies a function that prepares a parameter name to be used on [ParameterName][1].
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

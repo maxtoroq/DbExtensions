@@ -3,7 +3,7 @@ SqlBuilder.NextSeparator Property
 Gets or sets the separator of the next SQL clause body.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

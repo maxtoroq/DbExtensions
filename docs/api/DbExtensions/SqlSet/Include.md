@@ -3,7 +3,7 @@ SqlSet.Include Method
 Specifies the related objects to include in the query results.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

@@ -3,7 +3,7 @@ SqlBuilder.WHERE Method (String, Object[])
 Appends the WHERE clause using the provided *format* string and parameters.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

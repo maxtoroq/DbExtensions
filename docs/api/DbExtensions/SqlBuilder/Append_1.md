@@ -3,7 +3,7 @@ SqlBuilder.Append Method (String, Object[])
 Appends *format* to this instance.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

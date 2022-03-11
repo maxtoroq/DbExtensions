@@ -3,7 +3,7 @@ AssociationAttribute.OtherKey Property
 Gets or sets one or more members of the target entity class as key values on the other side of the association.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

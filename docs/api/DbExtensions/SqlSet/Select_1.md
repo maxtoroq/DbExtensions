@@ -3,7 +3,7 @@ SqlSet.Select Method (Type, String, Object[])
 Projects each element of the set into a new form.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

@@ -3,7 +3,7 @@ Database.CreateCommand Method (String, Object[])
 Creates and returns an [IDbCommand][1] object using the provided *commandText* as a composite format string (as used on [Format(String, Object[])][2]), where the format items are replaced with appropiate parameter names, and the objects in the *parameters* array are added to the command's [Parameters][3] collection.
 
   **Namespace:**  [DbExtensions][4]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

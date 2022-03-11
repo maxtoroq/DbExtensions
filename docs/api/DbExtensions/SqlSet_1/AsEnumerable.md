@@ -3,7 +3,7 @@ SqlSet&lt;TResult>.AsEnumerable Method
 Gets all TResult objects in the set. The query is deferred-executed.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

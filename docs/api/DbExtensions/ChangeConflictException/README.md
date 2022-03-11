@@ -10,7 +10,7 @@ Inheritance Hierarchy
     **DbExtensions.ChangeConflictException**  
 
   **Namespace:**  [DbExtensions][3]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

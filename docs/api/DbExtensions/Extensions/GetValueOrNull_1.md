@@ -3,7 +3,7 @@ Extensions.GetValueOrNull Method (IDataRecord, String)
 Gets the value of the specified column as an [Object][1], or null (Nothing in Visual Basic).
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

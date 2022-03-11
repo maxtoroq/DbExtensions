@@ -3,7 +3,7 @@ Extensions.GetDecimal Method
 Gets the value of the specified column as a [Decimal][1].
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

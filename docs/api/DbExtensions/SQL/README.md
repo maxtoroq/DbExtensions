@@ -9,7 +9,7 @@ Inheritance Hierarchy
   **DbExtensions.SQL**  
 
   **Namespace:**  [DbExtensions][3]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

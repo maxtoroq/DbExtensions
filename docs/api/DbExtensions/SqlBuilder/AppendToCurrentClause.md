@@ -3,7 +3,7 @@ SqlBuilder.AppendToCurrentClause Method
 Appends *format* to the current clause.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

@@ -3,7 +3,7 @@ DatabaseConfiguration.UseVersionMember Property
 true to include version column check in SQL statements' predicates; otherwise, false. The default is true.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

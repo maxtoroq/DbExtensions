@@ -3,7 +3,7 @@ ColumnAttribute.IsPrimaryKey Property
 Gets or sets whether this class member represents a column that is part or all of the primary key of the table.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

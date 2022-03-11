@@ -3,7 +3,7 @@ SqlTable.Refresh Method
 Sets all column members of *entity* to their most current persisted value.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

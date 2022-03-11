@@ -3,7 +3,7 @@ SqlSet.Any Method (String, Object[])
 Determines whether any element of the set satisfies a condition.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
