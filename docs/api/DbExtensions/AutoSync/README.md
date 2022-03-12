@@ -16,13 +16,13 @@ public enum AutoSync
 Members
 -------
 
-Member name  | Value | Description                                       
------------- | ----- | ------------------------------------------------- 
-**Default**  | 0     | Automatically selects the value.                  
-**Always**   | 1     | Always returns the value.                         
-**Never**    | 2     | Never returns the value.                          
-**OnInsert** | 3     | Returns the value only after an INSERT operation. 
-**OnUpdate** | 4     | Returns the value only after an UPDATE operation. 
+| Member name  | Value | Description                                       |
+| ------------ | ----- | ------------------------------------------------- |
+| **Default**  | 0     | Automatically selects the value.                  |
+| **Always**   | 1     | Always returns the value.                         |
+| **Never**    | 2     | Never returns the value.                          |
+| **OnInsert** | 3     | Returns the value only after an INSERT operation. |
+| **OnUpdate** | 4     | Returns the value only after an UPDATE operation. |
 
 
 See Also

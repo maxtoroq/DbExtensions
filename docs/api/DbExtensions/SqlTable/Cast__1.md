@@ -26,9 +26,9 @@ The [SqlTable&lt;TEntity>][2] instance for TEntity.
 Exceptions
 ----------
 
-Exception                      | Condition                                             
------------------------------- | ----------------------------------------------------- 
-[InvalidOperationException][4] | The specified TEntity is not valid for this instance. 
+| Exception                      | Condition                                             |
+| ------------------------------ | ----------------------------------------------------- |
+| [InvalidOperationException][4] | The specified TEntity is not valid for this instance. |
 
 
 See Also

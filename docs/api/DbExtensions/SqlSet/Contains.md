@@ -27,9 +27,9 @@ true if the primary key value exists in the database; otherwise false.
 Exceptions
 ----------
 
-Exception                      | Condition                                                                         
------------------------------- | --------------------------------------------------------------------------------- 
-[InvalidOperationException][4] | This method can only be used on sets where the result type is an annotated class. 
+| Exception                      | Condition                                                                         |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| [InvalidOperationException][4] | This method can only be used on sets where the result type is an annotated class. |
 
 
 See Also

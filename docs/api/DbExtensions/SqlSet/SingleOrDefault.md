@@ -19,9 +19,9 @@ The single element of the set, or a default value if the set contains no element
 Exceptions
 ----------
 
-Exception                      | Condition                               
------------------------------- | --------------------------------------- 
-[InvalidOperationException][3] | The set contains more than one element. 
+| Exception                      | Condition                               |
+| ------------------------------ | --------------------------------------- |
+| [InvalidOperationException][3] | The set contains more than one element. |
 
 
 See Also

@@ -32,9 +32,9 @@ The single element of the set that passes the test in the specified *predicate*.
 Exceptions
 ----------
 
-Exception                      | Condition                                                                                                                                
------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- 
-[InvalidOperationException][5] | No element satisfies the condition in *predicate*.-or-More than one element satisfies the condition in *predicate*.-or-The set is empty. 
+| Exception                      | Condition                                                                                                                                |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| [InvalidOperationException][5] | No element satisfies the condition in *predicate*.-or-More than one element satisfies the condition in *predicate*.-or-The set is empty. |
 
 
 See Also

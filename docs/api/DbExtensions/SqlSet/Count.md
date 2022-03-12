@@ -19,9 +19,9 @@ The number of elements in the set.
 Exceptions
 ----------
 
-Exception              | Condition                                            
----------------------- | ---------------------------------------------------- 
-[OverflowException][3] | The number of elements is larger than [MaxValue][4]. 
+| Exception              | Condition                                            |
+| ---------------------- | ---------------------------------------------------- |
+| [OverflowException][3] | The number of elements is larger than [MaxValue][4]. |
 
 
 See Also

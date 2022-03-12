@@ -26,9 +26,9 @@ The **ChangeConflictException** type exposes the following members.
 Constructors
 ------------
 
-                 | Name                         | Description                                                                                         
----------------- | ---------------------------- | --------------------------------------------------------------------------------------------------- 
-![Public method] | [ChangeConflictException][4] | Initializes a new instance of the **ChangeConflictException** class with a specified error message. 
+|                  | Name                         | Description                                                                                         |
+| ---------------- | ---------------------------- | --------------------------------------------------------------------------------------------------- |
+| ![Public method] | [ChangeConflictException][4] | Initializes a new instance of the **ChangeConflictException** class with a specified error message. |
 
 
 See Also

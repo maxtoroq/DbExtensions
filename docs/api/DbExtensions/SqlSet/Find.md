@@ -27,9 +27,9 @@ Type: [Object][2]
 Exceptions
 ----------
 
-Exception                      | Condition                                                                         
------------------------------- | --------------------------------------------------------------------------------- 
-[InvalidOperationException][3] | This method can only be used on sets where the result type is an annotated class. 
+| Exception                      | Condition                                                                         |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| [InvalidOperationException][3] | This method can only be used on sets where the result type is an annotated class. |
 
 
 See Also

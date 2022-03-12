@@ -37,9 +37,9 @@ The number of affected records.
 Exceptions
 ----------
 
-Exception                    | Condition                                                
----------------------------- | -------------------------------------------------------- 
-[ChangeConflictException][5] | The number of affected records is not equal to *affect*. 
+| Exception                    | Condition                                                |
+| ---------------------------- | -------------------------------------------------------- |
+| [ChangeConflictException][5] | The number of affected records is not equal to *affect*. |
 
 
 See Also

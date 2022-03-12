@@ -27,9 +27,9 @@ A new [SqlSet][3] with the defined query path.
 Exceptions
 ----------
 
-Exception                      | Condition                                                                         
------------------------------- | --------------------------------------------------------------------------------- 
-[InvalidOperationException][4] | This method can only be used on sets where the result type is an annotated class. 
+| Exception                      | Condition                                                                         |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| [InvalidOperationException][4] | This method can only be used on sets where the result type is an annotated class. |
 
 
 See Also

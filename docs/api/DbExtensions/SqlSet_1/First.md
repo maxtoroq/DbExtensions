@@ -19,9 +19,9 @@ The first element in the set.
 Exceptions
 ----------
 
-Exception                      | Condition         
------------------------------- | ----------------- 
-[InvalidOperationException][3] | The set is empty. 
+| Exception                      | Condition         |
+| ------------------------------ | ----------------- |
+| [InvalidOperationException][3] | The set is empty. |
 
 
 See Also

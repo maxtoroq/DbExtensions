@@ -27,9 +27,9 @@ Type: [TResult][3]
 Exceptions
 ----------
 
-Exception                      | Condition                                                                         
------------------------------- | --------------------------------------------------------------------------------- 
-[InvalidOperationException][4] | This method can only be used on sets where the result type is an annotated class. 
+| Exception                      | Condition                                                                         |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| [InvalidOperationException][4] | This method can only be used on sets where the result type is an annotated class. |
 
 
 See Also

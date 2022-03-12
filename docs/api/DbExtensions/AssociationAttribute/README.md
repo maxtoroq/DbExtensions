@@ -25,19 +25,19 @@ The **AssociationAttribute** type exposes the following members.
 Constructors
 ------------
 
-                 | Name                      | Description                                                      
----------------- | ------------------------- | ---------------------------------------------------------------- 
-![Public method] | [AssociationAttribute][4] | Initializes a new instance of the **AssociationAttribute** class 
+|                  | Name                      | Description                                                      |
+| ---------------- | ------------------------- | ---------------------------------------------------------------- |
+| ![Public method] | [AssociationAttribute][4] | Initializes a new instance of the **AssociationAttribute** class |
 
 
 Properties
 ----------
 
-                   | Name          | Description                                                                                                     
------------------- | ------------- | --------------------------------------------------------------------------------------------------------------- 
-![Public property] | [Name][5]     | Gets or sets the name of a constraint.                                                                          
-![Public property] | [OtherKey][6] | Gets or sets one or more members of the target entity class as key values on the other side of the association. 
-![Public property] | [ThisKey][7]  | Gets or sets members of this entity class to represent the key values on this side of the association.          
+|                    | Name          | Description                                                                                                     |
+| ------------------ | ------------- | --------------------------------------------------------------------------------------------------------------- |
+| ![Public property] | [Name][5]     | Gets or sets the name of a constraint.                                                                          |
+| ![Public property] | [OtherKey][6] | Gets or sets one or more members of the target entity class as key values on the other side of the association. |
+| ![Public property] | [ThisKey][7]  | Gets or sets members of this entity class to represent the key values on this side of the association.          |
 
 
 See Also

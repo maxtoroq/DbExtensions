@@ -32,9 +32,9 @@ A number that represents how many elements in the set satisfy the condition in t
 Exceptions
 ----------
 
-Exception              | Condition                                              
----------------------- | ------------------------------------------------------ 
-[OverflowException][5] | The number of matching elements exceeds [MaxValue][6]. 
+| Exception              | Condition                                              |
+| ---------------------- | ------------------------------------------------------ |
+| [OverflowException][5] | The number of matching elements exceeds [MaxValue][6]. |
 
 
 See Also
