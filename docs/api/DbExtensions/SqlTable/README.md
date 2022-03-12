@@ -147,5 +147,5 @@ See Also
 [54]: UpdateRange.md
 [55]: UpdateRange_1.md
 [56]: ../SqlSet/Where.md
-[Public property]: ../../icons/pubproperty.gif "Public property"
-[Public method]: ../../icons/pubmethod.gif "Public method"
+[Public property]: ../../icons/pubproperty.svg "Public property"
+[Public method]: ../../icons/pubmethod.svg "Public method"

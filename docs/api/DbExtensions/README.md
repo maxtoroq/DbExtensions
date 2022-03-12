@@ -55,5 +55,5 @@ Enumerations
 [21]: Database/Table__1.md
 [22]: TableAttribute/README.md
 [23]: AutoSync/README.md
-[Public class]: ../icons/pubclass.gif "Public class"
-[Public enumeration]: ../icons/pubenumeration.gif "Public enumeration"
+[Public class]: ../icons/pubclass.svg "Public class"
+[Public enumeration]: ../icons/pubenumeration.svg "Public enumeration"

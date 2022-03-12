@@ -64,5 +64,5 @@ See Also
 [16]: QuotePrefix.md
 [17]: QuoteSuffix.md
 [18]: UseVersionMember.md
-[Public property]: ../../icons/pubproperty.gif "Public property"
+[Public property]: ../../icons/pubproperty.svg "Public property"
 [Static member]: ../../icons/static.gif "Static member"

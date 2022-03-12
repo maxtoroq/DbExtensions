@@ -127,5 +127,5 @@ See Also
 [42]: http://msdn.microsoft.com/en-us/library/7bxwbwt2
 [43]: Where.md
 [44]: http://maxtoroq.github.io/DbExtensions/docs/SqlSet.html
-[Public property]: ../../icons/pubproperty.gif "Public property"
-[Public method]: ../../icons/pubmethod.gif "Public method"
+[Public property]: ../../icons/pubproperty.svg "Public property"
+[Public method]: ../../icons/pubmethod.svg "Public method"

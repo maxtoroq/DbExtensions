@@ -143,7 +143,7 @@ See Also
 [51]: Table__1.md
 [52]: Update.md
 [53]: Update_1.md
-[Public method]: ../../icons/pubmethod.gif "Public method"
-[Public property]: ../../icons/pubproperty.gif "Public property"
+[Public method]: ../../icons/pubmethod.svg "Public method"
+[Public property]: ../../icons/pubproperty.svg "Public property"
 [Protected method]: ../../icons/protmethod.gif "Protected method"
 [Code example]: ../../icons/CodeExample.png "Code example"

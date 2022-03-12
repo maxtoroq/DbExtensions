@@ -53,5 +53,5 @@ See Also
 [6]: Separator.md
 [7]: ../DatabaseConfiguration/DefaultComplexPropertySeparator.md
 [8]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[Public method]: ../../icons/pubmethod.gif "Public method"
-[Public property]: ../../icons/pubproperty.gif "Public property"
+[Public method]: ../../icons/pubmethod.svg "Public method"
+[Public property]: ../../icons/pubproperty.svg "Public property"

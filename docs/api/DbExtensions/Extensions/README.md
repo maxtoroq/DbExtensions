@@ -125,5 +125,5 @@ See Also
 [51]: GetValue.md
 [52]: GetValueOrNull.md
 [53]: GetValueOrNull_1.md
-[Public method]: ../../icons/pubmethod.gif "Public method"
+[Public method]: ../../icons/pubmethod.svg "Public method"
 [Static member]: ../../icons/static.gif "Static member"

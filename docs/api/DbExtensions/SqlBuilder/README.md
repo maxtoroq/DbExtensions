@@ -181,6 +181,6 @@ See Also
 [66]: WITH.md
 [67]: WITH_1.md
 [68]: http://maxtoroq.github.io/DbExtensions/docs/SqlBuilder.html
-[Public method]: ../../icons/pubmethod.gif "Public method"
-[Public property]: ../../icons/pubproperty.gif "Public property"
+[Public method]: ../../icons/pubmethod.svg "Public method"
+[Public property]: ../../icons/pubproperty.svg "Public property"
 [Static member]: ../../icons/static.gif "Static member"

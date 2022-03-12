@@ -53,5 +53,5 @@ See Also
 [5]: Name.md
 [6]: OtherKey.md
 [7]: ThisKey.md
-[Public method]: ../../icons/pubmethod.gif "Public method"
-[Public property]: ../../icons/pubproperty.gif "Public property"
+[Public method]: ../../icons/pubmethod.svg "Public method"
+[Public property]: ../../icons/pubproperty.svg "Public property"

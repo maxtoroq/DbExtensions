@@ -67,4 +67,4 @@ See Also
 [13]: BuildUpdateClause.md
 [14]: BuildUpdateStatementForEntity.md
 [15]: BuildUpdateStatementForEntity_1.md
-[Public method]: ../../icons/pubmethod.gif "Public method"
+[Public method]: ../../icons/pubmethod.svg "Public method"
