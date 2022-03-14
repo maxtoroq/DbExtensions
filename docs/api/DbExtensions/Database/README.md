@@ -145,5 +145,5 @@ See Also
 [53]: Update_1.md
 [Public method]: ../../icons/pubmethod.svg "Public method"
 [Public property]: ../../icons/pubproperty.svg "Public property"
-[Protected method]: ../../icons/protmethod.gif "Protected method"
+[Protected method]: ../../icons/protmethod.svg "Protected method"
 [Code example]: ../../icons/CodeExample.png "Code example"
