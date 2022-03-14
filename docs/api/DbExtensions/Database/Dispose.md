@@ -25,4 +25,4 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/es4s3w1d
+[3]: https://docs.microsoft.com/dotnet/api/system.idisposable.dispose#System_IDisposable_Dispose

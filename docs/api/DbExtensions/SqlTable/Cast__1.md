@@ -41,4 +41,4 @@ See Also
 [1]: README.md
 [2]: ../SqlTable_1/README.md
 [3]: ../README.md
-[4]: http://msdn.microsoft.com/en-us/library/2asft85a
+[4]: https://docs.microsoft.com/dotnet/api/system.invalidoperationexception

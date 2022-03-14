@@ -107,7 +107,7 @@ namespace DbExtensions {
             .Add(entity);
       }
 
-      /// <inheritdoc cref="SqlSet&lt;TEntity>.Find(Object)" select="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
+      /// <inheritdoc cref="SqlSet&lt;TEntity>.Find(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
       /// <typeparam name="TEntity">The type of the entity.</typeparam>
       /// <remarks>This method is a shortcut for <c>db.Table&lt;TEntity>().Find(id)</c>.</remarks>
       /// <seealso cref="SqlSet&lt;TEntity>.Find(Object)"/>
@@ -118,7 +118,7 @@ namespace DbExtensions {
             .Find(id);
       }
 
-      /// <inheritdoc cref="SqlSet.Find(Object)" select="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
+      /// <inheritdoc cref="SqlSet.Find(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
       /// <param name="entityType">The type of the entity.</param>
       /// <remarks>This method is a shortcut for <c>db.Table(entityType).Find(id)</c>.</remarks>
       /// <seealso cref="SqlSet.Find(Object)"/>
@@ -131,7 +131,7 @@ namespace DbExtensions {
             .Find(id);
       }
 
-      /// <inheritdoc cref="SqlSet.Contains(Object)" select="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
+      /// <inheritdoc cref="SqlSet.Contains(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
       /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Contains(entity)</c>.</remarks>
       /// <seealso cref="SqlSet.Contains(Object)"/>
 
@@ -143,7 +143,7 @@ namespace DbExtensions {
             .Contains(entity);
       }
 
-      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" select="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
+      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
       /// <typeparam name="TEntity">The type of the entity.</typeparam>
       /// <remarks>This method is a shortcut for <c>db.Table&lt;TEntity>().ContainsKey(id)</c>.</remarks>
       /// <seealso cref="SqlSet.ContainsKey(Object)"/>
@@ -154,7 +154,7 @@ namespace DbExtensions {
             .ContainsKey(id);
       }
 
-      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" select="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
+      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
       /// <param name="entityType">The type of the entity.</param>
       /// <remarks>This method is a shortcut for <c>db.Table(entityType).ContainsKey(id)</c>.</remarks>
       /// <seealso cref="SqlSet.ContainsKey(Object)"/>
@@ -517,13 +517,13 @@ namespace DbExtensions {
          this.table.RemoveRange(entities);
       }
 
-      /// <inheritdoc cref="SqlSet.Contains(Object)" select="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
+      /// <inheritdoc cref="SqlSet.Contains(Object)" path="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
 
       public new bool Contains(object entity) {
          return base.Contains(entity);
       }
 
-      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" select="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
+      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" path="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
 
       public new bool ContainsKey(object id) {
          return base.ContainsKey(id);
@@ -962,13 +962,13 @@ namespace DbExtensions {
          }
       }
 
-      /// <inheritdoc cref="SqlSet&lt;TEntity>.Contains(TEntity)" select="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
+      /// <inheritdoc cref="SqlSet&lt;TEntity>.Contains(TEntity)" path="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
 
       public new bool Contains(TEntity entity) {
          return base.Contains(entity);
       }
 
-      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" select="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
+      /// <inheritdoc cref="SqlSet.ContainsKey(Object)" path="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
 
       public new bool ContainsKey(object id) {
          return base.ContainsKey(id);

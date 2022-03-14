@@ -48,7 +48,7 @@ See Also
 
 [1]: ../Database/README.md
 [2]: ../Database/Configuration.md
-[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[3]: https://docs.microsoft.com/dotnet/api/system.object
 [4]: ../README.md
 [5]: CommandTimeout.md
 [6]: DefaultComplexPropertySeparator.md
@@ -59,7 +59,7 @@ See Also
 [11]: LastInsertIdCommand.md
 [12]: Log.md
 [13]: ParameterNameBuilder.md
-[14]: http://msdn.microsoft.com/en-us/library/109h62zs
+[14]: https://docs.microsoft.com/dotnet/api/system.data.idataparameter.parametername#System_Data_IDataParameter_ParameterName
 [15]: ParameterPlaceholderBuilder.md
 [16]: QuotePrefix.md
 [17]: QuoteSuffix.md

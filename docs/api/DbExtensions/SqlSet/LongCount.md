@@ -31,8 +31,8 @@ See Also
 [SqlSet Class][5]  
 [DbExtensions Namespace][2]  
 
-[1]: http://msdn.microsoft.com/en-us/library/6yy583ek
+[1]: https://docs.microsoft.com/dotnet/api/system.int64
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/41ktf3wy
-[4]: http://msdn.microsoft.com/en-us/library/xkeewe20
+[3]: https://docs.microsoft.com/dotnet/api/system.overflowexception
+[4]: https://docs.microsoft.com/dotnet/api/system.int64.maxvalue
 [5]: README.md

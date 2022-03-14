@@ -23,6 +23,6 @@ See Also
 [DbExtensions Namespace][3]  
 
 [1]: ../DatabaseConfiguration/DefaultComplexPropertySeparator.md
-[2]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[2]: https://docs.microsoft.com/dotnet/api/system.string
 [3]: ../README.md
 [4]: README.md

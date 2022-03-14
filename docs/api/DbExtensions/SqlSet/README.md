@@ -84,7 +84,7 @@ See Also
 [DbExtensions Namespace][5]  
 
 [1]: ../Database/From_2.md
-[2]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[2]: https://docs.microsoft.com/dotnet/api/system.object
 [3]: ../SqlSet_1/README.md
 [4]: ../SqlTable/README.md
 [5]: ../README.md
@@ -108,7 +108,7 @@ See Also
 [23]: GetEnumerator.md
 [24]: Include.md
 [25]: LongCount.md
-[26]: http://msdn.microsoft.com/en-us/library/6yy583ek
+[26]: https://docs.microsoft.com/dotnet/api/system.int64
 [27]: LongCount_1.md
 [28]: OrderBy.md
 [29]: Select.md
@@ -124,7 +124,7 @@ See Also
 [39]: ToArray.md
 [40]: ToList.md
 [41]: ToString.md
-[42]: http://msdn.microsoft.com/en-us/library/7bxwbwt2
+[42]: https://docs.microsoft.com/dotnet/api/system.object.tostring#System_Object_ToString
 [43]: Where.md
 [44]: http://maxtoroq.github.io/DbExtensions/docs/SqlSet.html
 [Public property]: ../../icons/pubproperty.svg "Public property"

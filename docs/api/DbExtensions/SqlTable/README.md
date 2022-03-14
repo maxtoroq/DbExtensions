@@ -93,7 +93,7 @@ See Also
 
 [1]: ../SqlTable_1/README.md
 [2]: ../Database/Table.md
-[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[3]: https://docs.microsoft.com/dotnet/api/system.object
 [4]: ../SqlSet/README.md
 [5]: ../README.md
 [6]: CommandBuilder.md
@@ -122,7 +122,7 @@ See Also
 [29]: ../SqlSet/GetEnumerator.md
 [30]: ../SqlSet/Include.md
 [31]: ../SqlSet/LongCount.md
-[32]: http://msdn.microsoft.com/en-us/library/6yy583ek
+[32]: https://docs.microsoft.com/dotnet/api/system.int64
 [33]: ../SqlSet/LongCount_1.md
 [34]: ../SqlSet/OrderBy.md
 [35]: Refresh.md

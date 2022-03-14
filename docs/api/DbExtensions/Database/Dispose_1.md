@@ -30,5 +30,5 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/a28wyd50
+[3]: https://docs.microsoft.com/dotnet/api/system.boolean
 [4]: Dispose.md

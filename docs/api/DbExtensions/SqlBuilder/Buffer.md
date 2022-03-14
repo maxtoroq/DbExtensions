@@ -22,6 +22,6 @@ See Also
 [SqlBuilder Class][3]  
 [DbExtensions Namespace][2]  
 
-[1]: http://msdn.microsoft.com/en-us/library/y9sxk6fy
+[1]: https://docs.microsoft.com/dotnet/api/system.text.stringbuilder
 [2]: ../README.md
 [3]: README.md

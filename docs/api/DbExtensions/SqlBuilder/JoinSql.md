@@ -36,6 +36,6 @@ See Also
 [SqlBuilder Class][2]  
 [DbExtensions Namespace][3]  
 
-[1]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[1]: https://docs.microsoft.com/dotnet/api/system.string
 [2]: README.md
 [3]: ../README.md

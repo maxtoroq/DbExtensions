@@ -44,7 +44,7 @@ See Also
 [DbExtensions Namespace][3]  
 
 [1]: ../SqlBuilder/README.md
-[2]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[2]: https://docs.microsoft.com/dotnet/api/system.object
 [3]: ../README.md
 [4]: DELETE_FROM.md
 [5]: INSERT_INTO.md

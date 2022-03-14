@@ -23,5 +23,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/yas366ac
+[2]: https://docs.microsoft.com/dotnet/api/system.data.idbtransaction
 [3]: README.md

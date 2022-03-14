@@ -24,5 +24,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/78dfe2yb
+[2]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1
 [3]: README.md

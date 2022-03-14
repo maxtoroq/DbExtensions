@@ -23,5 +23,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/ywxh2328
+[2]: https://docs.microsoft.com/dotnet/api/system.io.textwriter
 [3]: README.md

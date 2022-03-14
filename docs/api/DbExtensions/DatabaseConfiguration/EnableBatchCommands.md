@@ -27,7 +27,7 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/a28wyd50
+[2]: https://docs.microsoft.com/dotnet/api/system.boolean
 [3]: ../SqlTable_1/AddRange_1.md
 [4]: ../SqlTable_1/UpdateRange_1.md
 [5]: ../SqlTable_1/RemoveRange_1.md

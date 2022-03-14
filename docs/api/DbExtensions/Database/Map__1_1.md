@@ -44,7 +44,7 @@ See Also
 
 [1]: ../README.md
 [2]: ../SqlBuilder/README.md
-[3]: http://msdn.microsoft.com/en-us/library/bb549151
-[4]: http://msdn.microsoft.com/en-us/library/93wb1heh
-[5]: http://msdn.microsoft.com/en-us/library/9eekhta0
+[3]: https://docs.microsoft.com/dotnet/api/system.func-2
+[4]: https://docs.microsoft.com/dotnet/api/system.data.idatarecord
+[5]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
 [6]: README.md

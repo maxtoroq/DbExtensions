@@ -24,5 +24,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/a28wyd50
+[2]: https://docs.microsoft.com/dotnet/api/system.boolean
 [3]: README.md

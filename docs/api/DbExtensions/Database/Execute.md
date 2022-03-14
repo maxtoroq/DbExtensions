@@ -51,7 +51,7 @@ See Also
 
 [1]: ../README.md
 [2]: ../SqlBuilder/README.md
-[3]: http://msdn.microsoft.com/en-us/library/td2s409d
-[4]: http://msdn.microsoft.com/en-us/library/a28wyd50
+[3]: https://docs.microsoft.com/dotnet/api/system.int32
+[4]: https://docs.microsoft.com/dotnet/api/system.boolean
 [5]: ../ChangeConflictException/README.md
 [6]: README.md

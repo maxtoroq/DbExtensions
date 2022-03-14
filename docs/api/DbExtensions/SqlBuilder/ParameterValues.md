@@ -23,6 +23,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/ms132397
-[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[2]: https://docs.microsoft.com/dotnet/api/system.collections.objectmodel.collection-1
+[3]: https://docs.microsoft.com/dotnet/api/system.object
 [4]: README.md

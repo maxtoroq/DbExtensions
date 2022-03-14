@@ -37,8 +37,8 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/42892f65
+[2]: https://docs.microsoft.com/dotnet/api/system.type
 [3]: ../SqlBuilder/README.md
-[4]: http://msdn.microsoft.com/en-us/library/9eekhta0
-[5]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[4]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+[5]: https://docs.microsoft.com/dotnet/api/system.object
 [6]: README.md

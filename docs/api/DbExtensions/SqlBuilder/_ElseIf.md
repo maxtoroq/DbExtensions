@@ -43,7 +43,7 @@ See Also
 
 [1]: _If.md
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/a28wyd50
-[4]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[5]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[3]: https://docs.microsoft.com/dotnet/api/system.boolean
+[4]: https://docs.microsoft.com/dotnet/api/system.string
+[5]: https://docs.microsoft.com/dotnet/api/system.object
 [6]: README.md

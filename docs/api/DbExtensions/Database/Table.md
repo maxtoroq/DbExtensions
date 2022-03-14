@@ -33,5 +33,5 @@ See Also
 
 [1]: ../SqlTable/README.md
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/42892f65
+[3]: https://docs.microsoft.com/dotnet/api/system.type
 [4]: README.md

@@ -22,8 +22,8 @@ See Also
 [DatabaseConfiguration Class][5]  
 [DbExtensions Namespace][2]  
 
-[1]: http://msdn.microsoft.com/en-us/library/109h62zs
+[1]: https://docs.microsoft.com/dotnet/api/system.data.idataparameter.parametername#System_Data_IDataParameter_ParameterName
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/bb549151
-[4]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[3]: https://docs.microsoft.com/dotnet/api/system.func-2
+[4]: https://docs.microsoft.com/dotnet/api/system.string
 [5]: README.md

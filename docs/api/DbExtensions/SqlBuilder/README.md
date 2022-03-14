@@ -113,12 +113,12 @@ See Also
 #### Reference
 [DbExtensions Namespace][2]  
 
-[1]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[1]: https://docs.microsoft.com/dotnet/api/system.object
 [2]: ../README.md
 [3]: _ctor.md
 [4]: _ctor_1.md
 [5]: Buffer.md
-[6]: http://msdn.microsoft.com/en-us/library/y9sxk6fy
+[6]: https://docs.microsoft.com/dotnet/api/system.text.stringbuilder
 [7]: CurrentClause.md
 [8]: CurrentSeparator.md
 [9]: IsEmpty.md
@@ -152,9 +152,9 @@ See Also
 [37]: JOIN.md
 [38]: JOIN_1.md
 [39]: JoinSql.md
-[40]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[40]: https://docs.microsoft.com/dotnet/api/system.string
 [41]: JoinSql_1.md
-[42]: http://msdn.microsoft.com/en-us/library/9eekhta0
+[42]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
 [43]: LEFT_JOIN.md
 [44]: LIMIT.md
 [45]: LIMIT_1.md
@@ -171,7 +171,7 @@ See Also
 [56]: SetCurrentClause.md
 [57]: SetNextClause.md
 [58]: ToString.md
-[59]: http://msdn.microsoft.com/en-us/library/7bxwbwt2
+[59]: https://docs.microsoft.com/dotnet/api/system.object.tostring#System_Object_ToString
 [60]: UNION.md
 [61]: UPDATE.md
 [62]: VALUES.md

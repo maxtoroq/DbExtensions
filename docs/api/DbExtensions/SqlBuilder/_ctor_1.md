@@ -35,5 +35,5 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[4]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[3]: https://docs.microsoft.com/dotnet/api/system.string
+[4]: https://docs.microsoft.com/dotnet/api/system.object

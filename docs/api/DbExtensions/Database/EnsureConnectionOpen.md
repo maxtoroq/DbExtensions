@@ -38,6 +38,6 @@ See Also
 [DbExtensions Namespace][3]  
 
 [1]: Connection.md
-[2]: http://msdn.microsoft.com/en-us/library/aax125c9
+[2]: https://docs.microsoft.com/dotnet/api/system.idisposable
 [3]: ../README.md
 [4]: README.md

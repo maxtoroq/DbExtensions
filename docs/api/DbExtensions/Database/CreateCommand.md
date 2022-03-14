@@ -31,10 +31,10 @@ See Also
 [Database Class][7]  
 [DbExtensions Namespace][2]  
 
-[1]: http://msdn.microsoft.com/en-us/library/bt2afddc
+[1]: https://docs.microsoft.com/dotnet/api/system.data.idbcommand
 [2]: ../README.md
 [3]: ../SqlBuilder/README.md
-[4]: http://msdn.microsoft.com/en-us/library/1ya4ssfc
-[5]: http://msdn.microsoft.com/en-us/library/btt06a5s
+[4]: https://docs.microsoft.com/dotnet/api/system.data.idbcommand.commandtext#System_Data_IDbCommand_CommandText
+[5]: https://docs.microsoft.com/dotnet/api/system.data.idbcommand.parameters#System_Data_IDbCommand_Parameters
 [6]: ../SqlBuilder/ParameterValues.md
 [7]: README.md

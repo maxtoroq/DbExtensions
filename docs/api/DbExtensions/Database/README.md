@@ -93,7 +93,7 @@ See Also
 [1]: ../SqlSet/README.md
 [2]: ../SqlBuilder/README.md
 [3]: ../SqlTable_1/README.md
-[4]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[4]: https://docs.microsoft.com/dotnet/api/system.object
 [5]: ../README.md
 [6]: _ctor.md
 [7]: _ctor_1.md
@@ -107,14 +107,14 @@ See Also
 [15]: ContainsKey.md
 [16]: ContainsKey__1.md
 [17]: CreateCommand.md
-[18]: http://msdn.microsoft.com/en-us/library/bt2afddc
+[18]: https://docs.microsoft.com/dotnet/api/system.data.idbcommand
 [19]: CreateCommand_1.md
-[20]: http://msdn.microsoft.com/en-us/library/b1csw23d
-[21]: http://msdn.microsoft.com/en-us/library/btt06a5s
+[20]: https://docs.microsoft.com/dotnet/api/system.string.format#System_String_Format_System_String_System_Object___
+[21]: https://docs.microsoft.com/dotnet/api/system.data.idbcommand.parameters#System_Data_IDbCommand_Parameters
 [22]: Dispose.md
 [23]: Dispose_1.md
 [24]: EnsureConnectionOpen.md
-[25]: http://msdn.microsoft.com/en-us/library/aax125c9
+[25]: https://docs.microsoft.com/dotnet/api/system.idisposable
 [26]: EnsureInTransaction.md
 [27]: EnsureInTransaction_1.md
 [28]: Execute_1.md

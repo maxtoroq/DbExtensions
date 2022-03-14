@@ -37,8 +37,8 @@ See Also
 #### Reference
 [DbExtensions Namespace][3]  
 
-[1]: http://msdn.microsoft.com/en-us/library/e5kfa45b
-[2]: http://msdn.microsoft.com/en-us/library/c18k6c59
+[1]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: https://docs.microsoft.com/dotnet/api/system.exception
 [3]: ../README.md
 [4]: _ctor.md
 [Public method]: ../../icons/pubmethod.svg "Public method"

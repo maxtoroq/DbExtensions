@@ -34,6 +34,6 @@ See Also
 [SqlTable.Add(Object)][4]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[2]: https://docs.microsoft.com/dotnet/api/system.object
 [3]: README.md
 [4]: ../SqlTable/Add.md

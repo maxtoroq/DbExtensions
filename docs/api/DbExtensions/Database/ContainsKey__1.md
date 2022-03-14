@@ -44,7 +44,7 @@ See Also
 [SqlSet.ContainsKey(Object)][5]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/e5kfa45b
-[3]: http://msdn.microsoft.com/en-us/library/a28wyd50
+[2]: https://docs.microsoft.com/dotnet/api/system.object
+[3]: https://docs.microsoft.com/dotnet/api/system.boolean
 [4]: README.md
 [5]: ../SqlSet/ContainsKey.md

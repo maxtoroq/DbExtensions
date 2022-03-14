@@ -55,9 +55,9 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/yas366ac
-[3]: http://msdn.microsoft.com/en-us/library/f1a9t75e
-[4]: http://msdn.microsoft.com/en-us/library/h5w5se33
-[5]: http://msdn.microsoft.com/en-us/library/00w6tek6
-[6]: http://msdn.microsoft.com/en-us/library/ms149857
+[2]: https://docs.microsoft.com/dotnet/api/system.data.idbtransaction
+[3]: https://docs.microsoft.com/dotnet/api/system.transactions.transaction.current#System_Transactions_Transaction_Current
+[4]: https://docs.microsoft.com/dotnet/api/system.transactions.transactionscope
+[5]: https://docs.microsoft.com/dotnet/api/system.data.idbtransaction.commit#System_Data_IDbTransaction_Commit
+[6]: https://docs.microsoft.com/dotnet/api/system.transactions.transactionscope.complete#System_Transactions_TransactionScope_Complete
 [7]: README.md

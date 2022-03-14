@@ -42,7 +42,7 @@ See Also
 [SqlSet.Find(Object)][5]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/42892f65
-[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[2]: https://docs.microsoft.com/dotnet/api/system.type
+[3]: https://docs.microsoft.com/dotnet/api/system.object
 [4]: README.md
 [5]: ../SqlSet/Find.md

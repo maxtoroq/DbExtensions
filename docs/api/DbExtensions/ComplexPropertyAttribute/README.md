@@ -45,13 +45,13 @@ See Also
 #### Reference
 [DbExtensions Namespace][3]  
 
-[1]: http://msdn.microsoft.com/en-us/library/e5kfa45b
-[2]: http://msdn.microsoft.com/en-us/library/e8kc3626
+[1]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: https://docs.microsoft.com/dotnet/api/system.attribute
 [3]: ../README.md
 [4]: _ctor.md
 [5]: Name.md
 [6]: Separator.md
 [7]: ../DatabaseConfiguration/DefaultComplexPropertySeparator.md
-[8]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[8]: https://docs.microsoft.com/dotnet/api/system.string
 [Public method]: ../../icons/pubmethod.svg "Public method"
 [Public property]: ../../icons/pubproperty.svg "Public property"

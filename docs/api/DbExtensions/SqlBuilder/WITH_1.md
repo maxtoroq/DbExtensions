@@ -38,5 +38,5 @@ See Also
 
 [1]: ../README.md
 [2]: ../SqlSet/README.md
-[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[3]: https://docs.microsoft.com/dotnet/api/system.string
 [4]: README.md

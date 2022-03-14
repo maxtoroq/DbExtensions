@@ -36,7 +36,7 @@ See Also
 [SqlBuilder Class][2]  
 [DbExtensions Namespace][3]  
 
-[1]: http://msdn.microsoft.com/en-us/library/9eekhta0
+[1]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
 [2]: README.md
 [3]: ../README.md
-[4]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[4]: https://docs.microsoft.com/dotnet/api/system.string

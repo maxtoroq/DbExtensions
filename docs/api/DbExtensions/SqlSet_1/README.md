@@ -90,7 +90,7 @@ See Also
 [DbExtensions Namespace][5]  
 
 [1]: ../Database/From__1_2.md
-[2]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[2]: https://docs.microsoft.com/dotnet/api/system.object
 [3]: ../SqlSet/README.md
 [4]: ../SqlTable_1/README.md
 [5]: ../README.md
@@ -115,7 +115,7 @@ See Also
 [24]: GetEnumerator.md
 [25]: Include.md
 [26]: ../SqlSet/LongCount.md
-[27]: http://msdn.microsoft.com/en-us/library/6yy583ek
+[27]: https://docs.microsoft.com/dotnet/api/system.int64
 [28]: ../SqlSet/LongCount_1.md
 [29]: OrderBy.md
 [30]: ../SqlSet/Select_1.md

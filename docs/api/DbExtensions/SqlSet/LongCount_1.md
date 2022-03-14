@@ -44,10 +44,10 @@ See Also
 [SqlSet Class][7]  
 [DbExtensions Namespace][2]  
 
-[1]: http://msdn.microsoft.com/en-us/library/6yy583ek
+[1]: https://docs.microsoft.com/dotnet/api/system.int64
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[4]: http://msdn.microsoft.com/en-us/library/e5kfa45b
-[5]: http://msdn.microsoft.com/en-us/library/41ktf3wy
-[6]: http://msdn.microsoft.com/en-us/library/xkeewe20
+[3]: https://docs.microsoft.com/dotnet/api/system.string
+[4]: https://docs.microsoft.com/dotnet/api/system.object
+[5]: https://docs.microsoft.com/dotnet/api/system.overflowexception
+[6]: https://docs.microsoft.com/dotnet/api/system.int64.maxvalue
 [7]: README.md

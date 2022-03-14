@@ -39,5 +39,5 @@ See Also
 [1]: ../SqlSet/README.md
 [2]: ../README.md
 [3]: ../SqlBuilder/README.md
-[4]: http://msdn.microsoft.com/en-us/library/42892f65
+[4]: https://docs.microsoft.com/dotnet/api/system.type
 [5]: README.md

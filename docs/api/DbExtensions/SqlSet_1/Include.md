@@ -40,6 +40,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[2]: https://docs.microsoft.com/dotnet/api/system.string
 [3]: README.md
-[4]: http://msdn.microsoft.com/en-us/library/2asft85a
+[4]: https://docs.microsoft.com/dotnet/api/system.invalidoperationexception

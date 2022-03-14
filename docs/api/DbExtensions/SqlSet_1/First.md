@@ -33,4 +33,4 @@ See Also
 
 [1]: ../README.md
 [2]: README.md
-[3]: http://msdn.microsoft.com/en-us/library/2asft85a
+[3]: https://docs.microsoft.com/dotnet/api/system.invalidoperationexception
