@@ -3,7 +3,7 @@ SqlTable&lt;TEntity>.Contains Method (TEntity)
 Checks the existance of the *entity*, using the primary key value.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -33,4 +33,4 @@ See Also
 
 [1]: ../README.md
 [2]: README.md
-[3]: http://msdn.microsoft.com/en-us/library/a28wyd50
+[3]: https://docs.microsoft.com/dotnet/api/system.boolean

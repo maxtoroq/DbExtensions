@@ -3,7 +3,7 @@ SQL.WITH Method (SqlBuilder, String)
 Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -38,6 +38,6 @@ See Also
 
 [1]: ../SqlBuilder/README.md
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[3]: https://docs.microsoft.com/dotnet/api/system.string
 [4]: ../SqlBuilder/WITH.md
 [5]: README.md

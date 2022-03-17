@@ -3,7 +3,7 @@ SqlSet&lt;TResult>.ToList Method
 Creates a List&lt;TResult> from the set.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -24,5 +24,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/6sh2ey19
+[2]: https://docs.microsoft.com/dotnet/api/system.collections.generic.list-1
 [3]: README.md

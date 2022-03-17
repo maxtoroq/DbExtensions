@@ -3,7 +3,7 @@ SqlBuilder.CurrentClause Property
 Gets or sets the current SQL clause, used to identify consecutive appends to the same clause.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -23,5 +23,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[2]: https://docs.microsoft.com/dotnet/api/system.string
 [3]: README.md

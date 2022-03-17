@@ -3,7 +3,7 @@ SqlSet&lt;TResult>.Contains Method (TResult)
 Checks the existance of the *entity*, using the primary key value.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -24,9 +24,13 @@ The entity whose existance is to be checked.
 Type: [Boolean][3]  
 true if the primary key value exists in the database; otherwise false.
 
-Remarks
--------
- This method can only be used on sets where the result type is an annotated class. 
+Exceptions
+----------
+
+| Exception                      | Condition                                                                         |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| [InvalidOperationException][4] | This method can only be used on sets where the result type is an annotated class. |
+
 
 See Also
 --------
@@ -37,4 +41,5 @@ See Also
 
 [1]: ../README.md
 [2]: README.md
-[3]: http://msdn.microsoft.com/en-us/library/a28wyd50
+[3]: https://docs.microsoft.com/dotnet/api/system.boolean
+[4]: https://docs.microsoft.com/dotnet/api/system.invalidoperationexception

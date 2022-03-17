@@ -3,7 +3,7 @@ Database.Dispose Method
 Releases all resources used by the current instance of the [Database][1] class.
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -25,4 +25,4 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/es4s3w1d
+[3]: https://docs.microsoft.com/dotnet/api/system.idisposable.dispose#System_IDisposable_Dispose

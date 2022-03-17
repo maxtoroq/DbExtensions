@@ -3,7 +3,7 @@ Database.Execute Method (SqlBuilder, Int32, Boolean)
 Executes the *nonQuery* command. Optionally uses a transaction and validates affected records value before committing.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -37,9 +37,9 @@ The number of affected records.
 Exceptions
 ----------
 
-Exception                    | Condition                                                
----------------------------- | -------------------------------------------------------- 
-[ChangeConflictException][5] | The number of affected records is not equal to *affect*. 
+| Exception                    | Condition                                                |
+| ---------------------------- | -------------------------------------------------------- |
+| [ChangeConflictException][5] | The number of affected records is not equal to *affect*. |
 
 
 See Also
@@ -51,7 +51,7 @@ See Also
 
 [1]: ../README.md
 [2]: ../SqlBuilder/README.md
-[3]: http://msdn.microsoft.com/en-us/library/td2s409d
-[4]: http://msdn.microsoft.com/en-us/library/a28wyd50
+[3]: https://docs.microsoft.com/dotnet/api/system.int32
+[4]: https://docs.microsoft.com/dotnet/api/system.boolean
 [5]: ../ChangeConflictException/README.md
 [6]: README.md

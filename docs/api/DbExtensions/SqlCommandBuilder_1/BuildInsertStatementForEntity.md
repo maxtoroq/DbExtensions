@@ -3,7 +3,7 @@ SqlCommandBuilder&lt;TEntity>.BuildInsertStatementForEntity Method
 Creates and returns an INSERT command for the specified *entity*.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

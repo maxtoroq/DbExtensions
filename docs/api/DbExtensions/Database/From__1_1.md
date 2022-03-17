@@ -3,7 +3,7 @@ Database.From&lt;TResult> Method (SqlBuilder, Func&lt;IDataRecord, TResult>)
 Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining query and mapper.
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -45,6 +45,6 @@ See Also
 [1]: ../SqlSet_1/README.md
 [2]: ../README.md
 [3]: ../SqlBuilder/README.md
-[4]: http://msdn.microsoft.com/en-us/library/bb549151
-[5]: http://msdn.microsoft.com/en-us/library/93wb1heh
+[4]: https://docs.microsoft.com/dotnet/api/system.func-2
+[5]: https://docs.microsoft.com/dotnet/api/system.data.idatarecord
 [6]: README.md

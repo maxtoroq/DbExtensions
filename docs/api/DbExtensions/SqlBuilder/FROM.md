@@ -3,7 +3,7 @@ SqlBuilder.FROM Method (SqlBuilder, String)
 Appends the FROM clause using the provided *subQuery* as body named after *alias*.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -38,4 +38,4 @@ See Also
 
 [1]: ../README.md
 [2]: README.md
-[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[3]: https://docs.microsoft.com/dotnet/api/system.string

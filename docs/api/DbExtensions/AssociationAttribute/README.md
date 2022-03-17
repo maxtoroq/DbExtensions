@@ -10,7 +10,7 @@ Inheritance Hierarchy
     **DbExtensions.AssociationAttribute**  
 
   **Namespace:**  [DbExtensions][3]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -25,19 +25,19 @@ The **AssociationAttribute** type exposes the following members.
 Constructors
 ------------
 
-                 | Name                      | Description                                                      
----------------- | ------------------------- | ---------------------------------------------------------------- 
-![Public method] | [AssociationAttribute][4] | Initializes a new instance of the **AssociationAttribute** class 
+|                  | Name                      | Description                                                      |
+| ---------------- | ------------------------- | ---------------------------------------------------------------- |
+| ![Public method] | [AssociationAttribute][4] | Initializes a new instance of the **AssociationAttribute** class |
 
 
 Properties
 ----------
 
-                   | Name          | Description                                                                                                     
------------------- | ------------- | --------------------------------------------------------------------------------------------------------------- 
-![Public property] | [Name][5]     | Gets or sets the name of a constraint.                                                                          
-![Public property] | [OtherKey][6] | Gets or sets one or more members of the target entity class as key values on the other side of the association. 
-![Public property] | [ThisKey][7]  | Gets or sets members of this entity class to represent the key values on this side of the association.          
+|                    | Name          | Description                                                                                                     |
+| ------------------ | ------------- | --------------------------------------------------------------------------------------------------------------- |
+| ![Public property] | [Name][5]     | Gets or sets the name of a constraint.                                                                          |
+| ![Public property] | [OtherKey][6] | Gets or sets one or more members of the target entity class as key values on the other side of the association. |
+| ![Public property] | [ThisKey][7]  | Gets or sets members of this entity class to represent the key values on this side of the association.          |
 
 
 See Also
@@ -46,12 +46,12 @@ See Also
 #### Reference
 [DbExtensions Namespace][3]  
 
-[1]: http://msdn.microsoft.com/en-us/library/e5kfa45b
-[2]: http://msdn.microsoft.com/en-us/library/e8kc3626
+[1]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: https://docs.microsoft.com/dotnet/api/system.attribute
 [3]: ../README.md
 [4]: _ctor.md
 [5]: Name.md
 [6]: OtherKey.md
 [7]: ThisKey.md
-[Public method]: ../../icons/pubmethod.gif "Public method"
-[Public property]: ../../icons/pubproperty.gif "Public property"
+[Public method]: ../../icons/pubmethod.svg "Public method"
+[Public property]: ../../icons/pubproperty.svg "Public property"

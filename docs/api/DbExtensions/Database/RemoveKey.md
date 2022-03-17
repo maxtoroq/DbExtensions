@@ -3,7 +3,7 @@ Database.RemoveKey Method (Type, Object)
 Executes a DELETE command for the entity whose primary key matches the *id* parameter.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -39,7 +39,7 @@ See Also
 [SqlTable.RemoveKey(Object)][5]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/42892f65
-[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[2]: https://docs.microsoft.com/dotnet/api/system.type
+[3]: https://docs.microsoft.com/dotnet/api/system.object
 [4]: README.md
 [5]: ../SqlTable/RemoveKey.md

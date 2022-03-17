@@ -473,7 +473,7 @@ namespace DbExtensions {
       /// and an antecedent call to <see cref="_If(bool, string, object[])"/> or <see cref="_ElseIf(bool, string, object[])"/>
       /// used a false condition.
       /// </summary>
-      /// <inheritdoc cref="_If(bool, string, object[])" select="*[not(self::summary)]"/>
+      /// <inheritdoc cref="_If(bool, string, object[])" path="*[not(self::summary)]"/>
 
       [CLSCompliant(false)]
       public SqlBuilder _ElseIf(bool condition, string format, params object[] args) {

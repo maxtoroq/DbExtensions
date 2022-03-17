@@ -3,7 +3,7 @@ Extensions.GetByte Method
 Gets the value of the specified column as a [Byte][1].
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -38,10 +38,10 @@ See Also
 [Extensions Class][7]  
 [DbExtensions Namespace][2]  
 
-[1]: http://msdn.microsoft.com/en-us/library/yyb1w04y
+[1]: https://docs.microsoft.com/dotnet/api/system.byte
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/93wb1heh
-[4]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[5]: http://msdn.microsoft.com/en-us/library/bb384936.aspx
-[6]: http://msdn.microsoft.com/en-us/library/bb383977.aspx
+[3]: https://docs.microsoft.com/dotnet/api/system.data.idatarecord
+[4]: https://docs.microsoft.com/dotnet/api/system.string
+[5]: https://docs.microsoft.com/dotnet/visual-basic/programming-guide/language-features/procedures/extension-methods
+[6]: https://docs.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
 [7]: README.md

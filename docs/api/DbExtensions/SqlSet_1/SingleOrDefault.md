@@ -3,7 +3,7 @@ SqlSet&lt;TResult>.SingleOrDefault Method
 Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -19,9 +19,9 @@ The single element of the set, or a default value if the set contains no element
 Exceptions
 ----------
 
-Exception                      | Condition                               
------------------------------- | --------------------------------------- 
-[InvalidOperationException][3] | The set contains more than one element. 
+| Exception                      | Condition                               |
+| ------------------------------ | --------------------------------------- |
+| [InvalidOperationException][3] | The set contains more than one element. |
 
 
 See Also
@@ -33,4 +33,4 @@ See Also
 
 [1]: ../README.md
 [2]: README.md
-[3]: http://msdn.microsoft.com/en-us/library/2asft85a
+[3]: https://docs.microsoft.com/dotnet/api/system.invalidoperationexception

@@ -3,7 +3,7 @@ Database.EnsureConnectionOpen Method
 Opens [Connection][1] (if it's not open) and returns an [IDisposable][2] object you can use to close it (if it wasn't open).
 
   **Namespace:**  [DbExtensions][3]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -38,6 +38,6 @@ See Also
 [DbExtensions Namespace][3]  
 
 [1]: Connection.md
-[2]: http://msdn.microsoft.com/en-us/library/aax125c9
+[2]: https://docs.microsoft.com/dotnet/api/system.idisposable
 [3]: ../README.md
 [4]: README.md

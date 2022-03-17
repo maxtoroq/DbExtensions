@@ -3,7 +3,7 @@ SqlBuilder.SetNextClause Method
 Sets *clauseName* as the next SQL clause.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -38,6 +38,6 @@ See Also
 [SqlBuilder.NextClause][4]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[2]: https://docs.microsoft.com/dotnet/api/system.string
 [3]: README.md
 [4]: NextClause.md

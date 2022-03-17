@@ -3,7 +3,7 @@ SqlSet.Count Method (String, Object[])
 Returns a number that represents how many elements in the set satisfy a condition.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -32,9 +32,9 @@ A number that represents how many elements in the set satisfy the condition in t
 Exceptions
 ----------
 
-Exception              | Condition                                              
----------------------- | ------------------------------------------------------ 
-[OverflowException][5] | The number of matching elements exceeds [MaxValue][6]. 
+| Exception              | Condition                                              |
+| ---------------------- | ------------------------------------------------------ |
+| [OverflowException][5] | The number of matching elements exceeds [MaxValue][6]. |
 
 
 See Also
@@ -45,9 +45,9 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b
-[4]: http://msdn.microsoft.com/en-us/library/td2s409d
-[5]: http://msdn.microsoft.com/en-us/library/41ktf3wy
-[6]: http://msdn.microsoft.com/en-us/library/92chhbf3
+[2]: https://docs.microsoft.com/dotnet/api/system.string
+[3]: https://docs.microsoft.com/dotnet/api/system.object
+[4]: https://docs.microsoft.com/dotnet/api/system.int32
+[5]: https://docs.microsoft.com/dotnet/api/system.overflowexception
+[6]: https://docs.microsoft.com/dotnet/api/system.int32.maxvalue
 [7]: README.md

@@ -3,7 +3,7 @@ SqlBuilder._Else Method
 Appends *format* to the current clause if an antecedent call to [_If(Boolean, String, Object[])][1] or [_ElseIf(Boolean, String, Object[])][2] used a false condition.
 
   **Namespace:**  [DbExtensions][3]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -39,6 +39,6 @@ See Also
 [1]: _If.md
 [2]: _ElseIf.md
 [3]: ../README.md
-[4]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[5]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[4]: https://docs.microsoft.com/dotnet/api/system.string
+[5]: https://docs.microsoft.com/dotnet/api/system.object
 [6]: README.md

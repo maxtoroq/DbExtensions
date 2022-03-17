@@ -3,7 +3,7 @@ SqlSet.Take Method
 Returns a specified number of contiguous elements from the start of the set.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -32,5 +32,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/td2s409d
+[2]: https://docs.microsoft.com/dotnet/api/system.int32
 [3]: README.md

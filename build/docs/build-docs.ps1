@@ -8,7 +8,7 @@ try {
    $nuget = ..\ensure-nuget.ps1
 
    if (-not (Test-Path EWSoftware.SHFB -PathType Container)) {
-      &$nuget install EWSoftware.SHFB -Version 2019.6.24 -ExcludeVersion
+      &$nuget install EWSoftware.SHFB -Version 2020.3.6 -ExcludeVersion
    }
 
    if (-not (Test-Path EWSoftware.SHFB.NETFramework -PathType Container)) {

@@ -3,7 +3,7 @@ DatabaseConfiguration.DefaultComplexPropertySeparator Property
 The default separator to use when mapping complex properties. The default value is null, which means no separator is used, unless an explicit separator is specified on [Separator][1].
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -24,5 +24,5 @@ See Also
 
 [1]: ../ComplexPropertyAttribute/Separator.md
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[3]: https://docs.microsoft.com/dotnet/api/system.string
 [4]: README.md

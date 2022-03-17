@@ -3,7 +3,7 @@ SqlSet&lt;TResult>.First Method
 Returns the first element of the set.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -19,9 +19,9 @@ The first element in the set.
 Exceptions
 ----------
 
-Exception                      | Condition         
------------------------------- | ----------------- 
-[InvalidOperationException][3] | The set is empty. 
+| Exception                      | Condition         |
+| ------------------------------ | ----------------- |
+| [InvalidOperationException][3] | The set is empty. |
 
 
 See Also
@@ -33,4 +33,4 @@ See Also
 
 [1]: ../README.md
 [2]: README.md
-[3]: http://msdn.microsoft.com/en-us/library/2asft85a
+[3]: https://docs.microsoft.com/dotnet/api/system.invalidoperationexception

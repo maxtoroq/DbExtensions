@@ -3,7 +3,7 @@ Extensions.GetNullableFloat Method (IDataRecord, Int32)
 Gets the value of the specified column as a [Nullable&lt;T>][1] of [Single][2].
 
   **Namespace:**  [DbExtensions][3]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -38,11 +38,11 @@ See Also
 [Extensions Class][8]  
 [DbExtensions Namespace][3]  
 
-[1]: http://msdn.microsoft.com/en-us/library/b3h38hb0
-[2]: http://msdn.microsoft.com/en-us/library/3www918f
+[1]: https://docs.microsoft.com/dotnet/api/system.nullable-1
+[2]: https://docs.microsoft.com/dotnet/api/system.single
 [3]: ../README.md
-[4]: http://msdn.microsoft.com/en-us/library/93wb1heh
-[5]: http://msdn.microsoft.com/en-us/library/td2s409d
-[6]: http://msdn.microsoft.com/en-us/library/bb384936.aspx
-[7]: http://msdn.microsoft.com/en-us/library/bb383977.aspx
+[4]: https://docs.microsoft.com/dotnet/api/system.data.idatarecord
+[5]: https://docs.microsoft.com/dotnet/api/system.int32
+[6]: https://docs.microsoft.com/dotnet/visual-basic/programming-guide/language-features/procedures/extension-methods
+[7]: https://docs.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
 [8]: README.md

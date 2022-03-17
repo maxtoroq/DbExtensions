@@ -3,7 +3,7 @@ SqlBuilder.Insert Method
 Inserts a string into this instance at the specified character position.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -37,6 +37,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/td2s409d
-[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[2]: https://docs.microsoft.com/dotnet/api/system.int32
+[3]: https://docs.microsoft.com/dotnet/api/system.string
 [4]: README.md

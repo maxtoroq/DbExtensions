@@ -3,7 +3,7 @@ SqlTable.Cast&lt;TEntity> Method
 Casts the current [SqlTable][1] to the generic [SqlTable&lt;TEntity>][2] instance.
 
   **Namespace:**  [DbExtensions][3]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -26,9 +26,9 @@ The [SqlTable&lt;TEntity>][2] instance for TEntity.
 Exceptions
 ----------
 
-Exception                      | Condition                                             
------------------------------- | ----------------------------------------------------- 
-[InvalidOperationException][4] | The specified TEntity is not valid for this instance. 
+| Exception                      | Condition                                             |
+| ------------------------------ | ----------------------------------------------------- |
+| [InvalidOperationException][4] | The specified TEntity is not valid for this instance. |
 
 
 See Also
@@ -41,4 +41,4 @@ See Also
 [1]: README.md
 [2]: ../SqlTable_1/README.md
 [3]: ../README.md
-[4]: http://msdn.microsoft.com/en-us/library/2asft85a
+[4]: https://docs.microsoft.com/dotnet/api/system.invalidoperationexception

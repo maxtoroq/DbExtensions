@@ -3,7 +3,7 @@ TableAttribute Constructor
 Initializes a new instance of the [TableAttribute][1] class
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

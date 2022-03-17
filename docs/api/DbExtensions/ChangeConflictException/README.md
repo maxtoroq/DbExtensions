@@ -10,7 +10,7 @@ Inheritance Hierarchy
     **DbExtensions.ChangeConflictException**  
 
   **Namespace:**  [DbExtensions][3]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -26,9 +26,9 @@ The **ChangeConflictException** type exposes the following members.
 Constructors
 ------------
 
-                 | Name                         | Description                                                                                         
----------------- | ---------------------------- | --------------------------------------------------------------------------------------------------- 
-![Public method] | [ChangeConflictException][4] | Initializes a new instance of the **ChangeConflictException** class with a specified error message. 
+|                  | Name                         | Description                                                                                         |
+| ---------------- | ---------------------------- | --------------------------------------------------------------------------------------------------- |
+| ![Public method] | [ChangeConflictException][4] | Initializes a new instance of the **ChangeConflictException** class with a specified error message. |
 
 
 See Also
@@ -37,8 +37,8 @@ See Also
 #### Reference
 [DbExtensions Namespace][3]  
 
-[1]: http://msdn.microsoft.com/en-us/library/e5kfa45b
-[2]: http://msdn.microsoft.com/en-us/library/c18k6c59
+[1]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: https://docs.microsoft.com/dotnet/api/system.exception
 [3]: ../README.md
 [4]: _ctor.md
-[Public method]: ../../icons/pubmethod.gif "Public method"
+[Public method]: ../../icons/pubmethod.svg "Public method"

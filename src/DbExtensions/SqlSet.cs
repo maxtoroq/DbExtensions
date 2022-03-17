@@ -982,7 +982,7 @@ namespace DbExtensions {
    /// This class cannot be instantiated, to get an instance use the <see cref="Database.From&lt;TResult>(string)"/> method.
    /// </summary>
    /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
-   /// <inheritdoc select="remarks"/>
+   /// <inheritdoc path="remarks"/>
 
    public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult> {
 

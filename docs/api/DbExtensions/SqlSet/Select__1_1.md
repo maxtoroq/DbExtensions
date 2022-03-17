@@ -3,7 +3,7 @@ SqlSet.Select&lt;TResult> Method (String, Object[])
 Projects each element of the set into a new form.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -43,7 +43,7 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[3]: http://msdn.microsoft.com/en-us/library/e5kfa45b
+[2]: https://docs.microsoft.com/dotnet/api/system.string
+[3]: https://docs.microsoft.com/dotnet/api/system.object
 [4]: ../SqlSet_1/README.md
 [5]: README.md

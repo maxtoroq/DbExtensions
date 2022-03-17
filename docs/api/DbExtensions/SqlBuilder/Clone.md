@@ -3,7 +3,7 @@ SqlBuilder.Clone Method
 Creates and returns a copy of this instance.
 
   **Namespace:**  [DbExtensions][1]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------

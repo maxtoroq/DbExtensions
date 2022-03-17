@@ -3,7 +3,7 @@ Database.From Method (SqlBuilder, Type)
 Creates and returns a new [SqlSet][1] using the provided defining query.
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -39,5 +39,5 @@ See Also
 [1]: ../SqlSet/README.md
 [2]: ../README.md
 [3]: ../SqlBuilder/README.md
-[4]: http://msdn.microsoft.com/en-us/library/42892f65
+[4]: https://docs.microsoft.com/dotnet/api/system.type
 [5]: README.md

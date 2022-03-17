@@ -3,7 +3,7 @@ Database.From Method (String, Type)
 Creates and returns a new [SqlSet][1] using the provided table name.
 
   **Namespace:**  [DbExtensions][2]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -38,6 +38,6 @@ See Also
 
 [1]: ../SqlSet/README.md
 [2]: ../README.md
-[3]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
-[4]: http://msdn.microsoft.com/en-us/library/42892f65
+[3]: https://docs.microsoft.com/dotnet/api/system.string
+[4]: https://docs.microsoft.com/dotnet/api/system.type
 [5]: README.md

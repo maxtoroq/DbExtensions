@@ -3,7 +3,7 @@ SqlBuilder.JoinSql Method (String, SqlBuilder[])
 Concatenates a specified separator [String][1] between each element of a specified [SqlBuilder][2] array, yielding a single concatenated [SqlBuilder][2].
 
   **Namespace:**  [DbExtensions][3]  
-  **Assembly:**  DbExtensions (in DbExtensions.dll)
+  **Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -36,6 +36,6 @@ See Also
 [SqlBuilder Class][2]  
 [DbExtensions Namespace][3]  
 
-[1]: http://msdn.microsoft.com/en-us/library/s1wwdcbf
+[1]: https://docs.microsoft.com/dotnet/api/system.string
 [2]: README.md
 [3]: ../README.md
