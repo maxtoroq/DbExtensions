@@ -64,9 +64,7 @@ public partial class Database : IDisposable {
 
    public Database() {
 
-      string providerInvariantName;
-
-      this.Connection = CreateConnection(null, null, out providerInvariantName);
+      this.Connection = CreateConnection(null, null, out var providerInvariantName);
       this.disposeConnection = true;
 
       Initialize(providerInvariantName);
@@ -82,9 +80,7 @@ public partial class Database : IDisposable {
 
       if (connectionString == null) throw new ArgumentNullException(nameof(connectionString));
 
-      string providerInvariantName;
-
-      this.Connection = CreateConnection(connectionString, null, out providerInvariantName);
+      this.Connection = CreateConnection(connectionString, null, out var providerInvariantName);
       this.disposeConnection = true;
 
       Initialize(providerInvariantName);
@@ -101,9 +97,7 @@ public partial class Database : IDisposable {
 
       if (connectionString == null) throw new ArgumentNullException(nameof(connectionString));
 
-      string finalProviderInvariantName;
-
-      this.Connection = CreateConnection(connectionString, providerInvariantName, out finalProviderInvariantName);
+      this.Connection = CreateConnection(connectionString, providerInvariantName, out var finalProviderInvariantName);
       this.disposeConnection = true;
 
       Initialize(finalProviderInvariantName);
@@ -161,9 +155,9 @@ public partial class Database : IDisposable {
          throw new InvalidOperationException($"A default provider name must be specified in the {typeof(DatabaseConfiguration).FullName}.{nameof(DatabaseConfiguration.DefaultProviderInvariantName)} property.");
       }
 
-      DbProviderFactory factory = GetProviderFactory(providerInvariantName);
+      var factory = GetProviderFactory(providerInvariantName);
 
-      IDbConnection connection = factory.CreateConnection();
+      var connection = factory.CreateConnection();
       connection.ConnectionString = connectionString;
 
       return connection;
@@ -173,16 +167,16 @@ public partial class Database : IDisposable {
 
       if (providerInvariantName == null) throw new ArgumentNullException(nameof(providerInvariantName));
 
-      DbProviderFactory factory = factories.GetOrAdd(providerInvariantName, n => DbProviderFactories.GetFactory(n));
+      var factory = factories.GetOrAdd(providerInvariantName, n => DbProviderFactories.GetFactory(n));
 
       return factory;
    }
 
    DbCommandBuilder CreateCommandBuilder(string providerInvariantName) {
 
-      DbConnection dbConn = this.Connection as DbConnection;
+      var dbConn = this.Connection as DbConnection;
 
-      DbProviderFactory factory = ((dbConn != null) ? DbProviderFactories.GetFactory(dbConn) : null)
+      var factory = ((dbConn != null) ? DbProviderFactories.GetFactory(dbConn) : null)
          ?? GetProviderFactory(providerInvariantName);
 
       return factory.CreateCommandBuilder();
@@ -284,7 +278,7 @@ public partial class Database : IDisposable {
 
       if (nonQuery == null) throw new ArgumentNullException(nameof(nonQuery));
 
-      IDbCommand command = CreateCommand(nonQuery);
+      var command = CreateCommand(nonQuery);
 
       using (EnsureConnectionOpen()) {
          using (var tx = (affect > -1 ? EnsureInTransaction() : null)) {
@@ -368,9 +362,8 @@ public partial class Database : IDisposable {
          throw new InvalidOperationException("Configuration.LastInsertIdCommand cannot be null.");
       }
 
-      IDbCommand command = CreateCommand(this.Configuration.LastInsertIdCommand);
-
-      object value = command.ExecuteScalar();
+      var command = CreateCommand(this.Configuration.LastInsertIdCommand);
+      var value = command.ExecuteScalar();
 
       Trace(command);
 
@@ -422,9 +415,8 @@ public partial class Database : IDisposable {
 
       if (commandText == null) throw new ArgumentNullException(nameof(commandText));
 
-      IDbCommand command = this.Connection.CreateCommand();
-
-      IDbTransaction transaction = this.Transaction;
+      var command = this.Connection.CreateCommand();
+      var transaction = this.Transaction;
 
       if (transaction != null) {
          command.Transaction = transaction;
@@ -441,13 +433,13 @@ public partial class Database : IDisposable {
          return command;
       }
 
-      object[] paramPlaceholders = new object[parameters.Length];
+      var paramPlaceholders = new object[parameters.Length];
 
       for (int i = 0; i < paramPlaceholders.Length; i++) {
 
-         object paramValue = parameters[i];
+         var paramValue = parameters[i];
 
-         IDataParameter dbParam = paramValue as IDataParameter;
+         var dbParam = paramValue as IDataParameter;
 
          if (dbParam == null) {
             dbParam = command.CreateParameter();
@@ -480,8 +472,8 @@ public partial class Database : IDisposable {
          return unquotedIdentifier;
       }
 
-      string quotePrefix = this.Configuration.QuotePrefix;
-      string quoteSuffix = this.Configuration.QuoteSuffix;
+      var quotePrefix = this.Configuration.QuotePrefix;
+      var quoteSuffix = this.Configuration.QuoteSuffix;
 
       var sb = new StringBuilder();
 
@@ -503,15 +495,15 @@ public partial class Database : IDisposable {
 
       if (identifier == null) throw new ArgumentNullException(nameof(identifier));
 
-      string quotePrefix = this.Configuration.QuotePrefix;
-      string quoteSuffix = this.Configuration.QuoteSuffix;
+      var quotePrefix = this.Configuration.QuotePrefix;
+      var quoteSuffix = this.Configuration.QuoteSuffix;
 
       if (identifier.Length < (quotePrefix?.Length + quoteSuffix?.Length)) {
          return false;
       }
 
       return (!String.IsNullOrEmpty(quotePrefix) && identifier.StartsWith(quotePrefix, StringComparison.Ordinal))
-            && (!String.IsNullOrEmpty(quoteSuffix) && identifier.EndsWith(quoteSuffix, StringComparison.Ordinal));
+         && (!String.IsNullOrEmpty(quoteSuffix) && identifier.EndsWith(quoteSuffix, StringComparison.Ordinal));
    }
 
    internal void Trace(IDbCommand command, int? affectedRecords = null, bool error = false) {
@@ -534,10 +526,9 @@ public partial class Database : IDisposable {
 
          for (int i = 0; i < command.Parameters.Count; i++) {
 
-            IDbDataParameter param = command.Parameters[i] as IDbDataParameter;
+            var param = command.Parameters[i] as IDbDataParameter;
 
             if (param != null) {
-
                log.WriteLine("-- {0}: {1} {2} (Size = {3}) [{4}]", param.ParameterName, param.Direction, param.DbType, param.Size, param.Value);
             }
          }
@@ -868,7 +859,7 @@ public sealed partial class DatabaseConfiguration {
 
             } else {
 
-               DbCommandBuilder cb = cbFn?.Invoke();
+               var cb = cbFn?.Invoke();
 
                if (cb != null) {
                   Initialize(cb);
@@ -881,8 +872,8 @@ public sealed partial class DatabaseConfiguration {
 
    void Initialize(DbCommandBuilder cb) {
 
-      string qp = cb.QuotePrefix;
-      string qs = cb.QuoteSuffix;
+      var qp = cb.QuotePrefix;
+      var qs = cb.QuoteSuffix;
 
       if (!String.IsNullOrEmpty(qp)
          || !String.IsNullOrEmpty(qs)) {
@@ -893,8 +884,8 @@ public sealed partial class DatabaseConfiguration {
 
       this.ParameterNameBuilder = (name) => getParameterNameS(cb, name);
 
-      string pName = getParameterNameI(cb, 1);
-      string pPlace = getParameterPlaceholder(cb, 1);
+      var pName = getParameterNameI(cb, 1);
+      var pPlace = getParameterPlaceholder(cb, 1);
 
       if (!(Object.ReferenceEquals(pName, pPlace)
          || pName == pPlace)) {
@@ -938,7 +929,7 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
 
    public IEnumerator<TResult> GetEnumerator() {
 
-      IEnumerator<TResult> e = this.enumerator;
+      var e = this.enumerator;
 
       if (e == null) {
          throw new InvalidOperationException("Cannot enumerate more than once.");
@@ -973,7 +964,7 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
          if (command == null) throw new ArgumentNullException(nameof(command));
          if (mapper == null) throw new ArgumentNullException(nameof(mapper));
 
-         IDbConnection conn = command.Connection;
+         var conn = command.Connection;
 
          if (conn == null) {
             throw new ArgumentException("command.Connection cannot be null", nameof(command));
@@ -1056,7 +1047,7 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
 
          if (this.prevStateWasClosed) {
 
-            IDbConnection conn = this.command.Connection;
+            var conn = this.command.Connection;
 
             if (conn.State != ConnectionState.Closed) {
                conn.Close();

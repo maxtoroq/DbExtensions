@@ -44,9 +44,9 @@ static class TypeSystem {
 
       if (seqType.IsGenericType) {
 
-         foreach (Type arg in seqType.GetGenericArguments()) {
+         foreach (var arg in seqType.GetGenericArguments()) {
 
-            Type ienum = typeof(IEnumerable<>).MakeGenericType(arg);
+            var ienum = typeof(IEnumerable<>).MakeGenericType(arg);
 
             if (ienum.IsAssignableFrom(seqType)) {
                return ienum;
@@ -54,13 +54,13 @@ static class TypeSystem {
          }
       }
 
-      Type[] ifaces = seqType.GetInterfaces();
+      var ifaces = seqType.GetInterfaces();
 
       if (ifaces != null && ifaces.Length > 0) {
 
-         foreach (Type iface in ifaces) {
+         foreach (var iface in ifaces) {
 
-            Type ienum = FindIEnumerable(iface);
+            var ienum = FindIEnumerable(iface);
 
             if (ienum != null) {
                return ienum;
@@ -79,7 +79,7 @@ static class TypeSystem {
 
    internal static Type GetElementType(Type seqType) {
 
-      Type ienum = FindIEnumerable(seqType);
+      var ienum = FindIEnumerable(seqType);
 
       if (ienum == null) {
          return seqType;
@@ -97,21 +97,15 @@ static class TypeSystem {
 
    internal static Type GetMemberType(MemberInfo mi) {
 
-      FieldInfo fi = mi as FieldInfo;
-
-      if (fi != null) {
+      if (mi is FieldInfo fi) {
          return fi.FieldType;
       }
 
-      PropertyInfo pi = mi as PropertyInfo;
-
-      if (pi != null) {
+      if (mi is PropertyInfo pi) {
          return pi.PropertyType;
       }
 
-      EventInfo ei = mi as EventInfo;
-
-      if (ei != null) {
+      if (mi is EventInfo ei) {
          return ei.EventHandlerType;
       }
 
@@ -122,11 +116,11 @@ static class TypeSystem {
 
       var seen = new Dictionary<MetaPosition, FieldInfo>();
 
-      Type currentType = type;
+      var currentType = type;
 
       do {
 
-         foreach (FieldInfo fi in currentType.GetFields(flags)) {
+         foreach (var fi in currentType.GetFields(flags)) {
             if (fi.IsPrivate || type == currentType) {
                var mp = new MetaPosition(fi);
                seen[mp] = fi;
@@ -143,12 +137,11 @@ static class TypeSystem {
    internal static IEnumerable<PropertyInfo> GetAllProperties(Type type, BindingFlags flags) {
 
       var seen = new Dictionary<MetaPosition, PropertyInfo>();
-
-      Type currentType = type;
+      var currentType = type;
 
       do {
 
-         foreach (PropertyInfo pi in currentType.GetProperties(flags)) {
+         foreach (var pi in currentType.GetProperties(flags)) {
             if (type == currentType || IsPrivate(pi)) {
                var mp = new MetaPosition(pi);
                seen[mp] = pi;
@@ -164,7 +157,7 @@ static class TypeSystem {
 
    static bool IsPrivate(PropertyInfo pi) {
 
-      MethodInfo mi = pi.GetGetMethod() ?? pi.GetSetMethod();
+      var mi = pi.GetGetMethod() ?? pi.GetSetMethod();
 
       if (mi != null) {
          return mi.IsPrivate;
@@ -245,7 +238,7 @@ struct MetaPosition : IEqualityComparer<MetaPosition>, IEqualityComparer {
    static bool AreEqual(MetaPosition x, MetaPosition y) {
 
       return (x.metadataToken == y.metadataToken)
-            && (x.assembly == y.assembly);
+         && (x.assembly == y.assembly);
    }
 
    // Since MetaPositions are immutable, we overload the equality operator

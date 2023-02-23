@@ -40,20 +40,20 @@ static class FieldAccessor {
 
       if (!objectType.IsGenericType) {
 
-         DynamicMethod mget = new DynamicMethod(
+         var mget = new DynamicMethod(
             "xget_" + fi.Name,
             fi.FieldType,
             new Type[] { objectType },
             true
          );
 
-         ILGenerator gen = mget.GetILGenerator();
+         var gen = mget.GetILGenerator();
          gen.Emit(OpCodes.Ldarg_0);
          gen.Emit(OpCodes.Ldfld, fi);
          gen.Emit(OpCodes.Ret);
          dget = mget.CreateDelegate(typeof(DGet<,>).MakeGenericType(objectType, fi.FieldType));
 
-         DynamicMethod mset = new DynamicMethod(
+         var mset = new DynamicMethod(
             "xset_" + fi.Name,
             typeof(void),
             new Type[] { objectType.MakeByRefType(), fi.FieldType },
@@ -116,12 +116,12 @@ static class PropertyAccessor {
 
    internal static MetaAccessor Create(Type objectType, PropertyInfo pi, MetaAccessor storageAccessor) {
 
-      Delegate dset = null;
-      Delegate drset = null;
-      Type dgetType = typeof(DGet<,>).MakeGenericType(objectType, pi.PropertyType);
-      MethodInfo getMethod = pi.GetGetMethod(true);
+      var dset = default(Delegate);
+      var drset = default(Delegate);
+      var dgetType = typeof(DGet<,>).MakeGenericType(objectType, pi.PropertyType);
+      var getMethod = pi.GetGetMethod(true);
 
-      Delegate dget = Delegate.CreateDelegate(dgetType, getMethod, true);
+      var dget = Delegate.CreateDelegate(dgetType, getMethod, true);
 
       if (dget == null) {
          throw Error.CouldNotCreateAccessorToProperty(objectType, pi.PropertyType, pi);
@@ -133,14 +133,14 @@ static class PropertyAccessor {
             dset = Delegate.CreateDelegate(typeof(DSet<,>).MakeGenericType(objectType, pi.PropertyType), pi.GetSetMethod(true), true);
          } else {
 
-            DynamicMethod mset = new DynamicMethod(
+            var mset = new DynamicMethod(
                "xset_" + pi.Name,
                typeof(void),
                new Type[] { objectType.MakeByRefType(), pi.PropertyType },
                true
             );
 
-            ILGenerator gen = mset.GetILGenerator();
+            var gen = mset.GetILGenerator();
             gen.Emit(OpCodes.Ldarg_0);
 
             if (!objectType.IsValueType) {
@@ -154,7 +154,9 @@ static class PropertyAccessor {
          }
       }
 
-      Type saType = (storageAccessor != null) ? storageAccessor.Type : pi.PropertyType;
+      var saType = (storageAccessor != null) ?
+         storageAccessor.Type
+         : pi.PropertyType;
 
       return (MetaAccessor)Activator.CreateInstance(
          typeof(Accessor<,,>).MakeGenericType(objectType, pi.PropertyType, saType),

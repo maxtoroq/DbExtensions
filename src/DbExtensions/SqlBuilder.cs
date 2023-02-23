@@ -104,7 +104,7 @@ public partial class SqlBuilder {
          separator = "";
       }
 
-      SqlBuilder first = values[0];
+      var first = values[0];
 
       if (first != null) {
          sql.Append(first);
@@ -114,7 +114,7 @@ public partial class SqlBuilder {
 
          sql.Append(separator);
 
-         SqlBuilder val = values[i];
+         var val = values[i];
 
          if (val != null) {
             sql.Append(val);
@@ -146,7 +146,7 @@ public partial class SqlBuilder {
          separator = "";
       }
 
-      using (IEnumerator<SqlBuilder> enumerator = values.GetEnumerator()) {
+      using (var enumerator = values.GetEnumerator()) {
 
          if (!enumerator.MoveNext()) {
             return sql;
@@ -235,8 +235,8 @@ public partial class SqlBuilder {
 
    public SqlBuilder AppendToCurrentClause(string format, params object[] args) {
 
-      string clause = this.CurrentClause;
-      string separator = this.CurrentSeparator;
+      var clause = this.CurrentClause;
+      var separator = this.CurrentSeparator;
 
       if (this.NextClause != null) {
          clause = this.NextClause;
@@ -284,13 +284,11 @@ public partial class SqlBuilder {
 
       for (int i = 0; i < args.Length; i++) {
 
-         object obj = args[i];
+         var obj = args[i];
 
          if (obj != null) {
 
-            SqlList list = obj as SqlList;
-
-            if (list != null) {
+            if (obj is SqlList list) {
 
                fargs.Add(String.Join(", ", Enumerable.Range(0, list.Count).Select(x => Placeholder(this.ParameterValues.Count + x))));
 
@@ -428,7 +426,7 @@ public partial class SqlBuilder {
       clone.CurrentClause = this.CurrentClause;
       clone.CurrentSeparator = this.CurrentSeparator;
 
-      foreach (object item in this.ParameterValues) {
+      foreach (var item in this.ParameterValues) {
          clone.ParameterValues.Add(item);
       }
 
@@ -531,7 +529,7 @@ public partial class SqlBuilder {
       string formatStart = "", formatEnd = "";
 
       if (format != null) {
-         string[] formatSplit = format.Split(new[] { "{0}" }, StringSplitOptions.None);
+         var formatSplit = format.Split(new[] { "{0}" }, StringSplitOptions.None);
          formatStart = formatSplit[0];
          formatEnd = formatSplit[1];
       }
@@ -540,13 +538,13 @@ public partial class SqlBuilder {
          parametersFactory = (item) => null;
       }
 
-      string currentSeparator = this.NextSeparator ?? this.CurrentSeparator;
+      var currentSeparator = this.NextSeparator ?? this.CurrentSeparator;
 
-      bool first = true;
+      var first = true;
 
       foreach (var item in items) {
 
-         string tempate = itemFormat;
+         var tempate = itemFormat;
 
          if (first) {
             first = false;
@@ -1084,7 +1082,7 @@ class SqlList {
 
    public SqlList(IEnumerable values) {
 
-      object[] arr = values?.Cast<object>()
+      var arr = values?.Cast<object>()
          .ToArray();
 
       if (arr == null
@@ -1093,7 +1091,7 @@ class SqlList {
          // ensuring at least one item to avoid building an empty list
          // e.g. foo IN ()
 
-         arr = new object[1] { null };
+         arr = new object[1];
       }
 
       this.values = arr;

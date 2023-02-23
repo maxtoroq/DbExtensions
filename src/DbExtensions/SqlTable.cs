@@ -54,11 +54,10 @@ partial class Database {
 
    public SqlTable<TEntity> Table<TEntity>() where TEntity : class {
 
-      MetaType metaType = this.Configuration.GetMetaType(typeof(TEntity));
-      ISqlTable set;
+      var metaType = this.Configuration.GetMetaType(typeof(TEntity));
       SqlTable<TEntity> table;
 
-      if (this.genericTables.TryGetValue(metaType, out set)) {
+      if (this.genericTables.TryGetValue(metaType, out var set)) {
          table = (SqlTable<TEntity>)set;
 
       } else {
@@ -85,7 +84,7 @@ partial class Database {
 
       if (!this.tables.TryGetValue(metaType, out table)) {
 
-         ISqlTable genericTable = (ISqlTable)
+         var genericTable = (ISqlTable)
             tableMethod.MakeGenericMethod(metaType.Type).Invoke(this, null);
 
          table = new SqlTable(this, metaType, genericTable);
@@ -277,16 +276,16 @@ partial class Database {
 
       var sb = new StringBuilder();
 
-      string qualifier = (!String.IsNullOrEmpty(tableAlias)) ?
+      var qualifier = (!String.IsNullOrEmpty(tableAlias)) ?
          QuoteIdentifier(tableAlias) + "." : null;
 
-      IEnumerator<MetaDataMember> enumerator = selectMembers.GetEnumerator();
+      var enumerator = selectMembers.GetEnumerator();
 
       while (enumerator.MoveNext()) {
 
-         string mappedName = enumerator.Current.MappedName;
-         string memberName = enumerator.Current.QueryPath;
-         string columnAlias = !String.Equals(mappedName, memberName, StringComparison.Ordinal) ?
+         var mappedName = enumerator.Current.MappedName;
+         var memberName = enumerator.Current.QueryPath;
+         var columnAlias = !String.Equals(mappedName, memberName, StringComparison.Ordinal) ?
             memberName : null;
 
          if (sb.Length > 0) {
@@ -313,7 +312,7 @@ partial class Database {
 
       if (metaType.Table == null) throw new InvalidOperationException("metaType.Table cannot be null.");
 
-      string alias = (!String.IsNullOrEmpty(tableAlias)) ?
+      var alias = (!String.IsNullOrEmpty(tableAlias)) ?
          " " + QuoteIdentifier(tableAlias)
          : null;
 
@@ -583,15 +582,14 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-      SqlBuilder insertSql = this.CommandBuilder.BuildInsertStatementForEntity(entity);
+      var insertSql = this.CommandBuilder.BuildInsertStatementForEntity(entity);
 
-      MetaDataMember idMember = this.metaType.DBGeneratedIdentityMember;
+      var idMember = this.metaType.DBGeneratedIdentityMember;
 
-      MetaDataMember[] syncMembers =
-         (from m in this.metaType.PersistentDataMembers
-            where (m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
-            && m != idMember
-            select m).ToArray();
+      var syncMembers = this.metaType.PersistentDataMembers
+         .Where(m => (m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
+            && m != idMember)
+         .ToArray();
 
       using (var tx = this.db.EnsureInTransaction()) {
 
@@ -599,9 +597,9 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
          if (idMember != null) {
 
-            object id = this.db.LastInsertId();
-            object convertedId = Convert.ChangeType(id, idMember.Type, CultureInfo.InvariantCulture);
-            object entityObj = entity;
+            var id = this.db.LastInsertId();
+            var convertedId = Convert.ChangeType(id, idMember.Type, CultureInfo.InvariantCulture);
+            var entityObj = (object)entity;
 
             idMember.MemberAccessor.SetBoxedValue(ref entityObj, convertedId);
          }
@@ -626,15 +624,15 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
    void InsertOneToOne(TEntity entity) {
 
-      MetaAssociation[] oneToOne = this.metaType.Associations
+      var oneToOne = this.metaType.Associations
          .Where(a => !a.IsMany && a.ThisKeyIsPrimaryKey && a.OtherKeyIsPrimaryKey)
          .ToArray();
 
       for (int i = 0; i < oneToOne.Length; i++) {
 
-         MetaAssociation assoc = oneToOne[i];
+         var assoc = oneToOne[i];
 
-         object child = assoc.ThisMember.MemberAccessor.GetBoxedValue(entity);
+         var child = assoc.ThisMember.MemberAccessor.GetBoxedValue(entity);
 
          if (child == null) {
             continue;
@@ -642,15 +640,15 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
          for (int j = 0; j < assoc.ThisKey.Count; j++) {
 
-            MetaDataMember thisKey = assoc.ThisKey[j];
-            MetaDataMember otherKey = assoc.OtherKey[j];
+            var thisKey = assoc.ThisKey[j];
+            var otherKey = assoc.OtherKey[j];
 
-            object thisKeyVal = thisKey.MemberAccessor.GetBoxedValue(entity);
+            var thisKeyVal = thisKey.MemberAccessor.GetBoxedValue(entity);
 
             otherKey.MemberAccessor.SetBoxedValue(ref child, thisKeyVal);
          }
 
-         SqlTable otherTable = this.db.Table(assoc.OtherType);
+         var otherTable = this.db.Table(assoc.OtherType);
 
          otherTable.Add(child);
       }
@@ -658,13 +656,13 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
    void InsertOneToMany(TEntity entity) {
 
-      MetaAssociation[] oneToMany = this.metaType.Associations.Where(a => a.IsMany).ToArray();
+      var oneToMany = this.metaType.Associations.Where(a => a.IsMany).ToArray();
 
       for (int i = 0; i < oneToMany.Length; i++) {
 
-         MetaAssociation assoc = oneToMany[i];
+         var assoc = oneToMany[i];
 
-         object[] many = ((IEnumerable<object>)assoc.ThisMember.MemberAccessor.GetBoxedValue(entity) ?? new object[0])
+         var many = ((IEnumerable<object>)assoc.ThisMember.MemberAccessor.GetBoxedValue(entity) ?? new object[0])
             .Where(o => o != null)
             .ToArray();
 
@@ -672,26 +670,26 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
          for (int j = 0; j < many.Length; j++) {
 
-            object child = many[j];
+            var child = many[j];
 
             for (int k = 0; k < assoc.ThisKey.Count; k++) {
 
-               MetaDataMember thisKey = assoc.ThisKey[k];
-               MetaDataMember otherKey = assoc.OtherKey[k];
+               var thisKey = assoc.ThisKey[k];
+               var otherKey = assoc.OtherKey[k];
 
-               object thisKeyVal = thisKey.MemberAccessor.GetBoxedValue(entity);
+               var thisKeyVal = thisKey.MemberAccessor.GetBoxedValue(entity);
 
                otherKey.MemberAccessor.SetBoxedValue(ref child, thisKeyVal);
             }
          }
 
-         SqlTable otherTable = this.db.Table(assoc.OtherType);
+         var otherTable = this.db.Table(assoc.OtherType);
 
          otherTable.AddRange(many);
 
          for (int j = 0; j < many.Length; j++) {
 
-            object child = many[j];
+            var child = many[j];
 
             ((ISqlTable)otherTable).AddDescendants(child);
          }
@@ -717,7 +715,8 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       if (entities == null) throw new ArgumentNullException(nameof(entities));
 
-      entities = entities.Where(o => o != null).ToArray();
+      entities = entities.Where(o => o != null)
+         .ToArray();
 
       if (entities.Length == 0) {
          return;
@@ -728,17 +727,16 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
          return;
       }
 
-      MetaDataMember[] syncMembers =
-         (from m in this.metaType.PersistentDataMembers
-            where (m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
-            select m).ToArray();
+      var syncMembers = this.metaType.PersistentDataMembers
+         .Where(m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
+         .ToArray();
 
-      bool batch = syncMembers.Length == 0
+      var batch = syncMembers.Length == 0
          && this.db.Configuration.EnableBatchCommands;
 
       if (batch) {
 
-         SqlBuilder batchInsert = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildInsertStatementForEntity(e)));
+         var batchInsert = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildInsertStatementForEntity(e)));
 
          using (var tx = this.db.EnsureInTransaction()) {
 
@@ -781,12 +779,11 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-      SqlBuilder updateSql = this.CommandBuilder.BuildUpdateStatementForEntity(entity, originalId);
+      var updateSql = this.CommandBuilder.BuildUpdateStatementForEntity(entity, originalId);
 
-      MetaDataMember[] syncMembers =
-         (from m in this.metaType.PersistentDataMembers
-            where m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate
-            select m).ToArray();
+      var syncMembers = this.metaType.PersistentDataMembers
+         .Where(m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate)
+         .ToArray();
 
       using (this.db.EnsureConnectionOpen()) {
 
@@ -819,7 +816,8 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       if (entities == null) throw new ArgumentNullException(nameof(entities));
 
-      entities = entities.Where(o => o != null).ToArray();
+      entities = entities.Where(o => o != null)
+         .ToArray();
 
       if (entities.Length == 0) {
          return;
@@ -832,17 +830,16 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       EnsureEntityType();
 
-      MetaDataMember[] syncMembers =
-         (from m in this.metaType.PersistentDataMembers
-            where m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate
-            select m).ToArray();
+      var syncMembers = this.metaType.PersistentDataMembers
+         .Where(m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate)
+         .ToArray();
 
-      bool batch = syncMembers.Length == 0
+      var batch = syncMembers.Length == 0
          && this.db.Configuration.EnableBatchCommands;
 
       if (batch) {
 
-         SqlBuilder batchUpdate = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildUpdateStatementForEntity(e)));
+         var batchUpdate = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildUpdateStatementForEntity(e)));
 
          this.db.Execute(batchUpdate, affect: entities.Length, exact: true);
 
@@ -868,9 +865,9 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-      SqlBuilder deleteSql = this.CommandBuilder.BuildDeleteStatementForEntity(entity);
+      var deleteSql = this.CommandBuilder.BuildDeleteStatementForEntity(entity);
 
-      bool usingVersion = this.db.Configuration.UseVersionMember
+      var usingVersion = this.db.Configuration.UseVersionMember
          && this.metaType.VersionMember != null;
 
       this.db.Execute(deleteSql, affect: 1, exact: usingVersion);
@@ -884,7 +881,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
    public void RemoveKey(object id) {
 
-      SqlBuilder deleteSql = this.CommandBuilder.BuildDeleteStatementForKey(id);
+      var deleteSql = this.CommandBuilder.BuildDeleteStatementForKey(id);
 
       this.db.Execute(deleteSql, affect: 1);
    }
@@ -910,7 +907,8 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       if (entities == null) throw new ArgumentNullException(nameof(entities));
 
-      entities = entities.Where(o => o != null).ToArray();
+      entities = entities.Where(o => o != null)
+         .ToArray();
 
       if (entities.Length == 0) {
          return;
@@ -923,21 +921,22 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       EnsureEntityType();
 
-      bool usingVersion = this.db.Configuration.UseVersionMember
+      var usingVersion = this.db.Configuration.UseVersionMember
          && this.metaType.VersionMember != null;
 
-      bool singleStatement = this.metaType.IdentityMembers.Count == 1
+      var singleStatement = this.metaType.IdentityMembers.Count == 1
          && !usingVersion;
 
-      bool batch = this.db.Configuration.EnableBatchCommands;
+      var batch = this.db.Configuration.EnableBatchCommands;
 
       if (singleStatement) {
 
-         MetaDataMember idMember = this.metaType.IdentityMembers[0];
+         var idMember = this.metaType.IdentityMembers[0];
 
-         object[] ids = entities.Select(e => idMember.GetValueForDatabase(e)).ToArray();
+         var ids = entities.Select(e => idMember.GetValueForDatabase(e))
+            .ToArray();
 
-         SqlBuilder sql = this.CommandBuilder
+         var sql = this.CommandBuilder
             .BuildDeleteStatement()
             .WHERE(this.db.QuoteIdentifier(idMember.MappedName) + " IN ({0})", SQL.List(ids));
 
@@ -945,7 +944,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       } else if (batch) {
 
-         SqlBuilder batchDelete = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildDeleteStatementForEntity(e)));
+         var batchDelete = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildDeleteStatementForEntity(e)));
 
          this.db.Execute(batchDelete, affect: entities.Length, exact: usingVersion);
 
@@ -989,12 +988,12 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       EnsureEntityType();
 
-      SqlBuilder query = this.CommandBuilder.BuildSelectStatement(refreshMembers);
+      var query = this.CommandBuilder.BuildSelectStatement(refreshMembers);
       query.WHERE(this.db.BuildPredicateFragment(entity, this.metaType.IdentityMembers, query.ParameterValues));
 
-      Mapper mapper = this.db.CreatePocoMapper(this.metaType.Type);
+      var mapper = this.db.CreatePocoMapper(this.metaType.Type);
 
-      object entityObj = entity;
+      var entityObj = (object)entity;
 
       this.db.Map<object>(query, r => {
          mapper.Load(ref entityObj, r);
@@ -1169,12 +1168,11 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-      MetaDataMember[] insertingMembers =
-         (from m in this.metaType.PersistentDataMembers
-            where !m.IsAssociation && !m.IsDbGenerated
-            select m).ToArray();
+      var insertingMembers = this.metaType.PersistentDataMembers
+         .Where(m => !m.IsAssociation && !m.IsDbGenerated)
+         .ToArray();
 
-      object[] parameters = insertingMembers
+      var parameters = insertingMembers
          .Select(m => m.GetValueForDatabase(entity))
          .ToArray();
 
@@ -1241,15 +1239,13 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       EnsureEntityType();
 
-      MetaDataMember[] updatingMembers =
-         (from m in this.metaType.PersistentDataMembers
-            where !m.IsAssociation && !m.IsDbGenerated
-            select m).ToArray();
+      var updatingMembers = this.metaType.PersistentDataMembers
+         .Where(m => !m.IsAssociation && !m.IsDbGenerated)
+         .ToArray();
 
-      MetaDataMember[] predicateMembers =
-         (from m in this.metaType.PersistentDataMembers
-            where m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember)
-            select m).ToArray();
+      var predicateMembers = this.metaType.PersistentDataMembers
+         .Where(m => m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember))
+         .ToArray();
 
       if (originalId != null
          && predicateMembers.Count(m => m.IsPrimaryKey) > 1) {
@@ -1271,8 +1267,8 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
             sb.Append(", ");
          }
 
-         MetaDataMember member = updatingMembers[i];
-         object value = member.GetValueForDatabase(entity);
+         var member = updatingMembers[i];
+         var value = member.GetValueForDatabase(entity);
 
          sb.Append(QuoteIdentifier(member.MappedName))
             .Append(" = {")
@@ -1282,7 +1278,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
          parametersBuffer.Add(value);
       }
 
-      Func<MetaDataMember, object> getValuefn = null;
+      var getValuefn = default(Func<MetaDataMember, object>);
 
       if (originalId != null) {
 
@@ -1320,12 +1316,11 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       EnsureEntityType();
 
-      MetaDataMember[] predicateMembers =
-         (from m in this.metaType.PersistentDataMembers
-            where m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember)
-            select m).ToArray();
+      var predicateMembers = this.metaType.PersistentDataMembers
+         .Where(m => m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember))
+         .ToArray();
 
-      SqlBuilder deleteSql = BuildDeleteStatement();
+      var deleteSql = BuildDeleteStatement();
       deleteSql.WHERE(this.db.BuildPredicateFragment(entity, predicateMembers, deleteSql.ParameterValues));
 
       return deleteSql;
@@ -1396,13 +1391,13 @@ partial class SqlSet {
 
    MetaType EnsureEntityType(int maxIdMembers = -1) {
 
-      Type resultType = this.ResultType;
+      var resultType = this.ResultType;
 
       if (resultType == null) {
          throw new InvalidOperationException("The operation is not supported on untyped sets.");
       }
 
-      MetaType metaType = this.db.Configuration.GetMetaType(resultType);
+      var metaType = this.db.Configuration.GetMetaType(resultType);
 
       if (metaType == null) {
          throw new InvalidOperationException($"Mapping information was not found for '{resultType.FullName}'.");
@@ -1430,14 +1425,13 @@ partial class SqlSet {
 
       if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-      MetaType metaType = EnsureEntityType();
+      var metaType = EnsureEntityType();
 
-      MetaDataMember[] predicateMembers =
-         (from m in metaType.PersistentDataMembers
-            where m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember)
-            select m).ToArray();
+      var predicateMembers = metaType.PersistentDataMembers
+         .Where(m => m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember))
+         .ToArray();
 
-      IDictionary<string, object> predicateValues = predicateMembers.ToDictionary(
+      var predicateValues = predicateMembers.ToDictionary(
          m => m.MappedName,
          m => m.GetValueForDatabase(entity)
       );
@@ -1454,10 +1448,10 @@ partial class SqlSet {
 
    public bool ContainsKey(object id) {
 
-      MetaType metaType = EnsureEntityType(maxIdMembers: 1);
-      MetaDataMember idMember = metaType.IdentityMembers[0];
+      var metaType = EnsureEntityType(maxIdMembers: 1);
+      var idMember = metaType.IdentityMembers[0];
 
-      MetaDataMember[] predicateMembers = new[] { idMember };
+      var predicateMembers = new[] { idMember };
 
       var predicateValues = new Dictionary<string, object> {
          { idMember.MappedName, idMember.ConvertValueForDatabase(id) }
@@ -1468,7 +1462,7 @@ partial class SqlSet {
 
    bool ContainsImpl(MetaDataMember[] predicateMembers, IDictionary<string, object> predicateValues) {
 
-      MetaType metaType = predicateMembers[0].DeclaringType;
+      var metaType = predicateMembers[0].DeclaringType;
 
       var predicateParams = new List<object>(predicateValues.Count);
 
@@ -1495,15 +1489,15 @@ partial class SqlSet {
 
       if (id == null) throw new ArgumentNullException(nameof(id));
 
-      MetaType metaType = EnsureEntityType(maxIdMembers: 1);
-      MetaDataMember idMember = metaType.IdentityMembers[0];
+      var metaType = EnsureEntityType(maxIdMembers: 1);
+      var idMember = metaType.IdentityMembers[0];
 
       var predicateValues = new Dictionary<string, object> {
          { idMember.MappedName, idMember.ConvertValueForDatabase(id) }
       };
 
       var parameters = new List<object>(predicateValues.Count);
-      string predicate = db.BuildPredicateFragment(predicateValues, parameters);
+      var predicate = db.BuildPredicateFragment(predicateValues, parameters);
 
       return Where(predicate, parameters.ToArray());
    }
@@ -1523,7 +1517,7 @@ partial class SqlSet {
          throw new InvalidOperationException("Include operation is not supported on untyped sets.");
       }
 
-      MetaType metaType = this.db.Configuration.GetMetaType(this.ResultType);
+      var metaType = this.db.Configuration.GetMetaType(this.ResultType);
 
       if (metaType == null) {
          throw new InvalidOperationException($"Mapping information was not found for '{this.ResultType.FullName}'.");
@@ -1538,22 +1532,22 @@ partial class SqlSet {
 
       public static SqlSet Expand(SqlSet source, string path, MetaType metaType) {
 
-         Database db = source.db;
+         var db = source.db;
 
-         string[] parts = path.Split(_pathSeparator);
+         var parts = path.Split(_pathSeparator);
 
-         Func<string, SqlBuilder> selectBuild = alias =>
+         SqlBuilder selectBuild(string alias) =>
             new SqlBuilder().SELECT(db.QuoteIdentifier(alias) + ".*");
 
-         Action<SqlBuilder, string> fromAppend = (sql, alias) =>
+         void fromAppend(SqlBuilder sql, string alias) =>
             sql.FROM(source.GetDefiningQuery(), db.QuoteIdentifier(alias));
 
          MetaAssociation manyAssoc;
          int manyIndex;
 
-         SqlBuilder query = BuildJoinedQuery(parts, metaType, source.db, selectBuild, fromAppend, out manyAssoc, out manyIndex);
+         var query = BuildJoinedQuery(parts, metaType, source.db, selectBuild, fromAppend, out manyAssoc, out manyIndex);
 
-         SqlSet newSet = (query == null) ? source.Clone() : source.CreateSet(query);
+         var newSet = (query == null) ? source.Clone() : source.CreateSet(query);
 
          if (manyAssoc != null) {
             AddManyInclude(newSet, parts, path, manyAssoc, manyIndex);
@@ -1573,19 +1567,20 @@ partial class SqlSet {
          const string leftAlias = "dbex_l";
          const string rightAlias = "dbex_r";
 
-         Func<int, string> rAliasFn = i => rightAlias + (i + 1);
+         string rAliasFn(int i) => rightAlias + (i + 1);
 
-         SqlBuilder query = selectBuild(leftAlias);
-         MetaType currentType = metaType;
+         var query = selectBuild(leftAlias);
+         var currentType = metaType;
 
          var associations = new List<MetaAssociation>();
 
          for (int i = 0; i < path.Length; i++) {
 
-            string p = path[i];
-            string rAlias = rAliasFn(i);
+            var p = path[i];
+            var rAlias = rAliasFn(i);
 
-            MetaDataMember member = currentType.PersistentDataMembers.SingleOrDefault(m => m.Name == p);
+            var member = currentType.PersistentDataMembers
+               .SingleOrDefault(m => m.Name == p);
 
             if (member == null) {
                throw new ArgumentException($"Couldn't find '{p}' on '{currentType.Type.FullName}'.", nameof(path));
@@ -1595,7 +1590,7 @@ partial class SqlSet {
                throw new ArgumentException($"'{p}' is not an association property.", nameof(path));
             }
 
-            MetaAssociation association = member.Association;
+            var association = member.Association;
 
             if (association.IsMany) {
 
@@ -1621,9 +1616,9 @@ partial class SqlSet {
 
          for (int i = 0; i < associations.Count; i++) {
 
-            MetaAssociation association = associations[i];
-            string lAlias = (i == 0) ? leftAlias : rAliasFn(i - 1);
-            string rAlias = rAliasFn(i);
+            var association = associations[i];
+            var lAlias = (i == 0) ? leftAlias : rAliasFn(i - 1);
+            var rAlias = rAliasFn(i);
 
             var joinPredicate = new StringBuilder();
 
@@ -1633,8 +1628,8 @@ partial class SqlSet {
                   joinPredicate.Append(" AND ");
                }
 
-               MetaDataMember thisMember = association.ThisKey[j];
-               MetaDataMember otherMember = association.OtherKey[j];
+               var thisMember = association.ThisKey[j];
+               var otherMember = association.OtherKey[j];
 
                joinPredicate.AppendFormat(CultureInfo.InvariantCulture, "{0}.{1} = {2}.{3}", db.QuoteIdentifier(lAlias), db.QuoteIdentifier(thisMember.Name), db.QuoteIdentifier(rAlias), db.QuoteIdentifier(otherMember.MappedName));
             }
@@ -1650,9 +1645,9 @@ partial class SqlSet {
          Debug.Assert(path.Length > 0);
          Debug.Assert(manyIndex >= 0);
 
-         Database db = set.db;
-         MetaType metaType = manyAssoc.OtherType;
-         SqlTable table = db.Table(metaType);
+         var db = set.db;
+         var metaType = manyAssoc.OtherType;
+         var table = db.Table(metaType);
 
          string[] manyPath;
          SqlSet manySource;
@@ -1668,20 +1663,20 @@ partial class SqlSet {
 
             Array.Copy(path, manyPath, manyPath.Length);
 
-            string[] manyInclude = new string[path.Length - manyIndex - 1];
+            var manyInclude = new string[path.Length - manyIndex - 1];
 
             Array.Copy(path, manyIndex + 1, manyInclude, 0, manyInclude.Length);
 
-            Func<string, SqlBuilder> selectBuild = alias =>
+            SqlBuilder selectBuild(string alias) =>
                table.CommandBuilder.BuildSelectClause(alias);
 
-            Action<SqlBuilder, string> fromAppend = (sql, alias) =>
+            void fromAppend(SqlBuilder sql, string alias) =>
                sql.FROM(db.QuoteIdentifier(metaType.Table.TableName) + " " + alias);
 
             MetaAssociation manyInManyAssoc;
             int manyInManyIndex;
 
-            SqlBuilder manyQuery = BuildJoinedQuery(manyInclude, metaType, db, selectBuild, fromAppend, out manyInManyAssoc, out manyInManyIndex);
+            var manyQuery = BuildJoinedQuery(manyInclude, metaType, db, selectBuild, fromAppend, out manyInManyAssoc, out manyInManyIndex);
 
             if (manyInManyAssoc != null) {
                throw new ArgumentException($"One-to-many associations can only be specified once in an include path ('{originalPath}').", nameof(path));
@@ -1707,8 +1702,8 @@ partial class SqlSet {
 
          var loaderState = (CollectionLoaderState)state;
 
-         MetaAssociation association = loaderState.Association;
-         SqlSet set = loaderState.Source;
+         var association = loaderState.Association;
+         var set = loaderState.Source;
 
          var predicateValues = new Dictionary<string, object>();
 
@@ -1717,18 +1712,19 @@ partial class SqlSet {
          }
 
          var parameters = new List<object>();
-         string whereFragment = set.db.BuildPredicateFragment(predicateValues, parameters);
+         var whereFragment = set.db.BuildPredicateFragment(predicateValues, parameters);
 
-         IEnumerable children = set.Where(whereFragment, parameters.ToArray()).AsEnumerable();
+         var children = set.Where(whereFragment, parameters.ToArray())
+            .AsEnumerable();
 
-         MetaDataMember otherMember = association.OtherMember;
+         var otherMember = association.OtherMember;
 
-         foreach (object child in children) {
+         foreach (var child in children) {
 
             if (otherMember != null
                && !otherMember.Association.IsMany) {
 
-               object childObj = child;
+               var childObj = child;
 
                otherMember.MemberAccessor.SetBoxedValue(ref childObj, container);
             }

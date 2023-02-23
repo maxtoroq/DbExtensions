@@ -32,7 +32,7 @@ partial class Database {
 
    public IEnumerable<dynamic> Map(SqlBuilder query) {
 
-      Mapper mapper = CreateDynamicMapper();
+      var mapper = CreateDynamicMapper();
 
       return Map(query, r => (dynamic)mapper.Map(r));
    }
@@ -49,7 +49,7 @@ partial class SqlSet {
 
    IEnumerable DynamicMap(bool singleResult) {
 
-      Mapper mapper = this.db.CreateDynamicMapper();
+      var mapper = this.db.CreateDynamicMapper();
       mapper.SingleResult = singleResult;
 
       InitializeMapper(mapper);
@@ -148,9 +148,7 @@ class DynamicNode : Node {
       if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
       if (propertyName.Length == 0) throw new ArgumentException("Cannot map column using an empty property name.", nameof(propertyName));
 
-      uint nameAsNumber;
-
-      if (UInt32.TryParse(propertyName, out nameAsNumber)) {
+      if (UInt32.TryParse(propertyName, out _)) {
          throw new ArgumentException("Cannot use constructor mapping, by using numeric column names, unless you specify the type of the object you want to map to.", nameof(propertyName));
       }
 
@@ -165,9 +163,7 @@ class DynamicNode : Node {
 
       var dictionary = (IDictionary<string, object>)instance;
 
-      object value;
-
-      if (dictionary.TryGetValue(this.PropertyName, out value)) {
+      if (dictionary.TryGetValue(this.PropertyName, out var value)) {
          return value;
       }
 

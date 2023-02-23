@@ -429,7 +429,7 @@ abstract class MetaDataMember {
 
    public virtual object GetValueForDatabase(object instance) {
 
-      object value = this.MemberAccessor.GetBoxedValue(instance);
+      var value = this.MemberAccessor.GetBoxedValue(instance);
 
       return ConvertValueForDatabase(value);
    }
@@ -610,7 +610,7 @@ abstract class MetaAccessor<TEntity, TMember> : MetaAccessor {
 
    public override void SetBoxedValue(ref object instance, object value) {
 
-      TEntity tInst = (TEntity)instance;
+      var tInst = (TEntity)instance;
       SetValue(ref tInst, (TMember)value);
       instance = tInst;
    }

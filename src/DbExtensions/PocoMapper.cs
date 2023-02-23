@@ -35,7 +35,7 @@ partial class Database {
 
    public IEnumerable<TResult> Map<TResult>(SqlBuilder query) {
 
-      Mapper mapper = CreatePocoMapper(typeof(TResult));
+      var mapper = CreatePocoMapper(typeof(TResult));
 
       return Map(query, r => (TResult)mapper.Map(r));
    }
@@ -51,7 +51,7 @@ partial class Database {
 
    public IEnumerable<object> Map(Type resultType, SqlBuilder query) {
 
-      Mapper mapper = CreatePocoMapper(resultType);
+      var mapper = CreatePocoMapper(resultType);
 
       return Map(query, r => mapper.Map(r));
    }
@@ -68,7 +68,7 @@ partial class SqlSet {
 
    IEnumerable PocoMap(bool singleResult) {
 
-      Mapper mapper = this.db.CreatePocoMapper(this.ResultType);
+      var mapper = this.db.CreatePocoMapper(this.ResultType);
       mapper.SingleResult = singleResult;
 
       InitializeMapper(mapper);
@@ -98,7 +98,7 @@ class PocoMapper : Mapper {
 
    protected override Node CreateSimpleProperty(Node container, string propertyName, int columnOrdinal) {
 
-      PropertyInfo property = GetProperty(((PocoNode)container).UnderlyingType, propertyName);
+      var property = GetProperty(((PocoNode)container).UnderlyingType, propertyName);
 
       if (property == null) {
          return null;
@@ -109,7 +109,7 @@ class PocoMapper : Mapper {
 
    protected override Node CreateComplexProperty(Node container, string propertyName) {
 
-      PropertyInfo property = GetProperty(((PocoNode)container).UnderlyingType, propertyName);
+      var property = GetProperty(((PocoNode)container).UnderlyingType, propertyName);
 
       if (property == null) {
          return null;
@@ -128,9 +128,9 @@ class PocoMapper : Mapper {
 
    protected override CollectionNode CreateCollectionNode(Node container, string propertyName) {
 
-      Type declaringType = ((PocoNode)container).UnderlyingType;
+      var declaringType = ((PocoNode)container).UnderlyingType;
 
-      PropertyInfo property = declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      var property = declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
       if (property == null) {
          return null;
@@ -145,7 +145,7 @@ class PocoMapper : Mapper {
 
    static PropertyInfo GetProperty(Type declaringType, string propertyName) {
 
-      PropertyInfo property = declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      var property = declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
       if (property == null) {
          return property;
@@ -244,7 +244,7 @@ class PocoNode : Node {
 
       this.Type = type;
 
-      bool isNullableValueType = type.IsGenericType
+      var isNullableValueType = type.IsGenericType
          && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
       this.UnderlyingType = (isNullableValueType) ?
@@ -265,7 +265,9 @@ class PocoNode : Node {
          return Activator.CreateInstance(this.Type);
       }
 
-      object[] args = this.ConstructorParameters.Select(m => m.Value.Map(record, context)).ToArray();
+      var args = this.ConstructorParameters
+         .Select(m => m.Value.Map(record, context))
+         .ToArray();
 
       if (this.ConstructorParameters.Any(p => ((PocoNode)p.Value).ConvertFunction != null)
          || args.All(v => v == null)) {
@@ -278,21 +280,21 @@ class PocoNode : Node {
 
       } catch (ArgumentException) {
 
-         bool convertSet = false;
+         var convertSet = false;
 
          for (int i = 0; i < this.ConstructorParameters.Count; i++) {
 
-            object value = args[i];
+            var value = args[i];
 
             if (value == null) {
                continue;
             }
 
-            PocoNode paramNode = (PocoNode)this.ConstructorParameters.ElementAt(i).Value;
+            var paramNode = (PocoNode)this.ConstructorParameters.ElementAt(i).Value;
 
             if (!paramNode.Type.IsAssignableFrom(value.GetType())) {
 
-               Func<PocoNode, object, object> convert = GetConversionFunction(value, paramNode);
+               var convert = GetConversionFunction(value, paramNode);
 
                context.Log?.WriteLine($"-- WARNING: Couldn't instantiate {this.UnderlyingType.FullName} with argument '{paramNode.Parameter.Name}' of type {paramNode.Type.FullName} {((value == null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}. Attempting conversion.");
 
@@ -312,7 +314,7 @@ class PocoNode : Node {
 
    protected override object MapSimple(IDataRecord record, MappingContext context) {
 
-      object value = base.MapSimple(record, context);
+      var value = base.MapSimple(record, context);
 
       Func<PocoNode, object, object> convertFn;
 
@@ -357,7 +359,7 @@ class PocoNode : Node {
 
       } catch (ArgumentException) {
 
-         Func<PocoNode, object, object> convert = GetConversionFunction(value, this);
+         var convert = GetConversionFunction(value, this);
 
          context.Log?.WriteLine($"-- WARNING: Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Property.PropertyType.FullName}' {((value == null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}. Attempting conversion.");
 
@@ -428,14 +430,14 @@ class PocoCollection : CollectionNode {
 
       this.property = property;
 
-      Type colType = this.property.PropertyType;
+      var colType = this.property.PropertyType;
       this.elementType = typeof(object);
 
-      for (Type type = colType; type != null; type = type.BaseType) {
+      for (var type = colType; type != null; type = type.BaseType) {
 
-         Type[] interfaces = type.GetInterfaces();
+         var interfaces = type.GetInterfaces();
 
-         Type genericICol = type.GetInterfaces()
+         var genericICol = type.GetInterfaces()
             .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>));
 
          if (genericICol != null) {
@@ -453,11 +455,11 @@ class PocoCollection : CollectionNode {
 
    protected override IEnumerable GetOrCreate(ref object instance, MappingContext context) {
 
-      object collection = this.property.GetValue(instance, null);
+      var collection = this.property.GetValue(instance, null);
 
       if (collection == null) {
 
-         Type collectionType = this.property.PropertyType;
+         var collectionType = this.property.PropertyType;
 
          if (collectionType.IsAbstract
             || collectionType.IsInterface) {

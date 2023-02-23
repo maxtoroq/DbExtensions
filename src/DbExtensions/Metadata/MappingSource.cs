@@ -40,7 +40,7 @@ internal abstract class MappingSource {
 
       if (dataContextType == null) throw Error.ArgumentNull(nameof(dataContextType));
 
-      MetaModel model = null;
+      var model = default(MetaModel);
 
       if (this.primaryModel == null) {
          model = CreateModel(dataContextType);

@@ -46,8 +46,11 @@ class AttributedMetaModel : MetaModel {
       this.metaTypes = new Dictionary<Type, MetaType>();
       this.metaTables = new Dictionary<Type, MetaTable>();
 
-      DatabaseAttribute[] das = (DatabaseAttribute[])this.ContextType.GetCustomAttributes(typeof(DatabaseAttribute), false);
-      this.DatabaseName = (das != null && das.Length > 0) ? das[0].Name : this.ContextType.Name;
+      var das = (DatabaseAttribute[])this.ContextType.GetCustomAttributes(typeof(DatabaseAttribute), false);
+
+      this.DatabaseName = (das != null && das.Length > 0) ?
+         das[0].Name
+         : this.ContextType.Name;
    }
 
    public override IEnumerable<MetaTable> GetTables() {
@@ -94,8 +97,8 @@ class AttributedMetaModel : MetaModel {
 
       if (!this.metaTables.TryGetValue(rowType, out table)) {
 
-         Type root = GetRoot(rowType) ?? rowType;
-         TableAttribute[] attrs = (TableAttribute[])root.GetCustomAttributes(typeof(TableAttribute), true);
+         var root = GetRoot(rowType) ?? rowType;
+         var attrs = (TableAttribute[])root.GetCustomAttributes(typeof(TableAttribute), true);
 
          if (attrs.Length == 0) {
             this.metaTables.Add(rowType, null);
@@ -126,7 +129,7 @@ class AttributedMetaModel : MetaModel {
 
       while (derivedType != null && derivedType != typeof(object)) {
 
-         TableAttribute[] attrs = (TableAttribute[])derivedType.GetCustomAttributes(typeof(TableAttribute), false);
+         var attrs = (TableAttribute[])derivedType.GetCustomAttributes(typeof(TableAttribute), false);
 
          if (attrs.Length > 0) {
             return derivedType;
@@ -157,7 +160,7 @@ class AttributedMetaModel : MetaModel {
       // Attributed meta model allows us to learn about tables we did not
       // statically know about
 
-      MetaTable tab = GetTable(type, config);
+      var tab = GetTable(type, config);
 
       if (tab != null) {
          return tab.RowType.GetInheritanceType(type);
@@ -214,7 +217,7 @@ sealed class AttributedRootType : AttributedMetaType {
       : base(model, table, type, null) {
 
       // check for inheritance and create all other types
-      InheritanceMappingAttribute[] inheritanceInfo = (InheritanceMappingAttribute[])type.GetCustomAttributes(typeof(InheritanceMappingAttribute), true);
+      var inheritanceInfo = (InheritanceMappingAttribute[])type.GetCustomAttributes(typeof(InheritanceMappingAttribute), true);
 
       if (inheritanceInfo.Length > 0) {
 
@@ -242,7 +245,7 @@ sealed class AttributedRootType : AttributedMetaType {
                throw Error.AbstractClassAssignInheritanceDiscriminator(attr.Type);
             }
 
-            AttributedMetaType mt = this.CreateInheritedType(type, attr.Type);
+            var mt = this.CreateInheritedType(type, attr.Type);
 
             if (attr.Code == null) {
                throw Error.InheritanceCodeMayNotBeNull();
@@ -252,8 +255,8 @@ sealed class AttributedRootType : AttributedMetaType {
                throw Error.InheritanceTypeHasMultipleDiscriminators(attr.Type);
             }
 
-            //object codeValue = DBConvert.ChangeType(*/attr.Code/*, this.Discriminator.Type);
-            object codeValue = attr.Code;
+            //var codeValue = DBConvert.ChangeType(*/attr.Code/*, this.Discriminator.Type);
+            var codeValue = attr.Code;
 
             foreach (object d in codeMap.Keys) {
 
@@ -299,20 +302,20 @@ sealed class AttributedRootType : AttributedMetaType {
 
    void Validate() {
 
-      Dictionary<object, string> memberToColumn = new Dictionary<object, string>();
+      var memberToColumn = new Dictionary<object, string>();
 
-      foreach (MetaType type in this.InheritanceTypes) {
+      foreach (var type in this.InheritanceTypes) {
 
          if (type != this) {
 
-            TableAttribute[] attrs = (TableAttribute[])type.Type.GetCustomAttributes(typeof(TableAttribute), false);
+            var attrs = (TableAttribute[])type.Type.GetCustomAttributes(typeof(TableAttribute), false);
 
             if (attrs.Length > 0) {
                throw Error.InheritanceSubTypeIsAlsoRoot(type.Type);
             }
          }
 
-         foreach (MetaDataMember mem in type.PersistentDataMembers) {
+         foreach (var mem in type.PersistentDataMembers) {
 
             if (mem.IsDeclaredBy(type)) {
 
@@ -326,10 +329,9 @@ sealed class AttributedRootType : AttributedMetaType {
 
                   if (!String.IsNullOrEmpty(mem.MappedName)) {
 
-                     string column;
-                     object dn = InheritanceRules.DistinguishedMemberName(mem.Member);
+                     var dn = InheritanceRules.DistinguishedMemberName(mem.Member);
 
-                     if (memberToColumn.TryGetValue(dn, out column)) {
+                     if (memberToColumn.TryGetValue(dn, out var column)) {
                         if (column != mem.MappedName) {
                            throw Error.MemberMappedMoreThanOnce(mem.Member.Name);
                         }
@@ -366,7 +368,7 @@ sealed class AttributedRootType : AttributedMetaType {
          return this;
       }
 
-      MetaType metaType = null;
+      var metaType = default(MetaType);
 
       if (this.types != null) {
          this.types.TryGetValue(type, out metaType);
@@ -543,16 +545,17 @@ class AttributedMetaType : MetaType {
    void InitDataMembersImpl(Type containerType, MetaComplexProperty containerCp = null) {
       { // preserving indentation for cleaner diff
 
-         BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+         var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 
-         FieldInfo[] fis = TypeSystem.GetAllFields(containerType, flags).ToArray();
+         var fis = TypeSystem.GetAllFields(containerType, flags)
+            .ToArray();
 
          if (fis != null) {
 
             for (int i = 0, n = fis.Length; i < n; i++) {
 
-               FieldInfo fi = fis[i];
-               MetaDataMember mm = new AttributedMetaDataMember(this, fi, this.dataMemberMap.Count, null);
+               var fi = fis[i];
+               var mm = new AttributedMetaDataMember(this, fi, this.dataMemberMap.Count, null);
                ValidatePrimaryKeyMember(mm);
 
                // must be public or persistent
@@ -572,20 +575,21 @@ class AttributedMetaType : MetaType {
             }
          }
 
-         PropertyInfo[] pis = TypeSystem.GetAllProperties(containerType, flags).ToArray();
+         var pis = TypeSystem.GetAllProperties(containerType, flags)
+            .ToArray();
 
          if (pis != null) {
 
             for (int i = 0, n = pis.Length; i < n; i++) {
 
-               PropertyInfo pi = pis[i];
+               var pi = pis[i];
 
-               MetaDataMember mm = new AttributedMetaDataMember(this, pi, this.dataMemberMap.Count, containerCp);
+               var mm = new AttributedMetaDataMember(this, pi, this.dataMemberMap.Count, containerCp);
                ValidatePrimaryKeyMember(mm);
 
                // must be public or persistent
 
-               bool isPublic =
+               var isPublic =
                   (pi.CanRead && pi.GetGetMethod(false) != null)
                      && (!pi.CanWrite || pi.GetSetMethod(false) != null);
 
@@ -595,11 +599,11 @@ class AttributedMetaType : MetaType {
 
                if (!mm.IsPersistent) {
 
-                  ComplexPropertyAttribute cpAttr = (ComplexPropertyAttribute)Attribute.GetCustomAttribute(pi, typeof(ComplexPropertyAttribute));
+                  var cpAttr = (ComplexPropertyAttribute)Attribute.GetCustomAttribute(pi, typeof(ComplexPropertyAttribute));
 
                   if (cpAttr != null) {
 
-                     Type complexPropType = pi.PropertyType;
+                     var complexPropType = pi.PropertyType;
 
                      if (!complexPropType.IsClass) {
                         throw new InvalidOperationException("A persistent complex property must be a class.");
@@ -676,7 +680,7 @@ class AttributedMetaType : MetaType {
 
       if (mi == null) throw Error.ArgumentNull(nameof(mi));
 
-      MetaDataMember mm = null;
+      var mm = default(MetaDataMember);
 
       if (this.dataMemberMap.TryGetValue(new MetaPosition(mi), out mm)) {
          return mm;
@@ -707,9 +711,9 @@ class AttributedMetaType : MetaType {
 
       if (this.InheritanceRoot.Discriminator.Type == typeof(string)) {
 
-         string skey = (string)key;
+         var skey = (string)key;
 
-         foreach (MetaType mt in this.InheritanceRoot.InheritanceTypes) {
+         foreach (var mt in this.InheritanceRoot.InheritanceTypes) {
 
             if (String.Compare((string)mt.InheritanceCode, skey, StringComparison.OrdinalIgnoreCase) == 0) {
                return mt;
@@ -718,7 +722,7 @@ class AttributedMetaType : MetaType {
 
       } else {
 
-         foreach (MetaType mt in this.InheritanceRoot.InheritanceTypes) {
+         foreach (var mt in this.InheritanceRoot.InheritanceTypes) {
             if (Object.Equals(mt.InheritanceCode, key)) {
                return mt;
             }
@@ -898,7 +902,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
 
       if (this.attr != null && this.attr.Storage != null) {
 
-         MemberInfo[] mis = mi.DeclaringType.GetMember(this.attr.Storage, BindingFlags.Instance | BindingFlags.NonPublic);
+         var mis = mi.DeclaringType.GetMember(this.attr.Storage, BindingFlags.Instance | BindingFlags.NonPublic);
 
          if (mis == null || mis.Length != 1) {
             throw Error.BadStorageProperty(this.attr.Storage, mi.DeclaringType, mi.Name);
@@ -907,7 +911,9 @@ sealed class AttributedMetaDataMember : MetaDataMember {
          this.StorageMember = mis[0];
       }
 
-      Type storageType = (this.StorageMember != null) ? TypeSystem.GetMemberType(this.StorageMember) : this.Type;
+      var storageType = (this.StorageMember != null) ?
+         TypeSystem.GetMemberType(this.StorageMember)
+         : this.Type;
 
       if (attrColumn != null
          && attrColumn.IsDbGenerated
@@ -946,14 +952,13 @@ sealed class AttributedMetaDataMember : MetaDataMember {
 
    static MetaAccessor MakeMemberAccessor(Type accessorType, MemberInfo mi, MetaAccessor storage) {
 
-      FieldInfo fi = mi as FieldInfo;
-
-      MetaAccessor acc = null;
+      var fi = mi as FieldInfo;
+      var acc = default(MetaAccessor);
 
       if (fi != null) {
          acc = FieldAccessor.Create(accessorType, fi);
       } else {
-         PropertyInfo pi = (PropertyInfo)mi;
+         var pi = (PropertyInfo)mi;
          acc = PropertyAccessor.Create(accessorType, pi, storage);
       }
 
@@ -1056,7 +1061,7 @@ class MetaComplexProperty {
       var cpStack = new Stack<MetaComplexProperty>();
       cpStack.Push(this);
 
-      MetaComplexProperty current = this;
+      var current = this;
 
       while (current.Parent != null) {
          cpStack.Push(current.Parent);
@@ -1067,7 +1072,7 @@ class MetaComplexProperty {
 
       while (cpStack.Count > 0) {
 
-         MetaComplexProperty cp = cpStack.Pop();
+         var cp = cpStack.Pop();
          obj = cp.MemberAccessor.GetBoxedValue(obj);
 
          if (obj == null) {
@@ -1113,7 +1118,9 @@ class AttributedMetaAssociation : MetaAssociationImpl {
       this.ThisMember = member;
       this.IsMany = TypeSystem.IsSequenceType(this.ThisMember.Type);
 
-      Type ot = (this.IsMany) ? TypeSystem.GetElementType(this.ThisMember.Type) : this.ThisMember.Type;
+      var ot = (this.IsMany) ?
+         TypeSystem.GetElementType(this.ThisMember.Type)
+         : this.ThisMember.Type;
 
       this.OtherType = this.ThisMember.DeclaringType.Model.GetMetaType(ot, ((AttributedMetaTable)this.ThisMember.DeclaringType.Table).Configuration);
       this.ThisKey = (attr.ThisKey != null) ? MakeKeys(this.ThisMember.DeclaringType, attr.ThisKey) : this.ThisMember.DeclaringType.IdentityMembers;
@@ -1128,7 +1135,7 @@ class AttributedMetaAssociation : MetaAssociationImpl {
 
       // if any key members are not nullable, the association is not nullable
 
-      foreach (MetaDataMember mm in this.ThisKey) {
+      foreach (var mm in this.ThisKey) {
 
          if (!mm.CanBeNull) {
             this.IsNullable = false;
@@ -1158,9 +1165,9 @@ class AttributedMetaAssociation : MetaAssociationImpl {
 
       // determine reverse reference member
 
-      foreach (MetaDataMember omm in this.OtherType.PersistentDataMembers) {
+      foreach (var omm in this.OtherType.PersistentDataMembers) {
 
-         AssociationAttribute oattr = (AssociationAttribute)Attribute.GetCustomAttribute(omm.Member, typeof(AssociationAttribute));
+         var oattr = (AssociationAttribute)Attribute.GetCustomAttribute(omm.Member, typeof(AssociationAttribute));
 
          if (oattr == null
             || omm == this.ThisMember) {
@@ -1175,8 +1182,10 @@ class AttributedMetaAssociation : MetaAssociationImpl {
             break;
          }
 
-         bool otherMemberIsMany = TypeSystem.IsSequenceType(omm.Type);
-         Type otherMemberType = (otherMemberIsMany) ? TypeSystem.GetElementType(omm.Type) : omm.Type;
+         var otherMemberIsMany = TypeSystem.IsSequenceType(omm.Type);
+         var otherMemberType = (otherMemberIsMany) ?
+            TypeSystem.GetElementType(omm.Type)
+            : omm.Type;
 
          if (member.DeclaringType.Type == otherMemberType) {
             this.OtherMember = omm;
@@ -1197,15 +1206,14 @@ abstract class MetaAssociationImpl : MetaAssociation {
 
    protected static ReadOnlyCollection<MetaDataMember> MakeKeys(MetaType mtype, string keyFields) {
 
-      string[] names = keyFields.Split(keySeparators);
-
+      var names = keyFields.Split(keySeparators);
       var members = new MetaDataMember[names.Length];
 
       for (int i = 0; i < names.Length; i++) {
 
          names[i] = names[i].Trim();
 
-         MemberInfo[] rmis = mtype.Type.GetMember(names[i], BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+         var rmis = mtype.Type.GetMember(names[i], BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
          if (rmis == null || rmis.Length != 1) {
             throw Error.BadKeyMember(names[i], keyFields, mtype.Name);
@@ -1363,7 +1371,7 @@ sealed class UnmappedType : MetaType {
 
                var map = new Dictionary<object, MetaDataMember>();
 
-               foreach (MetaDataMember mm in this.dataMembers) {
+               foreach (var mm in this.dataMembers) {
                   map.Add(InheritanceRules.DistinguishedMemberName(mm.Member), mm);
                }
 
@@ -1372,10 +1380,9 @@ sealed class UnmappedType : MetaType {
          }
       }
 
-      object dn = InheritanceRules.DistinguishedMemberName(mi);
+      var dn = InheritanceRules.DistinguishedMemberName(mi);
 
-      MetaDataMember mdm;
-      this.dataMemberMap.TryGetValue(dn, out mdm);
+      this.dataMemberMap.TryGetValue(dn, out var mdm);
 
       return mdm;
    }
@@ -1387,18 +1394,18 @@ sealed class UnmappedType : MetaType {
             if (this.dataMembers == null) {
 
                var dMembers = new List<MetaDataMember>();
-               int ordinal = 0;
+               var ordinal = 0;
 
-               BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+               var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 
-               foreach (FieldInfo fi in this.Type.GetFields(flags)) {
-                  MetaDataMember mm = new UnmappedDataMember(this, fi, ordinal);
+               foreach (var fi in this.Type.GetFields(flags)) {
+                  var mm = new UnmappedDataMember(this, fi, ordinal);
                   dMembers.Add(mm);
                   ordinal++;
                }
 
-               foreach (PropertyInfo pi in this.Type.GetProperties(flags)) {
-                  MetaDataMember mm = new UnmappedDataMember(this, pi, ordinal);
+               foreach (var pi in this.Type.GetProperties(flags)) {
+                  var mm = new UnmappedDataMember(this, pi, ordinal);
                   dMembers.Add(mm);
                   ordinal++;
                }
@@ -1501,8 +1508,8 @@ sealed class UnmappedDataMember : MetaDataMember {
 
    static MetaAccessor MakeMemberAccessor(Type accessorType, MemberInfo mi) {
 
-      FieldInfo fi = mi as FieldInfo;
-      MetaAccessor acc = null;
+      var fi = mi as FieldInfo;
+      MetaAccessor acc;
 
       if (fi != null) {
          acc = FieldAccessor.Create(accessorType, fi);
@@ -1526,7 +1533,7 @@ static class InheritanceBaseFinder {
       var clrType = derivedType.Type; // start
       var rootClrType = derivedType.InheritanceRoot.Type; // end
       var metaTable = derivedType.Table;
-      MetaType metaType = null;
+      var metaType = default(MetaType);
 
       while (true) {
 
@@ -1565,8 +1572,8 @@ static class InheritanceRules {
 
    internal static object DistinguishedMemberName(MemberInfo mi) {
 
-      PropertyInfo pi = mi as PropertyInfo;
-      FieldInfo fi = mi as FieldInfo;
+      var pi = mi as PropertyInfo;
+      var fi = mi as FieldInfo;
 
       if (fi != null) {
 
@@ -1576,7 +1583,7 @@ static class InheritanceRules {
 
       } else if (pi != null) {
 
-         MethodInfo meth = null;
+         var meth = default(MethodInfo);
 
          if (pi.CanRead) {
             meth = pi.GetGetMethod();
@@ -1586,7 +1593,7 @@ static class InheritanceRules {
             meth = pi.GetSetMethod();
          }
 
-         bool isVirtual = meth != null && meth.IsVirtual;
+         var isVirtual = meth != null && meth.IsVirtual;
 
          // Human readable variant:
          // return "pi:" + mi.Name + ":" + (isVirtual ? "virtual" : mi.DeclaringType.ToString());

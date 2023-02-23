@@ -78,25 +78,25 @@ abstract class Mapper {
 
    void ReadMapping(IDataRecord record, Node rootNode) {
 
-      MapGroup[] groups =
+      var groups =
          (from i in Enumerable.Range(0, record.FieldCount)
-            let columnName = record.GetName(i)
-            let path = columnName.Split(_pathSeparator)
-            let property = (path.Length == 1) ? columnName : path[path.Length - 1]
-            let assoc = (path.Length == 1) ? "" : path[path.Length - 2]
-            let parent = (path.Length <= 2) ? "" : path[path.Length - 3]
-            let propertyInfo = new { ColumnOrdinal = i, PropertyName = property }
-            group propertyInfo by new { depth = path.Length - 1, parent, assoc } into t
-            orderby t.Key.depth, t.Key.parent, t.Key.assoc
-            select new MapGroup {
-               Depth = t.Key.depth,
-               Name = t.Key.assoc,
-               Parent = t.Key.parent,
-               Properties = t.ToDictionary(p => p.ColumnOrdinal, p => p.PropertyName)
-            }
-         ).ToArray();
+          let columnName = record.GetName(i)
+          let path = columnName.Split(_pathSeparator)
+          let property = (path.Length == 1) ? columnName : path[path.Length - 1]
+          let assoc = (path.Length == 1) ? "" : path[path.Length - 2]
+          let parent = (path.Length <= 2) ? "" : path[path.Length - 3]
+          let propertyInfo = new { ColumnOrdinal = i, PropertyName = property }
+          group propertyInfo by new { depth = path.Length - 1, parent, assoc } into t
+          orderby t.Key.depth, t.Key.parent, t.Key.assoc
+          select new MapGroup {
+             Depth = t.Key.depth,
+             Name = t.Key.assoc,
+             Parent = t.Key.parent,
+             Properties = t.ToDictionary(p => p.ColumnOrdinal, p => p.PropertyName)
+          })
+         .ToArray();
 
-      MapGroup topGroup = groups.Where(m => m.Depth == 0).SingleOrDefault()
+      var topGroup = groups.Where(m => m.Depth == 0).SingleOrDefault()
          ?? new MapGroup { Name = "", Parent = "", Properties = new Dictionary<int, string>() };
 
       ReadMapping(record, groups, topGroup, rootNode);
@@ -109,9 +109,9 @@ abstract class Mapper {
 
       foreach (var pair in currentGroup.Properties) {
 
-         string propertyName = pair.Value;
-         int columnOrdinal = pair.Key;
-         Node property = CreateSimpleProperty(instance, propertyName, columnOrdinal);
+         var propertyName = pair.Value;
+         var columnOrdinal = pair.Key;
+         var property = CreateSimpleProperty(instance, propertyName, columnOrdinal);
 
          if (property != null) {
             property.Container = instance;
@@ -119,9 +119,7 @@ abstract class Mapper {
             continue;
          }
 
-         uint valueAsNumber;
-
-         if (UInt32.TryParse(propertyName, out valueAsNumber)) {
+         if (UInt32.TryParse(propertyName, out var valueAsNumber)) {
             constructorParameters.Add(new MapParam(valueAsNumber, columnOrdinal), null);
          } else {
             unmapped.Add(propertyName, columnOrdinal);
@@ -129,18 +127,17 @@ abstract class Mapper {
          }
       }
 
-      MapGroup[] nextLevels =
-         (from m in groups
-            where m.Depth == currentGroup.Depth + 1 && m.Parent == currentGroup.Name
-            select m).ToArray();
+      var nextLevels = groups
+         .Where(m => m.Depth == currentGroup.Depth + 1 && m.Parent == currentGroup.Name)
+         .ToArray();
 
       var unmappedGroups = new Dictionary<string, MapGroup>();
 
       for (int i = 0; i < nextLevels.Length; i++) {
 
-         MapGroup nextLevel = nextLevels[i];
-         string propertyName = nextLevel.Name;
-         Node property = CreateComplexProperty(instance, propertyName);
+         var nextLevel = nextLevels[i];
+         var propertyName = nextLevel.Name;
+         var property = CreateComplexProperty(instance, propertyName);
 
          if (property != null) {
 
@@ -152,9 +149,7 @@ abstract class Mapper {
             continue;
          }
 
-         uint valueAsNumber;
-
-         if (UInt32.TryParse(propertyName, out valueAsNumber)) {
+         if (UInt32.TryParse(propertyName, out var valueAsNumber)) {
             constructorParameters.Add(new MapParam(valueAsNumber, nextLevel), null);
          } else {
             unmappedGroups.Add(propertyName, nextLevel);
@@ -165,13 +160,13 @@ abstract class Mapper {
       if (constructorParameters.Count > 0) {
 
          instance.Constructor = ChooseConstructor(GetConstructors(instance), instance, constructorParameters.Count);
-         ParameterInfo[] parameters = instance.Constructor.GetParameters();
+         var parameters = instance.Constructor.GetParameters();
 
          int i = 0;
 
          foreach (var pair in constructorParameters.OrderBy(p => p.Key.ParameterIndex)) {
 
-            ParameterInfo param = parameters[i];
+            var param = parameters[i];
             Node paramNode;
 
             if (pair.Key.ColumnOrdinal.HasValue) {
@@ -211,36 +206,32 @@ abstract class Mapper {
             && (constructors = GetConstructors(instance)).Length == 1
             && (parameters = constructors[0].GetParameters()).Length > 0) {
 
-            foreach (ParameterInfo param in parameters) {
+            foreach (var param in parameters) {
 
-               uint paramIndex = (uint)param.Position;
+               var paramIndex = (uint)param.Position;
 
-               int columnOrdinal;
+               if (unmapped.TryGetValue(param.Name, out var columnOrdinal)) {
 
-               if (unmapped.TryGetValue(param.Name, out columnOrdinal)) {
-
-                  Node paramNode = CreateParameterNode(columnOrdinal, param);
+                  var paramNode = CreateParameterNode(columnOrdinal, param);
                   instance.ConstructorParameters.Add(paramIndex, paramNode);
                   continue;
                }
 
-               Node property = instance.Properties
+               var property = instance.Properties
                   .FirstOrDefault(p => !p.IsComplex && p.PropertyName == param.Name);
 
                if (property != null) {
 
-                  Node paramNode = CreateParameterNode(property.ColumnOrdinal, param);
+                  var paramNode = CreateParameterNode(property.ColumnOrdinal, param);
 
                   instance.Properties.Remove(property);
                   instance.ConstructorParameters.Add(paramIndex, paramNode);
                   continue;
                }
 
-               MapGroup group;
+               if (unmappedGroups.TryGetValue(param.Name, out var group)) {
 
-               if (unmappedGroups.TryGetValue(param.Name, out group)) {
-
-                  Node paramNode = CreateParameterNode(param);
+                  var paramNode = CreateParameterNode(param);
                   ReadMapping(record, groups, group, paramNode);
 
                   instance.ConstructorParameters.Add(paramIndex, paramNode);
@@ -273,9 +264,11 @@ abstract class Mapper {
                   return true;
                }
 
-               string[] reversedBasePath = p.Key.Take(p.Key.Length - 1).Reverse().ToArray();
+               var reversedBasePath = p.Key.Take(p.Key.Length - 1)
+                  .Reverse()
+                  .ToArray();
 
-               Node container = instance;
+               var container = instance;
 
                for (int i = 0; i < reversedBasePath.Length; i++) {
 
@@ -293,10 +286,9 @@ abstract class Mapper {
          for (int i = 0; i < includes.Length; i++) {
 
             var pair = includes[i];
+            var name = pair.Key[pair.Key.Length - 1];
 
-            string name = pair.Key[pair.Key.Length - 1];
-
-            CollectionNode collection = CreateCollectionNode(instance, name);
+            var collection = CreateCollectionNode(instance, name);
 
             if (collection != null) {
 
@@ -314,11 +306,9 @@ abstract class Mapper {
 
    public object Map(IDataRecord record) {
 
-      Node node = GetRootNode(record);
-
-      MappingContext context = CreateMappingContext();
-
-      object instance = node.Create(record, context);
+      var node = GetRootNode(record);
+      var context = CreateMappingContext();
+      var instance = node.Create(record, context);
 
       node.Load(ref instance, record, context);
 
@@ -327,7 +317,7 @@ abstract class Mapper {
 
    public void Load(ref object instance, IDataRecord record) {
 
-      Node node = GetRootNode(record);
+      var node = GetRootNode(record);
 
       node.Load(ref instance, record, CreateMappingContext());
    }
@@ -365,7 +355,7 @@ abstract class Mapper {
 
    static ConstructorInfo[] GetConstructors(Node node) {
 
-      ConstructorInfo[] constructors = node
+      var constructors = node
          .GetConstructors(BindingFlags.Public | BindingFlags.Instance);
 
       return constructors;
@@ -503,7 +493,7 @@ abstract class Node {
          return null;
       }
 
-      object value = Create(record, context);
+      var value = Create(record, context);
       Load(ref value, record, context);
 
       return value;
@@ -527,8 +517,8 @@ abstract class Node {
 
    protected virtual object MapSimple(IDataRecord record, MappingContext context) {
 
-      bool isNull = record.IsDBNull(this.ColumnOrdinal);
-      object value = (isNull) ? null : record.GetValue(this.ColumnOrdinal);
+      var isNull = record.IsDBNull(this.ColumnOrdinal);
+      var value = (isNull) ? null : record.GetValue(this.ColumnOrdinal);
 
       return value;
    }
@@ -539,7 +529,7 @@ abstract class Node {
 
       for (int i = 0; i < this.Properties.Count; i++) {
 
-         Node childNode = this.Properties[i];
+         var childNode = this.Properties[i];
 
          if (!childNode.IsComplex
             || childNode.HasConstructorParameters) {
@@ -548,7 +538,7 @@ abstract class Node {
             continue;
          }
 
-         object currentValue = childNode.Get(ref instance);
+         var currentValue = childNode.Get(ref instance);
 
          if (currentValue != null) {
             childNode.Load(ref currentValue, record, context);
@@ -564,13 +554,13 @@ abstract class Node {
             // we close the data reader to allow for collections to be loaded
             // using the same connection (for providers that do not support MARS)
 
-            IDataReader reader = record as IDataReader;
+            var reader = record as IDataReader;
             reader?.Close();
          }
 
          for (int i = 0; i < this.Collections.Count; i++) {
 
-            CollectionNode collectionNode = this.Collections[i];
+            var collectionNode = this.Collections[i];
             collectionNode.Load(ref instance, context);
          }
       }
@@ -578,7 +568,7 @@ abstract class Node {
 
    void Read(ref object instance, IDataRecord record, MappingContext context) {
 
-      object value = Map(record, context);
+      var value = Map(record, context);
       Set(ref instance, value, context);
    }
 
@@ -593,12 +583,12 @@ abstract class CollectionNode {
 
    public void Load(ref object instance, MappingContext context) {
 
-      IEnumerable collection = GetOrCreate(ref instance, context);
-      CollectionLoader loader = context.ManyLoaders[this];
+      var collection = GetOrCreate(ref instance, context);
+      var loader = context.ManyLoaders[this];
 
-      IEnumerable elements = loader.Load(instance, loader.State);
+      var elements = loader.Load(instance, loader.State);
 
-      foreach (object element in elements) {
+      foreach (var element in elements) {
          Add(collection, element, context);
       }
    }
