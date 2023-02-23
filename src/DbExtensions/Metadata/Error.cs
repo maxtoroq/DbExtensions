@@ -17,7 +17,7 @@
 
 using System;
 
-namespace DbExtensions.Metadata {
+namespace DbExtensions.Metadata;
 
    using static String;
 
@@ -163,4 +163,3 @@ namespace DbExtensions.Metadata {
          return new InvalidOperationException(Format("Class member {0}.{1} is unmapped.", p0, p1));
       }
    }
-}

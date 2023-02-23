@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace DbExtensions.Metadata {
+namespace DbExtensions.Metadata;
 
    /// <summary>
    /// Represents a source for mapping information.
@@ -129,4 +129,3 @@ namespace DbExtensions.Metadata {
          return new AttributedMetaModel(this, dataContextType);
       }
    }
-}

@@ -21,7 +21,7 @@ using System.Globalization;
 using System.Linq;
 using System.Collections;
 
-namespace DbExtensions {
+namespace DbExtensions;
 
    partial class SqlBuilder {
 
@@ -1233,4 +1233,3 @@ namespace DbExtensions {
       List<TSource> ToList();
       TSqlSet Where(string predicate, params object[] parameters);
    }
-}

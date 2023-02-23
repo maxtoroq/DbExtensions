@@ -20,7 +20,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
-namespace DbExtensions.Metadata {
+namespace DbExtensions.Metadata;
 
    delegate V DGet<T, V>(T t);
    delegate void DSet<T, V>(T t, V v);
@@ -201,4 +201,3 @@ namespace DbExtensions.Metadata {
          }
       }
    }
-}

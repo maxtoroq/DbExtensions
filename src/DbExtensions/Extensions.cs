@@ -16,7 +16,7 @@ using System;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
-namespace DbExtensions {
+namespace DbExtensions;
 
    /// <summary>
    /// Provides extension methods for common ADO.NET objects.
@@ -383,4 +383,3 @@ namespace DbExtensions {
          return (record.IsDBNull(i)) ? null : record.GetValue(i);
       }
    }
-}

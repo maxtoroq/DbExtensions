@@ -24,7 +24,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 
-namespace DbExtensions.Metadata {
+namespace DbExtensions.Metadata;
 
    class AttributedMetaModel : MetaModel {
 
@@ -1610,4 +1610,3 @@ namespace DbExtensions.Metadata {
          return DistinguishedMemberName(mi1).Equals(DistinguishedMemberName(mi2));
       }
    }
-}

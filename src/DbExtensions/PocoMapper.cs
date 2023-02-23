@@ -21,7 +21,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace DbExtensions {
+namespace DbExtensions;
 
    partial class Database {
 
@@ -478,4 +478,3 @@ namespace DbExtensions {
          this.addMethod.Invoke(collection, new[] { element });
       }
    }
-}

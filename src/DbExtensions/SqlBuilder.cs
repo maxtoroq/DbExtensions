@@ -22,7 +22,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace DbExtensions {
+namespace DbExtensions;
 
    /// <summary>
    /// Represents a mutable SQL string.
@@ -1099,4 +1099,3 @@ namespace DbExtensions {
          this.values = arr;
       }
    }
-}

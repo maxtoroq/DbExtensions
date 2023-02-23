@@ -20,7 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace DbExtensions.Metadata {
+namespace DbExtensions.Metadata;
 
    static class TypeSystem {
 
@@ -259,4 +259,3 @@ namespace DbExtensions.Metadata {
          return !AreEqual(x, y);
       }
    }
-}

@@ -17,7 +17,7 @@
 
 using System;
 
-namespace DbExtensions.Metadata {
+namespace DbExtensions.Metadata;
 
    /// <summary>
    /// Shared rules governing the mapping system.
@@ -101,4 +101,3 @@ namespace DbExtensions.Metadata {
          return false;
       }
    }
-}

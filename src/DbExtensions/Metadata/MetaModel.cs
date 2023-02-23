@@ -21,7 +21,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace DbExtensions.Metadata {
+namespace DbExtensions.Metadata;
 
    /// <summary>
    /// A MetaModel is an abstraction representing the mapping between a database and domain objects
@@ -636,4 +636,3 @@ namespace DbExtensions.Metadata {
       [SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "0#", Justification = "Unknown reason.")]
       public abstract void SetValue(ref TEntity instance, TMember value);
    }
-}

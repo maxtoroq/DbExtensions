@@ -23,7 +23,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace DbExtensions {
+namespace DbExtensions;
 
    using Metadata;
 
@@ -1797,4 +1797,3 @@ namespace DbExtensions {
       void UpdateRange(IEnumerable<object> entities);
       void UpdateRange(params object[] entities);
    }
-}

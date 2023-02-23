@@ -18,7 +18,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace DbExtensions {
+namespace DbExtensions;
 
    [AttributeUsage(AttributeTargets.Class)]
    sealed class DatabaseAttribute : Attribute {
@@ -285,4 +285,3 @@ namespace DbExtensions {
          this.Separator = other.Separator;
       }
    }
-}

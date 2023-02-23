@@ -19,7 +19,7 @@ using System.Data;
 using System.Dynamic;
 using System.Reflection;
 
-namespace DbExtensions {
+namespace DbExtensions;
 
    partial class Database {
 
@@ -182,4 +182,3 @@ namespace DbExtensions {
          throw new InvalidOperationException("Cannot use constructor mapping, by using numeric column names, unless you specify the type of the object you want to map to.");
       }
    }
-}

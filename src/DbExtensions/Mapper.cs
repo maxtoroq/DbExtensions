@@ -22,7 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace DbExtensions {
+namespace DbExtensions;
 
    partial class SqlSet {
 
@@ -620,4 +620,3 @@ namespace DbExtensions {
       public Func<object, object, IEnumerable> Load;
       public object State;
    }
-}

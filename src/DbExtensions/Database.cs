@@ -28,7 +28,7 @@ using System.Text;
 using System.Transactions;
 using IsolationLevel = System.Data.IsolationLevel;
 
-namespace DbExtensions {
+namespace DbExtensions;
 
    /// <summary>
    /// Provides simple data access using <see cref="SqlSet"/>, <see cref="SqlBuilder"/> and <see cref="SqlTable&lt;TEntity>"/>.
@@ -1067,4 +1067,3 @@ namespace DbExtensions {
 
       #endregion
    }
-}
