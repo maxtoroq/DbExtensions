@@ -129,8 +129,7 @@ public partial class Database : IDisposable {
 
    void Initialize(string providerInvariantName) {
 
-      providerInvariantName = providerInvariantName
-         ?? this.Connection.GetType().Namespace;
+      providerInvariantName ??= this.Connection.GetType().Namespace;
 
       this.Configuration = new DatabaseConfiguration(
          providerInvariantName
@@ -144,7 +143,7 @@ public partial class Database : IDisposable {
 
    static IDbConnection CreateConnection(string connectionString, string callerProviderInvariantName, out string providerInvariantName) {
 
-      connectionString = connectionString ?? DatabaseConfiguration.DefaultConnectionString;
+      connectionString ??= DatabaseConfiguration.DefaultConnectionString;
       providerInvariantName = callerProviderInvariantName ?? DatabaseConfiguration.DefaultProviderInvariantName;
 
       if (connectionString == null) {
@@ -174,9 +173,8 @@ public partial class Database : IDisposable {
 
    DbCommandBuilder CreateCommandBuilder(string providerInvariantName) {
 
-      var dbConn = this.Connection as DbConnection;
-
-      var factory = ((dbConn != null) ? DbProviderFactories.GetFactory(dbConn) : null)
+      var factory = ((this.Connection is DbConnection dbConn) ?
+         DbProviderFactories.GetFactory(dbConn) : null)
          ?? GetProviderFactory(providerInvariantName);
 
       return factory.CreateCommandBuilder();

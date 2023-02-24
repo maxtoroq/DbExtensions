@@ -436,47 +436,26 @@ abstract class Node {
    public Node Container { get; internal set; }
    public ConstructorInfo Constructor { get; internal set; }
 
-   public Dictionary<uint, Node> ConstructorParameters {
-      get {
-         return _constructorParameters
-            ?? (_constructorParameters = new Dictionary<uint, Node>());
-      }
-   }
+   public Dictionary<uint, Node> ConstructorParameters =>
+      _constructorParameters ??= new Dictionary<uint, Node>();
 
-   public List<Node> Properties {
-      get {
-         return _properties
-            ?? (_properties = new List<Node>());
-      }
-   }
+   public List<Node> Properties =>
+      _properties ??= new List<Node>();
 
-   public List<CollectionNode> Collections {
-      get {
-         return _collections
-            ?? (_collections = new List<CollectionNode>());
-      }
-   }
+   public List<CollectionNode> Collections =>
+      _collections ??= new List<CollectionNode>();
 
-   public bool HasConstructorParameters {
-      get {
-         return _constructorParameters != null
-            && _constructorParameters.Count > 0;
-      }
-   }
+   public bool HasConstructorParameters =>
+      _constructorParameters != null
+         && _constructorParameters.Count > 0;
 
-   public bool HasProperties {
-      get {
-         return _properties != null
-            && _properties.Count > 0;
-      }
-   }
+   public bool HasProperties =>
+      _properties != null
+         && _properties.Count > 0;
 
-   public bool HasCollections {
-      get {
-         return _collections != null
-            && _collections.Count > 0;
-      }
-   }
+   public bool HasCollections =>
+      _collections != null
+         && _collections.Count > 0;
 
    public object Map(IDataRecord record, MappingContext context) {
 

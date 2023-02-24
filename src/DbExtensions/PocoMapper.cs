@@ -81,9 +81,7 @@ class PocoMapper : Mapper {
 
    readonly Type _type;
 
-   protected override bool CanUseConstructorMapping {
-      get { return true; }
-   }
+   protected override bool CanUseConstructorMapping => true;
 
    public PocoMapper(Type type) {
 
@@ -173,27 +171,13 @@ class PocoNode : Node {
    public Func<PocoNode, object, object> ConvertFunction;
    public ParameterInfo Parameter;
 
-   public override bool IsComplex {
-      get { return _isComplex; }
-   }
+   public override bool IsComplex => _isComplex;
 
-   public override string PropertyName {
-      get {
-         if (this.Property == null) {
-            return null;
-         }
+   public override string PropertyName => this.Property?.Name;
 
-         return this.Property.Name;
-      }
-   }
+   public override int ColumnOrdinal => _columnOrdinal;
 
-   public override int ColumnOrdinal {
-      get { return _columnOrdinal; }
-   }
-
-   public override string TypeName {
-      get { return UnderlyingType.FullName; }
-   }
+   public override string TypeName => UnderlyingType.FullName;
 
    public static PocoNode Root(Type type) {
 

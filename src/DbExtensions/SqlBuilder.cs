@@ -142,9 +142,7 @@ public partial class SqlBuilder {
 
       var sql = new SqlBuilder();
 
-      if (separator == null) {
-         separator = "";
-      }
+      separator ??= "";
 
       using (var enumerator = values.GetEnumerator()) {
 
@@ -328,9 +326,7 @@ public partial class SqlBuilder {
          this.ParameterValues.Add(obj);
       }
 
-      if (format == null) {
-         format = String.Join(" ", Enumerable.Range(0, fargs.Count).Select(i => Placeholder(i)));
-      }
+      format ??= String.Join(" ", Enumerable.Range(0, fargs.Count).Select(i => Placeholder(i)));
 
       this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, fargs.Cast<object>().ToArray());
 
@@ -534,9 +530,7 @@ public partial class SqlBuilder {
          formatEnd = formatSplit[1];
       }
 
-      if (parametersFactory == null) {
-         parametersFactory = (item) => null;
-      }
+      parametersFactory ??= (item) => null;
 
       var currentSeparator = this.NextSeparator ?? this.CurrentSeparator;
 
@@ -1074,7 +1068,7 @@ public static partial class SQL {
 
 class SqlList {
 
-   object[] _values;
+   readonly object[] _values;
 
    public object this[int index] => _values[index];
 

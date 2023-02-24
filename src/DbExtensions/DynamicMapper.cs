@@ -60,9 +60,7 @@ partial class SqlSet {
 
 class DynamicMapper : Mapper {
 
-   protected override bool CanUseConstructorMapping {
-      get { return false; }
-   }
+   protected override bool CanUseConstructorMapping => false;
 
    protected override Node CreateRootNode() {
       return DynamicNode.Root();
@@ -98,21 +96,13 @@ class DynamicNode : Node {
    bool _isComplex;
    int _columnOrdinal;
 
-   public override bool IsComplex {
-      get { return _isComplex; }
-   }
+   public override bool IsComplex => _isComplex;
 
-   public override string PropertyName {
-      get { return _propertyName; }
-   }
+   public override string PropertyName => _propertyName;
 
-   public override int ColumnOrdinal {
-      get { return _columnOrdinal; }
-   }
+   public override int ColumnOrdinal => _columnOrdinal;
 
-   public override string TypeName {
-      get { return _typeName; }
-   }
+   public override string TypeName => _typeName;
 
    public static DynamicNode Root() {
 

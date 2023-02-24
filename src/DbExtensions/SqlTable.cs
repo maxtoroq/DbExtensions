@@ -355,16 +355,10 @@ sealed partial class DatabaseConfiguration {
 
    public string DefaultComplexPropertySeparator { get; set; }
 
-   internal MetaTableConfiguration DefaultMetaTableConfig {
-      get {
-         if (_defaultMetaTableConfig == null) {
-            _defaultMetaTableConfig = new MetaTableConfiguration {
-               DefaultComplexPropertySeparator = this.DefaultComplexPropertySeparator
-            };
-         }
-         return _defaultMetaTableConfig;
-      }
-   }
+   internal MetaTableConfiguration DefaultMetaTableConfig =>
+      _defaultMetaTableConfig ??= new MetaTableConfiguration {
+         DefaultComplexPropertySeparator = this.DefaultComplexPropertySeparator
+      };
 
    internal void SetModel(Func<MetaModel> modelFn) {
       _model = new Lazy<MetaModel>(modelFn);
@@ -393,9 +387,7 @@ public sealed class SqlTable : SqlSet, ISqlTable {
    /// Gets the name of the table.
    /// </summary>
 
-   public string Name {
-      get { return _metaType.Table.TableName; }
-   }
+   public string Name => _metaType.Table.TableName;
 
    /// <summary>
    /// Gets a <see cref="SqlCommandBuilder&lt;Object>"/> object for the current table.
@@ -551,9 +543,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
    /// <inheritdoc cref="SqlTable.Name"/>
 
-   public string Name {
-      get { return _metaType.Table.TableName; }
-   }
+   public string Name => _metaType.Table.TableName;
 
    /// <summary>
    /// Gets a <see cref="SqlCommandBuilder&lt;TEntity>"/> object for the current table.
@@ -1391,17 +1381,11 @@ partial class SqlSet {
 
    MetaType EnsureEntityType(int maxIdMembers = -1) {
 
-      var resultType = this.ResultType;
+      var resultType = this.ResultType
+         ?? throw new InvalidOperationException("The operation is not supported on untyped sets.");
 
-      if (resultType == null) {
-         throw new InvalidOperationException("The operation is not supported on untyped sets.");
-      }
-
-      var metaType = _db.Configuration.GetMetaType(resultType);
-
-      if (metaType == null) {
-         throw new InvalidOperationException($"Mapping information was not found for '{resultType.FullName}'.");
-      }
+      var metaType = _db.Configuration.GetMetaType(resultType)
+         ?? throw new InvalidOperationException($"Mapping information was not found for '{resultType.FullName}'.");
 
       SqlTable.EnsureEntityType(metaType);
 
@@ -1513,15 +1497,11 @@ partial class SqlSet {
 
       if (path == null) throw new ArgumentNullException(nameof(path));
 
-      if (this.ResultType == null) {
-         throw new InvalidOperationException("Include operation is not supported on untyped sets.");
-      }
+      var resultType = this.ResultType
+         ?? throw new InvalidOperationException("Include operation is not supported on untyped sets.");
 
-      var metaType = _db.Configuration.GetMetaType(this.ResultType);
-
-      if (metaType == null) {
-         throw new InvalidOperationException($"Mapping information was not found for '{this.ResultType.FullName}'.");
-      }
+      var metaType = _db.Configuration.GetMetaType(resultType)
+         ?? throw new InvalidOperationException($"Mapping information was not found for '{resultType.FullName}'.");
 
       return IncludeImpl.Expand(this, path, metaType);
    }
@@ -1567,7 +1547,7 @@ partial class SqlSet {
          const string leftAlias = "dbex_l";
          const string rightAlias = "dbex_r";
 
-         string rAliasFn(int i) => rightAlias + (i + 1);
+         static string rAliasFn(int i) => rightAlias + (i + 1);
 
          var query = selectBuild(leftAlias);
          var currentType = metaType;

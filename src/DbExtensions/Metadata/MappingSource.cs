@@ -91,9 +91,7 @@ internal abstract class MappingSource {
             return foundModel;
          }
 
-         if (model == null) {
-            model = CreateModel(dataContextType);
-         }
+         model ??= CreateModel(dataContextType);
 
          _secondaryModels.Add(dataContextType, model);
 

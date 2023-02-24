@@ -954,7 +954,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
    static MetaAccessor MakeMemberAccessor(Type accessorType, MemberInfo mi, MetaAccessor storage) {
 
       var fi = mi as FieldInfo;
-      var acc = default(MetaAccessor);
+      MetaAccessor acc;
 
       if (fi != null) {
          acc = FieldAccessor.Create(accessorType, fi);
@@ -1198,7 +1198,7 @@ class AttributedMetaAssociation : MetaAssociationImpl {
 
 abstract class MetaAssociationImpl : MetaAssociation {
 
-   static char[] _keySeparators = new[] { ',' };
+   static readonly char[] _keySeparators = new[] { ',' };
 
    /// <summary>
    /// Given a MetaType and a set of key fields, return the set of MetaDataMembers
@@ -1533,7 +1533,7 @@ static class InheritanceBaseFinder {
       var clrType = derivedType.Type; // start
       var rootClrType = derivedType.InheritanceRoot.Type; // end
       var metaTable = derivedType.Table;
-      var metaType = default(MetaType);
+      MetaType metaType;
 
       while (true) {
 

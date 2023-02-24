@@ -938,7 +938,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
    #region Nested Types
 
-   internal struct SqlBuffer {
+   internal readonly struct SqlBuffer {
 
       public readonly SqlFragment Where;
       public readonly SqlFragment OrderBy;
