@@ -922,16 +922,13 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
    IEnumerator<TResult> _enumerator;
 
    public MappingEnumerable(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter logger = null) {
-      _enumerator = new MappingEnumerable<TResult>.Enumerator(command, mapper, logger);
+      _enumerator = new Enumerator(command, mapper, logger);
    }
 
    public IEnumerator<TResult> GetEnumerator() {
 
-      var e = _enumerator;
-
-      if (e == null) {
-         throw new InvalidOperationException("Cannot enumerate more than once.");
-      }
+      var e = _enumerator
+         ?? throw new InvalidOperationException("Cannot enumerate more than once.");
 
       _enumerator = null;
 
@@ -957,16 +954,17 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
 
       IDataReader _reader;
 
+      public TResult Current { get; private set; }
+
+      object IEnumerator.Current => Current;
+
       public Enumerator(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter logger) {
 
          if (command == null) throw new ArgumentNullException(nameof(command));
          if (mapper == null) throw new ArgumentNullException(nameof(mapper));
 
-         var conn = command.Connection;
-
-         if (conn == null) {
-            throw new ArgumentException("command.Connection cannot be null", nameof(command));
-         }
+         var conn = command.Connection
+            ?? throw new ArgumentException("command.Connection cannot be null", nameof(command));
 
          _prevStateWasClosed = (conn.State == ConnectionState.Closed);
 
@@ -974,10 +972,6 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
          _mapper = mapper;
          _logger = logger;
       }
-
-      public TResult Current { get; private set; }
-
-      object IEnumerator.Current => Current;
 
       public bool MoveNext() {
 
