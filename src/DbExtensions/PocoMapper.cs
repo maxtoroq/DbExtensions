@@ -68,18 +68,18 @@ partial class SqlSet {
 
    IEnumerable PocoMap(bool singleResult) {
 
-      var mapper = this.db.CreatePocoMapper(this.ResultType);
+      var mapper = _db.CreatePocoMapper(this.ResultType);
       mapper.SingleResult = singleResult;
 
       InitializeMapper(mapper);
 
-      return this.db.Map(GetDefiningQuery(clone: false), r => mapper.Map(r));
+      return _db.Map(GetDefiningQuery(clone: false), r => mapper.Map(r));
    }
 }
 
 class PocoMapper : Mapper {
 
-   readonly Type type;
+   readonly Type _type;
 
    protected override bool CanUseConstructorMapping {
       get { return true; }
@@ -89,11 +89,11 @@ class PocoMapper : Mapper {
 
       if (type == null) throw new ArgumentNullException(nameof(type));
 
-      this.type = type;
+      _type = type;
    }
 
    protected override Node CreateRootNode() {
-      return PocoNode.Root(this.type);
+      return PocoNode.Root(_type);
    }
 
    protected override Node CreateSimpleProperty(Node container, string propertyName, int columnOrdinal) {
@@ -167,14 +167,14 @@ class PocoNode : Node {
    readonly PropertyInfo Property;
    readonly MethodInfo Setter;
 
-   bool _IsComplex;
-   int _ColumnOrdinal;
+   bool _isComplex;
+   int _columnOrdinal;
 
    public Func<PocoNode, object, object> ConvertFunction;
    public ParameterInfo Parameter;
 
    public override bool IsComplex {
-      get { return _IsComplex; }
+      get { return _isComplex; }
    }
 
    public override string PropertyName {
@@ -188,7 +188,7 @@ class PocoNode : Node {
    }
 
    public override int ColumnOrdinal {
-      get { return _ColumnOrdinal; }
+      get { return _columnOrdinal; }
    }
 
    public override string TypeName {
@@ -198,7 +198,7 @@ class PocoNode : Node {
    public static PocoNode Root(Type type) {
 
       var node = new PocoNode(type) {
-         _IsComplex = true,
+         _isComplex = true,
       };
 
       return node;
@@ -215,7 +215,7 @@ class PocoNode : Node {
    public static PocoNode Complex(PropertyInfo property) {
 
       var node = new PocoNode(property) {
-         _IsComplex = true,
+         _isComplex = true,
       };
 
       return node;
@@ -224,7 +224,7 @@ class PocoNode : Node {
    public static PocoNode Simple(int columnOrdinal, PropertyInfo property) {
 
       var node = new PocoNode(property) {
-         _ColumnOrdinal = columnOrdinal
+         _columnOrdinal = columnOrdinal
       };
 
       return node;
@@ -233,7 +233,7 @@ class PocoNode : Node {
    public static PocoNode Simple(int columnOrdinal, ParameterInfo parameter) {
 
       var node = new PocoNode(parameter.ParameterType) {
-         _ColumnOrdinal = columnOrdinal,
+         _columnOrdinal = columnOrdinal,
          Parameter = parameter
       };
 
@@ -321,7 +321,7 @@ class PocoNode : Node {
       if (value != null
          && (convertFn = this.ConvertFunction) != null) {
 
-         value = convertFn(this, value);
+         value = convertFn.Invoke(this, value);
       }
 
       return value;
@@ -363,7 +363,7 @@ class PocoNode : Node {
 
          context.Log?.WriteLine($"-- WARNING: Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Property.PropertyType.FullName}' {((value == null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}. Attempting conversion.");
 
-         value = convert(this, value);
+         value = convert.Invoke(this, value);
 
          this.ConvertFunction = convert;
 
@@ -422,16 +422,16 @@ class PocoNode : Node {
 
 class PocoCollection : CollectionNode {
 
-   readonly PropertyInfo property;
-   readonly Type elementType;
-   readonly MethodInfo addMethod;
+   readonly PropertyInfo _property;
+   readonly Type _elementType;
+   readonly MethodInfo _addMethod;
 
    public PocoCollection(PropertyInfo property) {
 
-      this.property = property;
+      _property = property;
 
-      var colType = this.property.PropertyType;
-      this.elementType = typeof(object);
+      var colType = _property.PropertyType;
+      _elementType = typeof(object);
 
       for (var type = colType; type != null; type = type.BaseType) {
 
@@ -441,42 +441,42 @@ class PocoCollection : CollectionNode {
             .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>));
 
          if (genericICol != null) {
-            this.elementType = genericICol.GetGenericArguments()[0];
+            _elementType = genericICol.GetGenericArguments()[0];
             break;
          }
       }
 
-      this.addMethod = colType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, new[] { this.elementType }, null);
+      _addMethod = colType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, new[] { _elementType }, null);
 
-      if (this.addMethod == null) {
+      if (_addMethod == null) {
          throw new InvalidOperationException($"Couldn't find a public 'Add' method on '{colType.FullName}'.");
       }
    }
 
    protected override IEnumerable GetOrCreate(ref object instance, MappingContext context) {
 
-      var collection = this.property.GetValue(instance, null);
+      var collection = _property.GetValue(instance, null);
 
       if (collection == null) {
 
-         var collectionType = this.property.PropertyType;
+         var collectionType = _property.PropertyType;
 
          if (collectionType.IsAbstract
             || collectionType.IsInterface) {
 
-            collection = Activator.CreateInstance(typeof(Collection<>).MakeGenericType(this.elementType));
+            collection = Activator.CreateInstance(typeof(Collection<>).MakeGenericType(_elementType));
 
          } else {
             collection = Activator.CreateInstance(collectionType);
          }
 
-         this.property.SetValue(instance, collection, null);
+         _property.SetValue(instance, collection, null);
       }
 
       return (IEnumerable)collection;
    }
 
    protected override void Add(IEnumerable collection, object element, MappingContext context) {
-      this.addMethod.Invoke(collection, new[] { element });
+      _addMethod.Invoke(collection, new[] { element });
    }
 }

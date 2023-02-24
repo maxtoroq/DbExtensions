@@ -175,16 +175,15 @@ static class TypeSystem {
 
 struct MetaPosition : IEqualityComparer<MetaPosition>, IEqualityComparer {
 
-   int metadataToken;
-   Assembly assembly;
+   readonly int _metadataToken;
+   readonly Assembly _assembly;
 
    internal MetaPosition(MemberInfo mi)
-      : this(mi.DeclaringType.Assembly, mi.MetadataToken) {
-   }
+      : this(mi.DeclaringType.Assembly, mi.MetadataToken) { }
 
    private MetaPosition(Assembly assembly, int metadataToken) {
-      this.assembly = assembly;
-      this.metadataToken = metadataToken;
+      _assembly = assembly;
+      _metadataToken = metadataToken;
    }
 
    // Equality is implemented here according to the advice in
@@ -207,7 +206,7 @@ struct MetaPosition : IEqualityComparer<MetaPosition>, IEqualityComparer {
    }
 
    public override int GetHashCode() {
-      return this.metadataToken;
+      return _metadataToken;
    }
 
    #endregion
@@ -219,7 +218,7 @@ struct MetaPosition : IEqualityComparer<MetaPosition>, IEqualityComparer {
    }
 
    public int GetHashCode(MetaPosition obj) {
-      return obj.metadataToken;
+      return obj._metadataToken;
    }
 
    #endregion
@@ -237,8 +236,8 @@ struct MetaPosition : IEqualityComparer<MetaPosition>, IEqualityComparer {
 
    static bool AreEqual(MetaPosition x, MetaPosition y) {
 
-      return (x.metadataToken == y.metadataToken)
-         && (x.assembly == y.assembly);
+      return (x._metadataToken == y._metadataToken)
+         && (x._assembly == y._assembly);
    }
 
    // Since MetaPositions are immutable, we overload the equality operator

@@ -82,31 +82,31 @@ static class FieldAccessor {
 
    class Accessor<T, V> : MetaAccessor<T, V> {
 
-      DGet<T, V> dget;
-      DRSet<T, V> drset;
-      FieldInfo fi;
+      readonly DGet<T, V> _dget;
+      readonly DRSet<T, V> _drset;
+      readonly FieldInfo _fi;
 
       internal Accessor(FieldInfo fi, DGet<T, V> dget, DRSet<T, V> drset) {
-         this.fi = fi;
-         this.dget = dget;
-         this.drset = drset;
+         _fi = fi;
+         _dget = dget;
+         _drset = drset;
       }
 
       public override V GetValue(T instance) {
 
-         if (this.dget != null) {
-            return this.dget(instance);
+         if (_dget != null) {
+            return _dget.Invoke(instance);
          }
 
-         return (V)fi.GetValue(instance);
+         return (V)_fi.GetValue(instance);
       }
 
       public override void SetValue(ref T instance, V value) {
 
-         if (this.drset != null) {
-            this.drset(ref instance, value);
+         if (_drset != null) {
+            _drset.Invoke(ref instance, value);
          } else {
-            this.fi.SetValue(instance, value);
+            _fi.SetValue(instance, value);
          }
       }
    }
@@ -167,38 +167,38 @@ static class PropertyAccessor {
 
    class Accessor<T, V, V2> : MetaAccessor<T, V> where V2 : V {
 
-      PropertyInfo pi;
-      DGet<T, V> dget;
-      DSet<T, V> dset;
-      DRSet<T, V> drset;
-      MetaAccessor<T, V2> storage;
+      readonly PropertyInfo _pi;
+      readonly DGet<T, V> _dget;
+      readonly DSet<T, V> _dset;
+      readonly DRSet<T, V> _drset;
+      readonly MetaAccessor<T, V2> _storage;
 
       internal Accessor(PropertyInfo pi, DGet<T, V> dget, DSet<T, V> dset, DRSet<T, V> drset, MetaAccessor<T, V2> storage) {
 
-         this.pi = pi;
-         this.dget = dget;
-         this.dset = dset;
-         this.drset = drset;
-         this.storage = storage;
+         _pi = pi;
+         _dget = dget;
+         _dset = dset;
+         _drset = drset;
+         _storage = storage;
       }
 
       public override V GetValue(T instance) {
-         return this.dget(instance);
+         return _dget.Invoke(instance);
       }
 
       public override void SetValue(ref T instance, V value) {
 
-         if (this.dset != null) {
-            this.dset(instance, value);
+         if (_dset != null) {
+            _dset.Invoke(instance, value);
 
-         } else if (this.drset != null) {
-            this.drset(ref instance, value);
+         } else if (_drset != null) {
+            _drset.Invoke(ref instance, value);
 
-         } else if (this.storage != null) {
-            this.storage.SetValue(ref instance, (V2)value);
+         } else if (_storage != null) {
+            _storage.SetValue(ref instance, (V2)value);
 
          } else {
-            throw Error.UnableToAssignValueToReadonlyProperty(this.pi);
+            throw Error.UnableToAssignValueToReadonlyProperty(_pi);
          }
       }
    }

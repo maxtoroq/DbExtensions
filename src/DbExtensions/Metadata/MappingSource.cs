@@ -27,9 +27,9 @@ namespace DbExtensions.Metadata;
 
 internal abstract class MappingSource {
 
-   MetaModel primaryModel;
-   ReaderWriterLock rwlock;
-   Dictionary<Type, MetaModel> secondaryModels;
+   MetaModel _primaryModel;
+   ReaderWriterLock _rwlock;
+   Dictionary<Type, MetaModel> _secondaryModels;
 
    /// <summary>
    /// Gets the MetaModel representing a DataContext and all it's 
@@ -42,15 +42,15 @@ internal abstract class MappingSource {
 
       var model = default(MetaModel);
 
-      if (this.primaryModel == null) {
+      if (_primaryModel == null) {
          model = CreateModel(dataContextType);
-         Interlocked.CompareExchange<MetaModel>(ref this.primaryModel, model, null);
+         Interlocked.CompareExchange<MetaModel>(ref _primaryModel, model, null);
       }
 
       // if the primary one matches, use it!
 
-      if (this.primaryModel.ContextType == dataContextType) {
-         return this.primaryModel;
+      if (_primaryModel.ContextType == dataContextType) {
+         return _primaryModel;
       }
 
       // the rest of this only happens if you are using the mapping source for
@@ -58,36 +58,36 @@ internal abstract class MappingSource {
 
       // build a map if one is not already defined
 
-      if (this.secondaryModels == null) {
-         Interlocked.CompareExchange<Dictionary<Type, MetaModel>>(ref this.secondaryModels, new Dictionary<Type, MetaModel>(), null);
+      if (_secondaryModels == null) {
+         Interlocked.CompareExchange<Dictionary<Type, MetaModel>>(ref _secondaryModels, new Dictionary<Type, MetaModel>(), null);
       }
 
       // if we haven't created a read/writer lock, make one now
 
-      if (this.rwlock == null) {
-         Interlocked.CompareExchange<ReaderWriterLock>(ref this.rwlock, new ReaderWriterLock(), null);
+      if (_rwlock == null) {
+         Interlocked.CompareExchange<ReaderWriterLock>(ref _rwlock, new ReaderWriterLock(), null);
       }
 
       // lock the map and look inside
 
       MetaModel foundModel;
-      this.rwlock.AcquireReaderLock(Timeout.Infinite);
+      _rwlock.AcquireReaderLock(Timeout.Infinite);
 
       try {
-         if (this.secondaryModels.TryGetValue(dataContextType, out foundModel)) {
+         if (_secondaryModels.TryGetValue(dataContextType, out foundModel)) {
             return foundModel;
          }
       } finally {
-         this.rwlock.ReleaseReaderLock();
+         _rwlock.ReleaseReaderLock();
       }
 
       // if it wasn't found, lock for write and try again
 
-      this.rwlock.AcquireWriterLock(Timeout.Infinite);
+      _rwlock.AcquireWriterLock(Timeout.Infinite);
 
       try {
 
-         if (this.secondaryModels.TryGetValue(dataContextType, out foundModel)) {
+         if (_secondaryModels.TryGetValue(dataContextType, out foundModel)) {
             return foundModel;
          }
 
@@ -95,10 +95,10 @@ internal abstract class MappingSource {
             model = CreateModel(dataContextType);
          }
 
-         this.secondaryModels.Add(dataContextType, model);
+         _secondaryModels.Add(dataContextType, model);
 
       } finally {
-         this.rwlock.ReleaseWriterLock();
+         _rwlock.ReleaseWriterLock();
       }
 
       return model;

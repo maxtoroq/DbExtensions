@@ -151,12 +151,12 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
    // definingQuery should NEVER be modified
 
-   readonly SqlBuilder definingQuery;
-   readonly string[] fromSelect;
-   readonly SqlBuffer buffer;
+   readonly SqlBuilder _definingQuery;
+   readonly string[] _fromSelect;
+   readonly SqlBuffer _buffer;
 
-   internal readonly Database db;
-   readonly int setIndex = 1;
+   internal readonly Database _db;
+   readonly int _setIndex = 1;
 
    /// <summary>
    /// The type of objects this set returns. This property can be null.
@@ -168,9 +168,9 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       if (definingQuery == null) throw new ArgumentNullException(nameof(definingQuery));
 
-      this.definingQuery = definingQuery.Clone();
+      _definingQuery = definingQuery.Clone();
       this.ResultType = resultType;
-      this.db = db;
+      _db = db;
    }
 
    internal SqlSet(string[] fromSelect, Type resultType, Database db) {
@@ -178,9 +178,9 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       if (fromSelect == null) throw new ArgumentNullException(nameof(fromSelect));
       if (fromSelect.Length != 2) throw new ArgumentException("fromSelect.Length must be 2.", nameof(fromSelect));
 
-      this.fromSelect = fromSelect;
+      _fromSelect = fromSelect;
       this.ResultType = resultType;
-      this.db = db;
+      _db = db;
    }
 
    internal SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType, SqlBuffer? buffer)
@@ -188,7 +188,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       if (superQuery == null) throw new ArgumentNullException(nameof(superQuery));
 
-      this.definingQuery = superQuery;
+      _definingQuery = superQuery;
    }
 
    internal SqlSet(SqlSet set, string[] fromSelect, Type resultType, SqlBuffer? buffer)
@@ -197,7 +197,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       if (fromSelect == null) throw new ArgumentNullException(nameof(fromSelect));
       if (fromSelect.Length != 2) throw new ArgumentException("fromSelect.Length must be 2.", nameof(fromSelect));
 
-      this.fromSelect = fromSelect;
+      _fromSelect = fromSelect;
    }
 
    private SqlSet(SqlSet set, Type resultType, SqlBuffer? buffer) {
@@ -205,15 +205,15 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       if (set == null) throw new ArgumentNullException(nameof(set));
 
       this.ResultType = set.ResultType;
-      this.setIndex += set.setIndex;
-      this.db = set.db;
+      _setIndex += set._setIndex;
+      _db = set._db;
 
       if (resultType != null) {
          this.ResultType = resultType;
       }
 
       if (buffer != null) {
-         this.buffer = buffer.Value;
+         _buffer = buffer.Value;
       }
 
       Initialize2(set);
@@ -234,18 +234,18 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    internal SqlBuilder GetDefiningQuery(bool clone = true, bool ignoreBuffer = false, bool super = false, string selectFormat = null, object[] args = null) {
 
       if (!ignoreBuffer
-         && this.buffer.HasBuffer) {
+         && _buffer.HasBuffer) {
 
          return BuildQuery(selectFormat, args);
       }
 
-      var query = this.definingQuery;
+      var query = _definingQuery;
 
       if (query == null) {
 
          query = new SqlBuilder()
-            .SELECT(selectFormat ?? this.fromSelect[1] ?? "*", args)
-            .FROM(this.fromSelect[0]);
+            .SELECT(selectFormat ?? _fromSelect[1] ?? "*", args)
+            .FROM(_fromSelect[0]);
 
       } else if (super || selectFormat != null) {
 
@@ -261,7 +261,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
    SqlBuilder BuildQuery(string selectFormat, object[] args) {
 
-      switch (this.db.Configuration.SqlDialect) {
+      switch (_db.Configuration.SqlDialect) {
          case SqlDialect.Default:
             return BuildQuery_Default(selectFormat, args);
 
@@ -275,10 +275,10 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
    SqlBuilder BuildQuery_Default(string selectFormat, object[] args) {
 
-      var whereBuffer = this.buffer.Where;
-      var orderByBuffer = this.buffer.OrderBy;
-      var skipBuffer = this.buffer.Skip;
-      var takeBuffer = this.buffer.Take;
+      var whereBuffer = _buffer.Where;
+      var orderByBuffer = _buffer.OrderBy;
+      var skipBuffer = _buffer.Skip;
+      var takeBuffer = _buffer.Take;
 
       var hasWhere = whereBuffer != null;
       var hasOrderBy = orderByBuffer != null;
@@ -314,10 +314,10 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
    SqlBuilder BuildQuery_TSql(string selectFormat, object[] args) {
 
-      var whereBuffer = this.buffer.Where;
-      var orderByBuffer = this.buffer.OrderBy;
-      var skipBuffer = this.buffer.Skip;
-      var takeBuffer = this.buffer.Take;
+      var whereBuffer = _buffer.Where;
+      var orderByBuffer = _buffer.OrderBy;
+      var skipBuffer = _buffer.Skip;
+      var takeBuffer = _buffer.Take;
 
       var hasWhere = whereBuffer != null;
       var hasOrderBy = orderByBuffer != null;
@@ -395,7 +395,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       var superQuery = new SqlBuilder()
          .SELECT(selectFormat ?? "*", args)
-         .FROM(query, "dbex_set" + this.setIndex.ToString(CultureInfo.InvariantCulture));
+         .FROM(query, "dbex_set" + _setIndex.ToString(CultureInfo.InvariantCulture));
 
       return superQuery;
    }
@@ -417,7 +417,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    }
 
    internal SqlSet Clone() {
-      return CreateBufferedSet(ignoreBuffer: true, buffer: this.buffer);
+      return CreateBufferedSet(ignoreBuffer: true, buffer: _buffer);
    }
 
    internal SqlSet CreateBufferedSet(bool ignoreBuffer, SqlBuffer buffer, Type resultType = null) {
@@ -425,9 +425,9 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       var set = default(SqlSet);
 
       if (ignoreBuffer
-         && this.definingQuery == null) {
+         && _definingQuery == null) {
 
-         set = CreateSet(this.fromSelect, resultType, buffer);
+         set = CreateSet(_fromSelect, resultType, buffer);
       }
 
       if (set == null) {
@@ -445,9 +445,9 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       var set = default(SqlSet<TResult>);
 
       if (ignoreBuffer
-         && this.definingQuery == null) {
+         && _definingQuery == null) {
 
-         set = CreateSet<TResult>(this.fromSelect, buffer);
+         set = CreateSet<TResult>(_fromSelect, buffer);
       }
 
       if (set == null) {
@@ -503,7 +503,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       var query = new SqlBuilder()
          .SELECT("(CASE WHEN EXISTS ({0}) THEN 1 ELSE 0 END)", GetDefiningQuery(clone: false));
 
-      return this.db.Map(query, r => Convert.ToInt32(r[0], CultureInfo.InvariantCulture) != 0)
+      return _db.Map(query, r => Convert.ToInt32(r[0], CultureInfo.InvariantCulture) != 0)
          .SingleOrDefault();
    }
 
@@ -549,7 +549,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
          throw new InvalidOperationException("The specified type parameter is not valid for this instance.");
       }
 
-      return CreateBufferedSet<TResult>(ignoreBuffer: true, buffer: this.buffer);
+      return CreateBufferedSet<TResult>(ignoreBuffer: true, buffer: _buffer);
    }
 
    /// <summary>
@@ -566,7 +566,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
          throw new InvalidOperationException("The specified resultType is not valid for this instance.");
       }
 
-      return CreateBufferedSet(ignoreBuffer: true, buffer: this.buffer, resultType: resultType);
+      return CreateBufferedSet(ignoreBuffer: true, buffer: _buffer, resultType: resultType);
    }
 
    /// <summary>
@@ -581,7 +581,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
          .SELECT("COUNT(*)")
          .FROM("({0}) dbex_count", GetDefiningQuery(clone: false));
 
-      return this.db.Map(query, r => (int?)Convert.ToInt32(r[0], CultureInfo.InvariantCulture))
+      return _db.Map(query, r => (int?)Convert.ToInt32(r[0], CultureInfo.InvariantCulture))
          .SingleOrDefault() ?? 0;
    }
 
@@ -664,7 +664,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
          .SELECT("COUNT(*)")
          .FROM("({0}) dbex_count", GetDefiningQuery(clone: false));
 
-      return this.db.Map(query, r => (long?)Convert.ToInt64(r[0], CultureInfo.InvariantCulture))
+      return _db.Map(query, r => (long?)Convert.ToInt64(r[0], CultureInfo.InvariantCulture))
          .SingleOrDefault() ?? 0L;
    }
 
@@ -690,12 +690,12 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
    public SqlSet OrderBy(string columnList, params object[] parameters) {
 
-      var ignoreBuffer = this.buffer.OrderBy == null
-         && this.buffer.Skip == null
-         && this.buffer.Take == null;
+      var ignoreBuffer = _buffer.OrderBy == null
+         && _buffer.Skip == null
+         && _buffer.Take == null;
 
       var newBuffer = new SqlBuffer(
-         where: (ignoreBuffer) ? this.buffer.Where : null,
+         where: (ignoreBuffer) ? _buffer.Where : null,
          orderBy: new SqlFragment(columnList, parameters),
          skip: null,
          take: null
@@ -817,12 +817,12 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
    public SqlSet Skip(int count) {
 
-      var ignoreBuffer = this.buffer.Skip == null
-         && this.buffer.Take == null;
+      var ignoreBuffer = _buffer.Skip == null
+         && _buffer.Take == null;
 
       var newBuffer = new SqlBuffer(
-         where: (ignoreBuffer) ? this.buffer.Where : null,
-         orderBy: (ignoreBuffer) ? this.buffer.OrderBy : null,
+         where: (ignoreBuffer) ? _buffer.Where : null,
+         orderBy: (ignoreBuffer) ? _buffer.OrderBy : null,
          skip: count,
          take: null
       );
@@ -840,12 +840,12 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
    public SqlSet Take(int count) {
 
-      var ignoreBuffer = this.buffer.Take == null;
+      var ignoreBuffer = _buffer.Take == null;
 
       var newBuffer = new SqlBuffer(
-         where: (ignoreBuffer) ? this.buffer.Where : null,
-         orderBy: (ignoreBuffer) ? this.buffer.OrderBy : null,
-         skip: (ignoreBuffer) ? this.buffer.Skip : null,
+         where: (ignoreBuffer) ? _buffer.Where : null,
+         orderBy: (ignoreBuffer) ? _buffer.OrderBy : null,
+         skip: (ignoreBuffer) ? _buffer.Skip : null,
          take: count
       );
 
@@ -882,10 +882,10 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
    public SqlSet Where(string predicate, params object[] parameters) {
 
-      var ignoreBuffer = this.buffer.Where == null
-         && this.buffer.OrderBy == null
-         && this.buffer.Skip == null
-         && this.buffer.Take == null;
+      var ignoreBuffer = _buffer.Where == null
+         && _buffer.OrderBy == null
+         && _buffer.Skip == null
+         && _buffer.Take == null;
 
       var newBuffer = new SqlBuffer(
          where: new SqlFragment(predicate, parameters),
@@ -986,7 +986,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
 public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult> {
 
-   readonly Func<IDataRecord, TResult> explicitMapper;
+   readonly Func<IDataRecord, TResult> _explicitMapper;
 
    internal SqlSet(SqlBuilder definingQuery, Database db)
       : base(definingQuery, typeof(TResult), db) { }
@@ -996,7 +996,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
 
       if (mapper == null) throw new ArgumentNullException(nameof(mapper));
 
-      this.explicitMapper = mapper;
+      _explicitMapper = mapper;
    }
 
    internal SqlSet(string[] fromSelect, Database db)
@@ -1010,7 +1010,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
 
       if (set == null) throw new ArgumentNullException(nameof(set));
 
-      this.explicitMapper = set.explicitMapper;
+      _explicitMapper = set._explicitMapper;
    }
 
    private SqlSet(SqlSet<TResult> set, string[] fromSelect, SqlBuffer? buffer)
@@ -1018,7 +1018,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
 
       if (set == null) throw new ArgumentNullException(nameof(set));
 
-      this.explicitMapper = set.explicitMapper;
+      _explicitMapper = set._explicitMapper;
    }
 
    // These two SHOULD pass TResult to base ctor
@@ -1027,7 +1027,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
       : base(set, superQuery, typeof(TResult), buffer) {
 
       if (mapper != null) {
-         this.explicitMapper = mapper;
+         _explicitMapper = mapper;
       }
    }
 
@@ -1054,11 +1054,11 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
 
    internal override IEnumerable Map(bool singleResult) {
 
-      if (this.explicitMapper != null) {
+      if (_explicitMapper != null) {
 
          var query = GetDefiningQuery(clone: false);
 
-         return this.db.Map(query, this.explicitMapper);
+         return _db.Map(query, _explicitMapper);
       }
 
       return base.Map(singleResult).Cast<TResult>();

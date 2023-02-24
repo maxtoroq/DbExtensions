@@ -49,12 +49,12 @@ partial class SqlSet {
 
    IEnumerable DynamicMap(bool singleResult) {
 
-      var mapper = this.db.CreateDynamicMapper();
+      var mapper = _db.CreateDynamicMapper();
       mapper.SingleResult = singleResult;
 
       InitializeMapper(mapper);
 
-      return this.db.Map(GetDefiningQuery(clone: false), r => mapper.Map(r));
+      return _db.Map(GetDefiningQuery(clone: false), r => mapper.Map(r));
    }
 }
 
@@ -91,33 +91,33 @@ class DynamicMapper : Mapper {
 
 class DynamicNode : Node {
 
-   static readonly string _TypeName = typeof(ExpandoObject).FullName;
+   static readonly string _typeName = typeof(ExpandoObject).FullName;
 
-   readonly string _PropertyName;
+   readonly string _propertyName;
 
-   bool _IsComplex;
-   int _ColumnOrdinal;
+   bool _isComplex;
+   int _columnOrdinal;
 
    public override bool IsComplex {
-      get { return _IsComplex; }
+      get { return _isComplex; }
    }
 
    public override string PropertyName {
-      get { return _PropertyName; }
+      get { return _propertyName; }
    }
 
    public override int ColumnOrdinal {
-      get { return _ColumnOrdinal; }
+      get { return _columnOrdinal; }
    }
 
    public override string TypeName {
-      get { return _TypeName; }
+      get { return _typeName; }
    }
 
    public static DynamicNode Root() {
 
       var node = new DynamicNode {
-         _IsComplex = true,
+         _isComplex = true,
       };
 
       return node;
@@ -126,7 +126,7 @@ class DynamicNode : Node {
    public static DynamicNode Complex(string propertyName) {
 
       var node = new DynamicNode(propertyName) {
-         _IsComplex = true,
+         _isComplex = true,
       };
 
       return node;
@@ -135,7 +135,7 @@ class DynamicNode : Node {
    public static DynamicNode Simple(int columnOrdinal, string propertyName) {
 
       var node = new DynamicNode(propertyName) {
-         _ColumnOrdinal = columnOrdinal
+         _columnOrdinal = columnOrdinal
       };
 
       return node;
@@ -152,7 +152,7 @@ class DynamicNode : Node {
          throw new ArgumentException("Cannot use constructor mapping, by using numeric column names, unless you specify the type of the object you want to map to.", nameof(propertyName));
       }
 
-      this._PropertyName = propertyName;
+      _propertyName = propertyName;
    }
 
    public override object Create(IDataRecord record, MappingContext context) {

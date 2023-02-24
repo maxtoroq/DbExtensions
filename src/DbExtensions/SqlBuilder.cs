@@ -33,19 +33,19 @@ namespace DbExtensions;
 [DebuggerDisplay("{Buffer}")]
 public partial class SqlBuilder {
 
-   bool? ifCondition;
+   bool? _ifCondition;
 
    /// <summary>
    /// The underlying <see cref="StringBuilder"/>.
    /// </summary>
 
-   public StringBuilder Buffer { get; } = new StringBuilder();
+   public StringBuilder Buffer { get; } = new();
 
    /// <summary>
    /// The parameter objects to be included in the database command.
    /// </summary>
 
-   public Collection<object> ParameterValues { get; } = new Collection<object>();
+   public Collection<object> ParameterValues { get; } = new();
 
    /// <summary>
    /// Gets or sets the current SQL clause, used to identify consecutive 
@@ -221,7 +221,7 @@ public partial class SqlBuilder {
 
       this.NextClause = null;
       this.NextSeparator = null;
-      this.ifCondition = null;
+      _ifCondition = null;
 
       return this;
    }
@@ -400,7 +400,7 @@ public partial class SqlBuilder {
 
       this.NextClause = clauseName;
       this.NextSeparator = separator;
-      this.ifCondition = null;
+      _ifCondition = null;
 
       return this;
    }
@@ -461,7 +461,7 @@ public partial class SqlBuilder {
          _(format, args);
       }
 
-      this.ifCondition = condition;
+      _ifCondition = condition;
 
       return this;
    }
@@ -476,13 +476,13 @@ public partial class SqlBuilder {
    [CLSCompliant(false)]
    public SqlBuilder _ElseIf(bool condition, string format, params object[] args) {
 
-      if (this.ifCondition == false) {
+      if (_ifCondition == false) {
 
          if (condition) {
             _(format, args);
          }
 
-         this.ifCondition = condition;
+         _ifCondition = condition;
       }
 
       return this;
@@ -500,7 +500,7 @@ public partial class SqlBuilder {
    [CLSCompliant(false)]
    public SqlBuilder _Else(string format, params object[] args) {
 
-      if (this.ifCondition == false) {
+      if (_ifCondition == false) {
          _(format, args);
       }
 
@@ -1074,11 +1074,11 @@ public static partial class SQL {
 
 class SqlList {
 
-   object[] values;
+   object[] _values;
 
-   public object this[int index] => values[index];
+   public object this[int index] => _values[index];
 
-   public int Count => values.Length;
+   public int Count => _values.Length;
 
    public SqlList(IEnumerable values) {
 
@@ -1094,6 +1094,6 @@ class SqlList {
          arr = new object[1];
       }
 
-      this.values = arr;
+      _values = arr;
    }
 }

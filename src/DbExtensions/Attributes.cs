@@ -47,8 +47,8 @@ public sealed class TableAttribute : Attribute {
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 public sealed class ColumnAttribute : Attribute, IDataAttribute {
 
-   bool canBeNull = true;
-   bool canBeNullSet = false;
+   bool _canBeNull = true;
+   bool _canBeNullSet = false;
 
    /// <summary>
    /// Gets or sets the name of a column.
@@ -107,14 +107,14 @@ public sealed class ColumnAttribute : Attribute, IDataAttribute {
    internal bool IsDiscriminator { get; set; }
 
    internal bool CanBeNull {
-      get { return canBeNull; }
+      get { return _canBeNull; }
       set {
-         canBeNullSet = true;
-         canBeNull = value;
+         _canBeNullSet = true;
+         _canBeNull = value;
       }
    }
 
-   internal bool CanBeNullSet => canBeNullSet;
+   internal bool CanBeNullSet => _canBeNullSet;
 }
 
 internal enum UpdateCheck {

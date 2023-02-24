@@ -26,15 +26,15 @@ namespace DbExtensions;
 
 partial class SqlSet {
 
-   IDictionary<string[], CollectionLoader> _ManyIncludes;
+   IDictionary<string[], CollectionLoader> _manyIncludes;
 
    private IDictionary<string[], CollectionLoader> ManyIncludes {
-      get { return _ManyIncludes; }
+      get { return _manyIncludes; }
       set {
-         if (_ManyIncludes != null) {
+         if (_manyIncludes != null) {
             throw new InvalidOperationException();
          }
-         _ManyIncludes = value;
+         _manyIncludes = value;
       }
    }
 
@@ -63,8 +63,8 @@ abstract class Mapper {
 
    internal static readonly char[] _pathSeparator = { '$' };
 
-   Node rootNode;
-   IDictionary<CollectionNode, CollectionLoader> manyLoaders;
+   Node _rootNode;
+   IDictionary<CollectionNode, CollectionLoader> _manyLoaders;
 
    public TextWriter Log { get; set; }
 
@@ -294,11 +294,11 @@ abstract class Mapper {
 
                instance.Collections.Add(collection);
 
-               if (this.manyLoaders == null) {
-                  this.manyLoaders = new Dictionary<CollectionNode, CollectionLoader>();
+               if (_manyLoaders == null) {
+                  _manyLoaders = new Dictionary<CollectionNode, CollectionLoader>();
                }
 
-               this.manyLoaders.Add(collection, pair.Value);
+               _manyLoaders.Add(collection, pair.Value);
             }
          }
       }
@@ -324,19 +324,19 @@ abstract class Mapper {
 
    Node GetRootNode(IDataRecord record) {
 
-      if (this.rootNode == null) {
-         this.rootNode = CreateRootNode();
-         ReadMapping(record, this.rootNode);
+      if (_rootNode == null) {
+         _rootNode = CreateRootNode();
+         ReadMapping(record, _rootNode);
       }
 
-      return this.rootNode;
+      return _rootNode;
    }
 
    MappingContext CreateMappingContext() {
 
       return new MappingContext {
          Log = this.Log,
-         ManyLoaders = this.manyLoaders,
+         ManyLoaders = _manyLoaders,
          SingleResult = this.SingleResult
       };
    }
@@ -424,9 +424,9 @@ abstract class Mapper {
 
 abstract class Node {
 
-   Dictionary<uint, Node> _ConstructorParameters;
-   List<Node> _Properties;
-   List<CollectionNode> _Collections;
+   Dictionary<uint, Node> _constructorParameters;
+   List<Node> _properties;
+   List<CollectionNode> _collections;
 
    public abstract bool IsComplex { get; }
    public abstract string PropertyName { get; }
@@ -438,43 +438,43 @@ abstract class Node {
 
    public Dictionary<uint, Node> ConstructorParameters {
       get {
-         return _ConstructorParameters
-            ?? (_ConstructorParameters = new Dictionary<uint, Node>());
+         return _constructorParameters
+            ?? (_constructorParameters = new Dictionary<uint, Node>());
       }
    }
 
    public List<Node> Properties {
       get {
-         return _Properties
-            ?? (_Properties = new List<Node>());
+         return _properties
+            ?? (_properties = new List<Node>());
       }
    }
 
    public List<CollectionNode> Collections {
       get {
-         return _Collections
-            ?? (_Collections = new List<CollectionNode>());
+         return _collections
+            ?? (_collections = new List<CollectionNode>());
       }
    }
 
    public bool HasConstructorParameters {
       get {
-         return _ConstructorParameters != null
-            && _ConstructorParameters.Count > 0;
+         return _constructorParameters != null
+            && _constructorParameters.Count > 0;
       }
    }
 
    public bool HasProperties {
       get {
-         return _Properties != null
-            && _Properties.Count > 0;
+         return _properties != null
+            && _properties.Count > 0;
       }
    }
 
    public bool HasCollections {
       get {
-         return _Collections != null
-            && _Collections.Count > 0;
+         return _collections != null
+            && _collections.Count > 0;
       }
    }
 
@@ -586,7 +586,7 @@ abstract class CollectionNode {
       var collection = GetOrCreate(ref instance, context);
       var loader = context.ManyLoaders[this];
 
-      var elements = loader.Load(instance, loader.State);
+      var elements = loader.Load.Invoke(instance, loader.State);
 
       foreach (var element in elements) {
          Add(collection, element, context);

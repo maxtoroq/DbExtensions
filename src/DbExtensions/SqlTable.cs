@@ -29,18 +29,18 @@ using Metadata;
 
 partial class Database {
 
-   static readonly MethodInfo tableMethod = typeof(Database)
+   static readonly MethodInfo _tableMethod = typeof(Database)
       .GetMethods(BindingFlags.Public | BindingFlags.Instance)
       .Single(m => m.Name == nameof(Table) && m.ContainsGenericParameters && m.GetParameters().Length == 0);
 
-   static readonly MappingSource mappingSource = new AttributeMappingSource();
+   static readonly MappingSource _mappingSource = new AttributeMappingSource();
 
-   readonly IDictionary<MetaType, SqlTable> tables = new Dictionary<MetaType, SqlTable>();
-   readonly IDictionary<MetaType, ISqlTable> genericTables = new Dictionary<MetaType, ISqlTable>();
+   readonly Dictionary<MetaType, SqlTable> _tables = new();
+   readonly Dictionary<MetaType, ISqlTable> _genericTables = new();
 
    partial void Initialize2(string providerInvariantName) {
 
-      this.Configuration.SetModel(() => mappingSource.GetModel(GetType()));
+      this.Configuration.SetModel(() => _mappingSource.GetModel(GetType()));
       Initialize3(providerInvariantName);
    }
 
@@ -57,12 +57,12 @@ partial class Database {
       var metaType = this.Configuration.GetMetaType(typeof(TEntity));
       SqlTable<TEntity> table;
 
-      if (this.genericTables.TryGetValue(metaType, out var set)) {
+      if (_genericTables.TryGetValue(metaType, out var set)) {
          table = (SqlTable<TEntity>)set;
 
       } else {
          table = new SqlTable<TEntity>(this, metaType);
-         this.genericTables.Add(metaType, table);
+         _genericTables.Add(metaType, table);
       }
 
       return table;
@@ -82,13 +82,13 @@ partial class Database {
 
       SqlTable table;
 
-      if (!this.tables.TryGetValue(metaType, out table)) {
+      if (!_tables.TryGetValue(metaType, out table)) {
 
          var genericTable = (ISqlTable)
-            tableMethod.MakeGenericMethod(metaType.Type).Invoke(this, null);
+            _tableMethod.MakeGenericMethod(metaType.Type).Invoke(this, null);
 
          table = new SqlTable(this, metaType, genericTable);
-         this.tables.Add(metaType, table);
+         _tables.Add(metaType, table);
       }
 
       return table;
@@ -322,14 +322,14 @@ partial class Database {
 
 sealed partial class DatabaseConfiguration {
 
-   Lazy<MetaModel> _Model;
+   Lazy<MetaModel> _model;
    MetaTableConfiguration _defaultMetaTableConfig;
 
    /// <summary>
    /// Gets the <see cref="MetaModel"/> on which the mapping is based.
    /// </summary>
 
-   internal MetaModel Model => _Model.Value;
+   internal MetaModel Model => _model.Value;
 
    /// <summary>
    /// true to include version column check in SQL statements' predicates; otherwise, false. The default is true.
@@ -367,7 +367,7 @@ sealed partial class DatabaseConfiguration {
    }
 
    internal void SetModel(Func<MetaModel> modelFn) {
-      _Model = new Lazy<MetaModel>(modelFn);
+      _model = new Lazy<MetaModel>(modelFn);
    }
 
    internal MetaType GetMetaType(Type type) {
@@ -386,15 +386,15 @@ public sealed class SqlTable : SqlSet, ISqlTable {
    // table is the SqlTable<TEntity> instance for metaType
    // SqlTable is only a wrapper on SqlTable<TEntity>
 
-   readonly ISqlTable table;
-   readonly MetaType metaType;
+   readonly ISqlTable _table;
+   readonly MetaType _metaType;
 
    /// <summary>
    /// Gets the name of the table.
    /// </summary>
 
    public string Name {
-      get { return metaType.Table.TableName; }
+      get { return _metaType.Table.TableName; }
    }
 
    /// <summary>
@@ -406,9 +406,9 @@ public sealed class SqlTable : SqlSet, ISqlTable {
    internal SqlTable(Database db, MetaType metaType, ISqlTable table)
       : base(new string[2] { db.FromBody(metaType, null), db.SelectBody(metaType, null, null) }, metaType.Type, db) {
 
-      this.table = table;
+      _table = table;
 
-      this.metaType = metaType;
+      _metaType = metaType;
       this.CommandBuilder = new SqlCommandBuilder<object>(db, metaType);
    }
 
@@ -421,11 +421,11 @@ public sealed class SqlTable : SqlSet, ISqlTable {
 
    public new SqlTable<TEntity> Cast<TEntity>() where TEntity : class {
 
-      if (typeof(TEntity) != this.metaType.Type) {
+      if (typeof(TEntity) != _metaType.Type) {
          throw new InvalidOperationException("The specified type parameter is not valid for this instance.");
       }
 
-      return (SqlTable<TEntity>)this.table;
+      return (SqlTable<TEntity>)_table;
    }
 
    /// <inheritdoc cref="SqlSet.Cast(Type)"/>
@@ -449,71 +449,71 @@ public sealed class SqlTable : SqlSet, ISqlTable {
    /// <inheritdoc cref="SqlTable&lt;TEntity>.Add(TEntity)"/>
 
    public void Add(object entity) {
-      this.table.Add(entity);
+      _table.Add(entity);
    }
 
    void ISqlTable.AddDescendants(object entity) {
-      this.table.AddDescendants(entity);
+      _table.AddDescendants(entity);
    }
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.AddRange(IEnumerable&lt;TEntity>)"/>
 
    public void AddRange(IEnumerable<object> entities) {
-      this.table.AddRange(entities);
+      _table.AddRange(entities);
    }
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.AddRange(TEntity[])"/>
 
    public void AddRange(params object[] entities) {
-      this.table.AddRange(entities);
+      _table.AddRange(entities);
    }
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.Update(TEntity)"/>
 
    public void Update(object entity) {
-      this.table.Update(entity);
+      _table.Update(entity);
    }
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.Update(TEntity, Object)"/>
 
    public void Update(object entity, object originalId) {
-      this.table.Update(entity, originalId);
+      _table.Update(entity, originalId);
    }
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.UpdateRange(IEnumerable&lt;TEntity>)"/>
 
    public void UpdateRange(IEnumerable<object> entities) {
-      this.table.UpdateRange(entities);
+      _table.UpdateRange(entities);
    }
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.UpdateRange(TEntity[])"/>
 
    public void UpdateRange(params object[] entities) {
-      this.table.UpdateRange(entities);
+      _table.UpdateRange(entities);
    }
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.Remove(TEntity)"/>
 
    public void Remove(object entity) {
-      this.table.Remove(entity);
+      _table.Remove(entity);
    }
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveKey(Object)"/>
 
    public void RemoveKey(object id) {
-      this.table.RemoveKey(id);
+      _table.RemoveKey(id);
    }
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveRange(IEnumerable&lt;TEntity>)"/>
 
    public void RemoveRange(IEnumerable<object> entities) {
-      this.table.RemoveRange(entities);
+      _table.RemoveRange(entities);
    }
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveRange(TEntity[])"/>
 
    public void RemoveRange(params object[] entities) {
-      this.table.RemoveRange(entities);
+      _table.RemoveRange(entities);
    }
 
    /// <inheritdoc cref="SqlSet.Contains(Object)" path="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
@@ -531,7 +531,7 @@ public sealed class SqlTable : SqlSet, ISqlTable {
    /// <inheritdoc cref="SqlTable&lt;TEntity>.Refresh(TEntity)"/>
 
    public void Refresh(object entity) {
-      this.table.Refresh(entity);
+      _table.Refresh(entity);
    }
 
    #endregion
@@ -547,12 +547,12 @@ public sealed class SqlTable : SqlSet, ISqlTable {
 [DebuggerDisplay("{metaType.Name}")]
 public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity : class {
 
-   readonly MetaType metaType;
+   readonly MetaType _metaType;
 
    /// <inheritdoc cref="SqlTable.Name"/>
 
    public string Name {
-      get { return metaType.Table.TableName; }
+      get { return _metaType.Table.TableName; }
    }
 
    /// <summary>
@@ -564,7 +564,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    internal SqlTable(Database db, MetaType metaType)
       : base(new string[2] { db.FromBody(metaType, null), db.SelectBody(metaType, null, null) }, db) {
 
-      this.metaType = metaType;
+      _metaType = metaType;
       this.CommandBuilder = new SqlCommandBuilder<TEntity>(db, metaType);
    }
 
@@ -584,20 +584,20 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       var insertSql = this.CommandBuilder.BuildInsertStatementForEntity(entity);
 
-      var idMember = this.metaType.DBGeneratedIdentityMember;
+      var idMember = _metaType.DBGeneratedIdentityMember;
 
-      var syncMembers = this.metaType.PersistentDataMembers
+      var syncMembers = _metaType.PersistentDataMembers
          .Where(m => (m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
             && m != idMember)
          .ToArray();
 
-      using (var tx = this.db.EnsureInTransaction()) {
+      using (var tx = _db.EnsureInTransaction()) {
 
-         this.db.Execute(insertSql, affect: 1, exact: true);
+         _db.Execute(insertSql, affect: 1, exact: true);
 
          if (idMember != null) {
 
-            var id = this.db.LastInsertId();
+            var id = _db.LastInsertId();
             var convertedId = Convert.ChangeType(id, idMember.Type, CultureInfo.InvariantCulture);
             var entityObj = (object)entity;
 
@@ -605,7 +605,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
          }
 
          if (syncMembers.Length > 0
-            && this.metaType.IsEntity) {
+            && _metaType.IsEntity) {
 
             Refresh(entity, syncMembers);
          }
@@ -624,7 +624,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
    void InsertOneToOne(TEntity entity) {
 
-      var oneToOne = this.metaType.Associations
+      var oneToOne = _metaType.Associations
          .Where(a => !a.IsMany && a.ThisKeyIsPrimaryKey && a.OtherKeyIsPrimaryKey)
          .ToArray();
 
@@ -648,7 +648,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
             otherKey.MemberAccessor.SetBoxedValue(ref child, thisKeyVal);
          }
 
-         var otherTable = this.db.Table(assoc.OtherType);
+         var otherTable = _db.Table(assoc.OtherType);
 
          otherTable.Add(child);
       }
@@ -656,7 +656,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
    void InsertOneToMany(TEntity entity) {
 
-      var oneToMany = this.metaType.Associations.Where(a => a.IsMany).ToArray();
+      var oneToMany = _metaType.Associations.Where(a => a.IsMany).ToArray();
 
       for (int i = 0; i < oneToMany.Length; i++) {
 
@@ -683,7 +683,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
             }
          }
 
-         var otherTable = this.db.Table(assoc.OtherType);
+         var otherTable = _db.Table(assoc.OtherType);
 
          otherTable.AddRange(many);
 
@@ -727,20 +727,20 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
          return;
       }
 
-      var syncMembers = this.metaType.PersistentDataMembers
+      var syncMembers = _metaType.PersistentDataMembers
          .Where(m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
          .ToArray();
 
       var batch = syncMembers.Length == 0
-         && this.db.Configuration.EnableBatchCommands;
+         && _db.Configuration.EnableBatchCommands;
 
       if (batch) {
 
          var batchInsert = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildInsertStatementForEntity(e)));
 
-         using (var tx = this.db.EnsureInTransaction()) {
+         using (var tx = _db.EnsureInTransaction()) {
 
-            this.db.Execute(batchInsert, affect: entities.Length, exact: true);
+            _db.Execute(batchInsert, affect: entities.Length, exact: true);
 
             for (int i = 0; i < entities.Length; i++) {
                InsertDescendants(entities[i]);
@@ -751,7 +751,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       } else {
 
-         using (var tx = this.db.EnsureInTransaction()) {
+         using (var tx = _db.EnsureInTransaction()) {
 
             for (int i = 0; i < entities.Length; i++) {
                Add(entities[i]);
@@ -781,13 +781,13 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       var updateSql = this.CommandBuilder.BuildUpdateStatementForEntity(entity, originalId);
 
-      var syncMembers = this.metaType.PersistentDataMembers
+      var syncMembers = _metaType.PersistentDataMembers
          .Where(m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate)
          .ToArray();
 
-      using (this.db.EnsureConnectionOpen()) {
+      using (_db.EnsureConnectionOpen()) {
 
-         this.db.Execute(updateSql, affect: 1, exact: true);
+         _db.Execute(updateSql, affect: 1, exact: true);
 
          if (syncMembers.Length > 0) {
             Refresh(entity, syncMembers);
@@ -830,22 +830,22 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       EnsureEntityType();
 
-      var syncMembers = this.metaType.PersistentDataMembers
+      var syncMembers = _metaType.PersistentDataMembers
          .Where(m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate)
          .ToArray();
 
       var batch = syncMembers.Length == 0
-         && this.db.Configuration.EnableBatchCommands;
+         && _db.Configuration.EnableBatchCommands;
 
       if (batch) {
 
          var batchUpdate = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildUpdateStatementForEntity(e)));
 
-         this.db.Execute(batchUpdate, affect: entities.Length, exact: true);
+         _db.Execute(batchUpdate, affect: entities.Length, exact: true);
 
       } else {
 
-         using (var tx = this.db.EnsureInTransaction()) {
+         using (var tx = _db.EnsureInTransaction()) {
 
             for (int i = 0; i < entities.Length; i++) {
                Update(entities[i]);
@@ -867,10 +867,10 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       var deleteSql = this.CommandBuilder.BuildDeleteStatementForEntity(entity);
 
-      var usingVersion = this.db.Configuration.UseVersionMember
-         && this.metaType.VersionMember != null;
+      var usingVersion = _db.Configuration.UseVersionMember
+         && _metaType.VersionMember != null;
 
-      this.db.Execute(deleteSql, affect: 1, exact: usingVersion);
+      _db.Execute(deleteSql, affect: 1, exact: usingVersion);
    }
 
    /// <summary>
@@ -883,7 +883,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       var deleteSql = this.CommandBuilder.BuildDeleteStatementForKey(id);
 
-      this.db.Execute(deleteSql, affect: 1);
+      _db.Execute(deleteSql, affect: 1);
    }
 
    /// <summary>
@@ -921,36 +921,36 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       EnsureEntityType();
 
-      var usingVersion = this.db.Configuration.UseVersionMember
-         && this.metaType.VersionMember != null;
+      var usingVersion = _db.Configuration.UseVersionMember
+         && _metaType.VersionMember != null;
 
-      var singleStatement = this.metaType.IdentityMembers.Count == 1
+      var singleStatement = _metaType.IdentityMembers.Count == 1
          && !usingVersion;
 
-      var batch = this.db.Configuration.EnableBatchCommands;
+      var batch = _db.Configuration.EnableBatchCommands;
 
       if (singleStatement) {
 
-         var idMember = this.metaType.IdentityMembers[0];
+         var idMember = _metaType.IdentityMembers[0];
 
          var ids = entities.Select(e => idMember.GetValueForDatabase(e))
             .ToArray();
 
          var sql = this.CommandBuilder
             .BuildDeleteStatement()
-            .WHERE(this.db.QuoteIdentifier(idMember.MappedName) + " IN ({0})", SQL.List(ids));
+            .WHERE(_db.QuoteIdentifier(idMember.MappedName) + " IN ({0})", SQL.List(ids));
 
-         this.db.Execute(sql, affect: entities.Length);
+         _db.Execute(sql, affect: entities.Length);
 
       } else if (batch) {
 
          var batchDelete = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildDeleteStatementForEntity(e)));
 
-         this.db.Execute(batchDelete, affect: entities.Length, exact: usingVersion);
+         _db.Execute(batchDelete, affect: entities.Length, exact: usingVersion);
 
       } else {
 
-         using (var tx = this.db.EnsureInTransaction()) {
+         using (var tx = _db.EnsureInTransaction()) {
 
             for (int i = 0; i < entities.Length; i++) {
                Remove(entities[i]);
@@ -989,13 +989,13 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       EnsureEntityType();
 
       var query = this.CommandBuilder.BuildSelectStatement(refreshMembers);
-      query.WHERE(this.db.BuildPredicateFragment(entity, this.metaType.IdentityMembers, query.ParameterValues));
+      query.WHERE(_db.BuildPredicateFragment(entity, _metaType.IdentityMembers, query.ParameterValues));
 
-      var mapper = this.db.CreatePocoMapper(this.metaType.Type);
+      var mapper = _db.CreatePocoMapper(_metaType.Type);
 
       var entityObj = (object)entity;
 
-      this.db.Map<object>(query, r => {
+      _db.Map<object>(query, r => {
          mapper.Load(ref entityObj, r);
          return null;
 
@@ -1003,7 +1003,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    }
 
    void EnsureEntityType() {
-      SqlTable.EnsureEntityType(this.metaType);
+      SqlTable.EnsureEntityType(_metaType);
    }
 
    #region ISqlTable Members
@@ -1081,12 +1081,12 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
 public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
-   readonly Database db;
-   readonly MetaType metaType;
+   readonly Database _db;
+   readonly MetaType _metaType;
 
    internal SqlCommandBuilder(Database db, MetaType metaType) {
-      this.db = db;
-      this.metaType = metaType;
+      _db = db;
+      _metaType = metaType;
    }
 
    /// <summary>
@@ -1123,7 +1123,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    SqlBuilder BuildSelectClause(IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
 
       return new SqlBuilder()
-         .SELECT(this.db.SelectBody(this.metaType, selectMembers, tableAlias));
+         .SELECT(_db.SelectBody(_metaType, selectMembers, tableAlias));
    }
 
    /// <summary>
@@ -1151,7 +1151,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    internal SqlBuilder BuildSelectStatement(IEnumerable<MetaDataMember> selectMembers, string tableAlias = null) {
 
       return BuildSelectClause(selectMembers, tableAlias)
-         .FROM(this.db.FromBody(this.metaType, tableAlias));
+         .FROM(_db.FromBody(_metaType, tableAlias));
    }
 
    /// <summary>
@@ -1168,7 +1168,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-      var insertingMembers = this.metaType.PersistentDataMembers
+      var insertingMembers = _metaType.PersistentDataMembers
          .Where(m => !m.IsAssociation && !m.IsDbGenerated)
          .ToArray();
 
@@ -1178,7 +1178,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       var sb = new StringBuilder()
          .Append("INSERT INTO ")
-         .Append(QuoteIdentifier(this.metaType.Table.TableName))
+         .Append(QuoteIdentifier(_metaType.Table.TableName))
          .Append(" (");
 
       for (int i = 0; i < insertingMembers.Length; i++) {
@@ -1216,7 +1216,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    /// <returns>The UPDATE command for the current table.</returns>
 
    public SqlBuilder BuildUpdateClause() {
-      return new SqlBuilder("UPDATE " + QuoteIdentifier(this.metaType.Table.TableName));
+      return new SqlBuilder("UPDATE " + QuoteIdentifier(_metaType.Table.TableName));
    }
 
    /// <summary>
@@ -1239,12 +1239,12 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       EnsureEntityType();
 
-      var updatingMembers = this.metaType.PersistentDataMembers
+      var updatingMembers = _metaType.PersistentDataMembers
          .Where(m => !m.IsAssociation && !m.IsDbGenerated)
          .ToArray();
 
-      var predicateMembers = this.metaType.PersistentDataMembers
-         .Where(m => m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember))
+      var predicateMembers = _metaType.PersistentDataMembers
+         .Where(m => m.IsPrimaryKey || (m.IsVersion && _db.Configuration.UseVersionMember))
          .ToArray();
 
       if (originalId != null
@@ -1257,7 +1257,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       var sb = new StringBuilder()
          .Append("UPDATE ")
-         .Append(QuoteIdentifier(this.metaType.Table.TableName))
+         .Append(QuoteIdentifier(_metaType.Table.TableName))
          .AppendLine()
          .Append("SET ");
 
@@ -1289,7 +1289,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       sb.AppendLine()
          .Append("WHERE ")
-         .Append(this.db.BuildPredicateFragment(entity, predicateMembers, parametersBuffer, getValuefn));
+         .Append(_db.BuildPredicateFragment(entity, predicateMembers, parametersBuffer, getValuefn));
 
       return new SqlBuilder(sb.ToString(), parametersBuffer.ToArray());
    }
@@ -1301,7 +1301,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    /// <returns>The DELETE command for the current table.</returns>
 
    public SqlBuilder BuildDeleteStatement() {
-      return new SqlBuilder("DELETE FROM " + QuoteIdentifier(this.metaType.Table.TableName));
+      return new SqlBuilder("DELETE FROM " + QuoteIdentifier(_metaType.Table.TableName));
    }
 
    /// <summary>
@@ -1316,12 +1316,12 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       EnsureEntityType();
 
-      var predicateMembers = this.metaType.PersistentDataMembers
-         .Where(m => m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember))
+      var predicateMembers = _metaType.PersistentDataMembers
+         .Where(m => m.IsPrimaryKey || (m.IsVersion && _db.Configuration.UseVersionMember))
          .ToArray();
 
       var deleteSql = BuildDeleteStatement();
-      deleteSql.WHERE(this.db.BuildPredicateFragment(entity, predicateMembers, deleteSql.ParameterValues));
+      deleteSql.WHERE(_db.BuildPredicateFragment(entity, predicateMembers, deleteSql.ParameterValues));
 
       return deleteSql;
    }
@@ -1337,20 +1337,20 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       EnsureEntityType();
 
-      if (this.metaType.IdentityMembers.Count > 1) {
+      if (_metaType.IdentityMembers.Count > 1) {
          throw new InvalidOperationException("Cannot call this method when the entity has more than one identity member.");
       }
 
       return BuildDeleteStatement()
-         .WHERE(QuoteIdentifier(this.metaType.IdentityMembers[0].MappedName) + " = {0}", id);
+         .WHERE(QuoteIdentifier(_metaType.IdentityMembers[0].MappedName) + " = {0}", id);
    }
 
    string QuoteIdentifier(string unquotedIdentifier) {
-      return this.db.QuoteIdentifier(unquotedIdentifier);
+      return _db.QuoteIdentifier(unquotedIdentifier);
    }
 
    void EnsureEntityType() {
-      SqlTable.EnsureEntityType(this.metaType);
+      SqlTable.EnsureEntityType(_metaType);
    }
 
    #region Object Members
@@ -1397,7 +1397,7 @@ partial class SqlSet {
          throw new InvalidOperationException("The operation is not supported on untyped sets.");
       }
 
-      var metaType = this.db.Configuration.GetMetaType(resultType);
+      var metaType = _db.Configuration.GetMetaType(resultType);
 
       if (metaType == null) {
          throw new InvalidOperationException($"Mapping information was not found for '{resultType.FullName}'.");
@@ -1428,7 +1428,7 @@ partial class SqlSet {
       var metaType = EnsureEntityType();
 
       var predicateMembers = metaType.PersistentDataMembers
-         .Where(m => m.IsPrimaryKey || (m.IsVersion && this.db.Configuration.UseVersionMember))
+         .Where(m => m.IsPrimaryKey || (m.IsVersion && _db.Configuration.UseVersionMember))
          .ToArray();
 
       var predicateValues = predicateMembers.ToDictionary(
@@ -1466,8 +1466,8 @@ partial class SqlSet {
 
       var predicateParams = new List<object>(predicateValues.Count);
 
-      return Where(this.db.BuildPredicateFragment(predicateValues, predicateParams), predicateParams.ToArray())
-         .Select(this.db.SelectBody(metaType, predicateMembers, null))
+      return Where(_db.BuildPredicateFragment(predicateValues, predicateParams), predicateParams.ToArray())
+         .Select(_db.SelectBody(metaType, predicateMembers, null))
          .Any();
    }
 
@@ -1497,7 +1497,7 @@ partial class SqlSet {
       };
 
       var parameters = new List<object>(predicateValues.Count);
-      var predicate = db.BuildPredicateFragment(predicateValues, parameters);
+      var predicate = _db.BuildPredicateFragment(predicateValues, parameters);
 
       return Where(predicate, parameters.ToArray());
    }
@@ -1517,7 +1517,7 @@ partial class SqlSet {
          throw new InvalidOperationException("Include operation is not supported on untyped sets.");
       }
 
-      var metaType = this.db.Configuration.GetMetaType(this.ResultType);
+      var metaType = _db.Configuration.GetMetaType(this.ResultType);
 
       if (metaType == null) {
          throw new InvalidOperationException($"Mapping information was not found for '{this.ResultType.FullName}'.");
@@ -1532,7 +1532,7 @@ partial class SqlSet {
 
       public static SqlSet Expand(SqlSet source, string path, MetaType metaType) {
 
-         var db = source.db;
+         var db = source._db;
 
          var parts = path.Split(_pathSeparator);
 
@@ -1545,7 +1545,7 @@ partial class SqlSet {
          MetaAssociation manyAssoc;
          int manyIndex;
 
-         var query = BuildJoinedQuery(parts, metaType, source.db, selectBuild, fromAppend, out manyAssoc, out manyIndex);
+         var query = BuildJoinedQuery(parts, metaType, source._db, selectBuild, fromAppend, out manyAssoc, out manyIndex);
 
          var newSet = (query == null) ? source.Clone() : source.CreateSet(query);
 
@@ -1645,7 +1645,7 @@ partial class SqlSet {
          Debug.Assert(path.Length > 0);
          Debug.Assert(manyIndex >= 0);
 
-         var db = set.db;
+         var db = set._db;
          var metaType = manyAssoc.OtherType;
          var table = db.Table(metaType);
 
@@ -1712,7 +1712,7 @@ partial class SqlSet {
          }
 
          var parameters = new List<object>();
-         var whereFragment = set.db.BuildPredicateFragment(predicateValues, parameters);
+         var whereFragment = set._db.BuildPredicateFragment(predicateValues, parameters);
 
          var children = set.Where(whereFragment, parameters.ToArray())
             .AsEnumerable();

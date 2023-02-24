@@ -36,9 +36,9 @@ namespace DbExtensions;
 
 public partial class Database : IDisposable {
 
-   static readonly ConcurrentDictionary<string, DbProviderFactory> factories = new ConcurrentDictionary<string, DbProviderFactory>();
+   static readonly ConcurrentDictionary<string, DbProviderFactory> _factories = new();
 
-   readonly bool disposeConnection;
+   readonly bool _disposeConn;
 
    /// <summary>
    /// Gets the connection to associate with new commands.
@@ -65,7 +65,7 @@ public partial class Database : IDisposable {
    public Database() {
 
       this.Connection = CreateConnection(null, null, out var providerInvariantName);
-      this.disposeConnection = true;
+      _disposeConn = true;
 
       Initialize(providerInvariantName);
    }
@@ -81,7 +81,7 @@ public partial class Database : IDisposable {
       if (connectionString == null) throw new ArgumentNullException(nameof(connectionString));
 
       this.Connection = CreateConnection(connectionString, null, out var providerInvariantName);
-      this.disposeConnection = true;
+      _disposeConn = true;
 
       Initialize(providerInvariantName);
    }
@@ -98,7 +98,7 @@ public partial class Database : IDisposable {
       if (connectionString == null) throw new ArgumentNullException(nameof(connectionString));
 
       this.Connection = CreateConnection(connectionString, providerInvariantName, out var finalProviderInvariantName);
-      this.disposeConnection = true;
+      _disposeConn = true;
 
       Initialize(finalProviderInvariantName);
    }
@@ -167,7 +167,7 @@ public partial class Database : IDisposable {
 
       if (providerInvariantName == null) throw new ArgumentNullException(nameof(providerInvariantName));
 
-      var factory = factories.GetOrAdd(providerInvariantName, n => DbProviderFactories.GetFactory(n));
+      var factory = _factories.GetOrAdd(providerInvariantName, n => DbProviderFactories.GetFactory(n));
 
       return factory;
    }
@@ -562,7 +562,7 @@ public partial class Database : IDisposable {
 
       if (disposing) {
 
-         if (this.disposeConnection) {
+         if (_disposeConn) {
             this.Connection?.Dispose();
          }
       }
@@ -607,39 +607,39 @@ public partial class Database : IDisposable {
 
    class ConnectionHolder : IDisposable {
 
-      readonly IDbConnection conn;
-      readonly bool prevStateWasClosed;
+      readonly IDbConnection _conn;
+      readonly bool _prevStateWasClosed;
 
       public ConnectionHolder(IDbConnection conn) {
 
          if (conn == null) throw new ArgumentNullException(nameof(conn));
 
-         this.conn = conn;
-         this.prevStateWasClosed = (conn.State == ConnectionState.Closed);
+         _conn = conn;
+         _prevStateWasClosed = (conn.State == ConnectionState.Closed);
 
-         if (this.prevStateWasClosed) {
-            this.conn.Open();
+         if (_prevStateWasClosed) {
+            _conn.Open();
          }
       }
 
       public void Dispose() {
 
-         if (conn != null
-            && prevStateWasClosed
-            && conn.State != ConnectionState.Closed) {
+         if (_conn != null
+            && _prevStateWasClosed
+            && _conn.State != ConnectionState.Closed) {
 
-            conn.Close();
+            _conn.Close();
          }
       }
    }
 
    class WrappedTransaction : IDbTransaction {
 
-      readonly Database db;
-      readonly IDisposable connHolder;
-      readonly IDbTransaction txAdo;
-      readonly bool txBeganHere;
-      readonly TransactionScope txScope;
+      readonly Database _db;
+      readonly IDisposable _connHolder;
+      readonly IDbTransaction _txAdo;
+      readonly bool _txBeganHere;
+      readonly TransactionScope _txScope;
 
       public IDbConnection Connection { get; }
       public IsolationLevel IsolationLevel { get; }
@@ -648,48 +648,48 @@ public partial class Database : IDisposable {
 
          if (db == null) throw new ArgumentNullException(nameof(db));
 
-         this.db = db;
-         this.txAdo = this.db.Transaction;
+         _db = db;
+         _txAdo = _db.Transaction;
 
-         this.Connection = this.db.Connection;
+         this.Connection = _db.Connection;
          this.IsolationLevel = isolationLevel;
 
-         this.connHolder = this.db.EnsureConnectionOpen();
+         _connHolder = _db.EnsureConnectionOpen();
 
          try {
 
             if (System.Transactions.Transaction.Current != null) {
-               this.txScope = new TransactionScope();
+               _txScope = new TransactionScope();
             }
 
-            if (this.txScope == null
-               && this.txAdo == null) {
+            if (_txScope == null
+               && _txAdo == null) {
 
-               this.db.Transaction = this.db.Connection.BeginTransaction(isolationLevel);
-               this.txAdo = this.db.Transaction;
-               this.db.Configuration.Log?.WriteLine("-- TRANSACTION STARTED");
-               this.txBeganHere = true;
+               _db.Transaction = _db.Connection.BeginTransaction(isolationLevel);
+               _txAdo = _db.Transaction;
+               _db.Configuration.Log?.WriteLine("-- TRANSACTION STARTED");
+               _txBeganHere = true;
             }
 
          } catch {
 
-            this.connHolder.Dispose();
+            _connHolder.Dispose();
             throw;
          }
       }
 
       public void Commit() {
 
-         if (this.txScope != null) {
-            this.txScope.Complete();
+         if (_txScope != null) {
+            _txScope.Complete();
             return;
          }
 
-         if (this.txBeganHere) {
+         if (_txBeganHere) {
 
             try {
-               this.txAdo.Commit();
-               this.db.Configuration.Log?.WriteLine("-- TRANSACTION COMMITED");
+               _txAdo.Commit();
+               _db.Configuration.Log?.WriteLine("-- TRANSACTION COMMITED");
 
             } finally {
                RemoveTxFromDatabase();
@@ -699,15 +699,15 @@ public partial class Database : IDisposable {
 
       public void Rollback() {
 
-         if (this.txScope != null) {
+         if (_txScope != null) {
             return;
          }
 
-         if (this.txBeganHere) {
+         if (_txBeganHere) {
 
             try {
-               this.txAdo.Rollback();
-               this.db.Configuration.Log?.WriteLine("-- TRANSACTION ROLLED BACK");
+               _txAdo.Rollback();
+               _db.Configuration.Log?.WriteLine("-- TRANSACTION ROLLED BACK");
 
             } finally {
                RemoveTxFromDatabase();
@@ -721,30 +721,30 @@ public partial class Database : IDisposable {
       public void Dispose() {
 
          try {
-            if (this.txScope != null) {
-               this.txScope.Dispose();
+            if (_txScope != null) {
+               _txScope.Dispose();
                return;
             }
 
-            if (this.txBeganHere) {
+            if (_txBeganHere) {
                try {
-                  this.txAdo.Dispose();
+                  _txAdo.Dispose();
                } finally {
                   RemoveTxFromDatabase();
                }
             }
 
          } finally {
-            this.connHolder.Dispose();
+            _connHolder.Dispose();
          }
       }
 
       void RemoveTxFromDatabase() {
 
-         if (this.db.Transaction != null
-            && Object.ReferenceEquals(this.db.Transaction, this.txAdo)) {
+         if (_db.Transaction != null
+            && Object.ReferenceEquals(_db.Transaction, _txAdo)) {
 
-            this.db.Transaction = null;
+            _db.Transaction = null;
          }
       }
    }
@@ -759,13 +759,13 @@ public partial class Database : IDisposable {
 
 public sealed partial class DatabaseConfiguration {
 
-   static readonly Func<DbCommandBuilder, int, string> getParameterNameI =
+   static readonly Func<DbCommandBuilder, int, string> _getParameterNameI =
       (Func<DbCommandBuilder, int, string>)Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, int, string>), typeof(DbCommandBuilder).GetMethod("GetParameterName", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, new[] { typeof(int) }, null));
 
-   static readonly Func<DbCommandBuilder, string, string> getParameterNameS =
+   static readonly Func<DbCommandBuilder, string, string> _getParameterNameS =
       (Func<DbCommandBuilder, string, string>)Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, string, string>), typeof(DbCommandBuilder).GetMethod("GetParameterName", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, new[] { typeof(string) }, null));
 
-   static readonly Func<DbCommandBuilder, int, string> getParameterPlaceholder =
+   static readonly Func<DbCommandBuilder, int, string> _getParameterPlaceholder =
       (Func<DbCommandBuilder, int, string>)Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, int, string>), typeof(DbCommandBuilder).GetMethod("GetParameterPlaceholder", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, new[] { typeof(int) }, null));
 
    /// <summary>
@@ -882,10 +882,10 @@ public sealed partial class DatabaseConfiguration {
          this.QuoteSuffix = qs;
       }
 
-      this.ParameterNameBuilder = (name) => getParameterNameS(cb, name);
+      this.ParameterNameBuilder = (name) => _getParameterNameS.Invoke(cb, name);
 
-      var pName = getParameterNameI(cb, 1);
-      var pPlace = getParameterPlaceholder(cb, 1);
+      var pName = _getParameterNameI.Invoke(cb, 1);
+      var pPlace = _getParameterPlaceholder.Invoke(cb, 1);
 
       if (!(Object.ReferenceEquals(pName, pPlace)
          || pName == pPlace)) {
@@ -921,21 +921,21 @@ public class ChangeConflictException : Exception {
 
 class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposable {
 
-   IEnumerator<TResult> enumerator;
+   IEnumerator<TResult> _enumerator;
 
    public MappingEnumerable(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter logger = null) {
-      this.enumerator = new MappingEnumerable<TResult>.Enumerator(command, mapper, logger);
+      _enumerator = new MappingEnumerable<TResult>.Enumerator(command, mapper, logger);
    }
 
    public IEnumerator<TResult> GetEnumerator() {
 
-      var e = this.enumerator;
+      var e = _enumerator;
 
       if (e == null) {
          throw new InvalidOperationException("Cannot enumerate more than once.");
       }
 
-      this.enumerator = null;
+      _enumerator = null;
 
       return e;
    }
@@ -945,19 +945,19 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
    }
 
    public void Dispose() {
-      this.enumerator?.Dispose();
+      _enumerator?.Dispose();
    }
 
    #region Nested Types
 
    class Enumerator : IEnumerator<TResult>, IEnumerator, IDisposable {
 
-      readonly IDbCommand command;
-      readonly Func<IDataRecord, TResult> mapper;
-      readonly TextWriter logger;
-      readonly bool prevStateWasClosed;
+      readonly IDbCommand _command;
+      readonly Func<IDataRecord, TResult> _mapper;
+      readonly TextWriter _logger;
+      readonly bool _prevStateWasClosed;
 
-      IDataReader reader;
+      IDataReader _reader;
 
       public Enumerator(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter logger) {
 
@@ -970,11 +970,11 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
             throw new ArgumentException("command.Connection cannot be null", nameof(command));
          }
 
-         prevStateWasClosed = (conn.State == ConnectionState.Closed);
+         _prevStateWasClosed = (conn.State == ConnectionState.Closed);
 
-         this.command = command;
-         this.mapper = mapper;
-         this.logger = logger;
+         _command = command;
+         _mapper = mapper;
+         _logger = logger;
       }
 
       public TResult Current { get; private set; }
@@ -983,18 +983,18 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
 
       public bool MoveNext() {
 
-         if (this.reader == null) {
+         if (_reader == null) {
 
             PossiblyOpenConnection();
 
             try {
-               this.reader = this.command.ExecuteReader();
-               Database.Trace(this.command, this.logger, this.reader.RecordsAffected);
+               _reader = _command.ExecuteReader();
+               Database.Trace(_command, _logger, _reader.RecordsAffected);
 
             } catch {
 
                try {
-                  Database.Trace(this.command, this.logger, error: true);
+                  Database.Trace(_command, _logger, error: true);
                } finally {
                   PossiblyCloseConnection();
                }
@@ -1003,14 +1003,14 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
             }
          }
 
-         if (this.reader.IsClosed) {
+         if (_reader.IsClosed) {
             // see Node.Load
             return false;
          }
 
          try {
-            if (this.reader.Read()) {
-               this.Current = this.mapper(this.reader);
+            if (_reader.Read()) {
+               this.Current = _mapper.Invoke(_reader);
                return true;
             }
 
@@ -1031,23 +1031,23 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
 
       public void Dispose() {
 
-         this.reader?.Dispose();
+         _reader?.Dispose();
 
          PossiblyCloseConnection();
       }
 
       void PossiblyOpenConnection() {
 
-         if (this.prevStateWasClosed) {
-            this.command.Connection.Open();
+         if (_prevStateWasClosed) {
+            _command.Connection.Open();
          }
       }
 
       void PossiblyCloseConnection() {
 
-         if (this.prevStateWasClosed) {
+         if (_prevStateWasClosed) {
 
-            var conn = this.command.Connection;
+            var conn = _command.Connection;
 
             if (conn.State != ConnectionState.Closed) {
                conn.Close();
