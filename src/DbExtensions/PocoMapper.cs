@@ -204,13 +204,7 @@ class PocoNode : Node {
    PocoNode(Type type, int columnOrdinal, bool isComplex) {
 
       this.Type = type;
-
-      var isNullableValueType = type.IsGenericType
-         && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-
-      this.UnderlyingType = (isNullableValueType) ?
-         Nullable.GetUnderlyingType(type)
-         : type;
+      this.UnderlyingType = Nullable.GetUnderlyingType(type) ?? type;
       this.ColumnOrdinal = columnOrdinal;
       this.IsComplex = isComplex;
    }
