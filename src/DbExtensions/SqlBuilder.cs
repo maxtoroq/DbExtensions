@@ -109,9 +109,7 @@ public partial class SqlBuilder {
          return sql;
       }
 
-      if (separator == null) {
-         separator = "";
-      }
+      separator ??= "";
 
       var first = values[0];
 

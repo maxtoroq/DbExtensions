@@ -311,10 +311,7 @@ abstract class Mapper {
 
                instance.Collections.Add(collection);
 
-               if (_manyLoaders == null) {
-                  _manyLoaders = new Dictionary<CollectionNode, CollectionLoader>();
-               }
-
+               _manyLoaders ??= new Dictionary<CollectionNode, CollectionLoader>();
                _manyLoaders.Add(collection, pair.Value);
             }
          }

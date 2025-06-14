@@ -283,9 +283,7 @@ partial class Database {
    internal string
    SelectBody(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
 
-      if (selectMembers == null) {
-         selectMembers = metaType.PersistentDataMembers.Where(m => !m.IsAssociation);
-      }
+      selectMembers ??= metaType.PersistentDataMembers.Where(m => !m.IsAssociation);
 
       var sb = new StringBuilder();
 
@@ -1728,9 +1726,7 @@ partial class SqlSet {
             manySource = db.From(manyQuery, metaType.Type);
          }
 
-         if (set.ManyIncludes == null) {
-            set.ManyIncludes = new Dictionary<string[], CollectionLoader>();
-         }
+         set.ManyIncludes ??= new Dictionary<string[], CollectionLoader>();
 
          set.ManyIncludes.Add(manyPath, new CollectionLoader {
             Load = GetMany,
