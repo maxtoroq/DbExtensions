@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net45;netcoreapp2.1;netstandard2.1</TargetFrameworks>
     <LangVersion>10</LangVersion>
+    <NoWarn>NU1902,NU1903</NoWarn>
     <DefineConstants>DBEX_NO_DYN;DBEX_NO_POCO</DefineConstants>
   </PropertyGroup>
 
