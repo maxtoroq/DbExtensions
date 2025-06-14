@@ -33,7 +33,7 @@ partial class SqlSet {
    ManyIncludes {
       get => _manyIncludes;
       set {
-         if (_manyIncludes != null) {
+         if (_manyIncludes is not null) {
             throw new InvalidOperationException();
          }
          _manyIncludes = value;
@@ -43,7 +43,7 @@ partial class SqlSet {
    partial void
    Initialize2(SqlSet set) {
 
-      if (set.ManyIncludes != null) {
+      if (set.ManyIncludes is not null) {
          this.ManyIncludes = new Dictionary<string[], CollectionLoader>(set.ManyIncludes);
       }
 
@@ -130,7 +130,7 @@ abstract class Mapper {
          var columnOrdinal = pair.Key;
          var property = CreateSimpleProperty(instance, propertyName, columnOrdinal);
 
-         if (property != null) {
+         if (property is not null) {
             property.Container = instance;
             instance.Properties.Add(property);
             continue;
@@ -156,7 +156,7 @@ abstract class Mapper {
          var propertyName = nextLevel.Name;
          var property = CreateComplexProperty(instance, propertyName);
 
-         if (property != null) {
+         if (property is not null) {
 
             property.Container = instance;
 
@@ -237,7 +237,7 @@ abstract class Mapper {
                var property = instance.Properties
                   .FirstOrDefault(p => !p.IsComplex && p.PropertyName == param.Name);
 
-               if (property != null) {
+               if (property is not null) {
 
                   var paramNode = CreateParameterNode(property.ColumnOrdinal, param);
 
@@ -270,13 +270,13 @@ abstract class Mapper {
       }
 
       if (instance.IsComplex
-         && this.ManyIncludes != null) {
+         && this.ManyIncludes is not null) {
 
          var includes = this.ManyIncludes
             .Where(p => p.Key.Length == currentGroup.Depth + 1)
             .Where(p => {
 
-               if (instance.Container == null) {
+               if (instance.Container is null) {
                   // root node
                   return true;
                }
@@ -307,7 +307,7 @@ abstract class Mapper {
 
             var collection = CreateCollectionNode(instance, name);
 
-            if (collection != null) {
+            if (collection is not null) {
 
                instance.Collections.Add(collection);
 
@@ -341,7 +341,7 @@ abstract class Mapper {
    Node
    GetRootNode(IDataRecord record) {
 
-      if (_rootNode == null) {
+      if (_rootNode is null) {
          _rootNode = CreateRootNode();
          ReadMapping(record, _rootNode);
       }
@@ -583,7 +583,7 @@ abstract class Node {
 
          var currentValue = childNode.Get(ref instance);
 
-         if (currentValue != null) {
+         if (currentValue is not null) {
             childNode.Load(ref currentValue, record, context);
          } else {
             childNode.Read(ref instance, record, context);

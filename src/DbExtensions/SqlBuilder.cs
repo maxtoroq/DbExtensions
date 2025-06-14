@@ -101,7 +101,7 @@ public partial class SqlBuilder {
    public static SqlBuilder
    JoinSql(string separator, params SqlBuilder[] values) {
 
-      if (values == null) throw new ArgumentNullException(nameof(values));
+      if (values is null) throw new ArgumentNullException(nameof(values));
 
       var sql = new SqlBuilder();
 
@@ -113,7 +113,7 @@ public partial class SqlBuilder {
 
       var first = values[0];
 
-      if (first != null) {
+      if (first is not null) {
          sql.Append(first);
       }
 
@@ -123,7 +123,7 @@ public partial class SqlBuilder {
 
          var val = values[i];
 
-         if (val != null) {
+         if (val is not null) {
             sql.Append(val);
          }
       }
@@ -146,7 +146,7 @@ public partial class SqlBuilder {
    public static SqlBuilder
    JoinSql(string separator, IEnumerable<SqlBuilder> values) {
 
-      if (values == null) throw new ArgumentNullException(nameof(values));
+      if (values is null) throw new ArgumentNullException(nameof(values));
 
       var sql = new SqlBuilder();
 
@@ -158,7 +158,7 @@ public partial class SqlBuilder {
             return sql;
          }
 
-         if (enumerator.Current != null) {
+         if (enumerator.Current is not null) {
             sql.Append(enumerator.Current);
          }
 
@@ -166,7 +166,7 @@ public partial class SqlBuilder {
 
             sql.Append(separator);
 
-            if (enumerator.Current != null) {
+            if (enumerator.Current is not null) {
                sql.Append(enumerator.Current);
             }
          }
@@ -207,19 +207,19 @@ public partial class SqlBuilder {
    public SqlBuilder
    AppendClause(string clauseName, string separator, string format, params object[] args) {
 
-      if (separator == null
+      if (separator is null
          || !String.Equals(clauseName, this.CurrentClause, StringComparison.OrdinalIgnoreCase)) {
 
          if (!this.IsEmpty) {
             this.Buffer.AppendLine();
          }
 
-         if (clauseName != null) {
+         if (clauseName is not null) {
             this.Buffer.Append(clauseName);
             this.Buffer.Append(" ");
          }
 
-      } else if (separator != null) {
+      } else if (separator is not null) {
          this.Buffer.Append(separator);
       }
 
@@ -248,7 +248,7 @@ public partial class SqlBuilder {
       var clause = this.CurrentClause;
       var separator = this.CurrentSeparator;
 
-      if (this.NextClause != null) {
+      if (this.NextClause is not null) {
          clause = this.NextClause;
          separator = this.NextSeparator;
       }
@@ -286,7 +286,7 @@ public partial class SqlBuilder {
    public SqlBuilder
    Append(string format, params object[] args) {
 
-      if (args == null || args.Length == 0) {
+      if (args is null || args.Length == 0) {
 
          this.Buffer.Append(format);
          return this;
@@ -298,7 +298,7 @@ public partial class SqlBuilder {
 
          var obj = args[i];
 
-         if (obj != null) {
+         if (obj is not null) {
 
             if (obj is SqlList list) {
 
@@ -314,11 +314,11 @@ public partial class SqlBuilder {
 
                var sqlb = obj as SqlBuilder;
 
-               if (sqlb == null) {
+               if (sqlb is null) {
                   GetDefiningQueryFromObject(obj, ref sqlb);
                }
 
-               if (sqlb != null) {
+               if (sqlb is not null) {
 
                   var sqlfrag = new StringBuilder()
                      .AppendLine()
@@ -541,13 +541,13 @@ public partial class SqlBuilder {
    public SqlBuilder
    _ForEach<T>(IEnumerable<T> items, string format, string itemFormat, string separator, Func<T, object[]> parametersFactory) {
 
-      if (items == null) throw new ArgumentNullException(nameof(items));
-      if (itemFormat == null) throw new ArgumentNullException(nameof(itemFormat));
-      if (separator == null) throw new ArgumentNullException(nameof(separator));
+      if (items is null) throw new ArgumentNullException(nameof(items));
+      if (itemFormat is null) throw new ArgumentNullException(nameof(itemFormat));
+      if (separator is null) throw new ArgumentNullException(nameof(separator));
 
       string formatStart = "", formatEnd = "";
 
-      if (format != null) {
+      if (format is not null) {
          var formatSplit = format.Split(new[] { "{0}" }, StringSplitOptions.None);
          formatStart = formatSplit[0];
          formatEnd = formatSplit[1];
@@ -927,7 +927,7 @@ public partial class SqlBuilder {
    public SqlBuilder
    VALUES(params object[] args) {
 
-      if (args == null || args.Length == 0) {
+      if (args is null || args.Length == 0) {
          throw new ArgumentException("args cannot be empty", nameof(args));
       }
 
@@ -1098,7 +1098,7 @@ class SqlList {
       var arr = values?.Cast<object>()
          .ToArray();
 
-      if (arr == null
+      if (arr is null
          || arr.Length == 0) {
 
          // ensuring at least one item to avoid building an empty list

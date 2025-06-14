@@ -109,7 +109,7 @@ partial class Database {
    public void
    Add(object entity) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       Table(entity.GetType())
          .Add(entity);
@@ -132,7 +132,7 @@ partial class Database {
    public object
    Find(Type entityType, object id) {
 
-      if (entityType == null) throw new ArgumentNullException(nameof(entityType));
+      if (entityType is null) throw new ArgumentNullException(nameof(entityType));
 
       return Table(entityType)
          .Find(id);
@@ -145,7 +145,7 @@ partial class Database {
    public bool
    Contains(object entity) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       return Table(entity.GetType())
          .Contains(entity);
@@ -168,7 +168,7 @@ partial class Database {
    public bool
    ContainsKey(Type entityType, object id) {
 
-      if (entityType == null) throw new ArgumentNullException(nameof(entityType));
+      if (entityType is null) throw new ArgumentNullException(nameof(entityType));
 
       return Table(entityType)
          .ContainsKey(id);
@@ -181,7 +181,7 @@ partial class Database {
    public void
    Update(object entity) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       Table(entity.GetType())
          .Update(entity);
@@ -194,7 +194,7 @@ partial class Database {
    public void
    Update(object entity, object originalId) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       Table(entity.GetType())
          .Update(entity, originalId);
@@ -207,7 +207,7 @@ partial class Database {
    public void
    Remove(object entity) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       Table(entity.GetType())
          .Remove(entity);
@@ -229,7 +229,7 @@ partial class Database {
    public void
    RemoveKey(Type entityType, object id) {
 
-      if (entityType == null) throw new ArgumentNullException(nameof(entityType));
+      if (entityType is null) throw new ArgumentNullException(nameof(entityType));
 
       Table(entityType)
          .RemoveKey(id);
@@ -244,7 +244,7 @@ partial class Database {
 
       var predicateValues = predicateMembers.ToDictionary(
          m => m.MappedName,
-         m => (getValueFn != null) ? getValueFn(m) : m.GetValueForDatabase(entity)
+         m => (getValueFn is not null) ? getValueFn(m) : m.GetValueForDatabase(entity)
       );
 
       return BuildPredicateFragment(predicateValues, parametersBuffer);
@@ -253,8 +253,8 @@ partial class Database {
    internal string
    BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
 
-      if (predicateValues == null || predicateValues.Count == 0) throw new ArgumentException("predicateValues cannot be empty", nameof(predicateValues));
-      if (parametersBuffer == null) throw new ArgumentNullException(nameof(parametersBuffer));
+      if (predicateValues is null || predicateValues.Count == 0) throw new ArgumentException("predicateValues cannot be empty", nameof(predicateValues));
+      if (parametersBuffer is null) throw new ArgumentNullException(nameof(parametersBuffer));
 
       var sb = new StringBuilder();
 
@@ -266,7 +266,7 @@ partial class Database {
 
          sb.Append(QuoteIdentifier(item.Key));
 
-         if (item.Value == null) {
+         if (item.Value is null) {
             sb.Append(" IS NULL");
          } else {
             sb.Append(" = {")
@@ -303,13 +303,13 @@ partial class Database {
             sb.Append(", ");
          }
 
-         if (qualifier != null) {
+         if (qualifier is not null) {
             sb.Append(qualifier);
          }
 
          sb.Append(QuoteIdentifier(enumerator.Current.MappedName));
 
-         if (columnAlias != null) {
+         if (columnAlias is not null) {
 
             sb.Append(" AS ")
                .Append(QuoteIdentifier(memberName));
@@ -322,7 +322,7 @@ partial class Database {
    internal string
    FromBody(MetaType metaType, string tableAlias) {
 
-      if (metaType.Table == null) throw new InvalidOperationException("metaType.Table cannot be null.");
+      if (metaType.Table is null) throw new InvalidOperationException("metaType.Table cannot be null.");
 
       var alias = (!String.IsNullOrEmpty(tableAlias)) ?
          " " + QuoteIdentifier(tableAlias)
@@ -604,7 +604,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    public void
    Add(TEntity entity) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       var insertSql = this.CommandBuilder.BuildInsertStatementForEntity(entity);
 
@@ -619,7 +619,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
          _db.Execute(insertSql, affect: 1, exact: true);
 
-         if (idMember != null) {
+         if (idMember is not null) {
 
             var id = _db.LastInsertId();
             var convertedId = Convert.ChangeType(id, idMember.Type, CultureInfo.InvariantCulture);
@@ -660,7 +660,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
          var child = assoc.ThisMember.MemberAccessor.GetBoxedValue(entity);
 
-         if (child == null) {
+         if (child is null) {
             continue;
          }
 
@@ -690,7 +690,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
          var assoc = oneToMany[i];
 
          var many = ((IEnumerable<object>)assoc.ThisMember.MemberAccessor.GetBoxedValue(entity) ?? new object[0])
-            .Where(o => o != null)
+            .Where(o => o is not null)
             .ToArray();
 
          if (many.Length == 0) continue;
@@ -732,7 +732,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    public void
    AddRange(IEnumerable<TEntity> entities) {
 
-      if (entities == null) throw new ArgumentNullException(nameof(entities));
+      if (entities is null) throw new ArgumentNullException(nameof(entities));
 
       AddRange(entities.ToArray());
    }
@@ -742,9 +742,9 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    public void
    AddRange(params TEntity[] entities) {
 
-      if (entities == null) throw new ArgumentNullException(nameof(entities));
+      if (entities is null) throw new ArgumentNullException(nameof(entities));
 
-      entities = entities.Where(o => o != null)
+      entities = entities.Where(o => o is not null)
          .ToArray();
 
       if (entities.Length == 0) {
@@ -807,7 +807,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    public void
    Update(TEntity entity, object originalId) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       var updateSql = this.CommandBuilder.BuildUpdateStatementForEntity(entity, originalId);
 
@@ -833,7 +833,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    public void
    UpdateRange(IEnumerable<TEntity> entities) {
 
-      if (entities == null) throw new ArgumentNullException(nameof(entities));
+      if (entities is null) throw new ArgumentNullException(nameof(entities));
 
       UpdateRange(entities.ToArray());
    }
@@ -846,9 +846,9 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    public void
    UpdateRange(params TEntity[] entities) {
 
-      if (entities == null) throw new ArgumentNullException(nameof(entities));
+      if (entities is null) throw new ArgumentNullException(nameof(entities));
 
-      entities = entities.Where(o => o != null)
+      entities = entities.Where(o => o is not null)
          .ToArray();
 
       if (entities.Length == 0) {
@@ -896,12 +896,12 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    public void
    Remove(TEntity entity) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       var deleteSql = this.CommandBuilder.BuildDeleteStatementForEntity(entity);
 
       var usingVersion = _db.Configuration.UseVersionMember
-         && _metaType.VersionMember != null;
+         && _metaType.VersionMember is not null;
 
       _db.Execute(deleteSql, affect: 1, exact: usingVersion);
    }
@@ -928,7 +928,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    public void
    RemoveRange(IEnumerable<TEntity> entities) {
 
-      if (entities == null) throw new ArgumentNullException(nameof(entities));
+      if (entities is null) throw new ArgumentNullException(nameof(entities));
 
       RemoveRange(entities.ToArray());
    }
@@ -941,9 +941,9 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    public void
    RemoveRange(params TEntity[] entities) {
 
-      if (entities == null) throw new ArgumentNullException(nameof(entities));
+      if (entities is null) throw new ArgumentNullException(nameof(entities));
 
-      entities = entities.Where(o => o != null)
+      entities = entities.Where(o => o is not null)
          .ToArray();
 
       if (entities.Length == 0) {
@@ -958,7 +958,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       EnsureEntityType();
 
       var usingVersion = _db.Configuration.UseVersionMember
-         && _metaType.VersionMember != null;
+         && _metaType.VersionMember is not null;
 
       var singleStatement = _metaType.IdentityMembers.Count == 1
          && !usingVersion;
@@ -1021,7 +1021,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    void
    Refresh(TEntity entity, IEnumerable<MetaDataMember> refreshMembers) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       EnsureEntityType();
 
@@ -1060,7 +1060,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    void
    ISqlTable.AddRange(params object[] entities) {
 
-      if (entities == null) throw new ArgumentNullException(nameof(entities));
+      if (entities is null) throw new ArgumentNullException(nameof(entities));
 
       AddRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
    }
@@ -1080,7 +1080,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    void
    ISqlTable.UpdateRange(params object[] entities) {
 
-      if (entities == null) throw new ArgumentNullException(nameof(entities));
+      if (entities is null) throw new ArgumentNullException(nameof(entities));
 
       UpdateRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
    }
@@ -1100,7 +1100,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    void
    ISqlTable.RemoveRange(params object[] entities) {
 
-      if (entities == null) throw new ArgumentNullException(nameof(entities));
+      if (entities is null) throw new ArgumentNullException(nameof(entities));
 
       RemoveRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
    }
@@ -1209,7 +1209,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    public SqlBuilder
    BuildInsertStatementForEntity(TEntity entity) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       var insertingMembers = _metaType.PersistentDataMembers
          .Where(m => !m.IsAssociation && !m.IsDbGenerated)
@@ -1279,7 +1279,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    public SqlBuilder
    BuildUpdateStatementForEntity(TEntity entity, object originalId) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       EnsureEntityType();
 
@@ -1291,7 +1291,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
          .Where(m => m.IsPrimaryKey || (m.IsVersion && _db.Configuration.UseVersionMember))
          .ToArray();
 
-      if (originalId != null
+      if (originalId is not null
          && predicateMembers.Count(m => m.IsPrimaryKey) > 1) {
 
          throw new InvalidOperationException("The operation is not supported for entities with more than one identity member.");
@@ -1324,7 +1324,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       var getValuefn = default(Func<MetaDataMember, object>);
 
-      if (originalId != null) {
+      if (originalId is not null) {
 
          getValuefn = m => (m.IsPrimaryKey) ?
             m.ConvertValueForDatabase(originalId)
@@ -1357,7 +1357,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    public SqlBuilder
    BuildDeleteStatementForEntity(TEntity entity) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       EnsureEntityType();
 
@@ -1460,7 +1460,7 @@ partial class SqlSet {
    public bool
    Contains(object entity) {
 
-      if (entity == null) throw new ArgumentNullException(nameof(entity));
+      if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       var metaType = EnsureEntityType();
 
@@ -1527,7 +1527,7 @@ partial class SqlSet {
    internal SqlSet
    FindImpl(object id) {
 
-      if (id == null) throw new ArgumentNullException(nameof(id));
+      if (id is null) throw new ArgumentNullException(nameof(id));
 
       var metaType = EnsureEntityType(maxIdMembers: 1);
       var idMember = metaType.IdentityMembers[0];
@@ -1552,7 +1552,7 @@ partial class SqlSet {
    public SqlSet
    Include(string path) {
 
-      if (path == null) throw new ArgumentNullException(nameof(path));
+      if (path is null) throw new ArgumentNullException(nameof(path));
 
       var resultType = this.ResultType
          ?? throw new InvalidOperationException("Include operation is not supported on untyped sets.");
@@ -1586,9 +1586,9 @@ partial class SqlSet {
 
          var query = BuildJoinedQuery(parts, metaType, source._db, selectBuild, fromAppend, out manyAssoc, out manyIndex);
 
-         var newSet = (query == null) ? source.Clone() : source.CreateSet(query);
+         var newSet = (query is null) ? source.Clone() : source.CreateSet(query);
 
-         if (manyAssoc != null) {
+         if (manyAssoc is not null) {
             AddManyInclude(newSet, parts, path, manyAssoc, manyIndex);
          }
 
@@ -1622,7 +1622,7 @@ partial class SqlSet {
             var member = currentType.PersistentDataMembers
                .SingleOrDefault(m => m.Name == p);
 
-            if (member == null) {
+            if (member is null) {
                throw new ArgumentException($"Couldn't find '{p}' on '{currentType.Type.FullName}'.", nameof(path));
             }
 
@@ -1719,7 +1719,7 @@ partial class SqlSet {
 
             var manyQuery = BuildJoinedQuery(manyInclude, metaType, db, selectBuild, fromAppend, out manyInManyAssoc, out manyInManyIndex);
 
-            if (manyInManyAssoc != null) {
+            if (manyInManyAssoc is not null) {
                throw new ArgumentException($"One-to-many associations can only be specified once in an include path ('{originalPath}').", nameof(path));
             }
 
@@ -1761,7 +1761,7 @@ partial class SqlSet {
 
          foreach (var child in children) {
 
-            if (otherMember != null
+            if (otherMember is not null
                && !otherMember.Association.IsMany) {
 
                var childObj = child;

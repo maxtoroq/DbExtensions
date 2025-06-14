@@ -115,7 +115,7 @@ class DynamicNode : Node {
    internal
    DynamicNode(string propertyName, int columnOrdinal = default, bool isComplex = default) {
 
-      if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
+      if (propertyName is null) throw new ArgumentNullException(nameof(propertyName));
       if (propertyName.Length == 0) throw new ArgumentException("Cannot map column using an empty property name.", nameof(propertyName));
 
       if (UInt32.TryParse(propertyName, out _)) {

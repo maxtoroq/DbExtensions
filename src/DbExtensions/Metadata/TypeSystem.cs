@@ -29,12 +29,12 @@ static class TypeSystem {
       return seqType != typeof(string)
          && seqType != typeof(byte[])
          && seqType != typeof(char[])
-         && FindIEnumerable(seqType) != null;
+         && FindIEnumerable(seqType) is not null;
    }
 
    static Type FindIEnumerable(Type seqType) {
 
-      if (seqType == null || seqType == typeof(string)) {
+      if (seqType is null || seqType == typeof(string)) {
          return null;
       }
 
@@ -56,19 +56,19 @@ static class TypeSystem {
 
       var ifaces = seqType.GetInterfaces();
 
-      if (ifaces != null && ifaces.Length > 0) {
+      if (ifaces is not null && ifaces.Length > 0) {
 
          foreach (var iface in ifaces) {
 
             var ienum = FindIEnumerable(iface);
 
-            if (ienum != null) {
+            if (ienum is not null) {
                return ienum;
             }
          }
       }
 
-      if (seqType.BaseType != null
+      if (seqType.BaseType is not null
          && seqType.BaseType != typeof(object)) {
 
          return FindIEnumerable(seqType.BaseType);
@@ -81,7 +81,7 @@ static class TypeSystem {
 
       var ienum = FindIEnumerable(seqType);
 
-      if (ienum == null) {
+      if (ienum is null) {
          return seqType;
       }
 
@@ -90,7 +90,7 @@ static class TypeSystem {
 
    internal static bool IsNullableType(Type type) {
 
-      return type != null
+      return type is not null
          && type.IsGenericType
          && type.GetGenericTypeDefinition() == typeof(Nullable<>);
    }
@@ -129,7 +129,7 @@ static class TypeSystem {
 
          currentType = currentType.BaseType;
 
-      } while (currentType != null);
+      } while (currentType is not null);
 
       return seen.Values;
    }
@@ -150,7 +150,7 @@ static class TypeSystem {
 
          currentType = currentType.BaseType;
 
-      } while (currentType != null);
+      } while (currentType is not null);
 
       return seen.Values;
    }
@@ -159,7 +159,7 @@ static class TypeSystem {
 
       var mi = pi.GetGetMethod() ?? pi.GetSetMethod();
 
-      if (mi != null) {
+      if (mi is not null) {
          return mi.IsPrivate;
       }
 
@@ -194,7 +194,7 @@ struct MetaPosition : IEqualityComparer<MetaPosition>, IEqualityComparer {
 
    public override bool Equals(object obj) {
 
-      if (obj == null) {
+      if (obj is null) {
          return false;
       }
 

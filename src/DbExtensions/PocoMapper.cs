@@ -92,7 +92,7 @@ class PocoMapper : Mapper {
    public
    PocoMapper(Type type) {
 
-      if (type == null) throw new ArgumentNullException(nameof(type));
+      if (type is null) throw new ArgumentNullException(nameof(type));
 
       _type = type;
    }
@@ -106,7 +106,7 @@ class PocoMapper : Mapper {
 
       var property = GetProperty(((PocoNode)container).UnderlyingType, propertyName);
 
-      if (property == null) {
+      if (property is null) {
          return null;
       }
 
@@ -118,7 +118,7 @@ class PocoMapper : Mapper {
 
       var property = GetProperty(((PocoNode)container).UnderlyingType, propertyName);
 
-      if (property == null) {
+      if (property is null) {
          return null;
       }
 
@@ -140,7 +140,7 @@ class PocoMapper : Mapper {
 
       var property = declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-      if (property == null) {
+      if (property is null) {
          return null;
       }
 
@@ -156,7 +156,7 @@ class PocoMapper : Mapper {
 
       var property = declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-      if (property == null) {
+      if (property is null) {
          return property;
       }
 
@@ -227,7 +227,7 @@ class PocoNode : Node {
    public override object
    Create(IDataRecord record, MappingContext context) {
 
-      if (this.Constructor == null) {
+      if (this.Constructor is null) {
          return Activator.CreateInstance(this.Type);
       }
 
@@ -235,8 +235,8 @@ class PocoNode : Node {
          .Select(m => m.Value.Map(record, context))
          .ToArray();
 
-      if (this.ConstructorParameters.Any(p => ((PocoNode)p.Value).ConvertFunction != null)
-         || args.All(v => v == null)) {
+      if (this.ConstructorParameters.Any(p => ((PocoNode)p.Value).ConvertFunction is not null)
+         || args.All(v => v is null)) {
 
          return this.Constructor.Invoke(args);
       }
@@ -252,7 +252,7 @@ class PocoNode : Node {
 
             var value = args[i];
 
-            if (value == null) {
+            if (value is null) {
                continue;
             }
 
@@ -262,7 +262,7 @@ class PocoNode : Node {
 
                var convert = GetConversionFunction(value, paramNode);
 
-               context.Log?.WriteLine($"-- WARNING: Couldn't instantiate {this.UnderlyingType.FullName} with argument '{paramNode.Parameter.Name}' of type {paramNode.Type.FullName} {((value == null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}. Attempting conversion.");
+               context.Log?.WriteLine($"-- WARNING: Couldn't instantiate {this.UnderlyingType.FullName} with argument '{paramNode.Parameter.Name}' of type {paramNode.Type.FullName} {((value is null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}. Attempting conversion.");
 
                paramNode.ConvertFunction = convert;
 
@@ -285,8 +285,8 @@ class PocoNode : Node {
 
       Func<PocoNode, object, object> convertFn;
 
-      if (value != null
-         && (convertFn = this.ConvertFunction) != null) {
+      if (value is not null
+         && (convertFn = this.ConvertFunction) is not null) {
 
          value = convertFn.Invoke(this, value);
       }
@@ -310,7 +310,7 @@ class PocoNode : Node {
             SetSimple(ref instance, value, context);
 
          } catch (Exception ex) {
-            throw new InvalidCastException($"Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Type.FullName}' {((value == null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}.", ex);
+            throw new InvalidCastException($"Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Type.FullName}' {((value is null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}.", ex);
          }
       }
    }
@@ -318,7 +318,7 @@ class PocoNode : Node {
    void
    SetSimple(ref object instance, object value, MappingContext context) {
 
-      if (this.ConvertFunction != null || value == null) {
+      if (this.ConvertFunction is not null || value is null) {
          SetProperty(ref instance, value);
          return;
       }
@@ -330,7 +330,7 @@ class PocoNode : Node {
 
          var convert = GetConversionFunction(value, this);
 
-         context.Log?.WriteLine($"-- WARNING: Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Property.PropertyType.FullName}' {((value == null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}. Attempting conversion.");
+         context.Log?.WriteLine($"-- WARNING: Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Property.PropertyType.FullName}' {((value is null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}. Attempting conversion.");
 
          value = convert.Invoke(this, value);
 
@@ -409,14 +409,12 @@ class PocoCollection : CollectionNode {
       var colType = _property.PropertyType;
       _elementType = typeof(object);
 
-      for (var type = colType; type != null; type = type.BaseType) {
-
-         var interfaces = type.GetInterfaces();
+      for (var type = colType; type is not null; type = type.BaseType) {
 
          var genericICol = type.GetInterfaces()
             .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>));
 
-         if (genericICol != null) {
+         if (genericICol is not null) {
             _elementType = genericICol.GetGenericArguments()[0];
             break;
          }
@@ -424,7 +422,7 @@ class PocoCollection : CollectionNode {
 
       _addMethod = colType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, new[] { _elementType }, null);
 
-      if (_addMethod == null) {
+      if (_addMethod is null) {
          throw new InvalidOperationException($"Couldn't find a public 'Add' method on '{colType.FullName}'.");
       }
    }
@@ -434,7 +432,7 @@ class PocoCollection : CollectionNode {
 
       var collection = _property.GetValue(instance, null);
 
-      if (collection == null) {
+      if (collection is null) {
 
          var collectionType = _property.PropertyType;
 
