@@ -344,7 +344,7 @@ public partial class SqlBuilder {
 
       format ??= String.Join(" ", Enumerable.Range(0, fargs.Count).Select(i => Placeholder(i)));
 
-      this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, fargs.Cast<object>().ToArray());
+      this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, fargs.ToArray());
 
       return this;
    }
