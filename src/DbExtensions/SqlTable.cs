@@ -328,7 +328,7 @@ partial class Database {
          " " + QuoteIdentifier(tableAlias)
          : null;
 
-      return QuoteIdentifier(metaType.Table.TableName) + (alias ?? "");
+      return QuoteIdentifier(metaType.Table.TableName) + alias;
    }
 }
 

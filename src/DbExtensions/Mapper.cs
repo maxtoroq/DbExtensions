@@ -99,8 +99,8 @@ abstract class Mapper {
           let columnName = record.GetName(i)
           let path = columnName.Split(_pathSeparator)
           let property = (path.Length == 1) ? columnName : path[path.Length - 1]
-          let assoc = (path.Length == 1) ? "" : path[path.Length - 2]
-          let parent = (path.Length <= 2) ? "" : path[path.Length - 3]
+          let assoc = (path.Length == 1) ? String.Empty : path[path.Length - 2]
+          let parent = (path.Length <= 2) ? String.Empty : path[path.Length - 3]
           let propertyInfo = new { ColumnOrdinal = i, PropertyName = property }
           group propertyInfo by new { depth = path.Length - 1, parent, assoc } into t
           orderby t.Key.depth, t.Key.parent, t.Key.assoc
@@ -113,7 +113,7 @@ abstract class Mapper {
          .ToArray();
 
       var topGroup = groups.Where(m => m.Depth == 0).SingleOrDefault()
-         ?? new MapGroup { Name = "", Parent = "", Properties = new Dictionary<int, string>() };
+         ?? new MapGroup { Name = String.Empty, Parent = String.Empty, Properties = new Dictionary<int, string>() };
 
       ReadMapping(record, groups, topGroup, rootNode);
    }

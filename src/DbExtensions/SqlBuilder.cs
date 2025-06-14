@@ -109,7 +109,7 @@ public partial class SqlBuilder {
          return sql;
       }
 
-      separator ??= "";
+      separator ??= String.Empty;
 
       var first = values[0];
 
@@ -150,7 +150,7 @@ public partial class SqlBuilder {
 
       var sql = new SqlBuilder();
 
-      separator ??= "";
+      separator ??= String.Empty;
 
       using (var enumerator = values.GetEnumerator()) {
 
@@ -545,7 +545,7 @@ public partial class SqlBuilder {
       if (itemFormat is null) throw new ArgumentNullException(nameof(itemFormat));
       if (separator is null) throw new ArgumentNullException(nameof(separator));
 
-      string formatStart = "", formatEnd = "";
+      string formatStart = String.Empty, formatEnd = String.Empty;
 
       if (format is not null) {
          var formatSplit = format.Split(new[] { "{0}" }, StringSplitOptions.None);
