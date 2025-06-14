@@ -397,7 +397,7 @@ sealed partial class DatabaseConfiguration {
 /// This class cannot be instantiated, to get an instance use the <see cref="Database.Table(Type)"/> method.
 /// </summary>
 
-[DebuggerDisplay("{metaType.Name}")]
+[DebuggerDisplay("{_metaType.Name}")]
 public sealed class SqlTable : SqlSet, ISqlTable {
 
    // table is the SqlTable<TEntity> instance for metaType
@@ -567,7 +567,7 @@ public sealed class SqlTable : SqlSet, ISqlTable {
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 
-[DebuggerDisplay("{metaType.Name}")]
+[DebuggerDisplay("{_metaType.Name}")]
 public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity : class {
 
    readonly MetaType
