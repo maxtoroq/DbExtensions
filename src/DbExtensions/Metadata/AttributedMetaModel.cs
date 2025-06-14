@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -1257,7 +1256,7 @@ abstract class MetaAssociationImpl : MetaAssociation {
    }
 
    public override string ToString() {
-      return String.Format(CultureInfo.InvariantCulture, "{0} ->{1} {2}", this.ThisMember.DeclaringType.Name, this.IsMany ? "*" : "", this.OtherType.Name);
+      return $"{this.ThisMember.DeclaringType.Name} ->{(this.IsMany ? "*" : null)} {this.OtherType.Name}";
    }
 }
 

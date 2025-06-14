@@ -198,13 +198,13 @@ abstract class Mapper {
             if (instance.ConstructorParameters.ContainsKey(pair.Key.ParameterIndex)) {
 
                var message = new StringBuilder();
-               message.AppendFormat(CultureInfo.InvariantCulture, "Already specified an argument for parameter '{0}'", param.Name);
+               message.Append($"Already specified an argument for parameter '{param.Name}'");
 
                if (pair.Key.ColumnOrdinal.HasValue) {
-                  message.AppendFormat(CultureInfo.InvariantCulture, " ('{0}')", record.GetName(pair.Key.ColumnOrdinal.Value));
+                  message.Append($" ('{record.GetName(pair.Key.ColumnOrdinal.Value)}')");
                }
 
-               message.Append(".");
+               message.Append('.');
 
                throw new InvalidOperationException(message.ToString());
             }
@@ -257,11 +257,7 @@ abstract class Mapper {
 
             if (parameters.Length != instance.ConstructorParameters.Count) {
                throw new InvalidOperationException(
-                  String.Format(CultureInfo.InvariantCulture,
-                     "There are missing arguments for constructor with {0} parameter(s) for type '{1}'.",
-                     parameters.Length,
-                     instance.TypeName
-                  )
+                  $"There are missing arguments for constructor with {parameters.Length.ToString(CultureInfo.InvariantCulture)} parameter(s) for type '{instance.TypeName}'."
                );
             }
 
@@ -395,21 +391,13 @@ abstract class Mapper {
 
       if (constructors.Length == 0) {
          throw new InvalidOperationException(
-            String.Format(CultureInfo.InvariantCulture,
-               "Couldn't find a public constructor with {0} parameter(s) for type '{1}'.",
-               parameterLength,
-               node.TypeName
-            )
+            $"Couldn't find a public constructor with {parameterLength.ToString(CultureInfo.InvariantCulture)} parameter(s) for type '{node.TypeName}'."
          );
       }
 
       if (constructors.Length > 1) {
          throw new InvalidOperationException(
-            String.Format(CultureInfo.InvariantCulture,
-               "Found more than one public constructors with {0} parameter(s) for type '{1}'. Please use another constructor.",
-               parameterLength,
-               node.TypeName
-            )
+            $"Found more than one public constructors with {parameterLength.ToString(CultureInfo.InvariantCulture)} parameter(s) for type '{node.TypeName}'. Please use another constructor."
          );
       }
 

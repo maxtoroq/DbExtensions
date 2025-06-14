@@ -216,7 +216,7 @@ public partial class SqlBuilder {
 
          if (clauseName is not null) {
             this.Buffer.Append(clauseName);
-            this.Buffer.Append(" ");
+            this.Buffer.Append(' ');
          }
 
       } else if (separator is not null) {

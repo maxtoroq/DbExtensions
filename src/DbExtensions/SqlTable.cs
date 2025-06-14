@@ -1671,7 +1671,7 @@ partial class SqlSet {
                var thisMember = association.ThisKey[j];
                var otherMember = association.OtherKey[j];
 
-               joinPredicate.AppendFormat(CultureInfo.InvariantCulture, "{0}.{1} = {2}.{3}", db.QuoteIdentifier(lAlias), db.QuoteIdentifier(thisMember.Name), db.QuoteIdentifier(rAlias), db.QuoteIdentifier(otherMember.MappedName));
+               joinPredicate.Append($"{db.QuoteIdentifier(lAlias)}.{db.QuoteIdentifier(thisMember.Name)} = {db.QuoteIdentifier(rAlias)}.{db.QuoteIdentifier(otherMember.MappedName)}");
             }
 
             query.LEFT_JOIN($"{db.QuoteIdentifier(association.OtherType.Table.TableName)} {db.QuoteIdentifier(rAlias)} ON ({joinPredicate.ToString()})");

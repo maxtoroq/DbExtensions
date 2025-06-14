@@ -314,10 +314,10 @@ public partial class Database : IDisposable {
                string errorMessage = null;
 
                if (exact) {
-                  errorMessage = String.Format(CultureInfo.InvariantCulture, "The number of affected records should be {0}, the actual number is {1}.", affect, affectedRecords);
+                  errorMessage = $"The number of affected records should be {affect.ToString(CultureInfo.InvariantCulture)}, the actual number is {affectedRecords.ToString(CultureInfo.InvariantCulture)}.";
 
                } else if (affectedRecords > affect) {
-                  errorMessage = String.Format(CultureInfo.InvariantCulture, "The number of affected records should be {0} or lower, the actual number is {1}.", affect, affectedRecords);
+                  errorMessage = $"The number of affected records should be {affect.ToString(CultureInfo.InvariantCulture)} or lower, the actual number is {affectedRecords.ToString(CultureInfo.InvariantCulture)}.";
                }
 
                if (errorMessage is not null) {
