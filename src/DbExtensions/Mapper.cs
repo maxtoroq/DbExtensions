@@ -1,4 +1,4 @@
-﻿// Copyright 2010-2022 Max Toro Q.
+﻿// Copyright 2010-2025 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,10 +26,12 @@ namespace DbExtensions;
 
 partial class SqlSet {
 
-   IDictionary<string[], CollectionLoader> _manyIncludes;
+   Dictionary<string[], CollectionLoader>
+   _manyIncludes;
 
-   private IDictionary<string[], CollectionLoader> ManyIncludes {
-      get { return _manyIncludes; }
+   private Dictionary<string[], CollectionLoader>
+   ManyIncludes {
+      get => _manyIncludes;
       set {
          if (_manyIncludes != null) {
             throw new InvalidOperationException();
@@ -38,7 +40,8 @@ partial class SqlSet {
       }
    }
 
-   partial void Initialize2(SqlSet set) {
+   partial void
+   Initialize2(SqlSet set) {
 
       if (set.ManyIncludes != null) {
          this.ManyIncludes = new Dictionary<string[], CollectionLoader>(set.ManyIncludes);
@@ -47,36 +50,49 @@ partial class SqlSet {
       Initialize3(set);
    }
 
-   partial void Initialize3(SqlSet set);
+   partial void
+   Initialize3(SqlSet set);
 
-   void InitializeMapper(Mapper mapper) {
+   void
+   InitializeMapper(Mapper mapper) {
 
       mapper.ManyIncludes = this.ManyIncludes;
 
       InitializeMapper2(mapper);
    }
 
-   partial void InitializeMapper2(Mapper mapper);
+   partial void
+   InitializeMapper2(Mapper mapper);
 }
 
 abstract class Mapper {
 
-   internal static readonly char[] _pathSeparator = { '$' };
+   internal static readonly char[]
+   _pathSeparator = { '$' };
 
-   Node _rootNode;
-   IDictionary<CollectionNode, CollectionLoader> _manyLoaders;
+   Node
+   _rootNode;
 
-   public TextWriter Log { get; set; }
+   Dictionary<CollectionNode, CollectionLoader>
+   _manyLoaders;
 
-   public IDictionary<string[], CollectionLoader> ManyIncludes { get; set; }
+   public TextWriter
+   Log { get; set; }
 
-   public bool SingleResult { get; set; }
+   public Dictionary<string[], CollectionLoader>
+   ManyIncludes { get; set; }
 
-   protected abstract bool CanUseConstructorMapping { get; }
+   public bool
+   SingleResult { get; set; }
 
-   protected Mapper() { }
+   protected abstract bool
+   CanUseConstructorMapping { get; }
 
-   void ReadMapping(IDataRecord record, Node rootNode) {
+   protected
+   Mapper() { }
+
+   void
+   ReadMapping(IDataRecord record, Node rootNode) {
 
       var groups =
          (from i in Enumerable.Range(0, record.FieldCount)
@@ -102,7 +118,8 @@ abstract class Mapper {
       ReadMapping(record, groups, topGroup, rootNode);
    }
 
-   void ReadMapping(IDataRecord record, MapGroup[] groups, MapGroup currentGroup, Node instance) {
+   void
+   ReadMapping(IDataRecord record, MapGroup[] groups, MapGroup currentGroup, Node instance) {
 
       var constructorParameters = new Dictionary<MapParam, Node>();
       var unmapped = new Dictionary<string, int>();
@@ -304,7 +321,8 @@ abstract class Mapper {
       }
    }
 
-   public object Map(IDataRecord record) {
+   public object
+   Map(IDataRecord record) {
 
       var node = GetRootNode(record);
       var context = CreateMappingContext();
@@ -315,14 +333,16 @@ abstract class Mapper {
       return instance;
    }
 
-   public void Load(ref object instance, IDataRecord record) {
+   public void
+   Load(ref object instance, IDataRecord record) {
 
       var node = GetRootNode(record);
 
       node.Load(ref instance, record, CreateMappingContext());
    }
 
-   Node GetRootNode(IDataRecord record) {
+   Node
+   GetRootNode(IDataRecord record) {
 
       if (_rootNode == null) {
          _rootNode = CreateRootNode();
@@ -332,7 +352,8 @@ abstract class Mapper {
       return _rootNode;
    }
 
-   MappingContext CreateMappingContext() {
+   MappingContext
+   CreateMappingContext() {
 
       return new MappingContext {
          Log = this.Log,
@@ -341,19 +362,26 @@ abstract class Mapper {
       };
    }
 
-   protected abstract Node CreateRootNode();
+   protected abstract Node
+   CreateRootNode();
 
-   protected abstract Node CreateSimpleProperty(Node container, string propertyName, int columnOrdinal);
+   protected abstract Node
+   CreateSimpleProperty(Node container, string propertyName, int columnOrdinal);
 
-   protected abstract Node CreateComplexProperty(Node container, string propertyName);
+   protected abstract Node
+   CreateComplexProperty(Node container, string propertyName);
 
-   protected abstract Node CreateParameterNode(ParameterInfo paramInfo);
+   protected abstract Node
+   CreateParameterNode(ParameterInfo paramInfo);
 
-   protected abstract Node CreateParameterNode(int columnOrdinal, ParameterInfo paramInfo);
+   protected abstract Node
+   CreateParameterNode(int columnOrdinal, ParameterInfo paramInfo);
 
-   protected abstract CollectionNode CreateCollectionNode(Node container, string propertyName);
+   protected abstract CollectionNode
+   CreateCollectionNode(Node container, string propertyName);
 
-   static ConstructorInfo[] GetConstructors(Node node) {
+   static ConstructorInfo[]
+   GetConstructors(Node node) {
 
       var constructors = node
          .GetConstructors(BindingFlags.Public | BindingFlags.Instance);
@@ -361,7 +389,8 @@ abstract class Mapper {
       return constructors;
    }
 
-   static ConstructorInfo ChooseConstructor(ConstructorInfo[] constructors, Node node, int parameterLength) {
+   static ConstructorInfo
+   ChooseConstructor(ConstructorInfo[] constructors, Node node, int parameterLength) {
 
       constructors = constructors
          .Where(c => c.GetParameters().Length == parameterLength)
@@ -394,25 +423,39 @@ abstract class Mapper {
 
    class MapGroup {
 
-      public string Name;
-      public int Depth;
-      public string Parent;
-      public Dictionary<int, string> Properties;
+      public string
+      Name;
+
+      public int
+      Depth;
+
+      public string
+      Parent;
+
+      public Dictionary<int, string>
+      Properties;
    }
 
    class MapParam {
 
-      public readonly uint ParameterIndex;
-      public readonly int? ColumnOrdinal;
-      public readonly MapGroup Group;
+      public readonly uint
+      ParameterIndex;
 
-      public MapParam(uint parameterIndex, int columnOrdinal) {
+      public readonly int?
+      ColumnOrdinal;
+
+      public readonly MapGroup
+      Group;
+
+      public
+      MapParam(uint parameterIndex, int columnOrdinal) {
 
          this.ParameterIndex = parameterIndex;
          this.ColumnOrdinal = columnOrdinal;
       }
 
-      public MapParam(uint parameterIndex, MapGroup group) {
+      public
+      MapParam(uint parameterIndex, MapGroup group) {
 
          this.ParameterIndex = parameterIndex;
          this.Group = group;
@@ -424,40 +467,59 @@ abstract class Mapper {
 
 abstract class Node {
 
-   Dictionary<uint, Node> _constructorParameters;
-   List<Node> _properties;
-   List<CollectionNode> _collections;
+   Dictionary<uint, Node>
+   _constructorParameters;
 
-   public abstract bool IsComplex { get; }
-   public abstract string PropertyName { get; }
-   public abstract int ColumnOrdinal { get; }
-   public abstract string TypeName { get; }
+   List<Node>
+   _properties;
 
-   public Node Container { get; internal set; }
-   public ConstructorInfo Constructor { get; internal set; }
+   List<CollectionNode>
+   _collections;
 
-   public Dictionary<uint, Node> ConstructorParameters =>
+   public abstract bool
+   IsComplex { get; }
+
+   public abstract string
+   PropertyName { get; }
+
+   public abstract int
+   ColumnOrdinal { get; }
+
+   public abstract string
+   TypeName { get; }
+
+   public Node
+   Container { get; internal set; }
+
+   public ConstructorInfo
+   Constructor { get; internal set; }
+
+   public Dictionary<uint, Node>
+   ConstructorParameters =>
       _constructorParameters ??= new Dictionary<uint, Node>();
 
-   public List<Node> Properties =>
+   public List<Node>
+   Properties =>
       _properties ??= new List<Node>();
 
-   public List<CollectionNode> Collections =>
+   public List<CollectionNode>
+   Collections =>
       _collections ??= new List<CollectionNode>();
 
-   public bool HasConstructorParameters =>
-      _constructorParameters != null
-         && _constructorParameters.Count > 0;
+   public bool
+   HasConstructorParameters =>
+      _constructorParameters?.Count > 0;
 
-   public bool HasProperties =>
-      _properties != null
-         && _properties.Count > 0;
+   public bool
+   HasProperties =>
+      _properties?.Count > 0;
 
-   public bool HasCollections =>
-      _collections != null
-         && _collections.Count > 0;
+   public bool
+   HasCollections =>
+      _collections?.Count > 0;
 
-   public object Map(IDataRecord record, MappingContext context) {
+   public object
+   Map(IDataRecord record, MappingContext context) {
 
       if (this.IsComplex) {
          return MapComplex(record, context);
@@ -466,7 +528,8 @@ abstract class Node {
       return MapSimple(record, context);
    }
 
-   protected virtual object MapComplex(IDataRecord record, MappingContext context) {
+   protected virtual object
+   MapComplex(IDataRecord record, MappingContext context) {
 
       if (AllColumnsNull(record)) {
          return null;
@@ -478,7 +541,8 @@ abstract class Node {
       return value;
    }
 
-   bool AllColumnsNull(IDataRecord record) {
+   bool
+   AllColumnsNull(IDataRecord record) {
 
       if (this.IsComplex) {
 
@@ -494,7 +558,8 @@ abstract class Node {
       return record.IsDBNull(this.ColumnOrdinal);
    }
 
-   protected virtual object MapSimple(IDataRecord record, MappingContext context) {
+   protected virtual object
+   MapSimple(IDataRecord record, MappingContext context) {
 
       var isNull = record.IsDBNull(this.ColumnOrdinal);
       var value = (isNull) ? null : record.GetValue(this.ColumnOrdinal);
@@ -502,9 +567,11 @@ abstract class Node {
       return value;
    }
 
-   public abstract object Create(IDataRecord record, MappingContext context);
+   public abstract object
+   Create(IDataRecord record, MappingContext context);
 
-   public void Load(ref object instance, IDataRecord record, MappingContext context) {
+   public void
+   Load(ref object instance, IDataRecord record, MappingContext context) {
 
       for (int i = 0; i < this.Properties.Count; i++) {
 
@@ -545,22 +612,27 @@ abstract class Node {
       }
    }
 
-   void Read(ref object instance, IDataRecord record, MappingContext context) {
+   void
+   Read(ref object instance, IDataRecord record, MappingContext context) {
 
       var value = Map(record, context);
       Set(ref instance, value, context);
    }
 
-   protected abstract object Get(ref object instance);
+   protected abstract object
+   Get(ref object instance);
 
-   protected abstract void Set(ref object instance, object value, MappingContext context);
+   protected abstract void
+   Set(ref object instance, object value, MappingContext context);
 
-   public abstract ConstructorInfo[] GetConstructors(BindingFlags bindingAttr);
+   public abstract ConstructorInfo[]
+   GetConstructors(BindingFlags bindingAttr);
 }
 
 abstract class CollectionNode {
 
-   public void Load(ref object instance, MappingContext context) {
+   public void
+   Load(ref object instance, MappingContext context) {
 
       var collection = GetOrCreate(ref instance, context);
       var loader = context.ManyLoaders[this];
@@ -572,20 +644,30 @@ abstract class CollectionNode {
       }
    }
 
-   protected abstract IEnumerable GetOrCreate(ref object instance, MappingContext context);
+   protected abstract IEnumerable
+   GetOrCreate(ref object instance, MappingContext context);
 
-   protected abstract void Add(IEnumerable collection, object element, MappingContext context);
+   protected abstract void
+   Add(IEnumerable collection, object element, MappingContext context);
 }
 
 class MappingContext {
 
-   public TextWriter Log;
-   public IDictionary<CollectionNode, CollectionLoader> ManyLoaders;
-   public bool SingleResult;
+   public TextWriter
+   Log;
+
+   public IDictionary<CollectionNode, CollectionLoader>
+   ManyLoaders;
+
+   public bool
+   SingleResult;
 }
 
 class CollectionLoader {
 
-   public Func<object, object, IEnumerable> Load;
-   public object State;
+   public Func<object, object, IEnumerable>
+   Load;
+
+   public object
+   State;
 }

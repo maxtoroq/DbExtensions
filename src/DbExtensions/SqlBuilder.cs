@@ -1,4 +1,4 @@
-﻿// Copyright 2009-2022 Max Toro Q.
+﻿// Copyright 2009-2025 Max Toro Q.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,51 +33,59 @@ namespace DbExtensions;
 [DebuggerDisplay("{Buffer}")]
 public partial class SqlBuilder {
 
-   bool? _ifCondition;
+   bool?
+   _ifCondition;
 
    /// <summary>
    /// The underlying <see cref="StringBuilder"/>.
    /// </summary>
 
-   public StringBuilder Buffer { get; } = new();
+   public StringBuilder
+   Buffer { get; } = new();
 
    /// <summary>
    /// The parameter objects to be included in the database command.
    /// </summary>
 
-   public Collection<object> ParameterValues { get; } = new();
+   public Collection<object>
+   ParameterValues { get; } = new();
 
    /// <summary>
    /// Gets or sets the current SQL clause, used to identify consecutive 
    /// appends to the same clause.
    /// </summary>
 
-   public string CurrentClause { get; set; }
+   public string
+   CurrentClause { get; set; }
 
    /// <summary>
    /// Gets or sets the separator of the current SQL clause body.
    /// </summary>
 
-   public string CurrentSeparator { get; set; }
+   public string
+   CurrentSeparator { get; set; }
 
    /// <summary>
    /// Gets or sets the next SQL clause. Used by clause continuation methods,
    /// such as <see cref="AppendToCurrentClause(string, object[])"/> and the methods that start with "_".
    /// </summary>
 
-   public string NextClause { get; set; }
+   public string
+   NextClause { get; set; }
 
    /// <summary>
    /// Gets or sets the separator of the next SQL clause body.
    /// </summary>
 
-   public string NextSeparator { get; set; }
+   public string
+   NextSeparator { get; set; }
 
    /// <summary>
    /// Returns true if the buffer is empty.
    /// </summary>
 
-   public bool IsEmpty => Buffer.Length == 0;
+   public bool
+   IsEmpty => Buffer.Length == 0;
 
    /// <summary>
    /// Concatenates a specified separator <see cref="String"/> between each element of a 
@@ -90,7 +98,8 @@ public partial class SqlBuilder {
    /// interspersed with the <paramref name="separator"/> string.
    /// </returns>
 
-   public static SqlBuilder JoinSql(string separator, params SqlBuilder[] values) {
+   public static SqlBuilder
+   JoinSql(string separator, params SqlBuilder[] values) {
 
       if (values == null) throw new ArgumentNullException(nameof(values));
 
@@ -136,7 +145,8 @@ public partial class SqlBuilder {
    /// an empty <see cref="SqlBuilder"/>.
    /// </returns>
 
-   public static SqlBuilder JoinSql(string separator, IEnumerable<SqlBuilder> values) {
+   public static SqlBuilder
+   JoinSql(string separator, IEnumerable<SqlBuilder> values) {
 
       if (values == null) throw new ArgumentNullException(nameof(values));
 
@@ -171,7 +181,8 @@ public partial class SqlBuilder {
    /// Initializes a new instance of the <see cref="SqlBuilder"/> class.
    /// </summary>
 
-   public SqlBuilder() { }
+   public
+   SqlBuilder() { }
 
    /// <summary>
    /// Initializes a new instance of the <see cref="SqlBuilder"/> class
@@ -180,7 +191,8 @@ public partial class SqlBuilder {
    /// <param name="format">The SQL format string.</param>
    /// <param name="args">The array of parameters.</param>
 
-   public SqlBuilder(string format, params object[] args) {
+   public
+   SqlBuilder(string format, params object[] args) {
       Append(format, args);
    }
 
@@ -194,7 +206,8 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder AppendClause(string clauseName, string separator, string format, params object[] args) {
+   public SqlBuilder
+   AppendClause(string clauseName, string separator, string format, params object[] args) {
 
       if (separator == null
          || !String.Equals(clauseName, this.CurrentClause, StringComparison.OrdinalIgnoreCase)) {
@@ -231,7 +244,8 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder AppendToCurrentClause(string format, params object[] args) {
+   public SqlBuilder
+   AppendToCurrentClause(string format, params object[] args) {
 
       var clause = this.CurrentClause;
       var separator = this.CurrentSeparator;
@@ -252,7 +266,8 @@ public partial class SqlBuilder {
    /// <param name="sql">A <see cref="SqlBuilder"/>.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder Append(SqlBuilder sql) {
+   public SqlBuilder
+   Append(SqlBuilder sql) {
 
       this.Buffer.Append(MakeAbsolutePlaceholders(sql));
 
@@ -270,7 +285,8 @@ public partial class SqlBuilder {
    /// <param name="args">The array of parameters.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder Append(string format, params object[] args) {
+   public SqlBuilder
+   Append(string format, params object[] args) {
 
       if (args == null || args.Length == 0) {
 
@@ -333,22 +349,24 @@ public partial class SqlBuilder {
       return this;
    }
 
-   partial void GetDefiningQueryFromObject(object obj, ref SqlBuilder definingQuery);
+   partial void
+   GetDefiningQueryFromObject(object obj, ref SqlBuilder definingQuery);
 
-   string MakeAbsolutePlaceholders(SqlBuilder sql) {
-      return String.Format(CultureInfo.InvariantCulture, sql.ToString(), Enumerable.Range(0, sql.ParameterValues.Count).Select(x => Placeholder(this.ParameterValues.Count + x)).ToArray());
-   }
+   string
+   MakeAbsolutePlaceholders(SqlBuilder sql) =>
+      String.Format(CultureInfo.InvariantCulture, sql.ToString(), Enumerable.Range(0, sql.ParameterValues.Count).Select(x => Placeholder(this.ParameterValues.Count + x)).ToArray());
 
-   static string Placeholder(int index) {
-      return String.Concat("{", index.ToString(CultureInfo.InvariantCulture), "}");
-   }
+   static string
+   Placeholder(int index) =>
+      String.Concat("{", index.ToString(CultureInfo.InvariantCulture), "}");
 
    /// <summary>
    /// Appends the default line terminator to this instance.
    /// </summary>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder AppendLine() {
+   public SqlBuilder
+   AppendLine() {
 
       this.Buffer.AppendLine();
       return this;
@@ -361,7 +379,8 @@ public partial class SqlBuilder {
    /// <param name="value">The string to insert.</param>
    /// <returns>A reference to this instance after the insert operation has completed.</returns>
 
-   public SqlBuilder Insert(int index, string value) {
+   public SqlBuilder
+   Insert(int index, string value) {
 
       this.Buffer.Insert(index, value);
 
@@ -376,7 +395,8 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the operation has completed.</returns>
    /// <seealso cref="CurrentClause"/>
 
-   public SqlBuilder SetCurrentClause(string clauseName, string separator) {
+   public SqlBuilder
+   SetCurrentClause(string clauseName, string separator) {
 
       this.CurrentClause = clauseName;
       this.CurrentSeparator = separator;
@@ -392,7 +412,8 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the operation has completed.</returns>
    /// <seealso cref="NextClause"/>
 
-   public SqlBuilder SetNextClause(string clauseName, string separator) {
+   public SqlBuilder
+   SetNextClause(string clauseName, string separator) {
 
       this.NextClause = clauseName;
       this.NextSeparator = separator;
@@ -406,16 +427,16 @@ public partial class SqlBuilder {
    /// </summary>
    /// <returns>A string whose value is the same as this instance.</returns>
 
-   public override string ToString() {
-      return this.Buffer.ToString();
-   }
+   public override string
+   ToString() => this.Buffer.ToString();
 
    /// <summary>
    /// Creates and returns a copy of this instance.
    /// </summary>
    /// <returns>A new <see cref="SqlBuilder"/> that is equivalent to this instance.</returns>
 
-   public SqlBuilder Clone() {
+   public SqlBuilder
+   Clone() {
 
       var clone = new SqlBuilder();
       clone.Buffer.Append(this.Buffer.ToString());
@@ -438,9 +459,9 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    [CLSCompliant(false)]
-   public SqlBuilder _(string format, params object[] args) {
-      return AppendToCurrentClause(format, args);
-   }
+   public SqlBuilder
+   _(string format, params object[] args) =>
+      AppendToCurrentClause(format, args);
 
    /// <summary>
    /// Appends <paramref name="format"/> to the current clause if <paramref name="condition"/> is true.
@@ -451,7 +472,8 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    [CLSCompliant(false)]
-   public SqlBuilder _If(bool condition, string format, params object[] args) {
+   public SqlBuilder
+   _If(bool condition, string format, params object[] args) {
 
       if (condition) {
          _(format, args);
@@ -470,7 +492,8 @@ public partial class SqlBuilder {
    /// <inheritdoc cref="_If(bool, string, object[])" path="*[not(self::summary)]"/>
 
    [CLSCompliant(false)]
-   public SqlBuilder _ElseIf(bool condition, string format, params object[] args) {
+   public SqlBuilder
+   _ElseIf(bool condition, string format, params object[] args) {
 
       if (_ifCondition == false) {
 
@@ -494,7 +517,8 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    [CLSCompliant(false)]
-   public SqlBuilder _Else(string format, params object[] args) {
+   public SqlBuilder
+   _Else(string format, params object[] args) {
 
       if (_ifCondition == false) {
          _(format, args);
@@ -516,7 +540,8 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    [CLSCompliant(false)]
-   public SqlBuilder _ForEach<T>(IEnumerable<T> items, string format, string itemFormat, string separator, Func<T, object[]> parametersFactory) {
+   public SqlBuilder
+   _ForEach<T>(IEnumerable<T> items, string format, string itemFormat, string separator, Func<T, object[]> parametersFactory) {
 
       if (items == null) throw new ArgumentNullException(nameof(items));
       if (itemFormat == null) throw new ArgumentNullException(nameof(itemFormat));
@@ -569,9 +594,9 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    [CLSCompliant(false)]
-   public SqlBuilder _OR<T>(IEnumerable<T> items, string itemFormat, Func<T, object[]> parametersFactory) {
-      return _ForEach(items, "({0})", itemFormat, " OR ", parametersFactory);
-   }
+   public SqlBuilder
+   _OR<T>(IEnumerable<T> items, string itemFormat, Func<T, object[]> parametersFactory) =>
+      _ForEach(items, "({0})", itemFormat, " OR ", parametersFactory);
 
    /// <summary>
    /// Appends the WITH clause using the provided <paramref name="format"/> string and parameters.
@@ -580,9 +605,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder WITH(string format, params object[] args) {
-      return AppendClause("WITH", null, format, args);
-   }
+   public SqlBuilder
+   WITH(string format, params object[] args) =>
+      AppendClause("WITH", null, format, args);
 
    /// <summary>
    /// Appends the WITH clause using the provided <paramref name="subQuery"/> as body named after
@@ -592,9 +617,9 @@ public partial class SqlBuilder {
    /// <param name="alias">The alias of the sub-query.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder WITH(SqlBuilder subQuery, string alias) {
-      return WITH(alias + " AS ({0})", subQuery);
-   }
+   public SqlBuilder
+   WITH(SqlBuilder subQuery, string alias) =>
+      WITH(alias + " AS ({0})", subQuery);
 
    /// <summary>
    /// Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -602,9 +627,8 @@ public partial class SqlBuilder {
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
-   public SqlBuilder SELECT() {
-      return SetNextClause("SELECT", ", ");
-   }
+   public SqlBuilder
+   SELECT() => SetNextClause("SELECT", ", ");
 
    /// <summary>
    /// Appends the SELECT clause using the provided <paramref name="format"/> string and parameters.
@@ -613,9 +637,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder SELECT(string format, params object[] args) {
-      return AppendClause("SELECT", ", ", format, args);
-   }
+   public SqlBuilder
+   SELECT(string format, params object[] args) =>
+      AppendClause("SELECT", ", ", format, args);
 
    /// <summary>
    /// Appends the FROM clause using the provided <paramref name="format"/> string and parameters.
@@ -624,9 +648,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder FROM(string format, params object[] args) {
-      return AppendClause("FROM", ", ", format, args);
-   }
+   public SqlBuilder
+   FROM(string format, params object[] args) =>
+      AppendClause("FROM", ", ", format, args);
 
    /// <summary>
    /// Appends the FROM clause using the provided <paramref name="subQuery"/> as body named after
@@ -636,9 +660,9 @@ public partial class SqlBuilder {
    /// <param name="alias">The alias of the sub-query.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder FROM(SqlBuilder subQuery, string alias) {
-      return FROM("({0}) " + alias, subQuery);
-   }
+   public SqlBuilder
+   FROM(SqlBuilder subQuery, string alias) =>
+      FROM("({0}) " + alias, subQuery);
 
    /// <summary>
    /// Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -646,9 +670,8 @@ public partial class SqlBuilder {
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
-   public SqlBuilder JOIN() {
-      return SetNextClause("JOIN", null);
-   }
+   public SqlBuilder
+   JOIN() => SetNextClause("JOIN", null);
 
    /// <summary>
    /// Appends the JOIN clause using the provided <paramref name="format"/> string and parameters.
@@ -657,9 +680,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder JOIN(string format, params object[] args) {
-      return AppendClause("JOIN", null, format, args);
-   }
+   public SqlBuilder
+   JOIN(string format, params object[] args) =>
+      AppendClause("JOIN", null, format, args);
 
    /// <summary>
    /// Appends the LEFT JOIN clause using the provided <paramref name="format"/> string and parameters.
@@ -668,9 +691,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder LEFT_JOIN(string format, params object[] args) {
-      return AppendClause("LEFT JOIN", null, format, args);
-   }
+   public SqlBuilder
+   LEFT_JOIN(string format, params object[] args) =>
+      AppendClause("LEFT JOIN", null, format, args);
 
    /// <summary>
    /// Appends the RIGHT JOIN clause using the provided <paramref name="format"/> string and parameters.
@@ -679,9 +702,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder RIGHT_JOIN(string format, params object[] args) {
-      return AppendClause("RIGHT JOIN", null, format, args);
-   }
+   public SqlBuilder
+   RIGHT_JOIN(string format, params object[] args) =>
+      AppendClause("RIGHT JOIN", null, format, args);
 
    /// <summary>
    /// Appends the INNER JOIN clause using the provided <paramref name="format"/> string and parameters.
@@ -690,9 +713,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder INNER_JOIN(string format, params object[] args) {
-      return AppendClause("INNER JOIN", null, format, args);
-   }
+   public SqlBuilder
+   INNER_JOIN(string format, params object[] args) =>
+      AppendClause("INNER JOIN", null, format, args);
 
    /// <summary>
    /// Appends the CROSS JOIN clause using the provided <paramref name="format"/> string and parameters.
@@ -701,9 +724,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder CROSS_JOIN(string format, params object[] args) {
-      return AppendClause("CROSS JOIN", null, format, args);
-   }
+   public SqlBuilder
+   CROSS_JOIN(string format, params object[] args) =>
+      AppendClause("CROSS JOIN", null, format, args);
 
    /// <summary>
    /// Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -711,9 +734,8 @@ public partial class SqlBuilder {
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
-   public SqlBuilder WHERE() {
-      return SetNextClause("WHERE", " AND ");
-   }
+   public SqlBuilder
+   WHERE() => SetNextClause("WHERE", " AND ");
 
    /// <summary>
    /// Appends the WHERE clause using the provided <paramref name="format"/> string and parameters.
@@ -722,9 +744,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder WHERE(string format, params object[] args) {
-      return AppendClause("WHERE", " AND ", format, args);
-   }
+   public SqlBuilder
+   WHERE(string format, params object[] args) =>
+      AppendClause("WHERE", " AND ", format, args);
 
    /// <summary>
    /// Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -732,9 +754,8 @@ public partial class SqlBuilder {
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
-   public SqlBuilder GROUP_BY() {
-      return SetNextClause("GROUP BY", ", ");
-   }
+   public SqlBuilder
+   GROUP_BY() => SetNextClause("GROUP BY", ", ");
 
    /// <summary>
    /// Appends the GROUP BY clause using the provided <paramref name="format"/> string and parameters.
@@ -743,9 +764,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder GROUP_BY(string format, params object[] args) {
-      return AppendClause("GROUP BY", ", ", format, args);
-   }
+   public SqlBuilder
+   GROUP_BY(string format, params object[] args) =>
+      AppendClause("GROUP BY", ", ", format, args);
 
    /// <summary>
    /// Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -753,9 +774,8 @@ public partial class SqlBuilder {
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
-   public SqlBuilder HAVING() {
-      return SetNextClause("HAVING", " AND ");
-   }
+   public SqlBuilder
+   HAVING() => SetNextClause("HAVING", " AND ");
 
    /// <summary>
    /// Appends the HAVING clause using the provided <paramref name="format"/> string and parameters.
@@ -764,9 +784,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder HAVING(string format, params object[] args) {
-      return AppendClause("HAVING", " AND ", format, args);
-   }
+   public SqlBuilder
+   HAVING(string format, params object[] args) =>
+      AppendClause("HAVING", " AND ", format, args);
 
    /// <summary>
    /// Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -774,9 +794,8 @@ public partial class SqlBuilder {
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
-   public SqlBuilder ORDER_BY() {
-      return SetNextClause("ORDER BY", ", ");
-   }
+   public SqlBuilder
+   ORDER_BY() => SetNextClause("ORDER BY", ", ");
 
    /// <summary>
    /// Appends the ORDER BY clause using the provided <paramref name="format"/> string and parameters.
@@ -785,9 +804,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder ORDER_BY(string format, params object[] args) {
-      return AppendClause("ORDER BY", ", ", format, args);
-   }
+   public SqlBuilder
+   ORDER_BY(string format, params object[] args) =>
+      AppendClause("ORDER BY", ", ", format, args);
 
    /// <summary>
    /// Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -795,9 +814,8 @@ public partial class SqlBuilder {
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
-   public SqlBuilder LIMIT() {
-      return SetNextClause("LIMIT", null);
-   }
+   public SqlBuilder
+   LIMIT() => SetNextClause("LIMIT", null);
 
    /// <summary>
    /// Appends the LIMIT clause using the provided <paramref name="format"/> string and parameters.
@@ -806,9 +824,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder LIMIT(string format, params object[] args) {
-      return AppendClause("LIMIT", null, format, args);
-   }
+   public SqlBuilder
+   LIMIT(string format, params object[] args) =>
+      AppendClause("LIMIT", null, format, args);
 
    /// <summary>
    /// Appends the LIMIT clause using the provided <paramref name="maxRecords"/> parameter.
@@ -816,9 +834,9 @@ public partial class SqlBuilder {
    /// <param name="maxRecords">The value to use as parameter.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder LIMIT(int maxRecords) {
-      return LIMIT("{0}", maxRecords);
-   }
+   public SqlBuilder
+   LIMIT(int maxRecords) =>
+      LIMIT("{0}", maxRecords);
 
    /// <summary>
    /// Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -826,9 +844,8 @@ public partial class SqlBuilder {
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
-   public SqlBuilder OFFSET() {
-      return SetNextClause("OFFSET", null);
-   }
+   public SqlBuilder
+   OFFSET() => SetNextClause("OFFSET", null);
 
    /// <summary>
    /// Appends the OFFSET clause using the provided <paramref name="format"/> string and parameters.
@@ -837,9 +854,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder OFFSET(string format, params object[] args) {
-      return AppendClause("OFFSET", null, format, args);
-   }
+   public SqlBuilder
+   OFFSET(string format, params object[] args) =>
+      AppendClause("OFFSET", null, format, args);
 
    /// <summary>
    /// Appends the OFFSET clause using the provided <paramref name="startIndex"/> parameter.
@@ -847,18 +864,17 @@ public partial class SqlBuilder {
    /// <param name="startIndex">The value to use as parameter.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder OFFSET(int startIndex) {
-      return OFFSET("{0}", startIndex);
-   }
+   public SqlBuilder
+   OFFSET(int startIndex) =>
+      OFFSET("{0}", startIndex);
 
    /// <summary>
    /// Appends the UNION clause.
    /// </summary>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder UNION() {
-      return AppendClause("UNION", null, null, null);
-   }
+   public SqlBuilder
+   UNION() => AppendClause("UNION", null, null, null);
 
    /// <summary>
    /// Appends the INSERT INTO clause using the provided <paramref name="format"/> string and parameters.
@@ -867,9 +883,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder INSERT_INTO(string format, params object[] args) {
-      return AppendClause("INSERT INTO", null, format, args);
-   }
+   public SqlBuilder
+   INSERT_INTO(string format, params object[] args) =>
+      AppendClause("INSERT INTO", null, format, args);
 
    /// <summary>
    /// Appends the DELETE FROM clause using the provided <paramref name="format"/> string and parameters.
@@ -878,9 +894,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder DELETE_FROM(string format, params object[] args) {
-      return AppendClause("DELETE FROM", null, format, args);
-   }
+   public SqlBuilder
+   DELETE_FROM(string format, params object[] args) =>
+      AppendClause("DELETE FROM", null, format, args);
 
    /// <summary>
    /// Appends the UPDATE clause using the provided <paramref name="format"/> string and parameters.
@@ -889,9 +905,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder UPDATE(string format, params object[] args) {
-      return AppendClause("UPDATE", null, format, args);
-   }
+   public SqlBuilder
+   UPDATE(string format, params object[] args) =>
+      AppendClause("UPDATE", null, format, args);
 
    /// <summary>
    /// Appends the SET clause using the provided <paramref name="format"/> string and parameters.
@@ -900,9 +916,9 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder SET(string format, params object[] args) {
-      return AppendClause("SET", ", ", format, args);
-   }
+   public SqlBuilder
+   SET(string format, params object[] args) =>
+      AppendClause("SET", ", ", format, args);
 
    /// <summary>
    /// Appends the VALUES clause using the provided parameters.
@@ -910,7 +926,8 @@ public partial class SqlBuilder {
    /// <param name="args">The parameters of the clause body.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-   public SqlBuilder VALUES(params object[] args) {
+   public SqlBuilder
+   VALUES(params object[] args) {
 
       if (args == null || args.Length == 0) {
          throw new ArgumentException("args cannot be empty", nameof(args));
@@ -938,9 +955,9 @@ public static partial class SQL {
    /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(string, object[])"/>.
    /// </returns>
 
-   public static SqlBuilder WITH(string format, params object[] args) {
-      return new SqlBuilder().WITH(format, args);
-   }
+   public static SqlBuilder
+   WITH(string format, params object[] args) =>
+      new SqlBuilder().WITH(format, args);
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
@@ -953,9 +970,9 @@ public static partial class SQL {
    /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(SqlBuilder, string)"/>.
    /// </returns>
 
-   public static SqlBuilder WITH(SqlBuilder subQuery, string alias) {
-      return new SqlBuilder().WITH(subQuery, alias);
-   }
+   public static SqlBuilder
+   WITH(SqlBuilder subQuery, string alias) =>
+      new SqlBuilder().WITH(subQuery, alias);
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
@@ -968,9 +985,9 @@ public static partial class SQL {
    /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.SELECT(string, object[])"/>.
    /// </returns>
 
-   public static SqlBuilder SELECT(string format, params object[] args) {
-      return new SqlBuilder().SELECT(format, args);
-   }
+   public static SqlBuilder
+   SELECT(string format, params object[] args) =>
+      new SqlBuilder().SELECT(format, args);
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
@@ -983,9 +1000,9 @@ public static partial class SQL {
    /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.INSERT_INTO(string, object[])"/>.
    /// </returns>
 
-   public static SqlBuilder INSERT_INTO(string format, params object[] args) {
-      return new SqlBuilder().INSERT_INTO(format, args);
-   }
+   public static SqlBuilder
+   INSERT_INTO(string format, params object[] args) =>
+      new SqlBuilder().INSERT_INTO(format, args);
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
@@ -998,9 +1015,9 @@ public static partial class SQL {
    /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.UPDATE(string, object[])"/>.
    /// </returns>
 
-   public static SqlBuilder UPDATE(string format, params object[] args) {
-      return new SqlBuilder().UPDATE(format, args);
-   }
+   public static SqlBuilder
+   UPDATE(string format, params object[] args) =>
+      new SqlBuilder().UPDATE(format, args);
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
@@ -1013,15 +1030,15 @@ public static partial class SQL {
    /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.DELETE_FROM(string, object[])"/>.
    /// </returns>
 
-   public static SqlBuilder DELETE_FROM(string format, params object[] args) {
-      return new SqlBuilder().DELETE_FROM(format, args);
-   }
+   public static SqlBuilder
+   DELETE_FROM(string format, params object[] args) =>
+      new SqlBuilder().DELETE_FROM(format, args);
 
    /// <inheritdoc cref="List(object[])"/>
 
-   public static object List(IEnumerable values) {
-      return new SqlList(values);
-   }
+   public static object
+   List(IEnumerable values) =>
+      new SqlList(values);
 
    /// <summary>
    /// Returns a special parameter value that is expanded into a list of comma-separated placeholder items.
@@ -1043,38 +1060,42 @@ public static partial class SQL {
    /// </para>
    /// </remarks>
 
-   public static object List(params object[] values) {
-      return new SqlList(values);
-   }
+   public static object
+   List(params object[] values) =>
+      new SqlList(values);
 
    #region Object Members
 
    /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public static new bool Equals(object objectA, object objectB) {
-      return Object.Equals(objectA, objectB);
-   }
+   public static new bool
+   Equals(object objectA, object objectB) =>
+      Object.Equals(objectA, objectB);
 
    /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public static new bool ReferenceEquals(object objectA, object objectB) {
-      return Object.ReferenceEquals(objectA, objectB);
-   }
+   public static new bool
+   ReferenceEquals(object objectA, object objectB) =>
+      Object.ReferenceEquals(objectA, objectB);
 
    #endregion
 }
 
 class SqlList {
 
-   readonly object[] _values;
+   readonly object[]
+   _values;
 
-   public object this[int index] => _values[index];
+   public object
+   this[int index] => _values[index];
 
-   public int Count => _values.Length;
+   public int
+   Count => _values.Length;
 
-   public SqlList(IEnumerable values) {
+   public
+   SqlList(IEnumerable values) {
 
       var arr = values?.Cast<object>()
          .ToArray();
