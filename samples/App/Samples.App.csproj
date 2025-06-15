@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="6.9.9" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.102.0" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
   </ItemGroup>
 
   <ItemGroup>
