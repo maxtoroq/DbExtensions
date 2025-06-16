@@ -18,11 +18,10 @@ namespace DbExtensions.Tests.Mapping {
             { "id", 5 }
          };
 
-         Database db = MockQuery(data);
+         var db = MockQuery(data);
 
          var value = db.Map<Poco.Constructor.NamedArguments._Basic>(SQL
-            .SELECT("'John' AS 'name'")
-            ._("5 AS 'id'"))
+            .SELECT("NULL"))
             .Single();
 
          Assert.AreEqual("John", value.nameArg);
@@ -37,11 +36,10 @@ namespace DbExtensions.Tests.Mapping {
             { "id", 5 }
          };
 
-         Database db = MockQuery(data);
+         var db = MockQuery(data);
 
          var value = db.Map<Poco.Constructor.NamedArguments._ParamsMatchProperties>(SQL
-            .SELECT("'John' AS 'name'")
-            ._("5 AS 'id'"))
+            .SELECT("NULL"))
             .Single();
 
          Assert.AreEqual("John", value.nameArg);
@@ -58,11 +56,10 @@ namespace DbExtensions.Tests.Mapping {
             { "id", 5 }
          };
 
-         Database db = MockQuery(data);
+         var db = MockQuery(data);
 
          var results = db.Map<Poco.Constructor.NamedArguments._MissingArg>(SQL
-            .SELECT("'John' AS 'name'")
-            ._("5 AS 'id'"));
+            .SELECT("NULL"));
 
          Assert.Throws<InvalidOperationException>(() => results.Single());
       }
@@ -75,11 +72,10 @@ namespace DbExtensions.Tests.Mapping {
             { "prop$id", 5 }
          };
 
-         Database db = MockQuery(data);
+         var db = MockQuery(data);
 
          var value = db.Map<Poco.Constructor.NamedArguments._ComplexProperty>(SQL
-            .SELECT("'John' AS prop$name")
-            ._("5 AS prop$id"))
+            .SELECT("NULL"))
             .Single();
 
          Assert.AreEqual("John", value.prop.nameArg);
@@ -94,11 +90,10 @@ namespace DbExtensions.Tests.Mapping {
             { "0$id", 5 }
          };
 
-         Database db = MockQuery(data);
+         var db = MockQuery(data);
 
          var value = db.Map<Poco.Constructor.NamedArguments._ComplexArgument>(SQL
-            .SELECT("'John' AS 0$name")
-            ._("5 AS 0$id"))
+            .SELECT("NULL"))
             .Single();
 
          Assert.AreEqual("John", value.valueArg.nameArg);
@@ -113,11 +108,10 @@ namespace DbExtensions.Tests.Mapping {
             { "value$id", 5 }
          };
 
-         Database db = MockQuery(data);
+         var db = MockQuery(data);
 
          var value = db.Map<Poco.Constructor.NamedArguments._Nested>(SQL
-            .SELECT("'John' AS value$name")
-            ._("5 AS value$id"))
+            .SELECT("NULL"))
             .Single();
 
          Assert.AreEqual("John", value.valueArg.nameArg);

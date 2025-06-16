@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Moq;
 
@@ -27,26 +25,30 @@ namespace DbExtensions.Tests {
          return mockDb;
       }
 
-      public static Database MockQuery(params IDictionary<string, object>[] data) {
+      public static Database MockQuery(params IEnumerable<KeyValuePair<string, object>>[] data) {
 
          var mockReader = new Mock<IDataReader>();
-         mockReader.Setup(m => m.FieldCount).Returns(data[0].Keys.Count);
-
          var readSetup = mockReader.SetupSequence(m => m.Read());
 
          for (int i = 0; i < data.Length; i++) {
 
-            readSetup.Returns(true);
+            if (i == 0) {
+               readSetup.Returns(true);
+            }
 
-            IDictionary<string, object> row = data[i];
+            var j = -1;
 
-            for (int j = 0; j < row.Count; j++) {
+            foreach (var cell in data[i]) {
 
-               KeyValuePair<string, object> cell = row.ElementAt(j);
+               j++;
 
                mockReader.Setup(m => m.GetName(j)).Returns(cell.Key);
                mockReader.Setup(m => m.GetValue(j)).Returns(cell.Value);
                mockReader.Setup(m => m.IsDBNull(j)).Returns(cell.Value == null);
+            }
+
+            if (i == 0) {
+               mockReader.Setup(m => m.FieldCount).Returns(j + 1);
             }
          }
 
@@ -75,7 +77,7 @@ namespace DbExtensions.Tests {
             FailIfMissing = true
          };
 
-         DbConnection conn = new SQLiteConnection(builder.ToString());
+         var conn = new SQLiteConnection(builder.ToString());
 
          var db = new Database(conn);
          db.Configuration.Log = Console.Out;

@@ -17,10 +17,10 @@ namespace DbExtensions.Tests.Querying {
             { "a", "a" }
          };
 
-         Database db = MockQuery(data);
+         var db = MockQuery(data);
 
          SqlSet<string> set = db.From(SQL
-            .SELECT("'a'")
+            .SELECT("NULL")
             , r => r.GetString(0));
 
          set.AsEnumerable();
@@ -37,10 +37,10 @@ namespace DbExtensions.Tests.Querying {
             { "0", 0 }
          };
 
-         Database db = MockQuery(data);
+         var db = MockQuery(data);
 
          SqlSet<int> set = db.From(SQL
-            .SELECT("0")
+            .SELECT("NULL")
             , r => r.GetInt32(0));
 
          set.AsEnumerable();
@@ -285,9 +285,9 @@ namespace DbExtensions.Tests.Querying {
             { "foo", "a" }
          };
 
-         Database db = MockQuery(data);
+         var db = MockQuery(data);
 
-         dynamic value = db.From(SQL.SELECT("'a' AS foo, 'b' AS bar"))
+         dynamic value = db.From(SQL.SELECT("NULL"))
             .Select("foo")
             .Single();
 
@@ -301,10 +301,10 @@ namespace DbExtensions.Tests.Querying {
             { "c", "a" }
          };
 
-         Database db = MockQuery(data);
+         var db = MockQuery(data);
 
          SqlSet<string> set = db.From(SQL
-            .SELECT("'a' AS c")
+            .SELECT("NULL")
             , r => r.GetString(0))
             .OrderBy("c");
 
