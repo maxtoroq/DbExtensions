@@ -16,7 +16,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -121,7 +122,7 @@ abstract class Mapper {
    void
    ReadMapping(IDataRecord record, MapGroup[] groups, MapGroup currentGroup, Node instance) {
 
-      var constructorParameters = new Dictionary<MapParam, Node>();
+      var constructorParameters = new Dictionary<uint, MapParam>();
       var unmapped = new Dictionary<string, int>();
 
       foreach (var pair in currentGroup.Properties) {
@@ -136,8 +137,10 @@ abstract class Mapper {
             continue;
          }
 
-         if (UInt32.TryParse(propertyName, out var valueAsNumber)) {
-            constructorParameters.Add(new MapParam(valueAsNumber, columnOrdinal), null);
+         if (UInt32.TryParse(propertyName, out var paramIndex)) {
+            if (!constructorParameters.TryAdd(paramIndex, new MapParam(columnOrdinal))) {
+               ThrowDuplicateConstructorArgument(paramIndex, columnOrdinal, record);
+            }
          } else {
             unmapped.Add(propertyName, columnOrdinal);
             this.Log?.WriteLine("-- WARNING: Couldn't find property '{0}' on type '{1}'. Ignoring column.", propertyName, instance.TypeName);
@@ -166,8 +169,10 @@ abstract class Mapper {
             continue;
          }
 
-         if (UInt32.TryParse(propertyName, out var valueAsNumber)) {
-            constructorParameters.Add(new MapParam(valueAsNumber, nextLevel), null);
+         if (UInt32.TryParse(propertyName, out var paramIndex)) {
+            if (!constructorParameters.TryAdd(paramIndex, new MapParam(nextLevel))) {
+               ThrowDuplicateConstructorArgument(paramIndex, default, record);
+            }
          } else {
             unmappedGroups.Add(propertyName, nextLevel);
             this.Log?.WriteLine("-- WARNING: Couldn't find property '{0}' on type '{1}'. Ignoring column(s).", propertyName, instance.TypeName);
@@ -179,39 +184,29 @@ abstract class Mapper {
          instance.Constructor = ChooseConstructor(GetConstructors(instance), instance, constructorParameters.Count);
          var parameters = instance.Constructor.GetParameters();
 
-         int i = 0;
+         var i = -1;
 
-         foreach (var pair in constructorParameters.OrderBy(p => p.Key.ParameterIndex)) {
+         foreach (var pair in constructorParameters.OrderBy(p => p.Key)) {
 
+            i++;
+
+            var paramIndex = pair.Key;
+            var mapParam = pair.Value;
             var param = parameters[i];
             Node paramNode;
 
-            if (pair.Key.ColumnOrdinal.HasValue) {
-               paramNode = CreateParameterNode(pair.Key.ColumnOrdinal.Value, param);
+            if (mapParam.ColumnOrdinal.HasValue) {
+               paramNode = CreateParameterNode(mapParam.ColumnOrdinal.Value, param);
 
             } else {
 
                paramNode = CreateParameterNode(param);
-               ReadMapping(record, groups, pair.Key.Group, paramNode);
+               ReadMapping(record, groups, mapParam.Group, paramNode);
             }
 
-            if (instance.ConstructorParameters.ContainsKey(pair.Key.ParameterIndex)) {
-
-               var message = new StringBuilder();
-               message.Append($"Already specified an argument for parameter '{param.Name}'");
-
-               if (pair.Key.ColumnOrdinal.HasValue) {
-                  message.Append($" ('{record.GetName(pair.Key.ColumnOrdinal.Value)}')");
-               }
-
-               message.Append('.');
-
-               throw new InvalidOperationException(message.ToString());
+            if (!instance.ConstructorParameters.TryAdd(paramIndex, paramNode)) {
+               ThrowDuplicateConstructorArgument(param, mapParam.ColumnOrdinal, record);
             }
-
-            instance.ConstructorParameters.Add(pair.Key.ParameterIndex, paramNode);
-
-            i++;
          }
 
       } else {
@@ -230,7 +225,11 @@ abstract class Mapper {
                if (unmapped.TryGetValue(param.Name, out var columnOrdinal)) {
 
                   var paramNode = CreateParameterNode(columnOrdinal, param);
-                  instance.ConstructorParameters.Add(paramIndex, paramNode);
+
+                  if (!instance.ConstructorParameters.TryAdd(paramIndex, paramNode)) {
+                     ThrowDuplicateConstructorArgument(param, columnOrdinal, record);
+                  }
+
                   continue;
                }
 
@@ -242,7 +241,11 @@ abstract class Mapper {
                   var paramNode = CreateParameterNode(property.ColumnOrdinal, param);
 
                   instance.Properties.Remove(property);
-                  instance.ConstructorParameters.Add(paramIndex, paramNode);
+
+                  if (!instance.ConstructorParameters.TryAdd(paramIndex, paramNode)) {
+                     ThrowDuplicateConstructorArgument(param, paramNode.ColumnOrdinal, record);
+                  }
+
                   continue;
                }
 
@@ -251,7 +254,9 @@ abstract class Mapper {
                   var paramNode = CreateParameterNode(param);
                   ReadMapping(record, groups, group, paramNode);
 
-                  instance.ConstructorParameters.Add(paramIndex, paramNode);
+                  if (!instance.ConstructorParameters.TryAdd(paramIndex, paramNode)) {
+                     ThrowDuplicateConstructorArgument(param, default, record);
+                  }
                }
             }
 
@@ -312,6 +317,42 @@ abstract class Mapper {
             }
          }
       }
+   }
+
+#if NETCOREAPP2_2_OR_GREATER
+   [DoesNotReturn]
+#endif
+   static void
+   ThrowDuplicateConstructorArgument(uint paramIndex, int? columnOrdinal, IDataRecord record) {
+
+      var message = new StringBuilder();
+      message.Append($"Already specified a positional argument {paramIndex.ToStringInvariant()}");
+
+      if (columnOrdinal.HasValue) {
+         message.Append($" ('{record.GetName(columnOrdinal.Value)}')");
+      }
+
+      message.Append('.');
+
+      throw new InvalidOperationException(message.ToString());
+   }
+
+#if NETCOREAPP2_2_OR_GREATER
+   [DoesNotReturn]
+#endif
+   static void
+   ThrowDuplicateConstructorArgument(ParameterInfo param, int? columnOrdinal, IDataRecord record) {
+
+      var message = new StringBuilder();
+      message.Append($"Already specified an argument for parameter '{param.Name}'");
+
+      if (columnOrdinal.HasValue) {
+         message.Append($" ('{record.GetName(columnOrdinal.Value)}')");
+      }
+
+      message.Append('.');
+
+      throw new InvalidOperationException(message.ToString());
    }
 
    public object
@@ -421,10 +462,7 @@ abstract class Mapper {
       Properties;
    }
 
-   class MapParam {
-
-      public readonly uint
-      ParameterIndex;
+   readonly struct MapParam {
 
       public readonly int?
       ColumnOrdinal;
@@ -433,16 +471,16 @@ abstract class Mapper {
       Group;
 
       public
-      MapParam(uint parameterIndex, int columnOrdinal) {
+      MapParam(int columnOrdinal) {
 
-         this.ParameterIndex = parameterIndex;
          this.ColumnOrdinal = columnOrdinal;
+         this.Group = null;
       }
 
       public
-      MapParam(uint parameterIndex, MapGroup group) {
+      MapParam(MapGroup group) {
 
-         this.ParameterIndex = parameterIndex;
+         this.ColumnOrdinal = null;
          this.Group = group;
       }
    }
