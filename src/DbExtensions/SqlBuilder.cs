@@ -347,7 +347,7 @@ public partial class SqlBuilder {
       return this;
    }
 
-   partial void
+   static partial void
    GetDefiningQueryFromObject(object obj, ref SqlBuilder definingQuery);
 
    string

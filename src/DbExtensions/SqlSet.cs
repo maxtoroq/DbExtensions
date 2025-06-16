@@ -48,7 +48,7 @@ partial class SqlBuilder {
    FROM(SqlSet subQuery, string alias) =>
       FROM("({0}) " + alias, subQuery);
 
-   partial void
+   static partial void
    GetDefiningQueryFromObject(object obj, ref SqlBuilder definingQuery) =>
       definingQuery = (obj as SqlSet)?.GetDefiningQuery();
 }
