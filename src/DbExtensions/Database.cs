@@ -314,10 +314,10 @@ public partial class Database : IDisposable {
                string errorMessage = null;
 
                if (exact) {
-                  errorMessage = $"The number of affected records should be {affect.ToString(CultureInfo.InvariantCulture)}, the actual number is {affectedRecords.ToString(CultureInfo.InvariantCulture)}.";
+                  errorMessage = $"The number of affected records should be {affect.ToStringInvariant()}, the actual number is {affectedRecords.ToStringInvariant()}.";
 
                } else if (affectedRecords > affect) {
-                  errorMessage = $"The number of affected records should be {affect.ToString(CultureInfo.InvariantCulture)} or lower, the actual number is {affectedRecords.ToString(CultureInfo.InvariantCulture)}.";
+                  errorMessage = $"The number of affected records should be {affect.ToStringInvariant()} or lower, the actual number is {affectedRecords.ToStringInvariant()}.";
                }
 
                if (errorMessage is not null) {
@@ -460,10 +460,13 @@ public partial class Database : IDisposable {
             dbParam.Value = paramValue ?? DBNull.Value;
          }
 
-         dbParam.ParameterName = this.Configuration.ParameterNameBuilder("p" + i.ToString(CultureInfo.InvariantCulture));
+         dbParam.ParameterName = this.Configuration.ParameterNameBuilder
+            .Invoke("p" + i.ToStringInvariant());
+
          command.Parameters.Add(dbParam);
 
-         paramPlaceholders[i] = this.Configuration.ParameterPlaceholderBuilder(dbParam.ParameterName);
+         paramPlaceholders[i] = this.Configuration.ParameterPlaceholderBuilder
+            .Invoke(dbParam.ParameterName);
       }
 
       command.CommandText = String.Format(CultureInfo.InvariantCulture, commandText, paramPlaceholders);

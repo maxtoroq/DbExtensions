@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Compile Include="..\DbExtensions\Database.cs" Link="Database.cs" />
+    <Compile Include="..\DbExtensions\FrameworkExtensions.cs" Link="FrameworkExtensions.cs" />
     <Compile Include="..\DbExtensions\SqlBuilder.cs" Link="SqlBuilder.cs" />
     <Compile Include="..\DbExtensions\SqlSet.cs" Link="SqlSet.cs" />
   </ItemGroup>

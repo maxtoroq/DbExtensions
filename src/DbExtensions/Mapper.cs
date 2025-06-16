@@ -257,7 +257,7 @@ abstract class Mapper {
 
             if (parameters.Length != instance.ConstructorParameters.Count) {
                throw new InvalidOperationException(
-                  $"There are missing arguments for constructor with {parameters.Length.ToString(CultureInfo.InvariantCulture)} parameter(s) for type '{instance.TypeName}'."
+                  $"There are missing arguments for constructor with {parameters.Length.ToStringInvariant()} parameter(s) for type '{instance.TypeName}'."
                );
             }
 
@@ -391,13 +391,13 @@ abstract class Mapper {
 
       if (constructors.Length == 0) {
          throw new InvalidOperationException(
-            $"Couldn't find a public constructor with {parameterLength.ToString(CultureInfo.InvariantCulture)} parameter(s) for type '{node.TypeName}'."
+            $"Couldn't find a public constructor with {parameterLength.ToStringInvariant()} parameter(s) for type '{node.TypeName}'."
          );
       }
 
       if (constructors.Length > 1) {
          throw new InvalidOperationException(
-            $"Found more than one public constructors with {parameterLength.ToString(CultureInfo.InvariantCulture)} parameter(s) for type '{node.TypeName}'. Please use another constructor."
+            $"Found more than one public constructors with {parameterLength.ToStringInvariant()} parameter(s) for type '{node.TypeName}'. Please use another constructor."
          );
       }
 
