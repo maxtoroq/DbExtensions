@@ -549,12 +549,12 @@ public partial class Database : IDisposable {
             var param = command.Parameters[i] as IDbDataParameter;
 
             if (param is not null) {
-               log.WriteLine("-- {0}: {1} {2} (Size = {3}) [{4}]", param.ParameterName, param.Direction, param.DbType, param.Size, param.Value);
+               log.WriteLine($"-- {param.ParameterName}: {param.Direction.ToString()} {param.DbType.ToString()} (Size = {param.Size.ToString(log.FormatProvider)}) [{Convert.ToString(param.Value, log.FormatProvider)}]");
             }
          }
 
          if (affectedRecords is not null) {
-            log.WriteLine("-- [{0}] records affected.", affectedRecords.Value);
+            log.WriteLine($"-- [{affectedRecords.Value.ToString(log.FormatProvider)}] records affected.");
          }
       }
    }

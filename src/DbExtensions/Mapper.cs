@@ -143,7 +143,7 @@ abstract class Mapper {
             }
          } else {
             unmapped.Add(propertyName, columnOrdinal);
-            this.Log?.WriteLine("-- WARNING: Couldn't find property '{0}' on type '{1}'. Ignoring column.", propertyName, instance.TypeName);
+            this.Log?.WriteLine($"-- WARNING: Couldn't find property '{propertyName}' on type '{instance.TypeName}'. Ignoring column.");
          }
       }
 
@@ -175,7 +175,7 @@ abstract class Mapper {
             }
          } else {
             unmappedGroups.Add(propertyName, nextLevel);
-            this.Log?.WriteLine("-- WARNING: Couldn't find property '{0}' on type '{1}'. Ignoring column(s).", propertyName, instance.TypeName);
+            this.Log?.WriteLine($"-- WARNING: Couldn't find property '{propertyName}' on type '{instance.TypeName}'. Ignoring column(s).");
          }
       }
 
