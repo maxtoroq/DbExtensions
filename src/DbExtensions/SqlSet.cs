@@ -193,7 +193,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       _db = db;
    }
 
-   internal
+   private protected
    SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType, SqlBuffer? buffer)
       : this(set, resultType, buffer) {
 
@@ -202,7 +202,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       _definingQuery = superQuery;
    }
 
-   internal
+   private protected
    SqlSet(SqlSet set, string[] fromSelect, Type resultType, SqlBuffer? buffer)
       : this(set, resultType, buffer) {
 
@@ -244,7 +244,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    GetDefiningQuery() =>
       GetDefiningQuery(clone: true);
 
-   internal SqlBuilder
+   private protected SqlBuilder
    GetDefiningQuery(bool clone = true, bool ignoreBuffer = false, bool super = false, string selectFormat = null, object[] args = null) {
 
       if (!ignoreBuffer
@@ -418,19 +418,19 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       return superQuery;
    }
 
-   internal virtual SqlSet
+   private protected virtual SqlSet
    CreateSet(SqlBuilder superQuery, Type resultType = null, SqlBuffer? buffer = null) =>
       new SqlSet(this, superQuery, resultType, buffer);
 
-   internal virtual SqlSet
+   private protected virtual SqlSet
    CreateSet(string[] fromSelect, Type resultType = null, SqlBuffer? buffer = null) =>
       new SqlSet(this, fromSelect, resultType, buffer);
 
-   internal SqlSet<TResult>
+   private protected SqlSet<TResult>
    CreateSet<TResult>(SqlBuilder superQuery, Func<IDataRecord, TResult> mapper = null, SqlBuffer? buffer = null) =>
       new SqlSet<TResult>(this, superQuery, mapper, buffer);
 
-   internal SqlSet<TResult>
+   private protected SqlSet<TResult>
    CreateSet<TResult>(string[] fromSelect, SqlBuffer? buffer = null) =>
       new SqlSet<TResult>(this, fromSelect, buffer);
 
@@ -438,7 +438,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    Clone() =>
       CreateBufferedSet(ignoreBuffer: true, buffer: _buffer);
 
-   internal SqlSet
+   SqlSet
    CreateBufferedSet(bool ignoreBuffer, SqlBuffer buffer, Type resultType = null) {
 
       var set = default(SqlSet);
@@ -459,7 +459,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       return set;
    }
 
-   internal SqlSet<TResult>
+   SqlSet<TResult>
    CreateBufferedSet<TResult>(bool ignoreBuffer, SqlBuffer buffer) {
 
       var set = default(SqlSet<TResult>);
@@ -480,7 +480,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       return set;
    }
 
-   internal virtual IEnumerable
+   private protected virtual IEnumerable
    Map(bool singleResult) {
 
       if (this.ResultType is not null) {
@@ -1082,7 +1082,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    SqlSet(SqlSet set, string[] fromSelect, SqlBuffer? buffer)
       : base(set, fromSelect, typeof(TResult), buffer) { }
 
-   internal override SqlSet
+   private protected override SqlSet
    CreateSet(SqlBuilder superQuery, Type resultType = null, SqlBuffer? buffer = null) {
 
       if (resultType is not null) {
@@ -1092,7 +1092,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
       return new SqlSet<TResult>(this, superQuery, buffer);
    }
 
-   internal override SqlSet
+   private protected override SqlSet
    CreateSet(string[] fromSelect, Type resultType = null, SqlBuffer? buffer = null) {
 
       if (resultType is not null) {
@@ -1102,7 +1102,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
       return new SqlSet<TResult>(this, fromSelect, buffer);
    }
 
-   internal override IEnumerable
+   private protected override IEnumerable
    Map(bool singleResult) {
 
       if (_explicitMapper is not null) {

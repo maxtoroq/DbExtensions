@@ -1524,7 +1524,7 @@ partial class SqlSet {
    Find(object id) =>
       FindImpl(id).SingleOrDefault();
 
-   internal SqlSet
+   private protected SqlSet
    FindImpl(object id) {
 
       if (id is null) throw new ArgumentNullException(nameof(id));
