@@ -238,22 +238,24 @@ partial class Database {
    internal string
    BuildPredicateFragment(
          object entity,
-         ICollection<MetaDataMember> predicateMembers,
+         IEnumerable<MetaDataMember> predicateMembers,
          ICollection<object> parametersBuffer,
          Func<MetaDataMember, object> getValueFn = null) {
 
-      var predicateValues = predicateMembers.ToDictionary(
-         m => m.MappedName,
-         m => (getValueFn is not null) ? getValueFn(m) : m.GetValueForDatabase(entity)
+      var predicateValues = predicateMembers.Select(m =>
+         new KeyValuePair<string, object>(
+            m.MappedName,
+            (getValueFn is not null) ? getValueFn.Invoke(m) : m.GetValueForDatabase(entity)
+         )
       );
 
       return BuildPredicateFragment(predicateValues, parametersBuffer);
    }
 
    internal string
-   BuildPredicateFragment(IDictionary<string, object> predicateValues, ICollection<object> parametersBuffer) {
+   BuildPredicateFragment(IEnumerable<KeyValuePair<string, object>> predicateValues, ICollection<object> parametersBuffer) {
 
-      if (predicateValues is null || predicateValues.Count == 0) throw new ArgumentException("predicateValues cannot be empty", nameof(predicateValues));
+      //if (predicateValues is null || predicateValues.Count == 0) throw new ArgumentException("predicateValues cannot be empty", nameof(predicateValues));
       if (parametersBuffer is null) throw new ArgumentNullException(nameof(parametersBuffer));
 
       var sb = new StringBuilder();
@@ -1362,8 +1364,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
       EnsureEntityType();
 
       var predicateMembers = _metaType.PersistentDataMembers
-         .Where(m => m.IsPrimaryKey || (m.IsVersion && _db.Configuration.UseVersionMember))
-         .ToArray();
+         .Where(m => m.IsPrimaryKey || (m.IsVersion && _db.Configuration.UseVersionMember));
 
       var deleteSql = BuildDeleteStatement();
       deleteSql.WHERE(_db.BuildPredicateFragment(entity, predicateMembers, deleteSql.ParameterValues));
@@ -1491,19 +1492,19 @@ partial class SqlSet {
 
       var predicateMembers = new[] { idMember };
 
-      var predicateValues = new Dictionary<string, object> {
-         { idMember.MappedName, idMember.ConvertValueForDatabase(id) }
+      var predicateValues = new KeyValuePair<string, object>[] {
+         new(idMember.MappedName, idMember.ConvertValueForDatabase(id))
       };
 
       return ContainsImpl(predicateMembers, predicateValues);
    }
 
    bool
-   ContainsImpl(MetaDataMember[] predicateMembers, IDictionary<string, object> predicateValues) {
+   ContainsImpl(MetaDataMember[] predicateMembers, IEnumerable<KeyValuePair<string, object>> predicateValues) {
 
       var metaType = predicateMembers[0].DeclaringType;
 
-      var predicateParams = new List<object>(predicateValues.Count);
+      var predicateParams = new List<object>(predicateMembers.Length);
 
       return Where(_db.BuildPredicateFragment(predicateValues, predicateParams), predicateParams.ToArray())
          .Select(_db.SelectBody(metaType, predicateMembers, null))
@@ -1532,11 +1533,11 @@ partial class SqlSet {
       var metaType = EnsureEntityType(maxIdMembers: 1);
       var idMember = metaType.IdentityMembers[0];
 
-      var predicateValues = new Dictionary<string, object> {
-         { idMember.MappedName, idMember.ConvertValueForDatabase(id) }
+      var predicateValues = new KeyValuePair<string, object>[] {
+         new(idMember.MappedName, idMember.ConvertValueForDatabase(id))
       };
 
-      var parameters = new List<object>(predicateValues.Count);
+      var parameters = new List<object>(predicateValues.Length);
       var predicate = _db.BuildPredicateFragment(predicateValues, parameters);
 
       return Where(predicate, parameters.ToArray());
@@ -1745,13 +1746,10 @@ partial class SqlSet {
          var association = loaderState.Association;
          var set = loaderState.Source;
 
-         var predicateValues = new Dictionary<string, object>();
+         var predicateValues = association.OtherKey.Select((p, i) =>
+            new KeyValuePair<string, object>(p.MappedName, association.ThisKey[i].GetValueForDatabase(container)));
 
-         for (int i = 0; i < association.OtherKey.Count; i++) {
-            predicateValues.Add(association.OtherKey[i].MappedName, association.ThisKey[i].GetValueForDatabase(container));
-         }
-
-         var parameters = new List<object>();
+         var parameters = new List<object>(association.OtherKey.Count);
          var whereFragment = set._db.BuildPredicateFragment(predicateValues, parameters);
 
          var children = set.Where(whereFragment, parameters.ToArray())
