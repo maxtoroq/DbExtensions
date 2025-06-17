@@ -1610,7 +1610,7 @@ partial class SqlSet {
 
          static string rAliasFn(int i) => rightAlias + (i + 1);
 
-         var query = selectBuild(leftAlias);
+         var query = selectBuild.Invoke(leftAlias);
          var currentType = metaType;
 
          var associations = new List<MetaAssociation>();
@@ -1653,7 +1653,7 @@ partial class SqlSet {
             return null;
          }
 
-         fromAppend(query, leftAlias);
+         fromAppend.Invoke(query, leftAlias);
 
          for (int i = 0; i < associations.Count; i++) {
 
