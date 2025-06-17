@@ -273,7 +273,7 @@ partial class Database {
          } else {
             sb.Append(" = {")
                .Append(parametersBuffer.Count)
-               .Append("}");
+               .Append('}');
 
             parametersBuffer.Add(item.Value);
          }
@@ -1244,12 +1244,12 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
             sb.Append(", ");
          }
 
-         sb.Append("{")
+         sb.Append('{')
             .Append(i)
-            .Append("}");
+            .Append('}');
       }
 
-      sb.Append(")");
+      sb.Append(')');
 
       return new SqlBuilder(sb.ToString(), parameters);
    }
@@ -1319,7 +1319,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
          sb.Append(QuoteIdentifier(member.MappedName))
             .Append(" = {")
             .Append(parametersBuffer.Count)
-            .Append("}");
+            .Append('}');
 
          parametersBuffer.Add(value);
       }
