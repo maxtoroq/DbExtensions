@@ -76,6 +76,9 @@ abstract class Mapper {
    Dictionary<CollectionNode, CollectionLoader>
    _manyLoaders;
 
+   MappingContext
+   _mappingContext;
+
    public TextWriter
    Log { get; set; }
 
@@ -84,6 +87,13 @@ abstract class Mapper {
 
    public bool
    SingleResult { get; set; }
+
+   private MappingContext
+   MappingContext => _mappingContext ??= new() {
+      Log = Log,
+      ManyLoaders = _manyLoaders,
+      SingleResult = SingleResult
+   };
 
    protected abstract bool
    CanUseConstructorMapping { get; }
@@ -311,7 +321,7 @@ abstract class Mapper {
 
                instance.Collections.Add(collection);
 
-               _manyLoaders ??= new Dictionary<CollectionNode, CollectionLoader>();
+               _manyLoaders ??= new Dictionary<CollectionNode, CollectionLoader>(ReferenceEqualityComparer.Instance);
                _manyLoaders.Add(collection, pair.Value);
             }
          }
@@ -358,9 +368,9 @@ abstract class Mapper {
    Map(IDataRecord record) {
 
       var node = GetRootNode(record);
-      var context = CreateMappingContext();
-      var instance = node.Create(record, context);
+      var context = this.MappingContext;
 
+      var instance = node.Create(record, context);
       node.Load(ref instance, record, context);
 
       return instance;
@@ -370,8 +380,7 @@ abstract class Mapper {
    Load(ref object instance, IDataRecord record) {
 
       var node = GetRootNode(record);
-
-      node.Load(ref instance, record, CreateMappingContext());
+      node.Load(ref instance, record, this.MappingContext);
    }
 
    Node
@@ -383,16 +392,6 @@ abstract class Mapper {
       }
 
       return _rootNode;
-   }
-
-   MappingContext
-   CreateMappingContext() {
-
-      return new MappingContext {
-         Log = this.Log,
-         ManyLoaders = _manyLoaders,
-         SingleResult = this.SingleResult
-      };
    }
 
    protected abstract Node
@@ -485,6 +484,30 @@ abstract class Mapper {
    }
 
    #endregion
+}
+
+class MappingContext {
+
+   public TextWriter
+   Log;
+
+   public Dictionary<CollectionNode, CollectionLoader>
+   ManyLoaders;
+
+   public List<Node>
+   ConvertingNodes = new();
+
+   public bool
+   SingleResult;
+}
+
+class CollectionLoader {
+
+   public Func<object, object, IEnumerable>
+   Load;
+
+   public object
+   State;
 }
 
 abstract class Node {
@@ -671,25 +694,4 @@ abstract class CollectionNode {
 
    protected abstract void
    Add(IEnumerable collection, object element, MappingContext context);
-}
-
-class MappingContext {
-
-   public TextWriter
-   Log;
-
-   public IDictionary<CollectionNode, CollectionLoader>
-   ManyLoaders;
-
-   public bool
-   SingleResult;
-}
-
-class CollectionLoader {
-
-   public Func<object, object, IEnumerable>
-   Load;
-
-   public object
-   State;
 }

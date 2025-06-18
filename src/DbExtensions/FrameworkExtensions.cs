@@ -12,32 +12,51 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
-namespace DbExtensions;
+namespace DbExtensions {
 
-static class FrameworkExtensions {
+   static class FrameworkExtensions {
 
-   public static string
-   ToStringInvariant(this int value) =>
-      value.ToString(CultureInfo.InvariantCulture);
+      public static string
+      ToStringInvariant(this int value) =>
+         value.ToString(CultureInfo.InvariantCulture);
 
-   public static string
-   ToStringInvariant(this uint value) =>
-      value.ToString(CultureInfo.InvariantCulture);
+      public static string
+      ToStringInvariant(this uint value) =>
+         value.ToString(CultureInfo.InvariantCulture);
 
 #if NETFRAMEWORK
-   public static bool
-   TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue value) {
+      public static bool
+      TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue value) {
 
-      if (!dict.ContainsKey(key)) {
-         dict.Add(key, value);
-         return true;
+         if (!dict.ContainsKey(key)) {
+            dict.Add(key, value);
+            return true;
+         }
+
+         return false;
       }
+#endif
+   }
 
-      return false;
+#if !NET5_0_OR_GREATER
+   sealed class ReferenceEqualityComparer : IEqualityComparer<object>, IEqualityComparer {
+
+      public static readonly ReferenceEqualityComparer
+      Instance = new();
+
+      public new bool
+      Equals(object x, object y) =>
+         Object.ReferenceEquals(x, y);
+
+      public int
+      GetHashCode(object obj) =>
+         RuntimeHelpers.GetHashCode(obj);
    }
 #endif
 }
-

@@ -197,9 +197,6 @@ class PocoNode : Node {
    public ParameterInfo
    Parameter { get; }
 
-   public Func<PocoNode, object, object>
-   ConvertFunction { get; set; }
-
    internal
    PocoNode(Type type, int columnOrdinal, bool isComplex) {
 
@@ -235,9 +232,10 @@ class PocoNode : Node {
          .Select(m => m.Value.Map(record, context))
          .ToArray();
 
-      if (this.ConstructorParameters.Any(p => ((PocoNode)p.Value).ConvertFunction is not null)
+      if (this.ConstructorParameters.Any(p => context.ConvertingNodes.Contains(p.Value))
          || args.All(v => v is null)) {
 
+         // args already converted on MapSimple() call
          return this.Constructor.Invoke(args);
       }
 
@@ -246,32 +244,34 @@ class PocoNode : Node {
 
       } catch (ArgumentException) {
 
-         var convertSet = false;
+         var converted = false;
+         var i = -1;
 
-         for (int i = 0; i < this.ConstructorParameters.Count; i++) {
+         foreach (var pair in this.ConstructorParameters) {
 
+            i++;
             var value = args[i];
 
             if (value is null) {
                continue;
             }
 
-            var paramNode = (PocoNode)this.ConstructorParameters.ElementAt(i).Value;
+            var paramNode = (PocoNode)pair.Value;
 
             if (!paramNode.Type.IsAssignableFrom(value.GetType())) {
 
-               var convert = GetConversionFunction(value, paramNode);
-
                context.Log?.WriteLine($"-- WARNING: Couldn't instantiate {this.UnderlyingType.FullName} with argument '{paramNode.Parameter.Name}' of type {paramNode.Type.FullName} {((value is null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}. Attempting conversion.");
 
-               paramNode.ConvertFunction = convert;
+               args[i] = paramNode.ConvertValue(value);
 
-               convertSet = true;
+               context.ConvertingNodes.Add(paramNode);
+
+               converted = true;
             }
          }
 
-         if (convertSet) {
-            return Create(record, context);
+         if (converted) {
+            return this.Constructor.Invoke(args);
          }
 
          throw;
@@ -283,12 +283,10 @@ class PocoNode : Node {
 
       var value = base.MapSimple(record, context);
 
-      Func<PocoNode, object, object> convertFn;
-
       if (value is not null
-         && (convertFn = this.ConvertFunction) is not null) {
+         && context.ConvertingNodes.Contains(this)) {
 
-         value = convertFn.Invoke(this, value);
+         value = ConvertValue(value);
       }
 
       return value;
@@ -303,22 +301,24 @@ class PocoNode : Node {
 
       if (this.IsComplex) {
          SetProperty(ref instance, value);
+         return;
+      }
 
-      } else {
+      try {
+         SetSimple(ref instance, value, context);
 
-         try {
-            SetSimple(ref instance, value, context);
-
-         } catch (Exception ex) {
-            throw new InvalidCastException($"Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Type.FullName}' {((value is null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}.", ex);
-         }
+      } catch (Exception ex) {
+         throw new InvalidCastException($"Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Type.FullName}' {((value is null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}.", ex);
       }
    }
 
    void
    SetSimple(ref object instance, object value, MappingContext context) {
 
-      if (this.ConvertFunction is not null || value is null) {
+      if (value is null
+         || context.ConvertingNodes.Contains(this)) {
+
+         // value is already converted on MapSimple() call
          SetProperty(ref instance, value);
          return;
       }
@@ -328,15 +328,13 @@ class PocoNode : Node {
 
       } catch (ArgumentException) {
 
-         var convert = GetConversionFunction(value, this);
-
          context.Log?.WriteLine($"-- WARNING: Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Property.PropertyType.FullName}' {((value is null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}. Attempting conversion.");
 
-         value = convert.Invoke(this, value);
+         value = ConvertValue(value);
 
-         this.ConvertFunction = convert;
+         context.ConvertingNodes.Add(this);
 
-         SetSimple(ref instance, value, context);
+         SetProperty(ref instance, value);
       }
    }
 
@@ -352,42 +350,57 @@ class PocoNode : Node {
    GetConstructors(BindingFlags bindingAttr) =>
       this.UnderlyingType.GetConstructors(bindingAttr);
 
-   static Func<PocoNode, object, object>
-   GetConversionFunction(object value, PocoNode node) {
+   object
+   ConvertValue(object value) {
 
-      if (node.UnderlyingType == typeof(bool)) {
-
-         if (value.GetType() == typeof(string)) {
-            return ConvertToBoolean;
-         }
-
-      } else if (node.UnderlyingType.IsEnum) {
-
-         if (value.GetType() == typeof(string)) {
-            return ParseEnum;
-         }
-
-         return CastToEnum;
+      if (this.UnderlyingType == typeof(bool)) {
+         return ConvertToBoolean(this, value);
       }
 
-      return ConvertTo;
+      if (this.UnderlyingType.IsEnum) {
+         return ConvertToEnum(this, value);
+      }
+
+      return ConvertTo(this, value);
    }
 
    static object
-   ConvertToBoolean(PocoNode node, object value) =>
-      Convert.ToBoolean(Convert.ToInt64(value, CultureInfo.InvariantCulture));
+   ConvertToBoolean(PocoNode node, object value) {
+
+      if (value is string s) {
+         return Convert.ToBoolean(Convert.ToInt64(s, CultureInfo.InvariantCulture));
+      }
+
+      return ConvertTo(node, value);
+   }
 
    static object
-   CastToEnum(PocoNode node, object value) =>
-      Enum.ToObject(node.UnderlyingType, value);
+   ConvertToEnum(PocoNode node, object value) {
 
-   static object
-   ParseEnum(PocoNode node, object value) =>
-      Enum.Parse(node.UnderlyingType, Convert.ToString(value, CultureInfo.InvariantCulture));
+      if (value is string s) {
+         return Enum.Parse(node.UnderlyingType, s);
+      }
+
+      return Enum.ToObject(node.UnderlyingType, value);
+   }
 
    static object
    ConvertTo(PocoNode node, object value) =>
       Convert.ChangeType(value, node.UnderlyingType, CultureInfo.InvariantCulture);
+
+   public override string
+   ToString() {
+
+      if (this.Parameter != null) {
+         return this.Parameter.ToString();
+      }
+
+      if (this.Property != null) {
+         return this.Property.DeclaringType.ToString() + ":" + this.PropertyName.ToString();
+      }
+
+      return this.Type.Name;
+   }
 }
 
 class PocoCollection : CollectionNode {
