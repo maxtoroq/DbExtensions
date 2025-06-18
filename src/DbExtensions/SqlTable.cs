@@ -1035,7 +1035,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       var entityObj = (object)entity;
 
       _db.Map<object>(query, r => {
-         mapper.Load(ref entityObj, r);
+         mapper.Load(entityObj, r);
          return null;
 
       }).SingleOrDefault();

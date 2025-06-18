@@ -132,7 +132,7 @@ class DynamicNode : Node {
       new ExpandoObject();
 
    protected override object
-   Get(ref object instance) {
+   Get(object instance) {
 
       var dictionary = (IDictionary<string, object>)instance;
 
@@ -144,7 +144,7 @@ class DynamicNode : Node {
    }
 
    protected override void
-   Set(ref object instance, object value, MappingContext context) {
+   Set(object instance, object value, MappingContext context) {
       ((IDictionary<string, object>)instance)[this.PropertyName] = value;
    }
 

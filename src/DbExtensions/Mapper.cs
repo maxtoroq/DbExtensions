@@ -371,16 +371,16 @@ abstract class Mapper {
       var context = this.MappingContext;
 
       var instance = node.Create(record, context);
-      node.Load(ref instance, record, context);
+      node.Load(instance, record, context);
 
       return instance;
    }
 
    public void
-   Load(ref object instance, IDataRecord record) {
+   Load(object instance, IDataRecord record) {
 
       var node = GetRootNode(record);
-      node.Load(ref instance, record, this.MappingContext);
+      node.Load(instance, record, this.MappingContext);
    }
 
    Node
@@ -581,7 +581,7 @@ abstract class Node {
       }
 
       var value = Create(record, context);
-      Load(ref value, record, context);
+      Load(value, record, context);
 
       return value;
    }
@@ -616,7 +616,7 @@ abstract class Node {
    Create(IDataRecord record, MappingContext context);
 
    public void
-   Load(ref object instance, IDataRecord record, MappingContext context) {
+   Load(object instance, IDataRecord record, MappingContext context) {
 
       for (int i = 0; i < this.Properties.Count; i++) {
 
@@ -625,16 +625,16 @@ abstract class Node {
          if (!childNode.IsComplex
             || childNode.HasConstructorParameters) {
 
-            childNode.Read(ref instance, record, context);
+            childNode.Read(instance, record, context);
             continue;
          }
 
-         var currentValue = childNode.Get(ref instance);
+         var currentValue = childNode.Get(instance);
 
          if (currentValue is not null) {
-            childNode.Load(ref currentValue, record, context);
+            childNode.Load(currentValue, record, context);
          } else {
-            childNode.Read(ref instance, record, context);
+            childNode.Read(instance, record, context);
          }
       }
 
@@ -652,23 +652,23 @@ abstract class Node {
          for (int i = 0; i < this.Collections.Count; i++) {
 
             var collectionNode = this.Collections[i];
-            collectionNode.Load(ref instance, context);
+            collectionNode.Load(instance, context);
          }
       }
    }
 
    void
-   Read(ref object instance, IDataRecord record, MappingContext context) {
+   Read(object instance, IDataRecord record, MappingContext context) {
 
       var value = Map(record, context);
-      Set(ref instance, value, context);
+      Set(instance, value, context);
    }
 
    protected abstract object
-   Get(ref object instance);
+   Get(object instance);
 
    protected abstract void
-   Set(ref object instance, object value, MappingContext context);
+   Set(object instance, object value, MappingContext context);
 
    public abstract ConstructorInfo[]
    GetConstructors(BindingFlags bindingAttr);
@@ -677,9 +677,9 @@ abstract class Node {
 abstract class CollectionNode {
 
    public void
-   Load(ref object instance, MappingContext context) {
+   Load(object instance, MappingContext context) {
 
-      var collection = GetOrCreate(ref instance, context);
+      var collection = GetOrCreate(instance, context);
       var loader = context.ManyLoaders[this];
 
       var elements = loader.Load.Invoke(instance, loader.State);
@@ -690,7 +690,7 @@ abstract class CollectionNode {
    }
 
    protected abstract IEnumerable
-   GetOrCreate(ref object instance, MappingContext context);
+   GetOrCreate(object instance, MappingContext context);
 
    protected abstract void
    Add(IEnumerable collection, object element, MappingContext context);

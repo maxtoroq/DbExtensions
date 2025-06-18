@@ -293,19 +293,19 @@ class PocoNode : Node {
    }
 
    protected override object
-   Get(ref object instance) =>
-      GetProperty(ref instance);
+   Get(object instance) =>
+      GetProperty(instance);
 
    protected override void
-   Set(ref object instance, object value, MappingContext context) {
+   Set(object instance, object value, MappingContext context) {
 
       if (this.IsComplex) {
-         SetProperty(ref instance, value);
+         SetProperty(instance, value);
          return;
       }
 
       try {
-         SetSimple(ref instance, value, context);
+         SetSimple(instance, value, context);
 
       } catch (Exception ex) {
          throw new InvalidCastException($"Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Type.FullName}' {((value is null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}.", ex);
@@ -313,18 +313,18 @@ class PocoNode : Node {
    }
 
    void
-   SetSimple(ref object instance, object value, MappingContext context) {
+   SetSimple(object instance, object value, MappingContext context) {
 
       if (value is null
          || context.ConvertingNodes.Contains(this)) {
 
          // value is already converted on MapSimple() call
-         SetProperty(ref instance, value);
+         SetProperty(instance, value);
          return;
       }
 
       try {
-         SetProperty(ref instance, value);
+         SetProperty(instance, value);
 
       } catch (ArgumentException) {
 
@@ -334,16 +334,16 @@ class PocoNode : Node {
 
          context.ConvertingNodes.Add(this);
 
-         SetProperty(ref instance, value);
+         SetProperty(instance, value);
       }
    }
 
    object
-   GetProperty(ref object instance) =>
+   GetProperty(object instance) =>
       this.Property.GetValue(instance, null);
 
    void
-   SetProperty(ref object instance, object value) =>
+   SetProperty(object instance, object value) =>
       this.Setter.Invoke(instance, new object[1] { value });
 
    public override ConstructorInfo[]
@@ -441,7 +441,7 @@ class PocoCollection : CollectionNode {
    }
 
    protected override IEnumerable
-   GetOrCreate(ref object instance, MappingContext context) {
+   GetOrCreate(object instance, MappingContext context) {
 
       var collection = _property.GetValue(instance, null);
 
