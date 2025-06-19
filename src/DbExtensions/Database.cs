@@ -14,7 +14,9 @@
 
 using System;
 using System.Collections;
+#if !NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -35,8 +37,10 @@ namespace DbExtensions;
 
 public partial class Database : IDisposable {
 
+#if !NETCOREAPP
    static readonly ConcurrentDictionary<string, DbProviderFactory>
    _factories = new();
+#endif
 
    readonly bool
    _disposeConn;
@@ -179,8 +183,12 @@ public partial class Database : IDisposable {
 
       if (providerInvariantName is null) throw new ArgumentNullException(nameof(providerInvariantName));
 
-      var factory = _factories.GetOrAdd(providerInvariantName, n => DbProviderFactories.GetFactory(n));
-
+      var factory =
+#if NETCOREAPP
+         DbProviderFactories.GetFactory(providerInvariantName);
+#else
+         _factories.GetOrAdd(providerInvariantName, DbProviderFactories.GetFactory);
+#endif
       return factory;
    }
 
