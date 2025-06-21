@@ -340,7 +340,7 @@ public partial class SqlBuilder {
          this.ParameterValues.Add(obj);
       }
 
-      format ??= String.Join(" ", Enumerable.Range(0, fargs.Count).Select(Placeholder));
+      format ??= String.Join(" ", Enumerable.Range(0, fargs.Count).Select(i => Placeholder(i)));
 
       this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, fargs.ToArray());
 
@@ -553,7 +553,7 @@ public partial class SqlBuilder {
          formatEnd = formatSplit[1];
       }
 
-      parametersFactory ??= static item => null;
+      parametersFactory ??= (item) => null;
 
       var currentSeparator = this.NextSeparator ?? this.CurrentSeparator;
 

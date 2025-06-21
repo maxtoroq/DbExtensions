@@ -526,7 +526,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       var query = new SqlBuilder()
          .SELECT("(CASE WHEN EXISTS ({0}) THEN 1 ELSE 0 END)", GetDefiningQuery(clone: false));
 
-      return _db.Map(query, static r => Convert.ToInt32(r[0], CultureInfo.InvariantCulture) != 0)
+      return _db.Map(query, r => Convert.ToInt32(r[0], CultureInfo.InvariantCulture) != 0)
          .SingleOrDefault();
    }
 
@@ -608,7 +608,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
          .SELECT("COUNT(*)")
          .FROM("({0}) dbex_count", GetDefiningQuery(clone: false));
 
-      return _db.Map(query, static r => (int?)Convert.ToInt32(r[0], CultureInfo.InvariantCulture))
+      return _db.Map(query, r => (int?)Convert.ToInt32(r[0], CultureInfo.InvariantCulture))
          .SingleOrDefault() ?? 0;
    }
 
@@ -691,7 +691,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
          .SELECT("COUNT(*)")
          .FROM("({0}) dbex_count", GetDefiningQuery(clone: false));
 
-      return _db.Map(query, static r => (long?)Convert.ToInt64(r[0], CultureInfo.InvariantCulture))
+      return _db.Map(query, r => (long?)Convert.ToInt64(r[0], CultureInfo.InvariantCulture))
          .SingleOrDefault() ?? 0L;
    }
 

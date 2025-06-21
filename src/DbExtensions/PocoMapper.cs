@@ -233,7 +233,7 @@ class PocoNode : Node {
          .ToArray();
 
       if (this.ConstructorParameters.Any(p => context.ConvertingNodes.Contains(p.Value))
-         || args.All(static v => v is null)) {
+         || args.All(v => v is null)) {
 
          // args already converted on MapSimple() call
          return this.Constructor.Invoke(args);
@@ -425,7 +425,7 @@ class PocoCollection : CollectionNode {
       for (var type = colType; type is not null; type = type.BaseType) {
 
          var genericICol = type.GetInterfaces()
-            .FirstOrDefault(static t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>));
+            .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>));
 
          if (genericICol is not null) {
             _elementType = genericICol.GetGenericArguments()[0];
