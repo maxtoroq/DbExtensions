@@ -185,10 +185,17 @@ abstract class Mapper {
          }
       }
 
+      if (!this.CanUseConstructorMapping) {
+         return;
+      }
+
+      var constructors = instance
+         .GetConstructors(BindingFlags.Public | BindingFlags.Instance);
+
       if (constructorParameters.Count > 0) {
 
-         instance.Constructor = ChooseConstructor(GetConstructors(instance), instance, constructorParameters.Count);
-         var parameters = instance.Constructor.GetParameters();
+         var ctor = ChooseConstructor(constructors, instance, constructorParameters.Count);
+         var parameters = ctor.GetParameters();
 
          var i = -1;
 
@@ -215,13 +222,13 @@ abstract class Mapper {
             }
          }
 
+         instance.Constructor = ctor;
+
       } else {
 
-         ConstructorInfo[] constructors;
          ParameterInfo[] parameters;
 
-         if (this.CanUseConstructorMapping
-            && (constructors = GetConstructors(instance)).Length == 1
+         if (constructors.Length == 1
             && (parameters = constructors[0].GetParameters()).Length > 0) {
 
             foreach (var param in parameters) {
@@ -405,15 +412,6 @@ abstract class Mapper {
 
    protected abstract CollectionNode
    CreateCollectionNode(Node container, string propertyName);
-
-   static ConstructorInfo[]
-   GetConstructors(Node node) {
-
-      var constructors = node
-         .GetConstructors(BindingFlags.Public | BindingFlags.Instance);
-
-      return constructors;
-   }
 
    static ConstructorInfo
    ChooseConstructor(ConstructorInfo[] constructors, Node node, int parameterLength) {
