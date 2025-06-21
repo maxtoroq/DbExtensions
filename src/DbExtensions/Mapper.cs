@@ -70,12 +70,6 @@ abstract class Mapper {
    internal static readonly char[]
    _pathSeparator = { '$' };
 
-   Node
-   _rootNode;
-
-   Dictionary<CollectionNode, CollectionLoader>
-   _manyLoaders;
-
    MappingContext
    _mappingContext;
 
@@ -91,12 +85,15 @@ abstract class Mapper {
    private MappingContext
    MappingContext => _mappingContext ??= new() {
       Log = Log,
-      ManyLoaders = _manyLoaders,
+      ManyLoaders = GetManyLoaders(),
       SingleResult = SingleResult
    };
 
    protected abstract bool
    CanUseConstructorMapping { get; }
+
+   protected Node
+   RootNode { get; set; }
 
    protected
    Mapper() { }
@@ -278,54 +275,6 @@ abstract class Mapper {
             instance.Constructor = constructors[0];
          }
       }
-
-      if (instance.IsComplex
-         && this.ManyIncludes is not null) {
-
-         var includes = this.ManyIncludes
-            .Where(p => p.Key.Length == currentGroup.Depth + 1)
-            .Where(p => {
-
-               if (instance.Container is null) {
-                  // root node
-                  return true;
-               }
-
-               var reversedBasePath = p.Key.Take(p.Key.Length - 1)
-                  .Reverse()
-                  .ToArray();
-
-               var container = instance;
-
-               for (int i = 0; i < reversedBasePath.Length; i++) {
-
-                  if (container.PropertyName != reversedBasePath[i]) {
-                     return false;
-                  }
-
-                  container = container.Container;
-               }
-
-               return true;
-            })
-            .ToArray();
-
-         for (int i = 0; i < includes.Length; i++) {
-
-            var pair = includes[i];
-            var name = pair.Key[pair.Key.Length - 1];
-
-            var collection = CreateCollectionNode(instance, name);
-
-            if (collection is not null) {
-
-               instance.Collections.Add(collection);
-
-               _manyLoaders ??= new Dictionary<CollectionNode, CollectionLoader>(ReferenceEqualityComparer.Instance);
-               _manyLoaders.Add(collection, pair.Value);
-            }
-         }
-      }
    }
 
 #if NETCOREAPP2_2_OR_GREATER
@@ -383,15 +332,60 @@ abstract class Mapper {
       node.Load(instance, record, this.MappingContext);
    }
 
-   Node
+   protected virtual Node
    GetRootNode(IDataRecord record) {
 
-      if (_rootNode is null) {
-         _rootNode = CreateRootNode();
-         ReadMapping(record, _rootNode);
+      if (this.RootNode is null) {
+
+         var node = CreateRootNode();
+         ReadMapping(record, node);
+
+         this.RootNode = node;
       }
 
-      return _rootNode;
+      return this.RootNode;
+   }
+
+   Dictionary<Node, Dictionary<CollectionNode, CollectionLoader>>
+   GetManyLoaders() {
+
+      if (this.RootNode is null) {
+         throw new InvalidOperationException("Call GetRootNode() first.");
+      }
+
+      if (this.ManyIncludes is null
+         || this.ManyIncludes.Count == 0) {
+
+         return null;
+      }
+
+      var collectionNodes = new Dictionary<Node, Dictionary<CollectionNode, CollectionLoader>>(ReferenceEqualityComparer.Instance);
+
+      foreach (var pair in this.ManyIncludes) {
+
+         var path = pair.Key;
+         var container = this.RootNode;
+
+         for (int i = 0; i < path.Length - 1; i++) {
+            container = container.Properties.First(p => p.PropertyName == path[i]);
+         }
+
+         var colNode = CreateCollectionNode(container, path[path.Length - 1]);
+
+         if (colNode is not null) {
+
+            Dictionary<CollectionNode, CollectionLoader> containerCols;
+
+            if (!collectionNodes.TryGetValue(container, out containerCols)) {
+               containerCols = new(ReferenceEqualityComparer.Instance);
+               collectionNodes.Add(container, containerCols);
+            }
+
+            containerCols.Add(colNode, pair.Value);
+         }
+      }
+
+      return collectionNodes;
    }
 
    protected abstract Node
@@ -491,7 +485,7 @@ class MappingContext {
    public TextWriter
    Log;
 
-   public Dictionary<CollectionNode, CollectionLoader>
+   public Dictionary<Node, Dictionary<CollectionNode, CollectionLoader>>
    ManyLoaders;
 
    public List<Node>
@@ -517,9 +511,6 @@ abstract class Node {
 
    List<Node>
    _properties;
-
-   List<CollectionNode>
-   _collections;
 
    public abstract bool
    IsComplex { get; }
@@ -547,10 +538,6 @@ abstract class Node {
    Properties =>
       _properties ??= new List<Node>();
 
-   public List<CollectionNode>
-   Collections =>
-      _collections ??= new List<CollectionNode>();
-
    public bool
    HasConstructorParameters =>
       _constructorParameters?.Count > 0;
@@ -558,10 +545,6 @@ abstract class Node {
    public bool
    HasProperties =>
       _properties?.Count > 0;
-
-   public bool
-   HasCollections =>
-      _collections?.Count > 0;
 
    public object
    Map(IDataRecord record, MappingContext context) {
@@ -638,7 +621,8 @@ abstract class Node {
          }
       }
 
-      if (this.HasCollections) {
+      if (context.ManyLoaders?.TryGetValue(this, out var colLoaders) == true
+         && colLoaders.Count > 0) {
 
          if (context.SingleResult) {
             // if the query is expected to return a single result at most
@@ -649,10 +633,8 @@ abstract class Node {
             reader?.Close();
          }
 
-         for (int i = 0; i < this.Collections.Count; i++) {
-
-            var collectionNode = this.Collections[i];
-            collectionNode.Load(instance, context);
+         foreach (var pair in colLoaders) {
+            pair.Key.Load(instance, pair.Value, context);
          }
       }
    }
@@ -677,11 +659,9 @@ abstract class Node {
 abstract class CollectionNode {
 
    public void
-   Load(object instance, MappingContext context) {
+   Load(object instance, CollectionLoader loader, MappingContext context) {
 
       var collection = GetOrCreate(instance, context);
-      var loader = context.ManyLoaders[this];
-
       var elements = loader.Load.Invoke(instance, loader.State);
 
       foreach (var element in elements) {
