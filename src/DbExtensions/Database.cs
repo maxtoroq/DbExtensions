@@ -853,14 +853,14 @@ public sealed partial class DatabaseConfiguration {
    /// </summary>
 
    public Func<string, string>
-   ParameterNameBuilder { get; set; } = (name) => "@" + name;
+   ParameterNameBuilder { get; set; } = static name => "@" + name;
 
    /// <summary>
    /// Specifies a function that builds a parameter placeholder to be used in SQL statements.
    /// </summary>
 
    public Func<string, string>
-   ParameterPlaceholderBuilder { get; set; } = (paramName) => paramName;
+   ParameterPlaceholderBuilder { get; set; } = static paramName => paramName;
 
    /// <summary>
    /// Gets or sets the SQL command that returns the last identity value generated on the database.
@@ -903,8 +903,8 @@ public sealed partial class DatabaseConfiguration {
 
          case "System.Data.Odbc":
          case "System.Data.OleDb":
-            this.ParameterNameBuilder = (name) => name;
-            this.ParameterPlaceholderBuilder = (paramName) => "?";
+            this.ParameterNameBuilder = static name => name;
+            this.ParameterPlaceholderBuilder = static paramName => "?";
             break;
 
          case "System.Data.SQLite":

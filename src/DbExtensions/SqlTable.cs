@@ -31,7 +31,7 @@ partial class Database {
    static readonly MethodInfo
    _tableMethod = typeof(Database)
       .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-      .Single(m => m.Name == nameof(Table) && m.ContainsGenericParameters && m.GetParameters().Length == 0);
+      .Single(static m => m.Name == nameof(Table) && m.ContainsGenericParameters && m.GetParameters().Length == 0);
 
    static readonly MappingSource
    _mappingSource = new AttributeMappingSource();
@@ -285,7 +285,7 @@ partial class Database {
    internal string
    SelectBody(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
 
-      selectMembers ??= metaType.PersistentDataMembers.Where(m => !m.IsAssociation);
+      selectMembers ??= metaType.PersistentDataMembers.Where(static m => !m.IsAssociation);
 
       var sb = new StringBuilder();
 
@@ -653,7 +653,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    InsertOneToOne(TEntity entity) {
 
       var oneToOne = _metaType.Associations
-         .Where(a => !a.IsMany && a.ThisKeyIsPrimaryKey && a.OtherKeyIsPrimaryKey)
+         .Where(static a => !a.IsMany && a.ThisKeyIsPrimaryKey && a.OtherKeyIsPrimaryKey)
          .ToArray();
 
       for (int i = 0; i < oneToOne.Length; i++) {
@@ -685,14 +685,14 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    void
    InsertOneToMany(TEntity entity) {
 
-      var oneToMany = _metaType.Associations.Where(a => a.IsMany).ToArray();
+      var oneToMany = _metaType.Associations.Where(static a => a.IsMany).ToArray();
 
       for (int i = 0; i < oneToMany.Length; i++) {
 
          var assoc = oneToMany[i];
 
          var many = ((IEnumerable<object>)assoc.ThisMember.MemberAccessor.GetBoxedValue(entity) ?? new object[0])
-            .Where(o => o is not null)
+            .Where(static o => o is not null)
             .ToArray();
 
          if (many.Length == 0) continue;
@@ -746,7 +746,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       if (entities is null) throw new ArgumentNullException(nameof(entities));
 
-      entities = entities.Where(o => o is not null)
+      entities = entities.Where(static o => o is not null)
          .ToArray();
 
       if (entities.Length == 0) {
@@ -759,7 +759,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       }
 
       var syncMembers = _metaType.PersistentDataMembers
-         .Where(m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
+         .Where(static m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
          .ToArray();
 
       var batch = syncMembers.Length == 0
@@ -814,7 +814,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       var updateSql = this.CommandBuilder.BuildUpdateStatementForEntity(entity, originalId);
 
       var syncMembers = _metaType.PersistentDataMembers
-         .Where(m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate)
+         .Where(static m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate)
          .ToArray();
 
       using (_db.EnsureConnectionOpen()) {
@@ -850,7 +850,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       if (entities is null) throw new ArgumentNullException(nameof(entities));
 
-      entities = entities.Where(o => o is not null)
+      entities = entities.Where(static o => o is not null)
          .ToArray();
 
       if (entities.Length == 0) {
@@ -865,7 +865,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       EnsureEntityType();
 
       var syncMembers = _metaType.PersistentDataMembers
-         .Where(m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate)
+         .Where(static m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate)
          .ToArray();
 
       var batch = syncMembers.Length == 0
@@ -945,7 +945,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       if (entities is null) throw new ArgumentNullException(nameof(entities));
 
-      entities = entities.Where(o => o is not null)
+      entities = entities.Where(static o => o is not null)
          .ToArray();
 
       if (entities.Length == 0) {
@@ -1214,7 +1214,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
       if (entity is null) throw new ArgumentNullException(nameof(entity));
 
       var insertingMembers = _metaType.PersistentDataMembers
-         .Where(m => !m.IsAssociation && !m.IsDbGenerated)
+         .Where(static m => !m.IsAssociation && !m.IsDbGenerated)
          .ToArray();
 
       var parameters = insertingMembers
@@ -1286,7 +1286,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
       EnsureEntityType();
 
       var updatingMembers = _metaType.PersistentDataMembers
-         .Where(m => !m.IsAssociation && !m.IsDbGenerated)
+         .Where(static m => !m.IsAssociation && !m.IsDbGenerated)
          .ToArray();
 
       var predicateMembers = _metaType.PersistentDataMembers
@@ -1294,7 +1294,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
          .ToArray();
 
       if (originalId is not null
-         && predicateMembers.Count(m => m.IsPrimaryKey) > 1) {
+         && predicateMembers.Count(static m => m.IsPrimaryKey) > 1) {
 
          throw new InvalidOperationException("The operation is not supported for entities with more than one identity member.");
       }
@@ -1470,7 +1470,7 @@ partial class SqlSet {
          .ToArray();
 
       var predicateValues = predicateMembers.ToDictionary(
-         m => m.MappedName,
+         static m => m.MappedName,
          m => m.GetValueForDatabase(entity)
       );
 
@@ -1643,7 +1643,7 @@ partial class SqlSet {
             associations.Add(association);
 
             query.SELECT(String.Join(", ", association.OtherType.PersistentDataMembers
-               .Where(m => !m.IsAssociation)
+               .Where(static m => !m.IsAssociation)
                .Select(m => $"{db.QuoteIdentifier(rAlias)}.{db.QuoteIdentifier(m.MappedName)} AS {String.Join("$", associations.Select(a => a.ThisMember.Name))}${m.Name}")));
 
             currentType = association.OtherType;

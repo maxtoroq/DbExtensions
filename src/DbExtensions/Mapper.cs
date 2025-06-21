@@ -115,11 +115,11 @@ abstract class Mapper {
              Depth = t.Key.depth,
              Name = t.Key.assoc,
              Parent = t.Key.parent,
-             Properties = t.ToDictionary(p => p.ColumnOrdinal, p => p.PropertyName)
+             Properties = t.ToDictionary(static p => p.ColumnOrdinal, static p => p.PropertyName)
           })
          .ToArray();
 
-      var topGroup = groups.Where(m => m.Depth == 0).SingleOrDefault()
+      var topGroup = groups.Where(static m => m.Depth == 0).SingleOrDefault()
          ?? new MapGroup { Name = String.Empty, Parent = String.Empty, Properties = new Dictionary<int, string>() };
 
       ReadMapping(record, groups, topGroup, rootNode);
@@ -199,7 +199,7 @@ abstract class Mapper {
 
          var i = -1;
 
-         foreach (var pair in constructorParameters.OrderBy(p => p.Key)) {
+         foreach (var pair in constructorParameters.OrderBy(static p => p.Key)) {
 
             i++;
 
@@ -574,10 +574,10 @@ abstract class Node {
 
          return (!this.HasConstructorParameters
                || this.ConstructorParameters
-                  .OrderBy(n => n.Value.IsComplex)
+                  .OrderBy(static n => n.Value.IsComplex)
                   .All(n => n.Value.AllColumnsNull(record)))
             && this.Properties
-               .OrderBy(n => n.IsComplex)
+               .OrderBy(static n => n.IsComplex)
                .All(n => n.AllColumnsNull(record));
       }
 

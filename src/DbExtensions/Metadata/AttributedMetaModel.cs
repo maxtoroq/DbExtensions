@@ -56,7 +56,7 @@ class AttributedMetaModel : MetaModel {
 
       try {
          return _metaTables.Values
-            .Where(x => x is not null)
+            .Where(static x => x is not null)
             .Distinct();
       } finally {
          _lock.ReleaseReaderLock();
@@ -410,7 +410,7 @@ class AttributedMetaType : MetaType {
 
    public override bool CanInstantiate => !Type.IsAbstract && (this == InheritanceRoot || HasInheritanceCode);
 
-   public override bool HasUpdateCheck => PersistentDataMembers.Any(m => m.UpdateCheck != UpdateCheck.Never);
+   public override bool HasUpdateCheck => PersistentDataMembers.Any(static m => m.UpdateCheck != UpdateCheck.Never);
 
    public override ReadOnlyCollection<MetaDataMember> DataMembers => _dataMembers;
 
@@ -426,8 +426,8 @@ class AttributedMetaType : MetaType {
          if (_associations is null) {
             lock (_locktarget) {
                if (_associations is null) {
-                  _associations = DataMembers.Where(m => m.IsAssociation)
-                     .Select(m => m.Association)
+                  _associations = DataMembers.Where(static m => m.IsAssociation)
+                     .Select(static m => m.Association)
                      .ToList()
                      .AsReadOnly();
                }
@@ -514,8 +514,8 @@ class AttributedMetaType : MetaType {
 
       InitDataMembers();
 
-      this.IdentityMembers = this.DataMembers.Where(m => m.IsPrimaryKey).ToList().AsReadOnly();
-      this.PersistentDataMembers = this.DataMembers.Where(m => m.IsPersistent).ToList().AsReadOnly();
+      this.IdentityMembers = this.DataMembers.Where(static m => m.IsPrimaryKey).ToList().AsReadOnly();
+      this.PersistentDataMembers = this.DataMembers.Where(static m => m.IsPersistent).ToList().AsReadOnly();
    }
 
    void ValidatePrimaryKeyMember(MetaDataMember mm) {
