@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -22,6 +23,8 @@ using System.Linq;
 using System.Reflection;
 
 namespace DbExtensions;
+
+using MetaAccessor = Metadata.MetaAccessor;
 
 partial class Database {
 
@@ -170,6 +173,12 @@ class PocoMapper : Mapper {
 
 class PocoNode : Node {
 
+   static readonly ConcurrentDictionary<PropertyInfo, MetaAccessor>
+   _accessorsCache = new();
+
+   readonly MetaAccessor
+   _accessor;
+
    private Type
    Type { get; }
 
@@ -187,9 +196,6 @@ class PocoNode : Node {
 
    private PropertyInfo
    Property { get; }
-
-   private MethodInfo
-   Setter { get; }
 
    public override string
    PropertyName => Property?.Name;
@@ -211,7 +217,8 @@ class PocoNode : Node {
       : this(property.PropertyType, columnOrdinal, isComplex) {
 
       this.Property = property;
-      this.Setter = property.GetSetMethod(true);
+
+      _accessor = GetAccessor(property);
    }
 
    internal
@@ -220,6 +227,14 @@ class PocoNode : Node {
 
       this.Parameter = parameter;
    }
+
+   static MetaAccessor
+   GetAccessor(PropertyInfo property) =>
+      _accessorsCache.GetOrAdd(property, p => Metadata.PropertyAccessor.Create(p.ReflectedType, p, null));
+
+   internal static CollectionAccessor
+   GetCollectionAccessor(PropertyInfo property) =>
+      (CollectionAccessor)_accessorsCache.GetOrAdd(property, p => CollectionAccessor.Create(p.ReflectedType, p));
 
    public override object
    Create(IDataRecord record, MappingContext context) {
@@ -326,7 +341,7 @@ class PocoNode : Node {
       try {
          SetProperty(instance, value);
 
-      } catch (ArgumentException) {
+      } catch (InvalidCastException) {
 
          context.Log?.WriteLine($"-- WARNING: Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Property.PropertyType.FullName}' {((value is null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}. Attempting conversion.");
 
@@ -340,11 +355,11 @@ class PocoNode : Node {
 
    object
    GetProperty(object instance) =>
-      this.Property.GetValue(instance, null);
+      _accessor.GetBoxedValue(instance);
 
    void
    SetProperty(object instance, object value) =>
-      this.Setter.Invoke(instance, new object[1] { value });
+      _accessor.SetBoxedValue(ref instance, value);
 
    public override ConstructorInfo[]
    GetConstructors(BindingFlags bindingAttr) =>
@@ -408,19 +423,86 @@ class PocoCollection : CollectionNode {
    readonly PropertyInfo
    _property;
 
-   readonly Type
-   _elementType;
+   readonly CollectionAccessor
+   _accessor;
 
-   readonly MethodInfo
-   _addMethod;
+   Type
+   _concreteType;
+
+   private Type
+   ConcreteType {
+      get {
+         if (_concreteType is null) {
+            var colType = _property.PropertyType;
+            _concreteType = (colType.IsAbstract || colType.IsInterface) ?
+               typeof(Collection<>).MakeGenericType(_accessor.ElementType)
+               : colType;
+         }
+         return _concreteType;
+      }
+   }
 
    public
    PocoCollection(PropertyInfo property) {
 
       _property = property;
+      _accessor = PocoNode.GetCollectionAccessor(property);
+   }
 
-      var colType = _property.PropertyType;
-      _elementType = typeof(object);
+   protected override IEnumerable
+   GetOrCreate(object instance, MappingContext context) {
+
+      var collection = _accessor.GetBoxedValue(instance);
+
+      if (collection is null) {
+         collection = Activator.CreateInstance(this.ConcreteType);
+         _accessor.SetBoxedValue(ref instance, collection);
+      }
+
+      return (IEnumerable)collection;
+   }
+
+   protected override void
+   Add(IEnumerable collection, object element, MappingContext context) {
+
+      var colObj = (object)collection;
+
+      _accessor.AddBoxedElement(ref colObj, element);
+   }
+}
+
+abstract class CollectionAccessor : MetaAccessor {
+
+   public abstract Type
+   ElementType { get; }
+
+   public static CollectionAccessor
+   Create(Type objectType, PropertyInfo pi) {
+
+      var propAccessor = Metadata.PropertyAccessor.Create(objectType, pi, null);
+
+      var colType = pi.PropertyType;
+      var elementType = GetElementType(colType);
+
+      var addMethod = colType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, new[] { elementType }, null)
+         ?? throw new InvalidOperationException($"Couldn't find a public 'Add' method on '{colType.FullName}'.");
+
+      var addFn = Delegate.CreateDelegate(typeof(Action<,>)
+         .MakeGenericType(colType, elementType), addMethod);
+
+      return (CollectionAccessor)Activator.CreateInstance(
+         typeof(CollectionAccessor<,,>).MakeGenericType(objectType, colType, elementType),
+         BindingFlags.Instance | BindingFlags.NonPublic,
+         null,
+         new object[2] { propAccessor, addFn },
+         null
+      );
+   }
+
+   static Type
+   GetElementType(Type colType) {
+
+      var elementType = typeof(object);
 
       for (var type = colType; type is not null; type = type.BaseType) {
 
@@ -428,43 +510,66 @@ class PocoCollection : CollectionNode {
             .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>));
 
          if (genericICol is not null) {
-            _elementType = genericICol.GetGenericArguments()[0];
+            elementType = genericICol.GetGenericArguments()[0];
             break;
          }
       }
 
-      _addMethod = colType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, new[] { _elementType }, null);
-
-      if (_addMethod is null) {
-         throw new InvalidOperationException($"Couldn't find a public 'Add' method on '{colType.FullName}'.");
-      }
+      return elementType;
    }
 
-   protected override IEnumerable
-   GetOrCreate(object instance, MappingContext context) {
+   public abstract void
+   AddBoxedElement(ref object collection, object element);
+}
 
-      var collection = _property.GetValue(instance, null);
+class CollectionAccessor<TContainer, TCollection, TElement> : CollectionAccessor {
 
-      if (collection is null) {
+   readonly Metadata.MetaAccessor<TContainer, TCollection>
+   _propAccessor;
 
-         var collectionType = _property.PropertyType;
+   readonly Action<TCollection, TElement>
+   _addFn;
 
-         if (collectionType.IsAbstract
-            || collectionType.IsInterface) {
+   public override Type
+   Type => _propAccessor.Type;
 
-            collection = Activator.CreateInstance(typeof(Collection<>).MakeGenericType(_elementType));
+   public override Type
+   ElementType => typeof(TElement);
 
-         } else {
-            collection = Activator.CreateInstance(collectionType);
-         }
+   internal
+   CollectionAccessor(
+         Metadata.MetaAccessor<TContainer, TCollection> propAccessor,
+         Action<TCollection, TElement> addFn) {
 
-         _property.SetValue(instance, collection, null);
-      }
-
-      return (IEnumerable)collection;
+      _propAccessor = propAccessor;
+      _addFn = addFn;
    }
 
-   protected override void
-   Add(IEnumerable collection, object element, MappingContext context) =>
-      _addMethod.Invoke(collection, new[] { element });
+   public TCollection
+   GetValue(TContainer instance) =>
+      _propAccessor.GetValue(instance);
+
+   public void
+   SetValue(ref TContainer instance, TCollection value) =>
+      _propAccessor.SetValue(ref instance, value);
+
+   public void
+   AddElement(ref TCollection collection, TElement element) =>
+      _addFn.Invoke(collection, element);
+
+   public override void
+   SetBoxedValue(ref object instance, object value) =>
+      _propAccessor.SetBoxedValue(ref instance, value);
+
+   public override object
+   GetBoxedValue(object instance) =>
+      _propAccessor.GetBoxedValue(instance);
+
+   public override void
+   AddBoxedElement(ref object collection, object element) {
+
+      var TCol = (TCollection)collection;
+      AddElement(ref TCol, (TElement)element);
+      collection = TCol;
+   }
 }
