@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace DbExtensions;
@@ -240,7 +241,7 @@ class PocoNode : Node {
    Create(IDataRecord record, MappingContext context) {
 
       if (this.Constructor is null) {
-         return Activator.CreateInstance(this.Type);
+         return ObjectFactory.CreateInstance(this.Type);
       }
 
       var args = this.ConstructorParameters
@@ -251,13 +252,13 @@ class PocoNode : Node {
          || args.All(v => v is null)) {
 
          // args already converted on MapSimple() call
-         return this.Constructor.Invoke(args);
+         return CreateInstance(args);
       }
 
       try {
-         return this.Constructor.Invoke(args);
+         return CreateInstance(args);
 
-      } catch (ArgumentException) {
+      } catch (InvalidCastException) {
 
          var converted = false;
          var i = -1;
@@ -286,12 +287,16 @@ class PocoNode : Node {
          }
 
          if (converted) {
-            return this.Constructor.Invoke(args);
+            return CreateInstance(args);
          }
 
          throw;
       }
    }
+
+   object
+   CreateInstance(object[] args) =>
+      ObjectFactory.CreateInstance(this.Constructor, args);
 
    protected override object
    MapSimple(IDataRecord record, MappingContext context) {
@@ -455,7 +460,7 @@ class PocoCollection : CollectionNode {
       var collection = _accessor.GetBoxedValue(instance);
 
       if (collection is null) {
-         collection = Activator.CreateInstance(this.ConcreteType);
+         collection = ObjectFactory.CreateInstance(this.ConcreteType);
          _accessor.SetBoxedValue(ref instance, collection);
       }
 
@@ -571,5 +576,51 @@ class CollectionAccessor<TContainer, TCollection, TElement> : CollectionAccessor
       var TCol = (TCollection)collection;
       AddElement(ref TCol, (TElement)element);
       collection = TCol;
+   }
+}
+
+static class ObjectFactory {
+
+   static readonly ConcurrentDictionary<Type, Func<object>>
+   _typeFactoryCache = new();
+
+   static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>>
+   _ctorFactoryCache = new();
+
+   public static object
+   CreateInstance(Type type) =>
+      _typeFactoryCache.GetOrAdd(type, CreateFactory).Invoke();
+
+   static Func<object>
+   CreateFactory(Type type) {
+
+      var newExpr = Expression.New(type);
+      var castExpr = Expression.Convert(newExpr, typeof(object));
+      var lambdaExpr = Expression.Lambda<Func<object>>(castExpr);
+
+      return lambdaExpr.Compile();
+   }
+
+   public static object
+   CreateInstance(ConstructorInfo ctor, params object[] args) =>
+      _ctorFactoryCache.GetOrAdd(ctor, CreateFactory).Invoke(args);
+
+   static Func<object[], object>
+   CreateFactory(ConstructorInfo ctor) {
+
+      var parameters = ctor.GetParameters();
+      var argsExpr = Expression.Parameter(typeof(object[]), "args");
+      var args = new Expression[parameters.Length];
+
+      for (var i = 0; i < parameters.Length; i++) {
+         var argsIndexExpr = Expression.ArrayIndex(argsExpr, Expression.Constant(i));
+         args[i] = Expression.Convert(argsIndexExpr, parameters[i].ParameterType);
+      }
+
+      var newExpr = Expression.New(ctor, args);
+      var castExpr = Expression.Convert(newExpr, typeof(object));
+      var lambdaExpr = Expression.Lambda<Func<object[], object>>(castExpr, argsExpr);
+
+      return lambdaExpr.Compile();
    }
 }
