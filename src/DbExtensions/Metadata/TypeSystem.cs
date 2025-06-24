@@ -20,243 +20,234 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace DbExtensions.Metadata {
+namespace DbExtensions.Metadata;
 
-   static class TypeSystem {
+static class TypeSystem {
 
-      internal static bool IsSequenceType(Type seqType) {
+   internal static bool IsSequenceType(Type seqType) {
 
-         return seqType != typeof(string)
-                && seqType != typeof(byte[])
-                && seqType != typeof(char[])
-                && FindIEnumerable(seqType) != null;
-      }
-
-      static Type FindIEnumerable(Type seqType) {
-
-         if (seqType == null || seqType == typeof(string)) {
-            return null;
-         }
-
-         if (seqType.IsArray) {
-            return typeof(IEnumerable<>).MakeGenericType(seqType.GetElementType());
-         }
-
-         if (seqType.IsGenericType) {
-
-            foreach (Type arg in seqType.GetGenericArguments()) {
-
-               Type ienum = typeof(IEnumerable<>).MakeGenericType(arg);
-
-               if (ienum.IsAssignableFrom(seqType)) {
-                  return ienum;
-               }
-            }
-         }
-
-         Type[] ifaces = seqType.GetInterfaces();
-
-         if (ifaces != null && ifaces.Length > 0) {
-
-            foreach (Type iface in ifaces) {
-
-               Type ienum = FindIEnumerable(iface);
-
-               if (ienum != null) {
-                  return ienum;
-               }
-            }
-         }
-
-         if (seqType.BaseType != null
-            && seqType.BaseType != typeof(object)) {
-
-            return FindIEnumerable(seqType.BaseType);
-         }
-
-         return null;
-      }
-
-      internal static Type GetElementType(Type seqType) {
-
-         Type ienum = FindIEnumerable(seqType);
-
-         if (ienum == null) {
-            return seqType;
-         }
-
-         return ienum.GetGenericArguments()[0];
-      }
-
-      internal static bool IsNullableType(Type type) {
-
-         return type != null
-            && type.IsGenericType
-            && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-      }
-
-      internal static Type GetMemberType(MemberInfo mi) {
-
-         FieldInfo fi = mi as FieldInfo;
-
-         if (fi != null) {
-            return fi.FieldType;
-         }
-
-         PropertyInfo pi = mi as PropertyInfo;
-
-         if (pi != null) {
-            return pi.PropertyType;
-         }
-
-         EventInfo ei = mi as EventInfo;
-
-         if (ei != null) {
-            return ei.EventHandlerType;
-         }
-
-         return null;
-      }
-
-      internal static IEnumerable<FieldInfo> GetAllFields(Type type, BindingFlags flags) {
-
-         var seen = new Dictionary<MetaPosition, FieldInfo>();
-
-         Type currentType = type;
-
-         do {
-
-            foreach (FieldInfo fi in currentType.GetFields(flags)) {
-               if (fi.IsPrivate || type == currentType) {
-                  var mp = new MetaPosition(fi);
-                  seen[mp] = fi;
-               }
-            }
-
-            currentType = currentType.BaseType;
-
-         } while (currentType != null);
-
-         return seen.Values;
-      }
-
-      internal static IEnumerable<PropertyInfo> GetAllProperties(Type type, BindingFlags flags) {
-
-         var seen = new Dictionary<MetaPosition, PropertyInfo>();
-
-         Type currentType = type;
-
-         do {
-
-            foreach (PropertyInfo pi in currentType.GetProperties(flags)) {
-               if (type == currentType || IsPrivate(pi)) {
-                  var mp = new MetaPosition(pi);
-                  seen[mp] = pi;
-               }
-            }
-
-            currentType = currentType.BaseType;
-
-         } while (currentType != null);
-
-         return seen.Values;
-      }
-
-      static bool IsPrivate(PropertyInfo pi) {
-
-         MethodInfo mi = pi.GetGetMethod() ?? pi.GetSetMethod();
-
-         if (mi != null) {
-            return mi.IsPrivate;
-         }
-
-         return true;
-      }
+      return seqType != typeof(string)
+         && seqType != typeof(byte[])
+         && seqType != typeof(char[])
+         && FindIEnumerable(seqType) != null;
    }
 
-   /// <summary>
-   /// Hashable MetaDataToken+Assembly. This type uniquely describes a metadata element
-   /// like a MemberInfo. MetaDataToken by itself is not sufficient because its only
-   /// unique within a single assembly.
-   /// </summary>
+   static Type FindIEnumerable(Type seqType) {
 
-   struct MetaPosition : IEqualityComparer<MetaPosition>, IEqualityComparer {
-
-      int metadataToken;
-      Assembly assembly;
-
-      internal MetaPosition(MemberInfo mi)
-         : this(mi.DeclaringType.Assembly, mi.MetadataToken) {
+      if (seqType == null || seqType == typeof(string)) {
+         return null;
       }
 
-      private MetaPosition(Assembly assembly, int metadataToken) {
-         this.assembly = assembly;
-         this.metadataToken = metadataToken;
+      if (seqType.IsArray) {
+         return typeof(IEnumerable<>).MakeGenericType(seqType.GetElementType());
       }
 
-      // Equality is implemented here according to the advice in
-      // CLR via C# 2ed, J. Richter, p 146. In particular, ValueType.Equals
-      // should not be called for perf reasons.
+      if (seqType.IsGenericType) {
 
-      #region Object Members
+         foreach (var arg in seqType.GetGenericArguments()) {
 
-      public override bool Equals(object obj) {
+            var ienum = typeof(IEnumerable<>).MakeGenericType(arg);
 
-         if (obj == null) {
-            return false;
+            if (ienum.IsAssignableFrom(seqType)) {
+               return ienum;
+            }
+         }
+      }
+
+      var ifaces = seqType.GetInterfaces();
+
+      if (ifaces != null && ifaces.Length > 0) {
+
+         foreach (var iface in ifaces) {
+
+            var ienum = FindIEnumerable(iface);
+
+            if (ienum != null) {
+               return ienum;
+            }
+         }
+      }
+
+      if (seqType.BaseType != null
+         && seqType.BaseType != typeof(object)) {
+
+         return FindIEnumerable(seqType.BaseType);
+      }
+
+      return null;
+   }
+
+   internal static Type GetElementType(Type seqType) {
+
+      var ienum = FindIEnumerable(seqType);
+
+      if (ienum == null) {
+         return seqType;
+      }
+
+      return ienum.GetGenericArguments()[0];
+   }
+
+   internal static bool IsNullableType(Type type) {
+
+      return type != null
+         && type.IsGenericType
+         && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+   }
+
+   internal static Type GetMemberType(MemberInfo mi) {
+
+      if (mi is FieldInfo fi) {
+         return fi.FieldType;
+      }
+
+      if (mi is PropertyInfo pi) {
+         return pi.PropertyType;
+      }
+
+      if (mi is EventInfo ei) {
+         return ei.EventHandlerType;
+      }
+
+      return null;
+   }
+
+   internal static IEnumerable<FieldInfo> GetAllFields(Type type, BindingFlags flags) {
+
+      var seen = new Dictionary<MetaPosition, FieldInfo>();
+
+      var currentType = type;
+
+      do {
+
+         foreach (var fi in currentType.GetFields(flags)) {
+            if (fi.IsPrivate || type == currentType) {
+               var mp = new MetaPosition(fi);
+               seen[mp] = fi;
+            }
          }
 
-         if (obj.GetType() != GetType()) {
-            return false;
+         currentType = currentType.BaseType;
+
+      } while (currentType != null);
+
+      return seen.Values;
+   }
+
+   internal static IEnumerable<PropertyInfo> GetAllProperties(Type type, BindingFlags flags) {
+
+      var seen = new Dictionary<MetaPosition, PropertyInfo>();
+      var currentType = type;
+
+      do {
+
+         foreach (var pi in currentType.GetProperties(flags)) {
+            if (type == currentType || IsPrivate(pi)) {
+               var mp = new MetaPosition(pi);
+               seen[mp] = pi;
+            }
          }
 
-         return AreEqual(this, (MetaPosition)obj);
+         currentType = currentType.BaseType;
+
+      } while (currentType != null);
+
+      return seen.Values;
+   }
+
+   static bool IsPrivate(PropertyInfo pi) {
+
+      var mi = pi.GetGetMethod() ?? pi.GetSetMethod();
+
+      if (mi != null) {
+         return mi.IsPrivate;
       }
 
-      public override int GetHashCode() {
-         return this.metadataToken;
+      return true;
+   }
+}
+
+/// <summary>
+/// Hashable MetaDataToken+Assembly. This type uniquely describes a metadata element
+/// like a MemberInfo. MetaDataToken by itself is not sufficient because its only
+/// unique within a single assembly.
+/// </summary>
+
+struct MetaPosition : IEqualityComparer<MetaPosition>, IEqualityComparer {
+
+   readonly int _metadataToken;
+   readonly Assembly _assembly;
+
+   internal MetaPosition(MemberInfo mi)
+      : this(mi.DeclaringType.Assembly, mi.MetadataToken) { }
+
+   private MetaPosition(Assembly assembly, int metadataToken) {
+      _assembly = assembly;
+      _metadataToken = metadataToken;
+   }
+
+   // Equality is implemented here according to the advice in
+   // CLR via C# 2ed, J. Richter, p 146. In particular, ValueType.Equals
+   // should not be called for perf reasons.
+
+   #region Object Members
+
+   public override bool Equals(object obj) {
+
+      if (obj == null) {
+         return false;
       }
 
-      #endregion
-
-      #region IEqualityComparer<MetaPosition> Members
-
-      public bool Equals(MetaPosition x, MetaPosition y) {
-         return AreEqual(x, y);
+      if (obj.GetType() != GetType()) {
+         return false;
       }
 
-      public int GetHashCode(MetaPosition obj) {
-         return obj.metadataToken;
-      }
+      return AreEqual(this, (MetaPosition)obj);
+   }
 
-      #endregion
+   public override int GetHashCode() {
+      return _metadataToken;
+   }
 
-      #region IEqualityComparer Members
+   #endregion
 
-      bool IEqualityComparer.Equals(object x, object y) {
-         return Equals((MetaPosition)x, (MetaPosition)y);
-      }
-      int IEqualityComparer.GetHashCode(object obj) {
-         return GetHashCode((MetaPosition)obj);
-      }
+   #region IEqualityComparer<MetaPosition> Members
 
-      #endregion
+   public bool Equals(MetaPosition x, MetaPosition y) {
+      return AreEqual(x, y);
+   }
 
-      static bool AreEqual(MetaPosition x, MetaPosition y) {
+   public int GetHashCode(MetaPosition obj) {
+      return obj._metadataToken;
+   }
 
-         return (x.metadataToken == y.metadataToken)
-             && (x.assembly == y.assembly);
-      }
+   #endregion
 
-      // Since MetaPositions are immutable, we overload the equality operator
-      // to test for value equality, rather than reference equality
+   #region IEqualityComparer Members
 
-      public static bool operator ==(MetaPosition x, MetaPosition y) {
-         return AreEqual(x, y);
-      }
+   bool IEqualityComparer.Equals(object x, object y) {
+      return Equals((MetaPosition)x, (MetaPosition)y);
+   }
+   int IEqualityComparer.GetHashCode(object obj) {
+      return GetHashCode((MetaPosition)obj);
+   }
 
-      public static bool operator !=(MetaPosition x, MetaPosition y) {
-         return !AreEqual(x, y);
-      }
+   #endregion
+
+   static bool AreEqual(MetaPosition x, MetaPosition y) {
+
+      return (x._metadataToken == y._metadataToken)
+         && (x._assembly == y._assembly);
+   }
+
+   // Since MetaPositions are immutable, we overload the equality operator
+   // to test for value equality, rather than reference equality
+
+   public static bool operator ==(MetaPosition x, MetaPosition y) {
+      return AreEqual(x, y);
+   }
+
+   public static bool operator !=(MetaPosition x, MetaPosition y) {
+      return !AreEqual(x, y);
    }
 }

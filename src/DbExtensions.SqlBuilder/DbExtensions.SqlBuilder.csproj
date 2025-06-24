@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net45;netcoreapp2.1;netstandard2.1</TargetFrameworks>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

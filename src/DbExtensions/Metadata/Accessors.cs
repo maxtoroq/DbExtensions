@@ -20,47 +20,127 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
-namespace DbExtensions.Metadata {
+namespace DbExtensions.Metadata;
 
-   delegate V DGet<T, V>(T t);
-   delegate void DSet<T, V>(T t, V v);
-   delegate void DRSet<T, V>(ref T t, V v);
+delegate V DGet<T, V>(T t);
+delegate void DSet<T, V>(T t, V v);
+delegate void DRSet<T, V>(ref T t, V v);
 
-   static class FieldAccessor {
+static class FieldAccessor {
 
-      [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-      internal static MetaAccessor Create(Type objectType, FieldInfo fi) {
+   [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+   internal static MetaAccessor Create(Type objectType, FieldInfo fi) {
 
-         if (!fi.ReflectedType.IsAssignableFrom(objectType)) {
-            throw Error.InvalidFieldInfo(objectType, fi.FieldType, fi);
+      if (!fi.ReflectedType.IsAssignableFrom(objectType)) {
+         throw Error.InvalidFieldInfo(objectType, fi.FieldType, fi);
+      }
+
+      Delegate dget = null;
+      Delegate drset = null;
+
+      if (!objectType.IsGenericType) {
+
+         var mget = new DynamicMethod(
+            "xget_" + fi.Name,
+            fi.FieldType,
+            new Type[] { objectType },
+            true
+         );
+
+         var gen = mget.GetILGenerator();
+         gen.Emit(OpCodes.Ldarg_0);
+         gen.Emit(OpCodes.Ldfld, fi);
+         gen.Emit(OpCodes.Ret);
+         dget = mget.CreateDelegate(typeof(DGet<,>).MakeGenericType(objectType, fi.FieldType));
+
+         var mset = new DynamicMethod(
+            "xset_" + fi.Name,
+            typeof(void),
+            new Type[] { objectType.MakeByRefType(), fi.FieldType },
+            true
+         );
+
+         gen = mset.GetILGenerator();
+         gen.Emit(OpCodes.Ldarg_0);
+
+         if (!objectType.IsValueType) {
+            gen.Emit(OpCodes.Ldind_Ref);
          }
 
-         Delegate dget = null;
-         Delegate drset = null;
+         gen.Emit(OpCodes.Ldarg_1);
+         gen.Emit(OpCodes.Stfld, fi);
+         gen.Emit(OpCodes.Ret);
+         drset = mset.CreateDelegate(typeof(DRSet<,>).MakeGenericType(objectType, fi.FieldType));
+      }
 
-         if (!objectType.IsGenericType) {
+      return (MetaAccessor)Activator.CreateInstance(
+         typeof(Accessor<,>).MakeGenericType(objectType, fi.FieldType),
+         BindingFlags.Instance | BindingFlags.NonPublic, null,
+         new object[] { fi, dget, drset }, null
+      );
+   }
 
-            DynamicMethod mget = new DynamicMethod(
-               "xget_" + fi.Name,
-               fi.FieldType,
-               new Type[] { objectType },
-               true
-            );
+   class Accessor<T, V> : MetaAccessor<T, V> {
 
-            ILGenerator gen = mget.GetILGenerator();
-            gen.Emit(OpCodes.Ldarg_0);
-            gen.Emit(OpCodes.Ldfld, fi);
-            gen.Emit(OpCodes.Ret);
-            dget = mget.CreateDelegate(typeof(DGet<,>).MakeGenericType(objectType, fi.FieldType));
+      readonly DGet<T, V> _dget;
+      readonly DRSet<T, V> _drset;
+      readonly FieldInfo _fi;
 
-            DynamicMethod mset = new DynamicMethod(
-               "xset_" + fi.Name,
+      internal Accessor(FieldInfo fi, DGet<T, V> dget, DRSet<T, V> drset) {
+         _fi = fi;
+         _dget = dget;
+         _drset = drset;
+      }
+
+      public override V GetValue(T instance) {
+
+         if (_dget != null) {
+            return _dget.Invoke(instance);
+         }
+
+         return (V)_fi.GetValue(instance);
+      }
+
+      public override void SetValue(ref T instance, V value) {
+
+         if (_drset != null) {
+            _drset.Invoke(ref instance, value);
+         } else {
+            _fi.SetValue(instance, value);
+         }
+      }
+   }
+}
+
+static class PropertyAccessor {
+
+   internal static MetaAccessor Create(Type objectType, PropertyInfo pi, MetaAccessor storageAccessor) {
+
+      var dset = default(Delegate);
+      var drset = default(Delegate);
+      var dgetType = typeof(DGet<,>).MakeGenericType(objectType, pi.PropertyType);
+      var getMethod = pi.GetGetMethod(true);
+
+      var dget = Delegate.CreateDelegate(dgetType, getMethod, true);
+
+      if (dget == null) {
+         throw Error.CouldNotCreateAccessorToProperty(objectType, pi.PropertyType, pi);
+      }
+
+      if (pi.CanWrite) {
+
+         if (!objectType.IsValueType) {
+            dset = Delegate.CreateDelegate(typeof(DSet<,>).MakeGenericType(objectType, pi.PropertyType), pi.GetSetMethod(true), true);
+         } else {
+
+            var mset = new DynamicMethod(
+               "xset_" + pi.Name,
                typeof(void),
-               new Type[] { objectType.MakeByRefType(), fi.FieldType },
+               new Type[] { objectType.MakeByRefType(), pi.PropertyType },
                true
             );
 
-            gen = mset.GetILGenerator();
+            var gen = mset.GetILGenerator();
             gen.Emit(OpCodes.Ldarg_0);
 
             if (!objectType.IsValueType) {
@@ -68,136 +148,57 @@ namespace DbExtensions.Metadata {
             }
 
             gen.Emit(OpCodes.Ldarg_1);
-            gen.Emit(OpCodes.Stfld, fi);
+            gen.Emit(OpCodes.Call, pi.GetSetMethod(true));
             gen.Emit(OpCodes.Ret);
-            drset = mset.CreateDelegate(typeof(DRSet<,>).MakeGenericType(objectType, fi.FieldType));
-         }
-
-         return (MetaAccessor)Activator.CreateInstance(
-            typeof(Accessor<,>).MakeGenericType(objectType, fi.FieldType),
-            BindingFlags.Instance | BindingFlags.NonPublic, null,
-            new object[] { fi, dget, drset }, null
-         );
-      }
-
-      class Accessor<T, V> : MetaAccessor<T, V> {
-
-         DGet<T, V> dget;
-         DRSet<T, V> drset;
-         FieldInfo fi;
-
-         internal Accessor(FieldInfo fi, DGet<T, V> dget, DRSet<T, V> drset) {
-            this.fi = fi;
-            this.dget = dget;
-            this.drset = drset;
-         }
-
-         public override V GetValue(T instance) {
-
-            if (this.dget != null) {
-               return this.dget(instance);
-            }
-
-            return (V)fi.GetValue(instance);
-         }
-
-         public override void SetValue(ref T instance, V value) {
-
-            if (this.drset != null) {
-               this.drset(ref instance, value);
-            } else {
-               this.fi.SetValue(instance, value);
-            }
+            drset = mset.CreateDelegate(typeof(DRSet<,>).MakeGenericType(objectType, pi.PropertyType));
          }
       }
+
+      var saType = (storageAccessor != null) ?
+         storageAccessor.Type
+         : pi.PropertyType;
+
+      return (MetaAccessor)Activator.CreateInstance(
+         typeof(Accessor<,,>).MakeGenericType(objectType, pi.PropertyType, saType),
+         BindingFlags.Instance | BindingFlags.NonPublic, null,
+         new object[] { pi, dget, dset, drset, storageAccessor }, null
+      );
    }
 
-   static class PropertyAccessor {
+   class Accessor<T, V, V2> : MetaAccessor<T, V> where V2 : V {
 
-      internal static MetaAccessor Create(Type objectType, PropertyInfo pi, MetaAccessor storageAccessor) {
+      readonly PropertyInfo _pi;
+      readonly DGet<T, V> _dget;
+      readonly DSet<T, V> _dset;
+      readonly DRSet<T, V> _drset;
+      readonly MetaAccessor<T, V2> _storage;
 
-         Delegate dset = null;
-         Delegate drset = null;
-         Type dgetType = typeof(DGet<,>).MakeGenericType(objectType, pi.PropertyType);
-         MethodInfo getMethod = pi.GetGetMethod(true);
+      internal Accessor(PropertyInfo pi, DGet<T, V> dget, DSet<T, V> dset, DRSet<T, V> drset, MetaAccessor<T, V2> storage) {
 
-         Delegate dget = Delegate.CreateDelegate(dgetType, getMethod, true);
-
-         if (dget == null) {
-            throw Error.CouldNotCreateAccessorToProperty(objectType, pi.PropertyType, pi);
-         }
-
-         if (pi.CanWrite) {
-
-            if (!objectType.IsValueType) {
-               dset = Delegate.CreateDelegate(typeof(DSet<,>).MakeGenericType(objectType, pi.PropertyType), pi.GetSetMethod(true), true);
-            } else {
-
-               DynamicMethod mset = new DynamicMethod(
-                  "xset_" + pi.Name,
-                  typeof(void),
-                  new Type[] { objectType.MakeByRefType(), pi.PropertyType },
-                  true
-               );
-
-               ILGenerator gen = mset.GetILGenerator();
-               gen.Emit(OpCodes.Ldarg_0);
-
-               if (!objectType.IsValueType) {
-                  gen.Emit(OpCodes.Ldind_Ref);
-               }
-
-               gen.Emit(OpCodes.Ldarg_1);
-               gen.Emit(OpCodes.Call, pi.GetSetMethod(true));
-               gen.Emit(OpCodes.Ret);
-               drset = mset.CreateDelegate(typeof(DRSet<,>).MakeGenericType(objectType, pi.PropertyType));
-            }
-         }
-
-         Type saType = (storageAccessor != null) ? storageAccessor.Type : pi.PropertyType;
-
-         return (MetaAccessor)Activator.CreateInstance(
-            typeof(Accessor<,,>).MakeGenericType(objectType, pi.PropertyType, saType),
-            BindingFlags.Instance | BindingFlags.NonPublic, null,
-            new object[] { pi, dget, dset, drset, storageAccessor }, null
-         );
+         _pi = pi;
+         _dget = dget;
+         _dset = dset;
+         _drset = drset;
+         _storage = storage;
       }
 
-      class Accessor<T, V, V2> : MetaAccessor<T, V> where V2 : V {
+      public override V GetValue(T instance) {
+         return _dget.Invoke(instance);
+      }
 
-         PropertyInfo pi;
-         DGet<T, V> dget;
-         DSet<T, V> dset;
-         DRSet<T, V> drset;
-         MetaAccessor<T, V2> storage;
+      public override void SetValue(ref T instance, V value) {
 
-         internal Accessor(PropertyInfo pi, DGet<T, V> dget, DSet<T, V> dset, DRSet<T, V> drset, MetaAccessor<T, V2> storage) {
+         if (_dset != null) {
+            _dset.Invoke(instance, value);
 
-            this.pi = pi;
-            this.dget = dget;
-            this.dset = dset;
-            this.drset = drset;
-            this.storage = storage;
-         }
+         } else if (_drset != null) {
+            _drset.Invoke(ref instance, value);
 
-         public override V GetValue(T instance) {
-            return this.dget(instance);
-         }
+         } else if (_storage != null) {
+            _storage.SetValue(ref instance, (V2)value);
 
-         public override void SetValue(ref T instance, V value) {
-
-            if (this.dset != null) {
-               this.dset(instance, value);
-
-            } else if (this.drset != null) {
-               this.drset(ref instance, value);
-
-            } else if (this.storage != null) {
-               this.storage.SetValue(ref instance, (V2)value);
-
-            } else {
-               throw Error.UnableToAssignValueToReadonlyProperty(this.pi);
-            }
+         } else {
+            throw Error.UnableToAssignValueToReadonlyProperty(_pi);
          }
       }
    }
