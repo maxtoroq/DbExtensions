@@ -130,6 +130,9 @@ abstract class Mapper {
 
       var constructorParameters = new Dictionary<uint, MapParam>();
       var unmapped = new Dictionary<string, int>();
+      var unmappedGroups = new Dictionary<string, MapGroup>();
+
+      // simple properties
 
       foreach (var pair in currentGroup.Properties) {
 
@@ -138,7 +141,6 @@ abstract class Mapper {
          var property = CreateSimpleProperty(instance, propertyName, columnOrdinal);
 
          if (property is not null) {
-            property.Container = instance;
             instance.Properties.Add(property);
             continue;
          }
@@ -153,21 +155,15 @@ abstract class Mapper {
          }
       }
 
-      var nextLevels = groups
-         .Where(m => m.Depth == currentGroup.Depth + 1 && m.Parent == currentGroup.Name)
-         .ToArray();
+      // complex properties
 
-      var unmappedGroups = new Dictionary<string, MapGroup>();
+      foreach (var nextLevel in groups
+            .Where(m => m.Depth == currentGroup.Depth + 1 && m.Parent == currentGroup.Name)) {
 
-      for (int i = 0; i < nextLevels.Length; i++) {
-
-         var nextLevel = nextLevels[i];
          var propertyName = nextLevel.Name;
          var property = CreateComplexProperty(instance, propertyName);
 
          if (property is not null) {
-
-            property.Container = instance;
 
             ReadMapping(record, groups, nextLevel, property);
 
@@ -193,6 +189,8 @@ abstract class Mapper {
          .GetConstructors(BindingFlags.Public | BindingFlags.Instance);
 
       if (constructorParameters.Count > 0) {
+
+         // choose constructor based on positional arguments
 
          var ctor = ChooseConstructor(constructors, instance, constructorParameters.Count);
          var parameters = ctor.GetParameters();
@@ -230,6 +228,9 @@ abstract class Mapper {
 
          if (constructors.Length == 1
             && (parameters = constructors[0].GetParameters()).Length > 0) {
+
+            // if there's a single constructor, try to bind unmaped
+            // columns to constructor parameters by name
 
             foreach (var param in parameters) {
 
@@ -521,9 +522,6 @@ abstract class Node {
 
    public abstract string
    TypeName { get; }
-
-   public Node
-   Container { get; internal set; }
 
    public ConstructorInfo
    Constructor { get; internal set; }
