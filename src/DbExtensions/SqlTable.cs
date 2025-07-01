@@ -1621,11 +1621,8 @@ partial class SqlSet {
             var rAlias = rAliasFn(i);
 
             var member = currentType.PersistentDataMembers
-               .SingleOrDefault(m => m.Name == p);
-
-            if (member is null) {
-               throw new ArgumentException($"Couldn't find '{p}' on '{currentType.Type.FullName}'.", nameof(path));
-            }
+               .SingleOrDefault(m => m.Name == p)
+               ?? throw new ArgumentException($"Couldn't find '{p}' on '{currentType.Type.FullName}'.", nameof(path));
 
             if (!member.IsAssociation) {
                throw new ArgumentException($"'{p}' is not an association property.", nameof(path));
@@ -1730,21 +1727,13 @@ partial class SqlSet {
          set.ManyIncludes ??= new Dictionary<string[], CollectionLoader>();
 
          set.ManyIncludes.Add(manyPath, new CollectionLoader {
-            Load = GetMany,
-            State = new CollectionLoaderState {
-               Source = manySource,
-               Association = manyAssoc
-            }
+            Load = c => GetMany(c, manyAssoc, manySource),
+            Association = manyAssoc,
          });
       }
 
       static IEnumerable
-      GetMany(object container, object state) {
-
-         var loaderState = (CollectionLoaderState)state;
-
-         var association = loaderState.Association;
-         var set = loaderState.Source;
+      GetMany(object container, MetaAssociation association, SqlSet set) {
 
          var predicateValues = association.OtherKey.Select((p, i) =>
             new KeyValuePair<string, object>(p.MappedName, association.ThisKey[i].GetValueForDatabase(container)));
@@ -1756,28 +1745,18 @@ partial class SqlSet {
             .AsEnumerable();
 
          var otherMember = association.OtherMember;
+         var setOtherMember = otherMember is not null
+            && !otherMember.Association.IsMany;
 
          foreach (var child in children) {
 
-            if (otherMember is not null
-               && !otherMember.Association.IsMany) {
-
+            if (setOtherMember) {
                var childObj = child;
-
                otherMember.MemberAccessor.SetBoxedValue(ref childObj, container);
             }
 
             yield return child;
          }
-      }
-
-      class CollectionLoaderState {
-
-         public SqlSet
-         Source;
-
-         public MetaAssociation
-         Association;
       }
    }
 }

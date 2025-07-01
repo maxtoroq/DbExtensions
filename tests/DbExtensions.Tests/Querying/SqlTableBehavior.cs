@@ -10,7 +10,7 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Dont_Use_Subqueries_When_Methods_Are_Called_In_Order() {
 
-         Database db = MockDatabase();
+         Database db = MockDatabase(true);
 
          SqlSet set = db.Table<SqlTable.Model1.Product>()
             .Where("UnitsInStock > 0")
@@ -30,7 +30,7 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Use_Multipart_Identifier() {
 
-         Database db = MockDatabase("System.Data.SqlClient");
+         Database db = MockDatabase(true, "System.Data.SqlClient");
 
          SqlSet set = db.Table<SqlTable.Model2.Product>();
 
@@ -44,7 +44,7 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Update_Assigned_Key() {
 
-         Database db = RealDatabase();
+         Database db = RealDatabase(true);
          var table = db.Table<SqlTable.Model3.Customer>();
 
          string originalId = "FISSA";

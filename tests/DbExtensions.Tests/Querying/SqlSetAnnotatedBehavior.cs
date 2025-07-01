@@ -4,10 +4,11 @@ namespace DbExtensions.Tests.Querying {
 
    using static TestUtil;
 
-   [TestFixture]
-   public class SqlSetAnnotatedBehavior {
+   [TestFixture(false)]
+   [TestFixture(true)]
+   public class SqlSetAnnotatedBehavior(bool useCompiledMapping) {
 
-      readonly Database db = RealDatabase();
+      readonly Database db = RealDatabase(useCompiledMapping);
 
       [Test]
       public void Contains() {

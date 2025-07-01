@@ -11,10 +11,10 @@ namespace DbExtensions.Tests;
 
 static class TestUtil {
 
-   public static Database MockDatabase(string providerInvariantName = "MySql.Data.MySqlClient") =>
-      MockDatabaseImpl(providerInvariantName).Object;
+   public static Database MockDatabase(bool useCompiledMapping, string providerInvariantName = "MySql.Data.MySqlClient") =>
+      MockDatabaseImpl(useCompiledMapping, providerInvariantName).Object;
 
-   public static Mock<Database> MockDatabaseImpl(string providerInvariantName) {
+   public static Mock<Database> MockDatabaseImpl(bool useCompiledMapping, string providerInvariantName) {
 
       var mockConn = new Mock<IDbConnection>();
 
@@ -22,17 +22,19 @@ static class TestUtil {
          CallBase = true
       };
 
+      mockDb.Object.Configuration.UseCompiledMapping = useCompiledMapping;
+
       return mockDb;
    }
 
-   public static Database MockQuery(params IEnumerable<KeyValuePair<string, object>>[] data) {
+   public static Database MockQuery(bool useCompiledMapping, params IEnumerable<KeyValuePair<string, object>>[] data) {
 
       var reader = new TestDataReader(data
          .Select(p => p as KeyValuePair<string, object>[]
             ?? p.ToArray())
          .ToArray());
 
-      var mockDb = MockDatabaseImpl("MySql.Data.MySqlClient");
+      var mockDb = MockDatabaseImpl(useCompiledMapping, "MySql.Data.MySqlClient");
 
       SetupReader(mockDb, reader);
 
@@ -52,7 +54,7 @@ static class TestUtil {
          });
    }
 
-   public static Database RealDatabase() {
+   public static Database RealDatabase(bool useCompiledMapping) {
 
       var builder = new SQLiteConnectionStringBuilder {
          DataSource = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\..\samples\App\bin\Debug\net472\Northwind\Northwind.sl3")),
@@ -62,6 +64,7 @@ static class TestUtil {
       var conn = new SQLiteConnection(builder.ToString());
 
       var db = new Database(conn);
+      db.Configuration.UseCompiledMapping = useCompiledMapping;
       db.Configuration.Log = Console.Out;
 
       return db;

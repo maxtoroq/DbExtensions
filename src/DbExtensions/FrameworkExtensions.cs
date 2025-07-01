@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -41,6 +42,10 @@ namespace DbExtensions {
 
          return false;
       }
+
+      public static TValue
+      GetOrAdd<TKey, TValue, TArg>(this ConcurrentDictionary<TKey, TValue> dict, TKey key, Func<TKey, TArg, TValue> valueFactory, TArg factoryArgument) =>
+         dict.GetOrAdd(key, k => valueFactory.Invoke(k, factoryArgument));
 #endif
    }
 

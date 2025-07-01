@@ -55,8 +55,6 @@ partial class SqlSet {
       var mapper = _db.CreateDynamicMapper();
       mapper.SingleResult = singleResult;
 
-      InitializeMapper(mapper);
-
       return _db.Map(GetDefiningQuery(clone: false), r => mapper.Map(r));
    }
 }
@@ -84,10 +82,6 @@ class DynamicMapper : Mapper {
    protected override Node
    CreateParameterNode(int columnOrdinal, ParameterInfo paramInfo) =>
       throw new NotImplementedException();
-
-   protected override CollectionNode
-   CreateCollectionNode(Node container, string propertyName) =>
-      throw new NotSupportedException();
 }
 
 class DynamicNode : Node {

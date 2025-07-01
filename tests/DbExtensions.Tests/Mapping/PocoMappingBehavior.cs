@@ -7,8 +7,9 @@ namespace DbExtensions.Tests.Mapping {
 
    using static TestUtil;
 
-   [TestFixture]
-   public class PocoMappingBehavior {
+   [TestFixture(false)]
+   [TestFixture(true)]
+   public class PocoMappingBehavior(bool useCompiledMapping) {
 
       [Test]
       public void Map_Property() {
@@ -17,7 +18,7 @@ namespace DbExtensions.Tests.Mapping {
             { "Foo", "a" }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Map_Property>(SQL
             .SELECT("NULL"))
@@ -33,7 +34,7 @@ namespace DbExtensions.Tests.Mapping {
             { "Foo", null }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Map_Null_Property>(SQL
             .SELECT("NULL"))
@@ -43,13 +44,29 @@ namespace DbExtensions.Tests.Mapping {
       }
 
       [Test]
+      public void Map_Object() {
+
+         var data = new Dictionary<string, object> {
+            { "Foo", "a" }
+         };
+
+         var db = MockQuery(useCompiledMapping, data);
+
+         var value = db.Map<PocoMapping.Map_Object>(SQL
+            .SELECT("NULL"))
+            .Single();
+
+         Assert.AreEqual("a", value.Foo);
+      }
+
+      [Test]
       public void Map_Property_Private_Setter() {
 
          var data = new Dictionary<string, object> {
             { "Foo", "a" }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Map_Property_Private_Setter>(SQL
             .SELECT("NULL"))
@@ -66,7 +83,7 @@ namespace DbExtensions.Tests.Mapping {
             { "Bar", "b" }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          _ = db.Map<PocoMapping.Ignore_Unmapped_Property>(SQL
             .SELECT("NULL"))
@@ -80,7 +97,7 @@ namespace DbExtensions.Tests.Mapping {
             { "Bar$Foo", "b" }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Map_Complex_Property>(SQL
             .SELECT("NULL"))
@@ -97,7 +114,7 @@ namespace DbExtensions.Tests.Mapping {
             { "Bar", null }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Map_Null_Complex_Property>(SQL
             .SELECT("NULL"))
@@ -114,7 +131,7 @@ namespace DbExtensions.Tests.Mapping {
             { "Nested$Bar", null }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Map_Complex_Property_To_Null_When_All_Subproperties_Are_Null>(SQL
             .SELECT("NULL"))
@@ -130,7 +147,7 @@ namespace DbExtensions.Tests.Mapping {
             { "Foo$B", 2 }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Load_Complex_Property>(SQL
             .SELECT("NULL"))
@@ -143,16 +160,18 @@ namespace DbExtensions.Tests.Mapping {
       public void Map_Constructor() {
 
          var data = new Dictionary<string, object> {
-            { "1", "http://example.com" }
+            { "1", 5 },
+            { "2", "b" }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
-         var value = db.Map<Uri>(SQL
+         var value = db.Map<PocoMapping.Map_Constructor>(SQL
             .SELECT("NULL"))
             .Single();
 
-         Assert.AreEqual("http://example.com", value.OriginalString);
+         Assert.AreEqual(5, value.Foo);
+         Assert.AreEqual("b", value.Bar);
       }
 
       [Test]
@@ -163,7 +182,7 @@ namespace DbExtensions.Tests.Mapping {
             new("1", "http://example.com"),
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var results = db.Map<Uri>(SQL
             .SELECT("NULL"));
@@ -179,7 +198,7 @@ namespace DbExtensions.Tests.Mapping {
             { "2", 1 }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var results = db.Map<Uri>(SQL
             .SELECT("NULL"));
@@ -194,7 +213,7 @@ namespace DbExtensions.Tests.Mapping {
             { "Url$1", "http://example.com" }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Complex_Property>(SQL
             .SELECT("NULL"))
@@ -212,7 +231,7 @@ namespace DbExtensions.Tests.Mapping {
             { "Foo2", null }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Nullable_Complex_Property>(SQL
             .SELECT("NULL"))
@@ -230,7 +249,7 @@ namespace DbExtensions.Tests.Mapping {
             { "Foo$Foo", null }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Complex_Property_To_Null_When_All_Arguments_And_Subproperties_Are_Null>(SQL
             .SELECT("NULL"))
@@ -247,7 +266,7 @@ namespace DbExtensions.Tests.Mapping {
             { "1$Foo", null }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Complex_Argument_To_Null_When_All_Arguments_And_Subproperties_Are_Null>(SQL
             .SELECT("NULL"))
@@ -265,7 +284,7 @@ namespace DbExtensions.Tests.Mapping {
             { "Foo$Bar$B", 2 }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Load_Constructor_Complex_Property>(SQL
             .SELECT("NULL"))
@@ -282,7 +301,7 @@ namespace DbExtensions.Tests.Mapping {
             { "1$Bar$B", 2 }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Load_Constructor_Complex_Argument>(SQL
             .SELECT("NULL"))
@@ -299,7 +318,7 @@ namespace DbExtensions.Tests.Mapping {
             { "2", null }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Map_Null_Constructor_Argument>(SQL
             .SELECT("NULL"))
@@ -312,16 +331,19 @@ namespace DbExtensions.Tests.Mapping {
       public void Map_Constructor_Nested() {
 
          var data = new Dictionary<string, object> {
-            { "1$1", "http://example.com" }
+            { "1$1", 5 },
+            { "1$2", "b" }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Nested>(SQL
             .SELECT("NULL"))
             .Single();
 
-         Assert.AreEqual("http://example.com", value.Url.OriginalString);
+         Assert.IsNotNull(value.Nested);
+         Assert.AreEqual(5, value.Nested.Foo);
+         Assert.AreEqual("b", value.Nested.Bar);
       }
    }
 
@@ -332,6 +354,10 @@ namespace DbExtensions.Tests.Mapping {
       }
 
       class Map_Null_Property {
+         public string Foo { get; set; }
+      }
+
+      class Map_Object {
          public string Foo { get; set; }
       }
 
@@ -375,6 +401,18 @@ namespace DbExtensions.Tests.Mapping {
          public class FooClass {
             public int A { get; set; }
             public int B { get; set; }
+         }
+      }
+
+      class Map_Constructor {
+
+         public int Foo { get; }
+
+         public string Bar { get; }
+
+         public Map_Constructor(int foo, string bar) {
+            this.Foo = foo;
+            this.Bar = bar;
          }
       }
 
@@ -497,10 +535,22 @@ namespace DbExtensions.Tests.Mapping {
 
       class Map_Constructor_Nested {
 
-         public readonly Uri Url;
+         public NestedClass Nested { get; }
 
-         public Map_Constructor_Nested(Uri url) {
-            this.Url = url;
+         public Map_Constructor_Nested(NestedClass nested) {
+            this.Nested = nested;
+         }
+
+         public class NestedClass {
+
+            public int Foo { get; }
+
+            public string Bar { get; }
+
+            public NestedClass(int foo, string bar) {
+               this.Foo = foo;
+               this.Bar = bar;
+            }
          }
       }
    }

@@ -1076,7 +1076,7 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
          }
 
          if (_reader.IsClosed) {
-            // see Node.Load
+            // see MappingContext.LoadMany()
             return false;
          }
 

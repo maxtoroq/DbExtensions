@@ -17,7 +17,7 @@ namespace DbExtensions.Tests.Mapping {
             { "1", "foo" }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(true, data);
 
          var results = db.Map(SQL
             .SELECT("NULL"));

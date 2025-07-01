@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
@@ -24,48 +23,7 @@ using System.Text;
 
 namespace DbExtensions;
 
-partial class SqlSet {
-
-   Dictionary<string[], CollectionLoader>
-   _manyIncludes;
-
-   private Dictionary<string[], CollectionLoader>
-   ManyIncludes {
-      get => _manyIncludes;
-      set {
-         if (_manyIncludes is not null) {
-            throw new InvalidOperationException();
-         }
-         _manyIncludes = value;
-      }
-   }
-
-   partial void
-   Initialize2(SqlSet set) {
-
-      if (set.ManyIncludes is not null) {
-         this.ManyIncludes = new Dictionary<string[], CollectionLoader>(set.ManyIncludes);
-      }
-
-      Initialize3(set);
-   }
-
-   partial void
-   Initialize3(SqlSet set);
-
-   void
-   InitializeMapper(Mapper mapper) {
-
-      mapper.ManyIncludes = this.ManyIncludes;
-
-      InitializeMapper2(mapper);
-   }
-
-   partial void
-   InitializeMapper2(Mapper mapper);
-}
-
-abstract class Mapper {
+abstract partial class Mapper {
 
    internal static readonly char[]
    _pathSeparator = { '$' };
@@ -76,23 +34,29 @@ abstract class Mapper {
    public TextWriter
    Log { get; set; }
 
-   public Dictionary<string[], CollectionLoader>
-   ManyIncludes { get; set; }
-
    public bool
    SingleResult { get; set; }
 
-   private MappingContext
-   MappingContext => _mappingContext ??= new() {
-      Log = Log,
-      ManyLoaders = GetManyLoaders(),
-      SingleResult = SingleResult
-   };
+   protected MappingContext
+   MappingContext {
+      get {
+         if (_mappingContext is null) {
+
+            _mappingContext = new() {
+               Log = Log,
+               SingleResult = SingleResult
+            };
+
+            InitializeMappingContext2(_mappingContext);
+         }
+         return _mappingContext;
+      }
+   }
 
    protected abstract bool
    CanUseConstructorMapping { get; }
 
-   protected Node
+   private Node
    RootNode { get; set; }
 
    protected
@@ -321,7 +285,7 @@ abstract class Mapper {
       throw new InvalidOperationException(message.ToString());
    }
 
-   public object
+   public virtual object
    Map(IDataRecord record) {
 
       var node = GetRootNode(record);
@@ -333,14 +297,14 @@ abstract class Mapper {
       return instance;
    }
 
-   public void
+   public virtual void
    Load(object instance, IDataRecord record) {
 
       var node = GetRootNode(record);
       node.Load(instance, record, this.MappingContext);
    }
 
-   protected virtual Node
+   internal Node
    GetRootNode(IDataRecord record) {
 
       if (this.RootNode is null) {
@@ -354,47 +318,8 @@ abstract class Mapper {
       return this.RootNode;
    }
 
-   Dictionary<Node, Dictionary<CollectionNode, CollectionLoader>>
-   GetManyLoaders() {
-
-      if (this.RootNode is null) {
-         throw new InvalidOperationException("Call GetRootNode() first.");
-      }
-
-      if (this.ManyIncludes is null
-         || this.ManyIncludes.Count == 0) {
-
-         return null;
-      }
-
-      var collectionNodes = new Dictionary<Node, Dictionary<CollectionNode, CollectionLoader>>(ReferenceEqualityComparer.Instance);
-
-      foreach (var pair in this.ManyIncludes) {
-
-         var path = pair.Key;
-         var container = this.RootNode;
-
-         for (int i = 0; i < path.Length - 1; i++) {
-            container = container.Properties.First(p => p.PropertyName == path[i]);
-         }
-
-         var colNode = CreateCollectionNode(container, path[path.Length - 1]);
-
-         if (colNode is not null) {
-
-            Dictionary<CollectionNode, CollectionLoader> containerCols;
-
-            if (!collectionNodes.TryGetValue(container, out containerCols)) {
-               containerCols = new(ReferenceEqualityComparer.Instance);
-               collectionNodes.Add(container, containerCols);
-            }
-
-            containerCols.Add(colNode, pair.Value);
-         }
-      }
-
-      return collectionNodes;
-   }
+   partial void
+   InitializeMappingContext2(MappingContext context);
 
    protected abstract Node
    CreateRootNode();
@@ -410,9 +335,6 @@ abstract class Mapper {
 
    protected abstract Node
    CreateParameterNode(int columnOrdinal, ParameterInfo paramInfo);
-
-   protected abstract CollectionNode
-   CreateCollectionNode(Node container, string propertyName);
 
    static ConstructorInfo
    ChooseConstructor(ConstructorInfo[] constructors, Node node, int parameterLength) {
@@ -479,28 +401,13 @@ abstract class Mapper {
    #endregion
 }
 
-class MappingContext {
+partial class MappingContext {
 
    public TextWriter
    Log;
 
-   public Dictionary<Node, Dictionary<CollectionNode, CollectionLoader>>
-   ManyLoaders;
-
-   public List<Node>
-   ConvertingNodes = new();
-
    public bool
    SingleResult;
-}
-
-class CollectionLoader {
-
-   public Func<object, object, IEnumerable>
-   Load;
-
-   public object
-   State;
 }
 
 abstract class Node {
@@ -594,7 +501,7 @@ abstract class Node {
    public abstract object
    Create(IDataRecord record, MappingContext context);
 
-   public void
+   public virtual void
    Load(object instance, IDataRecord record, MappingContext context) {
 
       for (int i = 0; i < this.Properties.Count; i++) {
@@ -616,23 +523,6 @@ abstract class Node {
             childNode.Read(instance, record, context);
          }
       }
-
-      if (context.ManyLoaders?.TryGetValue(this, out var colLoaders) == true
-         && colLoaders.Count > 0) {
-
-         if (context.SingleResult) {
-            // if the query is expected to return a single result at most
-            // we close the data reader to allow for collections to be loaded
-            // using the same connection (for providers that do not support MARS)
-
-            var reader = record as IDataReader;
-            reader?.Close();
-         }
-
-         foreach (var pair in colLoaders) {
-            pair.Key.Load(instance, pair.Value, context);
-         }
-      }
    }
 
    void
@@ -650,24 +540,4 @@ abstract class Node {
 
    public abstract ConstructorInfo[]
    GetConstructors(BindingFlags bindingAttr);
-}
-
-abstract class CollectionNode {
-
-   public void
-   Load(object instance, CollectionLoader loader, MappingContext context) {
-
-      var collection = GetOrCreate(instance, context);
-      var elements = loader.Load.Invoke(instance, loader.State);
-
-      foreach (var element in elements) {
-         Add(collection, element, context);
-      }
-   }
-
-   protected abstract IEnumerable
-   GetOrCreate(object instance, MappingContext context);
-
-   protected abstract void
-   Add(IEnumerable collection, object element, MappingContext context);
 }

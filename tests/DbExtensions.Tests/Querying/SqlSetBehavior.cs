@@ -5,10 +5,11 @@ namespace DbExtensions.Tests.Querying {
 
    using static TestUtil;
 
-   [TestFixture]
-   public class SqlSetBehavior {
+   [TestFixture(false)]
+   [TestFixture(true)]
+   public class SqlSetBehavior(bool useCompiledMapping) {
 
-      readonly Database db = MockDatabase();
+      readonly Database db = MockDatabase(useCompiledMapping);
 
       [Test]
       public void AsEnumerable_Reference_Type() {
@@ -17,7 +18,7 @@ namespace DbExtensions.Tests.Querying {
             { "a", "a" }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          SqlSet<string> set = db.From(SQL
             .SELECT("NULL")
@@ -37,7 +38,7 @@ namespace DbExtensions.Tests.Querying {
             { "0", 0 }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          SqlSet<int> set = db.From(SQL
             .SELECT("NULL")
@@ -285,7 +286,7 @@ namespace DbExtensions.Tests.Querying {
             { "foo", "a" }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          dynamic value = db.From(SQL.SELECT("NULL"))
             .Select("foo")
@@ -301,7 +302,7 @@ namespace DbExtensions.Tests.Querying {
             { "c", "a" }
          };
 
-         var db = MockQuery(data);
+         var db = MockQuery(useCompiledMapping, data);
 
          SqlSet<string> set = db.From(SQL
             .SELECT("NULL")
