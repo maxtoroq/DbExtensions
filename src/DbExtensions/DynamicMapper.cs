@@ -38,7 +38,7 @@ partial class Database {
       return Map(query, r => (dynamic)mapper.Map(r));
    }
 
-   internal Mapper
+   internal DynamicMapper
    CreateDynamicMapper() {
 
       return new DynamicMapper {
@@ -55,7 +55,7 @@ partial class SqlSet {
       var mapper = _db.CreateDynamicMapper();
       mapper.SingleResult = singleResult;
 
-      return _db.Map(GetDefiningQuery(clone: false), r => mapper.Map(r));
+      return _db.Map(GetDefiningQuery(clone: false), mapper.Map);
    }
 }
 
