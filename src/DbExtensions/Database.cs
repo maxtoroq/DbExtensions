@@ -567,8 +567,6 @@ public partial class Database : IDisposable {
       }
    }
 
-   #region IDisposable Members
-
    /// <summary>
    /// Releases all resources used by the current instance of the <see cref="Database"/> class.
    /// </summary>
@@ -597,8 +595,6 @@ public partial class Database : IDisposable {
          }
       }
    }
-
-   #endregion
 
    #region Object Members
 
