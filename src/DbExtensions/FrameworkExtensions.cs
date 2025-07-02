@@ -42,7 +42,9 @@ namespace DbExtensions {
 
          return false;
       }
+#endif
 
+#if NET45
       public static TValue
       GetOrAdd<TKey, TValue, TArg>(this ConcurrentDictionary<TKey, TValue> dict, TKey key, Func<TKey, TArg, TValue> valueFactory, TArg factoryArgument) =>
          dict.GetOrAdd(key, k => valueFactory.Invoke(k, factoryArgument));
