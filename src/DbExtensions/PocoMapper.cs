@@ -392,10 +392,13 @@ sealed class CollectionLoader {
 sealed partial class PocoNode : Node {
 
    static readonly ConcurrentDictionary<PropertyInfo, MetaAccessor>
-   _accessorsCache = new();
+   _accessorCache = new();
 
    MetaAccessor
    _accessor;
+
+   Func<object[], object>
+   _factory;
 
    int?
    _propertyHash;
@@ -436,6 +439,12 @@ sealed partial class PocoNode : Node {
    PropertyAccessor =>
       _accessor ??= GetAccessor(Property);
 
+   private Func<object[], object>
+   Factory => _factory
+      ??= (Constructor is not null ?
+         ObjectFactory.GetFactory(this, Constructor)
+         : ObjectFactory.GetFactory(this, Type));
+
    public ParameterInfo
    Parameter { get; }
 
@@ -471,17 +480,17 @@ sealed partial class PocoNode : Node {
 
    static MetaAccessor
    GetAccessor(PropertyInfo property) =>
-      _accessorsCache.GetOrAdd(property, static p => Metadata.PropertyAccessor.Create(p.ReflectedType, p, null));
+      _accessorCache.GetOrAdd(property, static p => Metadata.PropertyAccessor.Create(p.ReflectedType, p, null));
 
    internal static CollectionAccessor
    GetCollectionAccessor(PropertyInfo property) =>
-      (CollectionAccessor)_accessorsCache.GetOrAdd(property, static p => CollectionAccessor.Create(p.ReflectedType, p));
+      (CollectionAccessor)_accessorCache.GetOrAdd(property, static p => CollectionAccessor.Create(p.ReflectedType, p));
 
    public override object
    Create(IDataRecord record, MappingContext context) {
 
       if (this.Constructor is null) {
-         return ObjectFactory.CreateInstance(this.Type);
+         return CreateInstance(default);
       }
 
       var args = this.ConstructorParameters
@@ -536,7 +545,7 @@ sealed partial class PocoNode : Node {
 
    object
    CreateInstance(object[] args) =>
-      ObjectFactory.CreateInstance(this.Constructor, args);
+      this.Factory.Invoke(args);
 
    public override void
    Load(object instance, IDataRecord record, MappingContext context) {
@@ -715,6 +724,9 @@ sealed class PocoCollection {
    Type
    _concreteType;
 
+   Func<object[], object>
+   _factory;
+
    private CollectionAccessor
    Accessor => _accessor
       ??= PocoNode.GetCollectionAccessor(_property);
@@ -731,6 +743,10 @@ sealed class PocoCollection {
          return _concreteType;
       }
    }
+
+   private Func<object[], object>
+   Factory => _factory
+      ??= ObjectFactory.GetFactory(this, ConcreteType);
 
    public
    PocoCollection(CollectionLoader loader) {
@@ -755,7 +771,7 @@ sealed class PocoCollection {
       var collection = this.Accessor.GetBoxedValue(instance);
 
       if (collection is null) {
-         collection = ObjectFactory.CreateInstance(this.ConcreteType);
+         collection = this.Factory.Invoke(default);
          this.Accessor.SetBoxedValue(ref instance, collection);
       }
 
@@ -876,35 +892,33 @@ sealed class CollectionAccessor<TContainer, TCollection, TElement> : CollectionA
 
 static class ObjectFactory {
 
-   static readonly ConcurrentDictionary<Type, Func<object>>
-   _typeFactoryCache = new();
+   static readonly ConcurrentDictionary<object, Func<object[], object>>
+   _factoryCache = new();
 
-   static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>>
-   _ctorFactoryCache = new();
+   public static Func<object[], object>
+   GetFactory(object node, Type type) =>
+      _factoryCache.GetOrAdd(node, static (n, t) => CreateFactory(t), type);
 
-   public static object
-   CreateInstance(Type type) =>
-      _typeFactoryCache.GetOrAdd(type, CreateFactory).Invoke();
-
-   static Func<object>
+   static Func<object[], object>
    CreateFactory(Type type) {
 
+      var argsExpr = Expression.Parameter(typeof(object[]));
       var newExpr = Expression.New(type);
       var castExpr = Expression.Convert(newExpr, typeof(object));
-      var lambdaExpr = Expression.Lambda<Func<object>>(castExpr);
+      var lambdaExpr = Expression.Lambda<Func<object[], object>>(castExpr, argsExpr);
 
       return lambdaExpr.Compile();
    }
 
-   public static object
-   CreateInstance(ConstructorInfo ctor, params object[] args) =>
-      _ctorFactoryCache.GetOrAdd(ctor, CreateFactory).Invoke(args);
+   public static Func<object[], object>
+   GetFactory(object node, ConstructorInfo ctor) =>
+      _factoryCache.GetOrAdd(node, static (n, c) => CreateFactory(c), ctor);
 
    static Func<object[], object>
    CreateFactory(ConstructorInfo ctor) {
 
       var parameters = ctor.GetParameters();
-      var argsExpr = Expression.Parameter(typeof(object[]), "args");
+      var argsExpr = Expression.Parameter(typeof(object[]));
       var args = new Expression[parameters.Length];
 
       for (var i = 0; i < parameters.Length; i++) {
