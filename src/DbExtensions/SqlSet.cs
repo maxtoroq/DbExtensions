@@ -998,7 +998,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       }
    }
 
-   internal class
+   internal sealed class
    SqlFragment {
 
       public readonly string

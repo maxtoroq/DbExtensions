@@ -59,7 +59,7 @@ partial class SqlSet {
    }
 }
 
-class DynamicMapper : Mapper {
+sealed class DynamicMapper : Mapper {
 
    protected override bool
    CanUseConstructorMapping => false;
@@ -84,7 +84,7 @@ class DynamicMapper : Mapper {
       throw new NotImplementedException();
 }
 
-class DynamicNode : Node {
+sealed class DynamicNode : Node {
 
    static readonly string
    _typeName = typeof(ExpandoObject).FullName;

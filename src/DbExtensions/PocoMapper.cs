@@ -141,7 +141,7 @@ partial class Mapper {
    InitializeMappingContext3(MappingContext context);
 }
 
-class PocoMapper : Mapper {
+sealed class PocoMapper : Mapper {
 
    static readonly ConcurrentDictionary<CacheKey, Func<IDataRecord, MappingContext, object>>
    _compiledMapCache = new();
@@ -380,7 +380,7 @@ partial class MappingContext {
    }
 }
 
-class CollectionLoader {
+sealed class CollectionLoader {
 
    public Func<object, IEnumerable>
    Load;
@@ -389,7 +389,7 @@ class CollectionLoader {
    Association;
 }
 
-partial class PocoNode : Node {
+sealed partial class PocoNode : Node {
 
    static readonly ConcurrentDictionary<PropertyInfo, MetaAccessor>
    _accessorsCache = new();
@@ -701,7 +701,7 @@ partial class PocoNode : Node {
    }
 }
 
-class PocoCollection {
+sealed class PocoCollection {
 
    readonly CollectionLoader
    _loader;
@@ -749,7 +749,7 @@ class PocoCollection {
       }
    }
 
-   protected IEnumerable
+   IEnumerable
    GetOrCreate(object instance, MappingContext context) {
 
       var collection = this.Accessor.GetBoxedValue(instance);
@@ -762,7 +762,7 @@ class PocoCollection {
       return (IEnumerable)collection;
    }
 
-   protected void
+   void
    Add(IEnumerable collection, object element, MappingContext context) {
 
       var colObj = (object)collection;
@@ -822,7 +822,7 @@ abstract class CollectionAccessor : MetaAccessor {
    AddBoxedElement(ref object collection, object element);
 }
 
-class CollectionAccessor<TContainer, TCollection, TElement> : CollectionAccessor {
+sealed class CollectionAccessor<TContainer, TCollection, TElement> : CollectionAccessor {
 
    readonly Metadata.MetaAccessor<TContainer, TCollection>
    _propAccessor;

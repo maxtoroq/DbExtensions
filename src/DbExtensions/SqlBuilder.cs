@@ -1081,7 +1081,7 @@ public static partial class SQL {
    #endregion
 }
 
-class SqlList {
+sealed class SqlList {
 
    readonly object[]
    _values;

@@ -334,7 +334,7 @@ partial class Database {
    }
 }
 
-sealed partial class DatabaseConfiguration {
+partial class DatabaseConfiguration {
 
    Lazy<MetaModel>
    _model;

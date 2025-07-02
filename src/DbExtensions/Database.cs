@@ -630,7 +630,7 @@ public partial class Database : IDisposable {
 
    #region Nested Types
 
-   class ConnectionHolder : IDisposable {
+   sealed class ConnectionHolder : IDisposable {
 
       readonly IDbConnection
       _conn;
@@ -663,7 +663,7 @@ public partial class Database : IDisposable {
       }
    }
 
-   class WrappedTransaction : IDbTransaction {
+   sealed class WrappedTransaction : IDbTransaction {
 
       readonly Database
       _db;
@@ -982,7 +982,7 @@ public class ChangeConflictException : Exception {
       : base(message) { }
 }
 
-class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposable {
+sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposable {
 
    IEnumerator<TResult>
    _enumerator;
@@ -1013,7 +1013,7 @@ class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposabl
 
    #region Nested Types
 
-   class Enumerator : IEnumerator<TResult>, IEnumerator, IDisposable {
+   sealed class Enumerator : IEnumerator<TResult>, IEnumerator, IDisposable {
 
       readonly IDbCommand
       _command;

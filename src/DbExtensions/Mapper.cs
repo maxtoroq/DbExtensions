@@ -360,7 +360,7 @@ abstract partial class Mapper {
 
    #region Nested Types
 
-   class MapGroup {
+   sealed class MapGroup {
 
       public string
       Name;
@@ -401,7 +401,7 @@ abstract partial class Mapper {
    #endregion
 }
 
-partial class MappingContext {
+sealed partial class MappingContext {
 
    public TextWriter
    Log;
