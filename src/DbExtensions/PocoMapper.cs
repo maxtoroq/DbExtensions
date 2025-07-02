@@ -347,7 +347,7 @@ class PocoMapper : Mapper {
 #if NET5_0_OR_GREATER
    readonly
 #endif
-   record struct CacheArg(Mapper Mapper, IDataRecord Record);
+   record struct CacheArg(PocoMapper Mapper, IDataRecord Record);
 }
 
 partial class MappingContext {

@@ -28,6 +28,9 @@ abstract partial class Mapper {
    internal static readonly char[]
    _pathSeparator = { '$' };
 
+   Node
+   _rootNode;
+
    MappingContext
    _mappingContext;
 
@@ -55,9 +58,6 @@ abstract partial class Mapper {
 
    protected abstract bool
    CanUseConstructorMapping { get; }
-
-   private Node
-   RootNode { get; set; }
 
    protected
    Mapper() { }
@@ -304,18 +304,18 @@ abstract partial class Mapper {
       node.Load(instance, record, this.MappingContext);
    }
 
-   internal Node
+   private protected Node
    GetRootNode(IDataRecord record) {
 
-      if (this.RootNode is null) {
+      if (_rootNode is null) {
 
          var node = CreateRootNode();
          ReadMapping(record, node);
 
-         this.RootNode = node;
+         _rootNode = node;
       }
 
-      return this.RootNode;
+      return _rootNode;
    }
 
    partial void
