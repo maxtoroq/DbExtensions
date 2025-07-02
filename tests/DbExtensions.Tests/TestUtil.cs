@@ -65,7 +65,10 @@ static class TestUtil {
 
       var db = new Database(conn);
       db.Configuration.UseCompiledMapping = useCompiledMapping;
+
+#if DEBUG
       db.Configuration.Log = Console.Out;
+#endif
 
       return db;
    }
