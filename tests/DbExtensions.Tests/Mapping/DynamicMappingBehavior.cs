@@ -17,11 +17,12 @@ namespace DbExtensions.Tests.Mapping {
             { "1", "foo" }
          };
 
-         Database db = MockQuery(data);
+         var db = MockQuery(true, data);
 
-         Assert.Throws<ArgumentException>(() => db.Map(SQL
-            .SELECT("'foo' AS '1'"))
-            .Single());
+         var results = db.Map(SQL
+            .SELECT("NULL"));
+
+         Assert.Throws<ArgumentException>(() => results.Single());
       }
    }
 }

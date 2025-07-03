@@ -38,11 +38,11 @@ internal abstract class MappingSource {
 
    public MetaModel GetModel(Type dataContextType) {
 
-      if (dataContextType == null) throw Error.ArgumentNull(nameof(dataContextType));
+      if (dataContextType is null) throw Error.ArgumentNull(nameof(dataContextType));
 
       var model = default(MetaModel);
 
-      if (_primaryModel == null) {
+      if (_primaryModel is null) {
          model = CreateModel(dataContextType);
          Interlocked.CompareExchange<MetaModel>(ref _primaryModel, model, null);
       }
@@ -58,13 +58,13 @@ internal abstract class MappingSource {
 
       // build a map if one is not already defined
 
-      if (_secondaryModels == null) {
+      if (_secondaryModels is null) {
          Interlocked.CompareExchange<Dictionary<Type, MetaModel>>(ref _secondaryModels, new Dictionary<Type, MetaModel>(), null);
       }
 
       // if we haven't created a read/writer lock, make one now
 
-      if (_rwlock == null) {
+      if (_rwlock is null) {
          Interlocked.CompareExchange<ReaderWriterLock>(ref _rwlock, new ReaderWriterLock(), null);
       }
 
@@ -122,7 +122,7 @@ internal sealed class AttributeMappingSource : MappingSource {
 
    protected override MetaModel CreateModel(Type dataContextType) {
 
-      if (dataContextType == null) throw Error.ArgumentNull(nameof(dataContextType));
+      if (dataContextType is null) throw Error.ArgumentNull(nameof(dataContextType));
 
       return new AttributedMetaModel(this, dataContextType);
    }

@@ -37,7 +37,8 @@ Properties
 | ![Public property]                 | [ParameterPlaceholderBuilder][15]    | Specifies a function that builds a parameter placeholder to be used in SQL statements.                                                                                                        |
 | ![Public property]                 | [QuotePrefix][16]                    | Gets or sets the beginning character or characters to use when specifying database objects (for example, tables or columns) whose names contain characters such as spaces or reserved tokens. |
 | ![Public property]                 | [QuoteSuffix][17]                    | Gets or sets the ending character or characters to use when specifying database objects (for example, tables or columns) whose names contain characters such as spaces or reserved tokens.    |
-| ![Public property]                 | [UseVersionMember][18]               | true to include version column check in SQL statements' predicates; otherwise, false. The default is true.                                                                                    |
+| ![Public property]                 | [UseCompiledMapping][18]             | true to use the new cached compiled mapping implementation for POCO objects; otherwise, false. The default is false.                                                                          |
+| ![Public property]                 | [UseVersionMember][19]               | true to include version column check in SQL statements' predicates; otherwise, false. The default is true.                                                                                    |
 
 
 See Also
@@ -63,6 +64,7 @@ See Also
 [15]: ParameterPlaceholderBuilder.md
 [16]: QuotePrefix.md
 [17]: QuoteSuffix.md
-[18]: UseVersionMember.md
+[18]: UseCompiledMapping.md
+[19]: UseVersionMember.md
 [Public property]: ../../icons/pubproperty.svg "Public property"
 [Static member]: ../../icons/static.gif "Static member"

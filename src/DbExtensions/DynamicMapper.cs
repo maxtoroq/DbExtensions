@@ -38,7 +38,7 @@ partial class Database {
       return Map(query, r => (dynamic)mapper.Map(r));
    }
 
-   internal Mapper
+   internal DynamicMapper
    CreateDynamicMapper() {
 
       return new DynamicMapper {
@@ -55,13 +55,11 @@ partial class SqlSet {
       var mapper = _db.CreateDynamicMapper();
       mapper.SingleResult = singleResult;
 
-      InitializeMapper(mapper);
-
-      return _db.Map(GetDefiningQuery(clone: false), r => mapper.Map(r));
+      return _db.Map(GetDefiningQuery(clone: false), mapper.Map);
    }
 }
 
-class DynamicMapper : Mapper {
+sealed class DynamicMapper : Mapper {
 
    protected override bool
    CanUseConstructorMapping => false;
@@ -84,13 +82,9 @@ class DynamicMapper : Mapper {
    protected override Node
    CreateParameterNode(int columnOrdinal, ParameterInfo paramInfo) =>
       throw new NotImplementedException();
-
-   protected override CollectionNode
-   CreateCollectionNode(Node container, string propertyName) =>
-      throw new NotSupportedException();
 }
 
-class DynamicNode : Node {
+sealed class DynamicNode : Node {
 
    static readonly string
    _typeName = typeof(ExpandoObject).FullName;
@@ -115,7 +109,7 @@ class DynamicNode : Node {
    internal
    DynamicNode(string propertyName, int columnOrdinal = default, bool isComplex = default) {
 
-      if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
+      if (propertyName is null) throw new ArgumentNullException(nameof(propertyName));
       if (propertyName.Length == 0) throw new ArgumentException("Cannot map column using an empty property name.", nameof(propertyName));
 
       if (UInt32.TryParse(propertyName, out _)) {
@@ -132,7 +126,7 @@ class DynamicNode : Node {
       new ExpandoObject();
 
    protected override object
-   Get(ref object instance) {
+   Get(object instance) {
 
       var dictionary = (IDictionary<string, object>)instance;
 
@@ -144,7 +138,7 @@ class DynamicNode : Node {
    }
 
    protected override void
-   Set(ref object instance, object value, MappingContext context) {
+   Set(object instance, object value, MappingContext context) {
       ((IDictionary<string, object>)instance)[this.PropertyName] = value;
    }
 

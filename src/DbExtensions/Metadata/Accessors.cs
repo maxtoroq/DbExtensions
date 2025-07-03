@@ -94,7 +94,7 @@ static class FieldAccessor {
 
       public override V GetValue(T instance) {
 
-         if (_dget != null) {
+         if (_dget is not null) {
             return _dget.Invoke(instance);
          }
 
@@ -103,7 +103,7 @@ static class FieldAccessor {
 
       public override void SetValue(ref T instance, V value) {
 
-         if (_drset != null) {
+         if (_drset is not null) {
             _drset.Invoke(ref instance, value);
          } else {
             _fi.SetValue(instance, value);
@@ -123,7 +123,7 @@ static class PropertyAccessor {
 
       var dget = Delegate.CreateDelegate(dgetType, getMethod, true);
 
-      if (dget == null) {
+      if (dget is null) {
          throw Error.CouldNotCreateAccessorToProperty(objectType, pi.PropertyType, pi);
       }
 
@@ -154,7 +154,7 @@ static class PropertyAccessor {
          }
       }
 
-      var saType = (storageAccessor != null) ?
+      var saType = (storageAccessor is not null) ?
          storageAccessor.Type
          : pi.PropertyType;
 
@@ -188,13 +188,13 @@ static class PropertyAccessor {
 
       public override void SetValue(ref T instance, V value) {
 
-         if (_dset != null) {
+         if (_dset is not null) {
             _dset.Invoke(instance, value);
 
-         } else if (_drset != null) {
+         } else if (_drset is not null) {
             _drset.Invoke(ref instance, value);
 
-         } else if (_storage != null) {
+         } else if (_storage is not null) {
             _storage.SetValue(ref instance, (V2)value);
 
          } else {

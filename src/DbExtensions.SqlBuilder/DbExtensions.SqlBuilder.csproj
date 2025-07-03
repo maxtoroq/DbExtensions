@@ -1,11 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;netcoreapp2.1;netstandard2.1</TargetFrameworks>
-    <LangVersion>10</LangVersion>
+    <TargetFrameworks>net45;net472;netcoreapp2.1;net6.0;netstandard2.1</TargetFrameworks>
+    <LangVersion>11</LangVersion>
+    <NoWarn>NU1902,NU1903</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\DbExtensions\FrameworkExtensions.cs" Link="FrameworkExtensions.cs" />
     <Compile Include="..\DbExtensions\SqlBuilder.cs" Link="SqlBuilder.cs" />
   </ItemGroup>
 

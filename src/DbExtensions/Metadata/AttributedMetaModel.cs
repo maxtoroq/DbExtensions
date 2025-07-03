@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -46,7 +45,7 @@ class AttributedMetaModel : MetaModel {
 
       var das = (DatabaseAttribute[])this.ContextType.GetCustomAttributes(typeof(DatabaseAttribute), false);
 
-      this.DatabaseName = (das != null && das.Length > 0) ?
+      this.DatabaseName = (das is not null && das.Length > 0) ?
          das[0].Name
          : this.ContextType.Name;
    }
@@ -57,7 +56,7 @@ class AttributedMetaModel : MetaModel {
 
       try {
          return _metaTables.Values
-            .Where(x => x != null)
+            .Where(x => x is not null)
             .Distinct();
       } finally {
          _lock.ReleaseReaderLock();
@@ -66,7 +65,7 @@ class AttributedMetaModel : MetaModel {
 
    public override MetaTable GetTable(Type rowType, MetaTableConfiguration config) {
 
-      if (rowType == null) throw Error.ArgumentNull(nameof(rowType));
+      if (rowType is null) throw Error.ArgumentNull(nameof(rowType));
 
       MetaTable table;
 
@@ -115,7 +114,7 @@ class AttributedMetaModel : MetaModel {
 
             // catch case of derived type that is not part of inheritance
 
-            if (table.RowType.GetInheritanceType(rowType) == null) {
+            if (table.RowType.GetInheritanceType(rowType) is null) {
                _metaTables.Add(rowType, null);
                return null;
             }
@@ -127,7 +126,7 @@ class AttributedMetaModel : MetaModel {
 
    static Type GetRoot(Type derivedType) {
 
-      while (derivedType != null && derivedType != typeof(object)) {
+      while (derivedType is not null && derivedType != typeof(object)) {
 
          var attrs = (TableAttribute[])derivedType.GetCustomAttributes(typeof(TableAttribute), false);
 
@@ -143,7 +142,7 @@ class AttributedMetaModel : MetaModel {
 
    public override MetaType GetMetaType(Type type, MetaTableConfiguration config) {
 
-      if (type == null) throw Error.ArgumentNull(nameof(type));
+      if (type is null) throw Error.ArgumentNull(nameof(type));
 
       MetaType mtype = null;
 
@@ -162,7 +161,7 @@ class AttributedMetaModel : MetaModel {
 
       var tab = GetTable(type, config);
 
-      if (tab != null) {
+      if (tab is not null) {
          return tab.RowType.GetInheritanceType(type);
       }
 
@@ -207,7 +206,7 @@ sealed class AttributedRootType : AttributedMetaType {
    Dictionary<Type, MetaType> _types;
    Dictionary<object, MetaType> _codeMap;
 
-   internal override bool HasInheritance => _types != null;
+   internal override bool HasInheritance => _types is not null;
 
    internal override ReadOnlyCollection<MetaType> InheritanceTypes { get; }
 
@@ -222,7 +221,7 @@ sealed class AttributedRootType : AttributedMetaType {
 
       if (inheritanceInfo.Length > 0) {
 
-         if (this.Discriminator == null) {
+         if (this.Discriminator is null) {
             throw Error.NoDiscriminatorFound(type);
          }
 
@@ -248,11 +247,11 @@ sealed class AttributedRootType : AttributedMetaType {
 
             var mt = CreateInheritedType(type, attr.Type);
 
-            if (attr.Code == null) {
+            if (attr.Code is null) {
                throw Error.InheritanceCodeMayNotBeNull();
             }
 
-            if (mt._inheritanceCode != null) {
+            if (mt._inheritanceCode is not null) {
                throw Error.InheritanceTypeHasMultipleDiscriminators(attr.Type);
             }
 
@@ -279,7 +278,7 @@ sealed class AttributedRootType : AttributedMetaType {
 
             if (attr.IsDefault) {
 
-               if (this.InheritanceDefault != null) {
+               if (this.InheritanceDefault is not null) {
                   throw Error.InheritanceTypeHasMultipleDefaults(type);
                }
 
@@ -287,12 +286,12 @@ sealed class AttributedRootType : AttributedMetaType {
             }
          }
 
-         if (this.InheritanceDefault == null) {
+         if (this.InheritanceDefault is null) {
             throw Error.InheritanceHierarchyDoesNotDefineDefault(type);
          }
       }
 
-      if (_types != null) {
+      if (_types is not null) {
          this.InheritanceTypes = _types.Values.ToList().AsReadOnly();
       } else {
          this.InheritanceTypes = new MetaType[] { this }.ToList().AsReadOnly();
@@ -371,7 +370,7 @@ sealed class AttributedRootType : AttributedMetaType {
 
       var metaType = default(MetaType);
 
-      if (_types != null) {
+      if (_types is not null) {
          _types.TryGetValue(type, out metaType);
       }
 
@@ -424,9 +423,9 @@ class AttributedMetaType : MetaType {
 
          // LOCKING: Associations are late-expanded so that cycles are broken.
 
-         if (_associations == null) {
+         if (_associations is null) {
             lock (_locktarget) {
-               if (_associations == null) {
+               if (_associations is null) {
                   _associations = DataMembers.Where(m => m.IsAssociation)
                      .Select(m => m.Association)
                      .ToList()
@@ -445,7 +444,7 @@ class AttributedMetaType : MetaType {
 
    internal override bool HasInheritance => InheritanceRoot.HasInheritance;
 
-   internal override bool HasInheritanceCode => InheritanceCode != null;
+   internal override bool HasInheritanceCode => InheritanceCode is not null;
 
    internal override object InheritanceCode => _inheritanceCode;
 
@@ -461,10 +460,10 @@ class AttributedMetaType : MetaType {
          // LOCKING: Cannot initialize at construction
 
          if (!_inheritanceBaseSet
-            && _inheritanceBase == null) {
+            && _inheritanceBase is null) {
 
             lock (_locktarget) {
-               if (_inheritanceBase == null) {
+               if (_inheritanceBase is null) {
                   _inheritanceBase = InheritanceBaseFinder.FindBase(this);
                   _inheritanceBaseSet = true;
                }
@@ -481,9 +480,9 @@ class AttributedMetaType : MetaType {
          // LOCKING: Cannot initialize at construction because derived types
          // won't exist yet.
 
-         if (_derivedTypes == null) {
+         if (_derivedTypes is null) {
             lock (_locktarget) {
-               if (_derivedTypes == null) {
+               if (_derivedTypes is null) {
 
                   var dTypes = new List<MetaType>();
 
@@ -533,7 +532,7 @@ class AttributedMetaType : MetaType {
 
    void InitDataMembers() {
 
-      if (_dataMembers == null) {
+      if (_dataMembers is null) {
 
          _dataMemberMap = new Dictionary<MetaPosition, MetaDataMember>();
 
@@ -551,7 +550,7 @@ class AttributedMetaType : MetaType {
          var fis = TypeSystem.GetAllFields(containerType, flags)
             .ToArray();
 
-         if (fis != null) {
+         if (fis is not null) {
 
             for (int i = 0, n = fis.Length; i < n; i++) {
 
@@ -579,7 +578,7 @@ class AttributedMetaType : MetaType {
          var pis = TypeSystem.GetAllProperties(containerType, flags)
             .ToArray();
 
-         if (pis != null) {
+         if (pis is not null) {
 
             for (int i = 0, n = pis.Length; i < n; i++) {
 
@@ -591,8 +590,8 @@ class AttributedMetaType : MetaType {
                // must be public or persistent
 
                var isPublic =
-                  (pi.CanRead && pi.GetGetMethod(false) != null)
-                     && (!pi.CanWrite || pi.GetSetMethod(false) != null);
+                  (pi.CanRead && pi.GetGetMethod(false) is not null)
+                     && (!pi.CanWrite || pi.GetSetMethod(false) is not null);
 
                if (!mm.IsPersistent && !isPublic) {
                   continue;
@@ -602,7 +601,7 @@ class AttributedMetaType : MetaType {
 
                   var cpAttr = (ComplexPropertyAttribute)Attribute.GetCustomAttribute(pi, typeof(ComplexPropertyAttribute));
 
-                  if (cpAttr != null) {
+                  if (cpAttr is not null) {
 
                      var complexPropType = pi.PropertyType;
 
@@ -645,7 +644,7 @@ class AttributedMetaType : MetaType {
          && mm.IsPrimaryKey
          && String.IsNullOrEmpty(mm.Expression)) {
 
-         if (_dbGeneratedIdentity != null) {
+         if (_dbGeneratedIdentity is not null) {
             throw Error.TwoMembersMarkedAsPrimaryKeyAndDBGenerated(mm.Member, _dbGeneratedIdentity.Member);
          }
 
@@ -660,7 +659,7 @@ class AttributedMetaType : MetaType {
 
       if (mm.IsVersion) {
 
-         if (_version != null) {
+         if (_version is not null) {
             throw Error.TwoMembersMarkedAsRowVersion(mm.Member, _version.Member);
          }
 
@@ -669,7 +668,7 @@ class AttributedMetaType : MetaType {
 
       if (mm.IsDiscriminator) {
 
-         if (_discriminator != null) {
+         if (_discriminator is not null) {
             throw Error.TwoMembersMarkedAsInheritanceDiscriminator(mm.Member, _discriminator.Member);
          }
 
@@ -679,7 +678,7 @@ class AttributedMetaType : MetaType {
 
    public override MetaDataMember GetDataMember(MemberInfo mi) {
 
-      if (mi == null) throw Error.ArgumentNull(nameof(mi));
+      if (mi is null) throw Error.ArgumentNull(nameof(mi));
 
       if (_dataMemberMap.TryGetValue(new MetaPosition(mi), out var mm)) {
          return mm;
@@ -765,9 +764,9 @@ sealed class AttributedMetaDataMember : MetaDataMember {
 
    public override Type ConvertToType => _attrColumn?.ConvertTo;
 
-   public override bool IsPersistent => _attrColumn != null || _attrAssoc != null;
+   public override bool IsPersistent => _attrColumn is not null || _attrAssoc is not null;
 
-   public override bool IsAssociation => _attrAssoc != null;
+   public override bool IsAssociation => _attrAssoc is not null;
 
    public override bool IsPrimaryKey => _attrColumn?.IsPrimaryKey ?? false;
 
@@ -785,7 +784,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
             ?? _attrAssoc?.Name
             ?? Member.Name;
 
-         if (_containerCp != null) {
+         if (_containerCp is not null) {
             return _containerCp.FullMappedName + _containerCp.Separator + n;
          }
 
@@ -794,7 +793,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
    }
 
    public override string QueryPath =>
-      (_containerCp != null) ?
+      (_containerCp is not null) ?
          _containerCp.QueryPath + MetaComplexProperty.QueryPathSeparator + Name
          : Name;
 
@@ -807,7 +806,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
 
    public override bool IsDbGenerated {
       get {
-         return _attrColumn != null &&
+         return _attrColumn is not null &&
             (_attrColumn.IsDbGenerated || !String.IsNullOrEmpty(_attrColumn.Expression)) || IsVersion;
       }
    }
@@ -829,7 +828,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
    public override bool CanBeNull {
       get {
 
-         if (_attrColumn == null) {
+         if (_attrColumn is null) {
             return true;
          }
 
@@ -843,7 +842,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
 
    public override AutoSync AutoSync {
       get {
-         if (_attrColumn != null) {
+         if (_attrColumn is not null) {
 
             // auto-gen keys are always and only synced on insert
 
@@ -876,9 +875,9 @@ sealed class AttributedMetaDataMember : MetaDataMember {
             // LOCKING: This deferral isn't an optimization. It can't be done in the constructor
             // because there may be loops in the association graph.
 
-            if (_assoc == null) {
+            if (_assoc is null) {
                lock (_locktarget) {
-                  if (_assoc == null) {
+                  if (_assoc is null) {
                      _assoc = new AttributedMetaAssociation(this, _attrAssoc);
                   }
                }
@@ -899,24 +898,24 @@ sealed class AttributedMetaDataMember : MetaDataMember {
       _isNullableType = TypeSystem.IsNullableType(this.Type);
       _attrColumn = (ColumnAttribute)Attribute.GetCustomAttribute(mi, typeof(ColumnAttribute));
       _attrAssoc = (AssociationAttribute)Attribute.GetCustomAttribute(mi, typeof(AssociationAttribute));
-      _attr = (_attrColumn != null) ? (IDataAttribute)_attrColumn : (IDataAttribute)_attrAssoc;
+      _attr = (_attrColumn is not null) ? (IDataAttribute)_attrColumn : (IDataAttribute)_attrAssoc;
 
-      if (_attr != null && _attr.Storage != null) {
+      if (_attr is not null && _attr.Storage is not null) {
 
          var mis = mi.DeclaringType.GetMember(_attr.Storage, BindingFlags.Instance | BindingFlags.NonPublic);
 
-         if (mis == null || mis.Length != 1) {
+         if (mis is null || mis.Length != 1) {
             throw Error.BadStorageProperty(_attr.Storage, mi.DeclaringType, mi.Name);
          }
 
          this.StorageMember = mis[0];
       }
 
-      var storageType = (this.StorageMember != null) ?
+      var storageType = (this.StorageMember is not null) ?
          TypeSystem.GetMemberType(this.StorageMember)
          : this.Type;
 
-      if (_attrColumn != null
+      if (_attrColumn is not null
          && _attrColumn.IsDbGenerated
          && _attrColumn.IsPrimaryKey) {
 
@@ -938,7 +937,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
          lock (_locktarget) {
             if (!_hasAccessors) {
 
-               if (this.StorageMember != null) {
+               if (this.StorageMember is not null) {
                   _accPrivate = MakeMemberAccessor(this.Member.ReflectedType, this.StorageMember, null);
                   _accPublic = MakeMemberAccessor(this.Member.ReflectedType, this.Member, _accPrivate);
                } else {
@@ -956,7 +955,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
       var fi = mi as FieldInfo;
       MetaAccessor acc;
 
-      if (fi != null) {
+      if (fi is not null) {
          acc = FieldAccessor.Create(accessorType, fi);
       } else {
          var pi = (PropertyInfo)mi;
@@ -968,11 +967,11 @@ sealed class AttributedMetaDataMember : MetaDataMember {
 
    public override object GetValueForDatabase(object instance) {
 
-      if (_containerCp != null) {
+      if (_containerCp is not null) {
 
          instance = _containerCp.GetValueFromRoot(instance);
 
-         if (instance == null) {
+         if (instance is null) {
             return null;
          }
       }
@@ -982,7 +981,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
 
    public override bool IsDeclaredBy(MetaType declaringMetaType) {
 
-      if (declaringMetaType == null) throw Error.ArgumentNull(nameof(declaringMetaType));
+      if (declaringMetaType is null) throw Error.ArgumentNull(nameof(declaringMetaType));
 
       return declaringMetaType.Type == _memberDeclaringType;
    }
@@ -1009,12 +1008,12 @@ class MetaComplexProperty {
    public string MappedName => _cpAttr.Name ?? Member.Name;
 
    public string FullMappedName =>
-      (Parent != null) ?
+      (Parent is not null) ?
          Parent.FullMappedName + Parent.Separator + MappedName
          : MappedName;
 
    public string QueryPath =>
-      (Parent != null) ?
+      (Parent is not null) ?
          Parent.QueryPath + QueryPathSeparator + Member.Name
          : Member.Name;
 
@@ -1035,8 +1034,8 @@ class MetaComplexProperty {
 
       string defaultSeparator;
 
-      if (cpAttr.Separator == null
-         && (defaultSeparator = ((AttributedMetaTable)metaType.Table).Configuration.DefaultComplexPropertySeparator) != null) {
+      if (cpAttr.Separator is null
+         && (defaultSeparator = ((AttributedMetaTable)metaType.Table).Configuration.DefaultComplexPropertySeparator) is not null) {
 
          _cpAttr = new ComplexPropertyAttribute(_cpAttr) {
             Separator = defaultSeparator
@@ -1064,7 +1063,7 @@ class MetaComplexProperty {
 
       var current = this;
 
-      while (current.Parent != null) {
+      while (current.Parent is not null) {
          cpStack.Push(current.Parent);
          current = current.Parent;
       }
@@ -1076,7 +1075,7 @@ class MetaComplexProperty {
          var cp = cpStack.Pop();
          obj = cp.MemberAccessor.GetBoxedValue(obj);
 
-         if (obj == null) {
+         if (obj is null) {
             break;
          }
       }
@@ -1124,8 +1123,8 @@ class AttributedMetaAssociation : MetaAssociationImpl {
          : this.ThisMember.Type;
 
       this.OtherType = this.ThisMember.DeclaringType.Model.GetMetaType(ot, ((AttributedMetaTable)this.ThisMember.DeclaringType.Table).Configuration);
-      this.ThisKey = (attr.ThisKey != null) ? MakeKeys(this.ThisMember.DeclaringType, attr.ThisKey) : this.ThisMember.DeclaringType.IdentityMembers;
-      this.OtherKey = (attr.OtherKey != null) ? MakeKeys(this.OtherType, attr.OtherKey) : this.OtherType.IdentityMembers;
+      this.ThisKey = (attr.ThisKey is not null) ? MakeKeys(this.ThisMember.DeclaringType, attr.ThisKey) : this.ThisMember.DeclaringType.IdentityMembers;
+      this.OtherKey = (attr.OtherKey is not null) ? MakeKeys(this.OtherType, attr.OtherKey) : this.OtherType.IdentityMembers;
       this.ThisKeyIsPrimaryKey = AreEqual(this.ThisKey, this.ThisMember.DeclaringType.IdentityMembers);
       this.OtherKeyIsPrimaryKey = AreEqual(this.OtherKey, this.OtherType.IdentityMembers);
       this.IsForeignKey = attr.IsForeignKey;
@@ -1170,13 +1169,13 @@ class AttributedMetaAssociation : MetaAssociationImpl {
 
          var oattr = (AssociationAttribute)Attribute.GetCustomAttribute(omm.Member, typeof(AssociationAttribute));
 
-         if (oattr == null
+         if (oattr is null
             || omm == this.ThisMember) {
 
             continue;
          }
 
-         if (attr.Name != null
+         if (attr.Name is not null
             && oattr.Name == attr.Name) {
 
             this.OtherMember = omm;
@@ -1216,13 +1215,13 @@ abstract class MetaAssociationImpl : MetaAssociation {
 
          var rmis = mtype.Type.GetMember(names[i], BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-         if (rmis == null || rmis.Length != 1) {
+         if (rmis is null || rmis.Length != 1) {
             throw Error.BadKeyMember(names[i], keyFields, mtype.Name);
          }
 
          members[i] = mtype.GetDataMember(rmis[0]);
 
-         if (members[i] == null) {
+         if (members[i] is null) {
             throw Error.BadKeyMember(names[i], keyFields, mtype.Name);
          }
       }
@@ -1257,7 +1256,7 @@ abstract class MetaAssociationImpl : MetaAssociation {
    }
 
    public override string ToString() {
-      return String.Format(CultureInfo.InvariantCulture, "{0} ->{1} {2}", this.ThisMember.DeclaringType.Name, this.IsMany ? "*" : "", this.OtherType.Name);
+      return $"{this.ThisMember.DeclaringType.Name} ->{(this.IsMany ? "*" : null)} {this.OtherType.Name}";
    }
 }
 
@@ -1313,9 +1312,9 @@ sealed class UnmappedType : MetaType {
    internal override ReadOnlyCollection<MetaType> InheritanceTypes {
       get {
 
-         if (_inheritanceTypes == null) {
+         if (_inheritanceTypes is null) {
             lock (_locktarget) {
-               if (_inheritanceTypes == null) {
+               if (_inheritanceTypes is null) {
                   _inheritanceTypes = new MetaType[] { this }.ToList().AsReadOnly();
                }
             }
@@ -1362,13 +1361,13 @@ sealed class UnmappedType : MetaType {
 
    public override MetaDataMember GetDataMember(MemberInfo mi) {
 
-      if (mi == null) throw Error.ArgumentNull(nameof(mi));
+      if (mi is null) throw Error.ArgumentNull(nameof(mi));
 
       InitDataMembers();
 
-      if (_dataMemberMap == null) {
+      if (_dataMemberMap is null) {
          lock (_locktarget) {
-            if (_dataMemberMap == null) {
+            if (_dataMemberMap is null) {
 
                var map = new Dictionary<object, MetaDataMember>();
 
@@ -1390,9 +1389,9 @@ sealed class UnmappedType : MetaType {
 
    void InitDataMembers() {
 
-      if (_dataMembers == null) {
+      if (_dataMembers is null) {
          lock (_locktarget) {
-            if (_dataMembers == null) {
+            if (_dataMembers is null) {
 
                var dMembers = new List<MetaDataMember>();
                var ordinal = 0;
@@ -1491,9 +1490,9 @@ sealed class UnmappedDataMember : MetaDataMember {
 
    void InitAccessors() {
 
-      if (_accPublic == null) {
+      if (_accPublic is null) {
          lock (_lockTarget) {
-            if (_accPublic == null) {
+            if (_accPublic is null) {
                _accPublic = MakeMemberAccessor(this.Member.ReflectedType, this.Member);
             }
          }
@@ -1502,7 +1501,7 @@ sealed class UnmappedDataMember : MetaDataMember {
 
    public override bool IsDeclaredBy(MetaType metaType) {
 
-      if (metaType == null) throw Error.ArgumentNull(nameof(metaType));
+      if (metaType is null) throw Error.ArgumentNull(nameof(metaType));
 
       return metaType.Type == this.Member.DeclaringType;
    }
@@ -1546,7 +1545,7 @@ static class InheritanceBaseFinder {
          clrType = clrType.BaseType;
          metaType = derivedType.InheritanceRoot.GetInheritanceType(clrType);
 
-         if (metaType != null) {
+         if (metaType is not null) {
             return metaType;
          }
       }
@@ -1575,13 +1574,13 @@ static class InheritanceRules {
       var pi = mi as PropertyInfo;
       var fi = mi as FieldInfo;
 
-      if (fi != null) {
+      if (fi is not null) {
 
          // Human readable variant:
          // return "fi:" + mi.Name + ":" + mi.DeclaringType;
          return new MetaPosition(mi);
 
-      } else if (pi != null) {
+      } else if (pi is not null) {
 
          var meth = default(MethodInfo);
 
@@ -1589,11 +1588,11 @@ static class InheritanceRules {
             meth = pi.GetGetMethod();
          }
 
-         if (meth == null && pi.CanWrite) {
+         if (meth is null && pi.CanWrite) {
             meth = pi.GetSetMethod();
          }
 
-         var isVirtual = meth != null && meth.IsVirtual;
+         var isVirtual = meth is not null && meth.IsVirtual;
 
          // Human readable variant:
          // return "pi:" + mi.Name + ":" + (isVirtual ? "virtual" : mi.DeclaringType.ToString());

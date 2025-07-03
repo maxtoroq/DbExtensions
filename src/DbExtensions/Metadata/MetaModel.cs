@@ -436,8 +436,8 @@ abstract class MetaDataMember {
 
    public object ConvertValueForDatabase(object value) {
 
-      if (value == null
-         || this.ConvertToType == null) {
+      if (value is null
+         || this.ConvertToType is null) {
 
          return value;
       }

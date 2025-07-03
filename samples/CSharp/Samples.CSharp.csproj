@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;netcoreapp2.1;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net472;net6.0;netstandard2.1</TargetFrameworks>
+    <LangVersion>11</LangVersion>
+    <NoWarn>NU1902,NU1903</NoWarn>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
