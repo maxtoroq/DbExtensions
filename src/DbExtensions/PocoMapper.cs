@@ -392,7 +392,7 @@ sealed class CollectionLoader {
 sealed partial class PocoNode : Node {
 
    static readonly ConcurrentDictionary<PropertyInfo, MetaAccessor>
-   _accessorCache = new();
+   _accessorCache = new(ReferenceEqualityComparer.Instance);
 
    MetaAccessor
    _accessor;
@@ -442,8 +442,8 @@ sealed partial class PocoNode : Node {
    private Func<object[], object>
    Factory => _factory
       ??= (Constructor is not null ?
-         ObjectFactory.GetFactory(this, Constructor)
-         : ObjectFactory.GetFactory(this, Type));
+         ObjectFactory.GetFactory(Constructor)
+         : ObjectFactory.GetFactory(Type));
 
    public ParameterInfo
    Parameter { get; }
@@ -746,7 +746,7 @@ sealed class PocoCollection {
 
    private Func<object[], object>
    Factory => _factory
-      ??= ObjectFactory.GetFactory(this, ConcreteType);
+      ??= ObjectFactory.GetFactory(ConcreteType);
 
    public
    PocoCollection(CollectionLoader loader) {
@@ -893,11 +893,11 @@ sealed class CollectionAccessor<TContainer, TCollection, TElement> : CollectionA
 static class ObjectFactory {
 
    static readonly ConcurrentDictionary<object, Func<object[], object>>
-   _factoryCache = new();
+   _factoryCache = new(ReferenceEqualityComparer.Instance);
 
    public static Func<object[], object>
-   GetFactory(object node, Type type) =>
-      _factoryCache.GetOrAdd(node, static (n, t) => CreateFactory(t), type);
+   GetFactory(Type type) =>
+      _factoryCache.GetOrAdd(type, static t => CreateFactory((Type)t));
 
    static Func<object[], object>
    CreateFactory(Type type) {
@@ -911,8 +911,8 @@ static class ObjectFactory {
    }
 
    public static Func<object[], object>
-   GetFactory(object node, ConstructorInfo ctor) =>
-      _factoryCache.GetOrAdd(node, static (n, c) => CreateFactory(c), ctor);
+   GetFactory(ConstructorInfo ctor) =>
+      _factoryCache.GetOrAdd(ctor, static c => CreateFactory((ConstructorInfo)c));
 
    static Func<object[], object>
    CreateFactory(ConstructorInfo ctor) {
