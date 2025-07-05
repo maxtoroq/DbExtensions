@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace DbExtensions.Tests.Mapping {
+namespace DbExtensions.Tests.Mapping.Annotated {
 
    using static TestUtil;
 
