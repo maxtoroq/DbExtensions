@@ -936,30 +936,6 @@ static class ObjectFactory {
 
 partial class PocoNode {
 
-   static readonly MethodInfo
-   _isDbNullMethod = typeof(IDataRecord)
-      .GetMethod(nameof(IDataRecord.IsDBNull));
-
-   static readonly MethodInfo
-   _getFieldValueOpenMethod = typeof(DbDataReader)
-      .GetMethod(nameof(DbDataReader.GetFieldValue));
-
-   static readonly MethodInfo
-   _loadManyMethod = typeof(MappingContext)
-      .GetMethod(nameof(MappingContext.LoadMany));
-
-   static readonly MethodInfo
-   _enumParseMethod = typeof(Enum)
-      .GetMethod(nameof(Enum.Parse), BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(Type), typeof(string) }, null);
-
-   static readonly MethodInfo
-   _convertChangeTypeMethod = typeof(Convert)
-      .GetMethod(nameof(Convert.ChangeType), BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(object), typeof(Type), typeof(IFormatProvider) }, null);
-
-   static readonly PropertyInfo
-   _invariantCultureProperty = typeof(CultureInfo)
-      .GetProperty(nameof(CultureInfo.InvariantCulture));
-
    ColumnAttribute
    _columnAttribute;
 
@@ -991,12 +967,16 @@ partial class PocoNode {
       var recordParam = Expression.Parameter(typeof(IDataRecord));
       var contextParam = Expression.Parameter(typeof(MappingContext));
       var instanceParam = Expression.Parameter(typeof(object));
+      var varExpr = Expression.Variable(this.Type);
 
-      var statements = new List<Expression>();
-      GenerateLoad(instanceParam, statements, recordParam, contextParam);
+      var statements = new List<Expression> {
+         Expression.Assign(varExpr, Expression.Convert(instanceParam, varExpr.Type))
+      };
+
+      GenerateLoad(varExpr, statements, recordParam, contextParam);
 
       var lambda = Expression.Lambda<Action<IDataRecord, MappingContext, object>>(
-         Expression.Block(statements),
+         Expression.Block(new[] { varExpr }, statements),
          recordParam,
          contextParam,
          instanceParam);
@@ -1036,7 +1016,7 @@ partial class PocoNode {
          foreach (var ordinal in GetAllOrdinals()) {
             isDbNulls.Add(Expression.Call(
                recordParam,
-               _isDbNullMethod,
+               References.IsDbNullMethod,
                Expression.Constant(ordinal, typeof(int))));
          }
 
@@ -1202,7 +1182,7 @@ partial class PocoNode {
 
          statements.Add(Expression.Call(
             contextParam,
-            _loadManyMethod,
+            References.LoadManyMethod,
             Expression.Constant(this.PropertyHash),
             targetExpr,
             recordParam));
@@ -1216,33 +1196,14 @@ partial class PocoNode {
       var ordinalExpr = Expression.Constant(this.ColumnOrdinal);
 
       var convertToType = this.ColumnAttribute?.ConvertTo;
-      var typeCode = Type.GetTypeCode(convertToType ?? this.UnderlyingType);
-
-      var isRecordType = typeCode
-         is TypeCode.Boolean
-            or TypeCode.Byte
-            or TypeCode.Char
-            or TypeCode.DateTime
-            or TypeCode.Decimal
-            or TypeCode.Double
-            or TypeCode.Int16
-            or TypeCode.Int32
-            or TypeCode.Int64
-            or TypeCode.Single
-            or TypeCode.String
-         || (typeCode is TypeCode.Object
-            && this.Type == typeof(object));
+      var columnType = convertToType ?? this.UnderlyingType;
+      var typeCode = Type.GetTypeCode(columnType);
+      var isEnum = this.UnderlyingType.IsEnum;
 
       Expression valueExpr;
 
-      if (isRecordType) {
-
-         var recordMethod = typeof(IDataRecord)
-            .GetMethod(typeCode switch {
-               TypeCode.Single => nameof(IDataRecord.GetFloat),
-               TypeCode.Object => nameof(IDataRecord.GetValue),
-               _ => "Get" + typeCode.ToString()
-            });
+      if (References.RecordGetMethods.TryGetValue(typeCode, out var recordMethod)
+         && (typeCode is not TypeCode.Object || this.Type == typeof(object))) {
 
          valueExpr = Expression.Call(recordParam, recordMethod, ordinalExpr);
 
@@ -1250,32 +1211,66 @@ partial class PocoNode {
 
          valueExpr = Expression.Call(
             Expression.Convert(recordParam, typeof(DbDataReader)),
-            _getFieldValueOpenMethod.MakeGenericMethod(this.UnderlyingType),
+            References.GetFieldValueOpenMethod.MakeGenericMethod(columnType),
             ordinalExpr);
       }
 
+      var targetType = this.UnderlyingType;
+      var targetTypeExpr = Expression.Constant(targetType, typeof(Type));
+
       if (convertToType != null) {
 
-         var targetTypeExpr = Expression.Constant(this.UnderlyingType, typeof(Type));
-
          if (convertToType == typeof(string)
-            && this.UnderlyingType.IsEnum) {
+            && isEnum) {
 
-            valueExpr = Expression.Call(_enumParseMethod, targetTypeExpr, valueExpr);
+#if NETFRAMEWORK
+            valueExpr = Expression.Call(References.EnumParseMethod, targetTypeExpr, valueExpr);
+#else
+            valueExpr = Expression.Call(
+               References.EnumParseOpenMethod.MakeGenericMethod(targetType),
+               valueExpr);
+#endif
 
          } else {
 
             valueExpr = Expression.Call(
-               _convertChangeTypeMethod,
+               References.ConvertChangeTypeMethod,
                varExpr,
                targetTypeExpr,
-               Expression.Property(null, _invariantCultureProperty));
+               Expression.Property(null, References.InvariantCultureProperty));
          }
+
+      } else if (isEnum) {
+
+#if NETFRAMEWORK
+         var trueExpr = (Expression)Expression.Call(
+            References.EnumParseMethod,
+            targetTypeExpr,
+            Expression.Call(recordParam, References.RecordGetMethods[TypeCode.String], ordinalExpr));
+
+         trueExpr = Expression.Convert(trueExpr, targetType);
+
+         var falseExpr = valueExpr;
+         falseExpr = Expression.Convert(falseExpr, targetType);
+#else
+         var trueExpr = (Expression)Expression.Call(
+            References.EnumParseOpenMethod.MakeGenericMethod(targetType),
+            Expression.Call(recordParam, References.RecordGetMethods[TypeCode.String], ordinalExpr));
+
+         var falseExpr = valueExpr;
+         falseExpr = Expression.Convert(falseExpr, targetType);
+#endif
+
+         valueExpr = Expression.Condition(
+            Expression.MakeBinary(
+               ExpressionType.Equal,
+               Expression.Call(recordParam, References.GetFieldTypeMethod, ordinalExpr),
+               Expression.Constant(typeof(string), typeof(Type))),
+            trueExpr,
+            falseExpr);
       }
 
-      if (this.UnderlyingType.IsEnum
-         || convertToType != null) {
-
+      if (valueExpr.Type != varExpr.Type) {
          valueExpr = Expression.Convert(valueExpr, varExpr.Type);
       }
 
@@ -1309,5 +1304,58 @@ partial class PocoNode {
       }
 
       yield return this.ColumnOrdinal;
+   }
+
+   static class References {
+
+      public static readonly MethodInfo
+      ConvertChangeTypeMethod = typeof(Convert)
+         .GetMethod(nameof(Convert.ChangeType), BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(object), typeof(Type), typeof(IFormatProvider) }, null);
+
+      public static readonly MethodInfo
+      EnumParseMethod = typeof(Enum)
+         .GetMethod(nameof(Enum.Parse), BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(Type), typeof(string) }, null);
+
+#if !NETFRAMEWORK
+      public static readonly MethodInfo
+      EnumParseOpenMethod = typeof(Enum)
+         .GetMethod(nameof(Enum.Parse), 1, BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string) }, null);
+#endif
+
+      public static readonly MethodInfo
+      GetFieldTypeMethod = typeof(IDataRecord)
+         .GetMethod(nameof(IDataRecord.GetFieldType));
+
+      public static readonly MethodInfo
+      GetFieldValueOpenMethod = typeof(DbDataReader)
+         .GetMethod(nameof(DbDataReader.GetFieldValue));
+
+      public static readonly PropertyInfo
+      InvariantCultureProperty = typeof(CultureInfo)
+         .GetProperty(nameof(CultureInfo.InvariantCulture));
+
+      public static readonly MethodInfo
+      IsDbNullMethod = typeof(IDataRecord)
+         .GetMethod(nameof(IDataRecord.IsDBNull));
+
+      public static readonly MethodInfo
+      LoadManyMethod = typeof(MappingContext)
+         .GetMethod(nameof(MappingContext.LoadMany));
+
+      public static readonly Dictionary<TypeCode, MethodInfo>
+      RecordGetMethods = new() {
+         {  TypeCode.Boolean, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetBoolean)) },
+         {  TypeCode.Byte, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetByte)) },
+         {  TypeCode.Char, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetChar)) },
+         {  TypeCode.DateTime, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetDateTime)) },
+         {  TypeCode.Decimal, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetDecimal)) },
+         {  TypeCode.Double, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetDouble)) },
+         {  TypeCode.Int16, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetInt16)) },
+         {  TypeCode.Int32, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetInt32)) },
+         {  TypeCode.Int64, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetInt64)) },
+         {  TypeCode.Object, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetValue)) },
+         {  TypeCode.Single, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetFloat)) },
+         {  TypeCode.String, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetString)) },
+      };
    }
 }

@@ -4,13 +4,14 @@ namespace DbExtensions.Tests.Querying {
 
    using static TestUtil;
 
-   [TestFixture]
-   public class SqlTableBehavior {
+   [TestFixture(false)]
+   [TestFixture(true)]
+   public class SqlTableBehavior(bool useCompiledMapping) {
 
       [Test]
       public void Dont_Use_Subqueries_When_Methods_Are_Called_In_Order() {
 
-         Database db = MockDatabase(true);
+         var db = MockDatabase(useCompiledMapping);
 
          SqlSet set = db.Table<SqlTable.Model1.Product>()
             .Where("UnitsInStock > 0")
@@ -30,7 +31,7 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Use_Multipart_Identifier() {
 
-         Database db = MockDatabase(true, "System.Data.SqlClient");
+         var db = MockDatabase(useCompiledMapping, "System.Data.SqlClient");
 
          SqlSet set = db.Table<SqlTable.Model2.Product>();
 
@@ -44,7 +45,7 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Update_Assigned_Key() {
 
-         Database db = RealDatabase(true);
+         var db = RealDatabase(useCompiledMapping);
          var table = db.Table<SqlTable.Model3.Customer>();
 
          string originalId = "FISSA";
@@ -66,6 +67,38 @@ namespace DbExtensions.Tests.Querying {
             tx.Rollback();
          }
       }
+
+      [Test]
+      public void Refresh() {
+
+         var db = RealDatabase(useCompiledMapping);
+         var table = db.Table<SqlTable.Refresh.Product>();
+
+         using (var tx = db.EnsureInTransaction()) {
+
+            var entity = new SqlTable.Refresh.Product {
+               ProductName = "Foo",
+               Discontinued = false,
+            };
+
+            table.Add(entity);
+
+            var id = entity.ProductID;
+
+            Assert.AreNotEqual(0, id);
+
+            entity.ProductName = "Bar";
+            entity.Discontinued = true;
+
+            table.Refresh(entity);
+
+            Assert.AreEqual(id, entity.ProductID);
+            Assert.AreEqual("Foo", entity.ProductName);
+            Assert.AreEqual(false, entity.Discontinued);
+
+            tx.Rollback();
+         }
+      }
    }
 
    namespace SqlTable {
@@ -73,7 +106,7 @@ namespace DbExtensions.Tests.Querying {
       namespace Model1 {
 
          [Table]
-         class Product {
+         public class Product {
 
             [Column]
             public int Id { get; set; }
@@ -83,7 +116,7 @@ namespace DbExtensions.Tests.Querying {
       namespace Model2 {
 
          [Table(Name = "[dbo].[Products]")]
-         class Product {
+         public class Product {
 
             [Column(IsPrimaryKey = true)]
             public int ProductID { get; set; }
@@ -103,6 +136,22 @@ namespace DbExtensions.Tests.Querying {
 
             [Column]
             public string CompanyName { get; set; }
+         }
+      }
+
+      namespace Refresh {
+
+         [Table(Name = "Products")]
+         public class Product {
+
+            [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+            public int ProductID { get; set; }
+
+            [Column]
+            public string ProductName { get; set; }
+
+            [Column]
+            public bool Discontinued { get; set; }
          }
       }
    }

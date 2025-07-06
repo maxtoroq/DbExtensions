@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace DbExtensions.Tests.Mapping {
+namespace DbExtensions.Tests.Mapping.Poco {
 
    using static TestUtil;
 
