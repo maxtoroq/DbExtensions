@@ -967,12 +967,16 @@ partial class PocoNode {
       var recordParam = Expression.Parameter(typeof(IDataRecord));
       var contextParam = Expression.Parameter(typeof(MappingContext));
       var instanceParam = Expression.Parameter(typeof(object));
+      var varExpr = Expression.Variable(this.Type);
 
-      var statements = new List<Expression>();
-      GenerateLoad(instanceParam, statements, recordParam, contextParam);
+      var statements = new List<Expression> {
+         Expression.Assign(varExpr, Expression.Convert(instanceParam, varExpr.Type))
+      };
+
+      GenerateLoad(varExpr, statements, recordParam, contextParam);
 
       var lambda = Expression.Lambda<Action<IDataRecord, MappingContext, object>>(
-         Expression.Block(statements),
+         Expression.Block(new[] { varExpr }, statements),
          recordParam,
          contextParam,
          instanceParam);
