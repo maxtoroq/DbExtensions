@@ -55,6 +55,7 @@ function BuildProj([string]$projName, [string]$projFile, [string]$target) {
       /p:FileVersion=$PackageVersion `
       /p:VersionPrefix=$PackageVersion `
       /p:VersionSuffix=$PreRelease `
+      /p:ContinuousIntegrationBuild=true `
       /p:Authors=$($notice.authors) `
       /p:PackageLicenseExpression=$($notice.license.name) `
       /p:PackageProjectUrl=$($notice.website) `
