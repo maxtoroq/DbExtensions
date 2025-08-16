@@ -437,7 +437,7 @@ public partial class SqlBuilder {
    Clone() {
 
       var clone = new SqlBuilder();
-      clone.Buffer.Append(this.Buffer.ToString());
+      clone.Buffer.Append(this.Buffer);
       clone.CurrentClause = this.CurrentClause;
       clone.CurrentSeparator = this.CurrentSeparator;
 
