@@ -613,94 +613,92 @@ class AttributedMetaType : MetaType {
 
    void
    InitDataMembersImpl(Type containerType, MetaComplexProperty containerCp = null) {
-      { // preserving indentation for cleaner diff
 
-         var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+      var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 
-         var fis = TypeSystem.GetAllFields(containerType, flags)
-            .ToArray();
+      var fis = TypeSystem.GetAllFields(containerType, flags)
+         .ToArray();
 
-         if (fis is not null) {
+      if (fis is not null) {
 
-            for (int i = 0, n = fis.Length; i < n; i++) {
+         for (int i = 0, n = fis.Length; i < n; i++) {
 
-               var fi = fis[i];
-               var mm = new AttributedMetaDataMember(this, fi, _dataMemberMap.Count, null);
-               ValidatePrimaryKeyMember(mm);
+            var fi = fis[i];
+            var mm = new AttributedMetaDataMember(this, fi, _dataMemberMap.Count, null);
+            ValidatePrimaryKeyMember(mm);
 
-               // must be public or persistent
-               if (!mm.IsPersistent && !fi.IsPublic) {
-                  continue;
-               }
-
-               _dataMemberMap.Add(new MetaPosition(fi), mm);
-
-               // must be persistent for the rest
-
-               if (!mm.IsPersistent) {
-                  continue;
-               }
-
-               InitSpecialMember(mm);
+            // must be public or persistent
+            if (!mm.IsPersistent && !fi.IsPublic) {
+               continue;
             }
+
+            _dataMemberMap.Add(new MetaPosition(fi), mm);
+
+            // must be persistent for the rest
+
+            if (!mm.IsPersistent) {
+               continue;
+            }
+
+            InitSpecialMember(mm);
          }
+      }
 
-         var pis = TypeSystem.GetAllProperties(containerType, flags)
-            .ToArray();
+      var pis = TypeSystem.GetAllProperties(containerType, flags)
+         .ToArray();
 
-         if (pis is not null) {
+      if (pis is not null) {
 
-            for (int i = 0, n = pis.Length; i < n; i++) {
+         for (int i = 0, n = pis.Length; i < n; i++) {
 
-               var pi = pis[i];
+            var pi = pis[i];
 
-               var mm = new AttributedMetaDataMember(this, pi, _dataMemberMap.Count, containerCp);
-               ValidatePrimaryKeyMember(mm);
+            var mm = new AttributedMetaDataMember(this, pi, _dataMemberMap.Count, containerCp);
+            ValidatePrimaryKeyMember(mm);
 
-               // must be public or persistent
+            // must be public or persistent
 
-               var isPublic =
-                  (pi.CanRead && pi.GetGetMethod(false) is not null)
-                     && (!pi.CanWrite || pi.GetSetMethod(false) is not null);
+            var isPublic =
+               (pi.CanRead && pi.GetGetMethod(false) is not null)
+                  && (!pi.CanWrite || pi.GetSetMethod(false) is not null);
 
-               if (!mm.IsPersistent && !isPublic) {
-                  continue;
-               }
-
-               if (!mm.IsPersistent) {
-
-                  var cpAttr = (ComplexPropertyAttribute)Attribute.GetCustomAttribute(pi, typeof(ComplexPropertyAttribute));
-
-                  if (cpAttr is not null) {
-
-                     var complexPropType = pi.PropertyType;
-
-                     if (!complexPropType.IsClass) {
-                        throw new InvalidOperationException("A persistent complex property must be a class.");
-                     }
-
-                     if (complexPropType.IsAbstract) {
-                        throw new InvalidOperationException("A persistent complex property cannot be an abstract type.");
-                     }
-
-                     var metaCp = new MetaComplexProperty(this, pi, cpAttr, containerCp);
-
-                     InitDataMembersImpl(complexPropType, metaCp);
-
-                     continue;
-                  }
-               }
-
-               _dataMemberMap.Add(new MetaPosition(pi), mm);
-
-               // must be persistent for the rest
-
-               if (!mm.IsPersistent) {
-                  continue;
-               }
-
-               InitSpecialMember(mm);
+            if (!mm.IsPersistent && !isPublic) {
+               continue;
             }
+
+            if (!mm.IsPersistent) {
+
+               var cpAttr = (ComplexPropertyAttribute)Attribute.GetCustomAttribute(pi, typeof(ComplexPropertyAttribute));
+
+               if (cpAttr is not null) {
+
+                  var complexPropType = pi.PropertyType;
+
+                  if (!complexPropType.IsClass) {
+                     throw new InvalidOperationException("A persistent complex property must be a class.");
+                  }
+
+                  if (complexPropType.IsAbstract) {
+                     throw new InvalidOperationException("A persistent complex property cannot be an abstract type.");
+                  }
+
+                  var metaCp = new MetaComplexProperty(this, pi, cpAttr, containerCp);
+
+                  InitDataMembersImpl(complexPropType, metaCp);
+
+                  continue;
+               }
+            }
+
+            _dataMemberMap.Add(new MetaPosition(pi), mm);
+
+            // must be persistent for the rest
+
+            if (!mm.IsPersistent) {
+               continue;
+            }
+
+            InitSpecialMember(mm);
          }
       }
    }
