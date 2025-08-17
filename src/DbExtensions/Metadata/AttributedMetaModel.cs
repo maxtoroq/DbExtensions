@@ -484,12 +484,10 @@ class AttributedMetaType : MetaType {
 
          if (_associations is null) {
             lock (_locktarget) {
-               if (_associations is null) {
-                  _associations = DataMembers.Where(m => m.IsAssociation)
-                     .Select(m => m.Association)
-                     .ToList()
-                     .AsReadOnly();
-               }
+               _associations ??= DataMembers.Where(m => m.IsAssociation)
+                  .Select(m => m.Association)
+                  .ToList()
+                  .AsReadOnly();
             }
          }
 
@@ -995,9 +993,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
 
             if (_assoc is null) {
                lock (_locktarget) {
-                  if (_assoc is null) {
-                     _assoc = new AttributedMetaAssociation(this, _attrAssoc);
-                  }
+                  _assoc ??= new AttributedMetaAssociation(this, _attrAssoc);
                }
             }
          }
@@ -1497,9 +1493,7 @@ sealed class UnmappedType : MetaType {
 
          if (_inheritanceTypes is null) {
             lock (_locktarget) {
-               if (_inheritanceTypes is null) {
-                  _inheritanceTypes = new MetaType[] { this }.ToList().AsReadOnly();
-               }
+               _inheritanceTypes ??= new MetaType[] { this }.ToList().AsReadOnly();
             }
          }
 
@@ -1713,9 +1707,7 @@ sealed class UnmappedDataMember : MetaDataMember {
 
       if (_accPublic is null) {
          lock (_lockTarget) {
-            if (_accPublic is null) {
-               _accPublic = MakeMemberAccessor(this.Member.ReflectedType, this.Member);
-            }
+            _accPublic ??= MakeMemberAccessor(this.Member.ReflectedType, this.Member);
          }
       }
    }
