@@ -25,18 +25,24 @@ namespace DbExtensions.Metadata;
 /// Represents a source for mapping information.
 /// </summary>
 
-internal abstract class MappingSource {
+abstract class MappingSource {
 
-   MetaModel _primaryModel;
-   ReaderWriterLock _rwlock;
-   Dictionary<Type, MetaModel> _secondaryModels;
+   MetaModel
+   _primaryModel;
+
+   ReaderWriterLock
+   _rwlock;
+
+   Dictionary<Type, MetaModel>
+   _secondaryModels;
 
    /// <summary>
    /// Gets the MetaModel representing a DataContext and all it's 
    /// accessible tables, functions and entities.
    /// </summary>
 
-   public MetaModel GetModel(Type dataContextType) {
+   public MetaModel
+   GetModel(Type dataContextType) {
 
       if (dataContextType is null) throw Error.ArgumentNull(nameof(dataContextType));
 
@@ -109,18 +115,18 @@ internal abstract class MappingSource {
    /// <param name="dataContextType"></param>
    /// <returns></returns>
 
-   protected abstract MetaModel CreateModel(Type dataContextType);
+   protected abstract MetaModel
+   CreateModel(Type dataContextType);
 }
 
 /// <summary>
 /// A mapping source that uses attributes on the context to create the mapping model.
 /// </summary>
 
-internal sealed class AttributeMappingSource : MappingSource {
+sealed class AttributeMappingSource : MappingSource {
 
-   public AttributeMappingSource() { }
-
-   protected override MetaModel CreateModel(Type dataContextType) {
+   protected override MetaModel
+   CreateModel(Type dataContextType) {
 
       if (dataContextType is null) throw Error.ArgumentNull(nameof(dataContextType));
 

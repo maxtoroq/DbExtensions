@@ -31,7 +31,8 @@ static class MappingSystem {
    /// <param name="type"></param>
    /// <returns></returns>
 
-   internal static bool IsSupportedDiscriminatorType(Type type) {
+   internal static bool
+   IsSupportedDiscriminatorType(Type type) {
 
       if (type.IsGenericType
          && type.GetGenericTypeDefinition() == typeof(Nullable<>)) {
@@ -64,7 +65,8 @@ static class MappingSystem {
    /// so only types implementing Equals are supported.
    /// </summary>
 
-   internal static bool IsSupportedIdentityType(Type type) {
+   internal static bool
+   IsSupportedIdentityType(Type type) {
 
       if (type.IsGenericType
          && type.GetGenericTypeDefinition() == typeof(Nullable<>)) {

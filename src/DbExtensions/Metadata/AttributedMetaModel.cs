@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -27,18 +26,26 @@ namespace DbExtensions.Metadata;
 
 class AttributedMetaModel : MetaModel {
 
-   ReaderWriterLock _lock = new();
-   Dictionary<Type, MetaType> _metaTypes = new();
-   Dictionary<Type, MetaTable> _metaTables = new();
+   readonly ReaderWriterLock
+   _lock = new();
 
-   internal override MappingSource MappingSource { get; }
+   readonly Dictionary<Type, MetaType>
+   _metaTypes = new();
 
-   internal override Type ContextType { get; }
+   readonly Dictionary<Type, MetaTable>
+   _metaTables = new();
 
-   internal override string DatabaseName { get; }
+   internal override MappingSource
+   MappingSource { get; }
 
-   [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-   internal AttributedMetaModel(MappingSource mappingSource, Type contextType) {
+   internal override Type
+   ContextType { get; }
+
+   internal override string
+   DatabaseName { get; }
+
+   internal
+   AttributedMetaModel(MappingSource mappingSource, Type contextType) {
 
       this.MappingSource = mappingSource;
       this.ContextType = contextType;
@@ -50,7 +57,8 @@ class AttributedMetaModel : MetaModel {
          : this.ContextType.Name;
    }
 
-   public override IEnumerable<MetaTable> GetTables() {
+   public override IEnumerable<MetaTable>
+   GetTables() {
 
       _lock.AcquireReaderLock(Timeout.Infinite);
 
@@ -63,7 +71,8 @@ class AttributedMetaModel : MetaModel {
       }
    }
 
-   public override MetaTable GetTable(Type rowType, MetaTableConfiguration config) {
+   public override MetaTable
+   GetTable(Type rowType, MetaTableConfiguration config) {
 
       if (rowType is null) throw Error.ArgumentNull(nameof(rowType));
 
@@ -90,7 +99,8 @@ class AttributedMetaModel : MetaModel {
       return table;
    }
 
-   internal MetaTable GetTableNoLocks(Type rowType, MetaTableConfiguration config) {
+   internal MetaTable
+   GetTableNoLocks(Type rowType, MetaTableConfiguration config) {
 
       MetaTable table;
 
@@ -124,7 +134,8 @@ class AttributedMetaModel : MetaModel {
       return table;
    }
 
-   static Type GetRoot(Type derivedType) {
+   static Type
+   GetRoot(Type derivedType) {
 
       while (derivedType is not null && derivedType != typeof(object)) {
 
@@ -140,7 +151,8 @@ class AttributedMetaModel : MetaModel {
       return null;
    }
 
-   public override MetaType GetMetaType(Type type, MetaTableConfiguration config) {
+   public override MetaType
+   GetMetaType(Type type, MetaTableConfiguration config) {
 
       if (type is null) throw Error.ArgumentNull(nameof(type));
 
@@ -182,15 +194,20 @@ class AttributedMetaModel : MetaModel {
 
 sealed class AttributedMetaTable : MetaTable {
 
-   public override MetaModel Model { get; }
+   public override MetaModel
+   Model { get; }
 
-   public override string TableName { get; }
+   public override string
+   TableName { get; }
 
-   public override MetaType RowType { get; }
+   public override MetaType
+   RowType { get; }
 
-   internal MetaTableConfiguration Configuration { get; private set; }
+   internal MetaTableConfiguration
+   Configuration { get; private set; }
 
-   internal AttributedMetaTable(AttributedMetaModel model, TableAttribute attr, Type rowType, MetaTableConfiguration config) {
+   internal
+   AttributedMetaTable(AttributedMetaModel model, TableAttribute attr, Type rowType, MetaTableConfiguration config) {
 
       // set this first
       this.Configuration = new MetaTableConfiguration(config);
@@ -203,16 +220,23 @@ sealed class AttributedMetaTable : MetaTable {
 
 sealed class AttributedRootType : AttributedMetaType {
 
-   Dictionary<Type, MetaType> _types;
-   Dictionary<object, MetaType> _codeMap;
+   readonly Dictionary<Type, MetaType>
+   _types;
 
-   internal override bool HasInheritance => _types is not null;
+   readonly Dictionary<object, MetaType>
+   _codeMap;
 
-   internal override ReadOnlyCollection<MetaType> InheritanceTypes { get; }
+   internal override bool
+   HasInheritance => _types is not null;
 
-   internal override MetaType InheritanceDefault { get; }
+   internal override ReadOnlyCollection<MetaType>
+   InheritanceTypes { get; }
 
-   internal AttributedRootType(AttributedMetaModel model, AttributedMetaTable table, Type type)
+   internal override MetaType
+   InheritanceDefault { get; }
+
+   internal
+   AttributedRootType(AttributedMetaModel model, AttributedMetaTable table, Type type)
       : base(model, table, type, null) {
 
       // check for inheritance and create all other types
@@ -300,7 +324,8 @@ sealed class AttributedRootType : AttributedMetaType {
       Validate();
    }
 
-   void Validate() {
+   void
+   Validate() {
 
       var memberToColumn = new Dictionary<object, string>();
 
@@ -345,7 +370,8 @@ sealed class AttributedRootType : AttributedMetaType {
       }
    }
 
-   AttributedMetaType CreateInheritedType(Type root, Type type) {
+   AttributedMetaType
+   CreateInheritedType(Type root, Type type) {
 
       MetaType metaType;
 
@@ -362,7 +388,8 @@ sealed class AttributedRootType : AttributedMetaType {
       return (AttributedMetaType)metaType;
    }
 
-   internal override MetaType GetInheritanceType(Type type) {
+   internal override MetaType
+   GetInheritanceType(Type type) {
 
       if (type == this.Type) {
          return this;
@@ -380,45 +407,77 @@ sealed class AttributedRootType : AttributedMetaType {
 
 class AttributedMetaType : MetaType {
 
-   Dictionary<MetaPosition, MetaDataMember> _dataMemberMap;
-   ReadOnlyCollection<MetaDataMember> _dataMembers;
-   ReadOnlyCollection<MetaAssociation> _associations;
-   MetaDataMember _dbGeneratedIdentity;
-   MetaDataMember _version;
+   Dictionary<MetaPosition, MetaDataMember>
+   _dataMemberMap;
 
-   bool _inheritanceBaseSet;
-   MetaType _inheritanceBase;
-   internal object _inheritanceCode;
-   MetaDataMember _discriminator;
-   ReadOnlyCollection<MetaType> _derivedTypes;
+   ReadOnlyCollection<MetaDataMember>
+   _dataMembers;
 
-   object _locktarget = new(); // Hold locks on private object rather than public MetaType.
+   ReadOnlyCollection<MetaAssociation>
+   _associations;
 
-   public override MetaModel Model { get; }
+   MetaDataMember
+   _dbGeneratedIdentity;
 
-   public override MetaTable Table { get; }
+   MetaDataMember
+   _version;
 
-   public override Type Type { get; }
+   bool
+   _inheritanceBaseSet;
 
-   public override MetaDataMember DBGeneratedIdentityMember => _dbGeneratedIdentity;
+   MetaType
+   _inheritanceBase;
 
-   public override MetaDataMember VersionMember => _version;
+   internal object
+   _inheritanceCode;
 
-   public override string Name => Type.Name;
+   MetaDataMember
+   _discriminator;
 
-   public override bool IsEntity => Table?.RowType.IdentityMembers.Count > 0;
+   ReadOnlyCollection<MetaType>
+   _derivedTypes;
 
-   public override bool CanInstantiate => !Type.IsAbstract && (this == InheritanceRoot || HasInheritanceCode);
+   readonly object
+   _locktarget = new(); // Hold locks on private object rather than public MetaType.
 
-   public override bool HasUpdateCheck => PersistentDataMembers.Any(m => m.UpdateCheck != UpdateCheck.Never);
+   public override MetaModel
+   Model { get; }
 
-   public override ReadOnlyCollection<MetaDataMember> DataMembers => _dataMembers;
+   public override MetaTable
+   Table { get; }
 
-   public override ReadOnlyCollection<MetaDataMember> PersistentDataMembers { get; }
+   public override Type
+   Type { get; }
 
-   public override ReadOnlyCollection<MetaDataMember> IdentityMembers { get; }
+   public override MetaDataMember
+   DBGeneratedIdentityMember => _dbGeneratedIdentity;
 
-   public override ReadOnlyCollection<MetaAssociation> Associations {
+   public override MetaDataMember
+   VersionMember => _version;
+
+   public override string
+   Name => Type.Name;
+
+   public override bool
+   IsEntity => Table?.RowType.IdentityMembers.Count > 0;
+
+   public override bool
+   CanInstantiate => !Type.IsAbstract && (this == InheritanceRoot || HasInheritanceCode);
+
+   public override bool
+   HasUpdateCheck => PersistentDataMembers.Any(m => m.UpdateCheck != UpdateCheck.Never);
+
+   public override ReadOnlyCollection<MetaDataMember>
+   DataMembers => _dataMembers;
+
+   public override ReadOnlyCollection<MetaDataMember>
+   PersistentDataMembers { get; }
+
+   public override ReadOnlyCollection<MetaDataMember>
+   IdentityMembers { get; }
+
+   public override ReadOnlyCollection<MetaAssociation>
+   Associations {
       get {
 
          // LOCKING: Associations are late-expanded so that cycles are broken.
@@ -438,23 +497,32 @@ class AttributedMetaType : MetaType {
       }
    }
 
-   internal override MetaType InheritanceRoot { get; }
+   internal override MetaType
+   InheritanceRoot { get; }
 
-   internal override MetaDataMember Discriminator => _discriminator;
+   internal override MetaDataMember
+   Discriminator => _discriminator;
 
-   internal override bool HasInheritance => InheritanceRoot.HasInheritance;
+   internal override bool
+   HasInheritance => InheritanceRoot.HasInheritance;
 
-   internal override bool HasInheritanceCode => InheritanceCode is not null;
+   internal override bool
+   HasInheritanceCode => InheritanceCode is not null;
 
-   internal override object InheritanceCode => _inheritanceCode;
+   internal override object
+   InheritanceCode => _inheritanceCode;
 
-   internal override MetaType InheritanceDefault => InheritanceRoot.InheritanceDefault;
+   internal override MetaType
+   InheritanceDefault => InheritanceRoot.InheritanceDefault;
 
-   internal override bool IsInheritanceDefault => InheritanceDefault == this;
+   internal override bool
+   IsInheritanceDefault => InheritanceDefault == this;
 
-   internal override ReadOnlyCollection<MetaType> InheritanceTypes => InheritanceRoot.InheritanceTypes;
+   internal override ReadOnlyCollection<MetaType>
+   InheritanceTypes => InheritanceRoot.InheritanceTypes;
 
-   internal override MetaType InheritanceBase {
+   internal override MetaType
+   InheritanceBase {
       get {
 
          // LOCKING: Cannot initialize at construction
@@ -474,7 +542,8 @@ class AttributedMetaType : MetaType {
       }
    }
 
-   internal override ReadOnlyCollection<MetaType> DerivedTypes {
+   internal override ReadOnlyCollection<MetaType>
+   DerivedTypes {
       get {
 
          // LOCKING: Cannot initialize at construction because derived types
@@ -501,8 +570,8 @@ class AttributedMetaType : MetaType {
       }
    }
 
-   [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-   internal AttributedMetaType(MetaModel model, MetaTable table, Type type, MetaType inheritanceRoot) {
+   internal
+   AttributedMetaType(MetaModel model, MetaTable table, Type type, MetaType inheritanceRoot) {
 
       this.Model = model;
       this.Table = table;
@@ -518,7 +587,8 @@ class AttributedMetaType : MetaType {
       this.PersistentDataMembers = this.DataMembers.Where(m => m.IsPersistent).ToList().AsReadOnly();
    }
 
-   void ValidatePrimaryKeyMember(MetaDataMember mm) {
+   void
+   ValidatePrimaryKeyMember(MetaDataMember mm) {
 
       //if the type is a sub-type, no member declared in the type can be primary key
 
@@ -530,7 +600,8 @@ class AttributedMetaType : MetaType {
       }
    }
 
-   void InitDataMembers() {
+   void
+   InitDataMembers() {
 
       if (_dataMembers is null) {
 
@@ -542,7 +613,8 @@ class AttributedMetaType : MetaType {
       }
    }
 
-   void InitDataMembersImpl(Type containerType, MetaComplexProperty containerCp = null) {
+   void
+   InitDataMembersImpl(Type containerType, MetaComplexProperty containerCp = null) {
       { // preserving indentation for cleaner diff
 
          var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
@@ -635,7 +707,8 @@ class AttributedMetaType : MetaType {
       }
    }
 
-   void InitSpecialMember(MetaDataMember mm) {
+   void
+   InitSpecialMember(MetaDataMember mm) {
 
       // Can only have one auto gen member that is also an identity member,
       // except if that member is a computed column (since they are implicitly auto gen)
@@ -676,7 +749,8 @@ class AttributedMetaType : MetaType {
       }
    }
 
-   public override MetaDataMember GetDataMember(MemberInfo mi) {
+   public override MetaDataMember
+   GetDataMember(MemberInfo mi) {
 
       if (mi is null) throw Error.ArgumentNull(nameof(mi));
 
@@ -696,7 +770,8 @@ class AttributedMetaType : MetaType {
       throw Error.UnmappedClassMember(mi.DeclaringType.Name, mi.Name);
    }
 
-   internal override MetaType GetInheritanceType(Type inheritanceType) {
+   internal override MetaType
+   GetInheritanceType(Type inheritanceType) {
 
       if (inheritanceType == this.Type) {
          return this;
@@ -705,7 +780,8 @@ class AttributedMetaType : MetaType {
       return this.InheritanceRoot.GetInheritanceType(inheritanceType);
    }
 
-   internal override MetaType GetTypeForInheritanceCode(object key) {
+   internal override MetaType
+   GetTypeForInheritanceCode(object key) {
 
       if (this.InheritanceRoot.Discriminator.Type == typeof(string)) {
 
@@ -730,55 +806,89 @@ class AttributedMetaType : MetaType {
       return null;
    }
 
-   public override string ToString() {
-      return this.Name;
-   }
+   public override string
+   ToString() => this.Name;
 }
 
 sealed class AttributedMetaDataMember : MetaDataMember {
 
-   Type _memberDeclaringType;
-   bool _hasAccessors;
-   MetaAccessor _accPublic;
-   MetaAccessor _accPrivate;
-   IDataAttribute _attr;
-   ColumnAttribute _attrColumn;
-   AssociationAttribute _attrAssoc;
-   AttributedMetaAssociation _assoc;
-   bool _isNullableType;
-   object _locktarget = new(); // Hold locks on private object rather than public MetaType.
+   readonly Type
+   _memberDeclaringType;
 
-   MetaComplexProperty _containerCp;
+   bool
+   _hasAccessors;
 
-   public override MetaType DeclaringType { get; }
+   MetaAccessor
+   _accPublic;
 
-   public override MemberInfo Member { get; }
+   MetaAccessor
+   _accPrivate;
 
-   public override MemberInfo StorageMember { get; }
+   readonly IDataAttribute
+   _attr;
 
-   public override string Name => Member.Name;
+   readonly ColumnAttribute
+   _attrColumn;
 
-   public override int Ordinal { get; }
+   readonly AssociationAttribute
+   _attrAssoc;
 
-   public override Type Type { get; }
+   AttributedMetaAssociation
+   _assoc;
 
-   public override Type ConvertToType => _attrColumn?.ConvertTo;
+   readonly bool
+   _isNullableType;
 
-   public override bool IsPersistent => _attrColumn is not null || _attrAssoc is not null;
+   readonly object
+   _locktarget = new(); // Hold locks on private object rather than public MetaType.
 
-   public override bool IsAssociation => _attrAssoc is not null;
+   readonly MetaComplexProperty
+   _containerCp;
 
-   public override bool IsPrimaryKey => _attrColumn?.IsPrimaryKey ?? false;
+   public override MetaType
+   DeclaringType { get; }
 
-   public override bool IsVersion => _attrColumn?.IsVersion ?? false;
+   public override MemberInfo
+   Member { get; }
 
-   public override string DbType => _attrColumn?.DbType;
+   public override MemberInfo
+   StorageMember { get; }
 
-   public override string Expression => _attrColumn?.Expression;
+   public override string
+   Name => Member.Name;
 
-   public override UpdateCheck UpdateCheck => _attrColumn?.UpdateCheck ?? UpdateCheck.Never;
+   public override int
+   Ordinal { get; }
 
-   public override string MappedName {
+   public override Type
+   Type { get; }
+
+   public override Type
+   ConvertToType => _attrColumn?.ConvertTo;
+
+   public override bool
+   IsPersistent => _attrColumn is not null || _attrAssoc is not null;
+
+   public override bool
+   IsAssociation => _attrAssoc is not null;
+
+   public override bool
+   IsPrimaryKey => _attrColumn?.IsPrimaryKey ?? false;
+
+   public override bool
+   IsVersion => _attrColumn?.IsVersion ?? false;
+
+   public override string
+   DbType => _attrColumn?.DbType;
+
+   public override string
+   Expression => _attrColumn?.Expression;
+
+   public override UpdateCheck
+   UpdateCheck => _attrColumn?.UpdateCheck ?? UpdateCheck.Never;
+
+   public override string
+   MappedName {
       get {
          var n = _attrColumn?.Name
             ?? _attrAssoc?.Name
@@ -792,40 +902,46 @@ sealed class AttributedMetaDataMember : MetaDataMember {
       }
    }
 
-   public override string QueryPath =>
+   public override string
+   QueryPath =>
       (_containerCp is not null) ?
          _containerCp.QueryPath + MetaComplexProperty.QueryPathSeparator + Name
          : Name;
 
-   internal override bool IsDiscriminator => _attrColumn?.IsDiscriminator ?? false;
+   internal override bool
+   IsDiscriminator => _attrColumn?.IsDiscriminator ?? false;
 
    /// <summary>
    /// Returns true if the member is explicitly marked as auto gen, or if the
    /// member is computed or generated by the database server.
    /// </summary>
 
-   public override bool IsDbGenerated {
+   public override bool
+   IsDbGenerated {
       get {
          return _attrColumn is not null &&
             (_attrColumn.IsDbGenerated || !String.IsNullOrEmpty(_attrColumn.Expression)) || IsVersion;
       }
    }
 
-   public override MetaAccessor MemberAccessor {
+   public override MetaAccessor
+   MemberAccessor {
       get {
          InitAccessors();
          return _accPublic;
       }
    }
 
-   public override MetaAccessor StorageAccessor {
+   public override MetaAccessor
+   StorageAccessor {
       get {
          InitAccessors();
          return _accPrivate;
       }
    }
 
-   public override bool CanBeNull {
+   public override bool
+   CanBeNull {
       get {
 
          if (_attrColumn is null) {
@@ -840,7 +956,8 @@ sealed class AttributedMetaDataMember : MetaDataMember {
       }
    }
 
-   public override AutoSync AutoSync {
+   public override AutoSync
+   AutoSync {
       get {
          if (_attrColumn is not null) {
 
@@ -867,7 +984,8 @@ sealed class AttributedMetaDataMember : MetaDataMember {
       }
    }
 
-   public override MetaAssociation Association {
+   public override MetaAssociation
+   Association {
       get {
 
          if (IsAssociation) {
@@ -888,7 +1006,8 @@ sealed class AttributedMetaDataMember : MetaDataMember {
       }
    }
 
-   internal AttributedMetaDataMember(AttributedMetaType metaType, MemberInfo mi, int ordinal, MetaComplexProperty containerCp) {
+   internal
+   AttributedMetaDataMember(AttributedMetaType metaType, MemberInfo mi, int ordinal, MetaComplexProperty containerCp) {
 
       _memberDeclaringType = mi.DeclaringType;
       this.DeclaringType = metaType;
@@ -931,7 +1050,8 @@ sealed class AttributedMetaDataMember : MetaDataMember {
       _containerCp = containerCp;
    }
 
-   void InitAccessors() {
+   void
+   InitAccessors() {
 
       if (!_hasAccessors) {
          lock (_locktarget) {
@@ -950,7 +1070,8 @@ sealed class AttributedMetaDataMember : MetaDataMember {
       }
    }
 
-   static MetaAccessor MakeMemberAccessor(Type accessorType, MemberInfo mi, MetaAccessor storage) {
+   static MetaAccessor
+   MakeMemberAccessor(Type accessorType, MemberInfo mi, MetaAccessor storage) {
 
       var fi = mi as FieldInfo;
       MetaAccessor acc;
@@ -965,7 +1086,8 @@ sealed class AttributedMetaDataMember : MetaDataMember {
       return acc;
    }
 
-   public override object GetValueForDatabase(object instance) {
+   public override object
+   GetValueForDatabase(object instance) {
 
       if (_containerCp is not null) {
 
@@ -979,54 +1101,70 @@ sealed class AttributedMetaDataMember : MetaDataMember {
       return base.GetValueForDatabase(instance);
    }
 
-   public override bool IsDeclaredBy(MetaType declaringMetaType) {
+   public override bool
+   IsDeclaredBy(MetaType declaringMetaType) {
 
       if (declaringMetaType is null) throw Error.ArgumentNull(nameof(declaringMetaType));
 
       return declaringMetaType.Type == _memberDeclaringType;
    }
 
-   public override string ToString() {
-      return this.DeclaringType.ToString() + ":" + this.Member.ToString();
-   }
+   public override string
+   ToString() =>
+      this.DeclaringType.ToString() + ":" + this.Member.ToString();
 }
 
 class MetaComplexProperty {
 
-   internal static readonly string QueryPathSeparator = new(Mapper._pathSeparator);
+   internal static readonly string
+   QueryPathSeparator = new(Mapper._pathSeparator);
 
-   readonly ComplexPropertyAttribute _cpAttr;
+   readonly ComplexPropertyAttribute
+   _cpAttr;
 
-   MetaAccessor _accPublic;
-   bool _hasAccessors;
-   object _locktarget = new();
+   MetaAccessor
+   _accPublic;
 
-   public PropertyInfo Member { get; }
+   bool
+   _hasAccessors;
 
-   public string Separator => _cpAttr.Separator;
+   readonly object
+   _locktarget = new();
 
-   public string MappedName => _cpAttr.Name ?? Member.Name;
+   public PropertyInfo
+   Member { get; }
 
-   public string FullMappedName =>
+   public string
+   Separator => _cpAttr.Separator;
+
+   public string
+   MappedName => _cpAttr.Name ?? Member.Name;
+
+   public string
+   FullMappedName =>
       (Parent is not null) ?
          Parent.FullMappedName + Parent.Separator + MappedName
          : MappedName;
 
-   public string QueryPath =>
+   public string
+   QueryPath =>
       (Parent is not null) ?
          Parent.QueryPath + QueryPathSeparator + Member.Name
          : Member.Name;
 
-   public MetaComplexProperty Parent { get; }
+   public MetaComplexProperty
+   Parent { get; }
 
-   public MetaAccessor MemberAccessor {
+   public MetaAccessor
+   MemberAccessor {
       get {
          InitAccessors();
          return _accPublic;
       }
    }
 
-   public MetaComplexProperty(AttributedMetaType metaType, PropertyInfo member, ComplexPropertyAttribute cpAttr, MetaComplexProperty parent) {
+   public
+   MetaComplexProperty(AttributedMetaType metaType, PropertyInfo member, ComplexPropertyAttribute cpAttr, MetaComplexProperty parent) {
 
       this.Member = member;
       _cpAttr = cpAttr;
@@ -1043,7 +1181,8 @@ class MetaComplexProperty {
       }
    }
 
-   void InitAccessors() {
+   void
+   InitAccessors() {
 
       if (!_hasAccessors) {
          lock (_locktarget) {
@@ -1056,7 +1195,8 @@ class MetaComplexProperty {
       }
    }
 
-   public object GetValueFromRoot(object root) {
+   public object
+   GetValueFromRoot(object root) {
 
       var cpStack = new Stack<MetaComplexProperty>();
       cpStack.Push(this);
@@ -1086,34 +1226,47 @@ class MetaComplexProperty {
 
 class AttributedMetaAssociation : MetaAssociationImpl {
 
-   public override MetaType OtherType { get; }
+   public override MetaType
+   OtherType { get; }
 
-   public override MetaDataMember ThisMember { get; }
+   public override MetaDataMember
+   ThisMember { get; }
 
-   public override MetaDataMember OtherMember { get; }
+   public override MetaDataMember
+   OtherMember { get; }
 
-   public override ReadOnlyCollection<MetaDataMember> ThisKey { get; }
+   public override ReadOnlyCollection<MetaDataMember>
+   ThisKey { get; }
 
-   public override ReadOnlyCollection<MetaDataMember> OtherKey { get; }
+   public override ReadOnlyCollection<MetaDataMember>
+   OtherKey { get; }
 
-   public override bool ThisKeyIsPrimaryKey { get; }
+   public override bool
+   ThisKeyIsPrimaryKey { get; }
 
-   public override bool OtherKeyIsPrimaryKey { get; }
+   public override bool
+   OtherKeyIsPrimaryKey { get; }
 
-   public override bool IsMany { get; }
+   public override bool
+   IsMany { get; }
 
-   public override bool IsForeignKey { get; }
+   public override bool
+   IsForeignKey { get; }
 
-   public override bool IsUnique { get; }
+   public override bool
+   IsUnique { get; }
 
-   public override bool IsNullable { get; }
+   public override bool
+   IsNullable { get; }
 
-   public override string DeleteRule { get; }
+   public override string
+   DeleteRule { get; }
 
-   public override bool DeleteOnNull { get; }
+   public override bool
+   DeleteOnNull { get; }
 
-   [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-   internal AttributedMetaAssociation(AttributedMetaDataMember member, AssociationAttribute attr) {
+   internal
+   AttributedMetaAssociation(AttributedMetaDataMember member, AssociationAttribute attr) {
 
       this.ThisMember = member;
       this.IsMany = TypeSystem.IsSequenceType(this.ThisMember.Type);
@@ -1197,14 +1350,16 @@ class AttributedMetaAssociation : MetaAssociationImpl {
 
 abstract class MetaAssociationImpl : MetaAssociation {
 
-   static readonly char[] _keySeparators = new[] { ',' };
+   static readonly char[]
+   _keySeparators = new[] { ',' };
 
    /// <summary>
    /// Given a MetaType and a set of key fields, return the set of MetaDataMembers
    /// corresponding to the key.
    /// </summary>
 
-   protected static ReadOnlyCollection<MetaDataMember> MakeKeys(MetaType mtype, string keyFields) {
+   protected static ReadOnlyCollection<MetaDataMember>
+   MakeKeys(MetaType mtype, string keyFields) {
 
       var names = keyFields.Split(_keySeparators);
       var members = new MetaDataMember[names.Length];
@@ -1233,7 +1388,8 @@ abstract class MetaAssociationImpl : MetaAssociation {
    /// Compare two sets of keys for equality.
    /// </summary>
 
-   protected static bool AreEqual(IEnumerable<MetaDataMember> key1, IEnumerable<MetaDataMember> key2) {
+   protected static bool
+   AreEqual(IEnumerable<MetaDataMember> key1, IEnumerable<MetaDataMember> key2) {
 
       using (var e1 = key1.GetEnumerator()) {
          using (var e2 = key2.GetEnumerator()) {
@@ -1255,61 +1411,88 @@ abstract class MetaAssociationImpl : MetaAssociation {
       return true;
    }
 
-   public override string ToString() {
-      return $"{this.ThisMember.DeclaringType.Name} ->{(this.IsMany ? "*" : null)} {this.OtherType.Name}";
-   }
+   public override string
+   ToString() =>
+      $"{this.ThisMember.DeclaringType.Name} ->{(this.IsMany ? "*" : null)} {this.OtherType.Name}";
 }
 
 sealed class UnmappedType : MetaType {
 
-   static ReadOnlyCollection<MetaType> _emptyTypes = new List<MetaType>().AsReadOnly();
-   static ReadOnlyCollection<MetaDataMember> _emptyDataMembers = new List<MetaDataMember>().AsReadOnly();
-   static ReadOnlyCollection<MetaAssociation> _emptyAssociations = new List<MetaAssociation>().AsReadOnly();
+   readonly static ReadOnlyCollection<MetaType>
+   _emptyTypes = new List<MetaType>().AsReadOnly();
 
-   Dictionary<object, MetaDataMember> _dataMemberMap;
-   ReadOnlyCollection<MetaDataMember> _dataMembers;
-   ReadOnlyCollection<MetaType> _inheritanceTypes;
-   object _locktarget = new(); // Hold locks on private object rather than public MetaType.
+   readonly static ReadOnlyCollection<MetaDataMember>
+   _emptyDataMembers = new List<MetaDataMember>().AsReadOnly();
 
-   public override MetaModel Model { get; }
+   readonly static ReadOnlyCollection<MetaAssociation>
+   _emptyAssociations = new List<MetaAssociation>().AsReadOnly();
 
-   public override Type Type { get; }
+   Dictionary<object, MetaDataMember>
+   _dataMemberMap;
 
-   public override MetaTable Table => null;
+   ReadOnlyCollection<MetaDataMember>
+   _dataMembers;
 
-   public override string Name => Type.Name;
+   ReadOnlyCollection<MetaType>
+   _inheritanceTypes;
 
-   public override bool IsEntity => false;
+   readonly object
+   _locktarget = new(); // Hold locks on private object rather than public MetaType.
 
-   public override bool CanInstantiate => !Type.IsAbstract;
+   public override MetaModel
+   Model { get; }
 
-   public override MetaDataMember DBGeneratedIdentityMember => null;
+   public override Type
+   Type { get; }
 
-   public override MetaDataMember VersionMember => null;
+   public override MetaTable
+   Table => null;
 
-   internal override MetaDataMember Discriminator => null;
+   public override string
+   Name => Type.Name;
 
-   public override bool HasUpdateCheck => false;
+   public override bool
+   IsEntity => false;
 
-   public override ReadOnlyCollection<MetaDataMember> DataMembers {
+   public override bool
+   CanInstantiate => !Type.IsAbstract;
+
+   public override MetaDataMember
+   DBGeneratedIdentityMember => null;
+
+   public override MetaDataMember
+   VersionMember => null;
+
+   internal override MetaDataMember
+   Discriminator => null;
+
+   public override bool
+   HasUpdateCheck => false;
+
+   public override ReadOnlyCollection<MetaDataMember>
+   DataMembers {
       get {
          InitDataMembers();
          return _dataMembers;
       }
    }
 
-   public override ReadOnlyCollection<MetaDataMember> PersistentDataMembers => _emptyDataMembers;
+   public override ReadOnlyCollection<MetaDataMember>
+   PersistentDataMembers => _emptyDataMembers;
 
-   public override ReadOnlyCollection<MetaDataMember> IdentityMembers {
+   public override ReadOnlyCollection<MetaDataMember>
+   IdentityMembers {
       get {
          InitDataMembers();
          return _dataMembers;
       }
    }
 
-   public override ReadOnlyCollection<MetaAssociation> Associations => _emptyAssociations;
+   public override ReadOnlyCollection<MetaAssociation>
+   Associations => _emptyAssociations;
 
-   internal override ReadOnlyCollection<MetaType> InheritanceTypes {
+   internal override ReadOnlyCollection<MetaType>
+   InheritanceTypes {
       get {
 
          if (_inheritanceTypes is null) {
@@ -1324,29 +1507,39 @@ sealed class UnmappedType : MetaType {
       }
    }
 
-   internal override ReadOnlyCollection<MetaType> DerivedTypes => _emptyTypes;
+   internal override ReadOnlyCollection<MetaType>
+   DerivedTypes => _emptyTypes;
 
-   internal override bool HasInheritance => false;
+   internal override bool
+   HasInheritance => false;
 
-   internal override bool HasInheritanceCode => false;
+   internal override bool
+   HasInheritanceCode => false;
 
-   internal override object InheritanceCode => null;
+   internal override object
+   InheritanceCode => null;
 
-   internal override MetaType InheritanceRoot => this;
+   internal override MetaType
+   InheritanceRoot => this;
 
-   internal override MetaType InheritanceBase => null;
+   internal override MetaType
+   InheritanceBase => null;
 
-   internal override MetaType InheritanceDefault => null;
+   internal override MetaType
+   InheritanceDefault => null;
 
-   internal override bool IsInheritanceDefault => false;
+   internal override bool
+   IsInheritanceDefault => false;
 
-   internal UnmappedType(MetaModel model, Type type) {
+   internal
+   UnmappedType(MetaModel model, Type type) {
 
       this.Model = model;
       this.Type = type;
    }
 
-   internal override MetaType GetInheritanceType(Type inheritanceType) {
+   internal override MetaType
+   GetInheritanceType(Type inheritanceType) {
 
       if (inheritanceType == this.Type) {
          return this;
@@ -1355,11 +1548,12 @@ sealed class UnmappedType : MetaType {
       return null;
    }
 
-   internal override MetaType GetTypeForInheritanceCode(object key) {
-      return null;
-   }
+   internal override MetaType
+   GetTypeForInheritanceCode(object key) =>
+      null;
 
-   public override MetaDataMember GetDataMember(MemberInfo mi) {
+   public override MetaDataMember
+   GetDataMember(MemberInfo mi) {
 
       if (mi is null) throw Error.ArgumentNull(nameof(mi));
 
@@ -1387,7 +1581,8 @@ sealed class UnmappedType : MetaType {
       return mdm;
    }
 
-   void InitDataMembers() {
+   void
+   InitDataMembers() {
 
       if (_dataMembers is null) {
          lock (_locktarget) {
@@ -1416,71 +1611,96 @@ sealed class UnmappedType : MetaType {
       }
    }
 
-   public override string ToString() {
-      return this.Name;
-   }
+   public override string
+   ToString() => this.Name;
 }
 
 sealed class UnmappedDataMember : MetaDataMember {
 
-   MetaAccessor _accPublic;
-   object _lockTarget = new();
+   MetaAccessor
+   _accPublic;
 
-   public override MetaType DeclaringType { get; }
+   readonly object
+   _lockTarget = new();
 
-   public override MemberInfo Member { get; }
+   public override MetaType
+   DeclaringType { get; }
 
-   public override int Ordinal { get; }
+   public override MemberInfo
+   Member { get; }
 
-   public override Type Type { get; }
+   public override int
+   Ordinal { get; }
 
-   public override Type ConvertToType { get; }
+   public override Type
+   Type { get; }
 
-   public override MemberInfo StorageMember => Member;
+   public override Type
+   ConvertToType { get; }
 
-   public override string Name => Member.Name;
+   public override MemberInfo
+   StorageMember => Member;
 
-   public override MetaAccessor MemberAccessor {
+   public override string Name =>
+   Member.Name;
+
+   public override MetaAccessor
+   MemberAccessor {
       get {
          InitAccessors();
          return _accPublic;
       }
    }
 
-   public override MetaAccessor StorageAccessor {
+   public override MetaAccessor
+   StorageAccessor {
       get {
          InitAccessors();
          return _accPublic;
       }
    }
 
-   public override bool IsPersistent => false;
+   public override bool
+   IsPersistent => false;
 
-   public override bool IsAssociation => false;
+   public override bool
+   IsAssociation => false;
 
-   public override bool IsPrimaryKey => false;
+   public override bool
+   IsPrimaryKey => false;
 
-   public override bool IsDbGenerated => false;
+   public override bool
+   IsDbGenerated => false;
 
-   public override bool IsVersion => false;
+   public override bool
+   IsVersion => false;
 
-   internal override bool IsDiscriminator => false;
+   internal override bool
+   IsDiscriminator => false;
 
-   public override bool CanBeNull => !Type.IsValueType || TypeSystem.IsNullableType(Type);
+   public override bool
+   CanBeNull => !Type.IsValueType || TypeSystem.IsNullableType(Type);
 
-   public override string DbType => null;
+   public override string
+   DbType => null;
 
-   public override string Expression => null;
+   public override string
+   Expression => null;
 
-   public override string MappedName => Member.Name;
+   public override string
+   MappedName => Member.Name;
 
-   public override UpdateCheck UpdateCheck => UpdateCheck.Never;
+   public override UpdateCheck
+   UpdateCheck => UpdateCheck.Never;
 
-   public override AutoSync AutoSync => AutoSync.Never;
+   public override AutoSync
+   AutoSync => AutoSync.Never;
 
-   public override MetaAssociation Association => null;
+   public override MetaAssociation
+   Association => null;
 
-   internal UnmappedDataMember(MetaType declaringType, MemberInfo mi, int ordinal) {
+   internal
+   UnmappedDataMember(MetaType declaringType, MemberInfo mi, int ordinal) {
 
       this.DeclaringType = declaringType;
       this.Member = mi;
@@ -1488,7 +1708,8 @@ sealed class UnmappedDataMember : MetaDataMember {
       this.Type = TypeSystem.GetMemberType(mi);
    }
 
-   void InitAccessors() {
+   void
+   InitAccessors() {
 
       if (_accPublic is null) {
          lock (_lockTarget) {
@@ -1499,14 +1720,16 @@ sealed class UnmappedDataMember : MetaDataMember {
       }
    }
 
-   public override bool IsDeclaredBy(MetaType metaType) {
+   public override bool
+   IsDeclaredBy(MetaType metaType) {
 
       if (metaType is null) throw Error.ArgumentNull(nameof(metaType));
 
       return metaType.Type == this.Member.DeclaringType;
    }
 
-   static MetaAccessor MakeMemberAccessor(Type accessorType, MemberInfo mi) {
+   static MetaAccessor
+   MakeMemberAccessor(Type accessorType, MemberInfo mi) {
 
       MetaAccessor acc;
 
@@ -1523,7 +1746,8 @@ sealed class UnmappedDataMember : MetaDataMember {
 
 static class InheritanceBaseFinder {
 
-   internal static MetaType FindBase(MetaType derivedType) {
+   internal static MetaType
+   FindBase(MetaType derivedType) {
 
       if (derivedType.Type == typeof(object)) {
          return null;
@@ -1569,7 +1793,8 @@ static class InheritanceRules {
    /// for the purposes of the inheritance feature.
    /// </summary>
 
-   internal static object DistinguishedMemberName(MemberInfo mi) {
+   internal static object
+   DistinguishedMemberName(MemberInfo mi) {
 
       var pi = mi as PropertyInfo;
       var fi = mi as FieldInfo;
@@ -1612,7 +1837,7 @@ static class InheritanceRules {
    /// Compares two MemberInfos for 'same-ness'.
    /// </summary>
 
-   internal static bool AreSameMember(MemberInfo mi1, MemberInfo mi2) {
-      return DistinguishedMemberName(mi1).Equals(DistinguishedMemberName(mi2));
-   }
+   internal static bool
+   AreSameMember(MemberInfo mi1, MemberInfo mi2) =>
+      DistinguishedMemberName(mi1).Equals(DistinguishedMemberName(mi2));
 }

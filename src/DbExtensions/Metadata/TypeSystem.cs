@@ -24,7 +24,8 @@ namespace DbExtensions.Metadata;
 
 static class TypeSystem {
 
-   internal static bool IsSequenceType(Type seqType) {
+   internal static bool
+   IsSequenceType(Type seqType) {
 
       return seqType != typeof(string)
          && seqType != typeof(byte[])
@@ -32,7 +33,8 @@ static class TypeSystem {
          && FindIEnumerable(seqType) is not null;
    }
 
-   static Type FindIEnumerable(Type seqType) {
+   static Type
+   FindIEnumerable(Type seqType) {
 
       if (seqType is null || seqType == typeof(string)) {
          return null;
@@ -77,7 +79,8 @@ static class TypeSystem {
       return null;
    }
 
-   internal static Type GetElementType(Type seqType) {
+   internal static Type
+   GetElementType(Type seqType) {
 
       var ienum = FindIEnumerable(seqType);
 
@@ -88,14 +91,16 @@ static class TypeSystem {
       return ienum.GetGenericArguments()[0];
    }
 
-   internal static bool IsNullableType(Type type) {
+   internal static bool
+   IsNullableType(Type type) {
 
       return type is not null
          && type.IsGenericType
          && type.GetGenericTypeDefinition() == typeof(Nullable<>);
    }
 
-   internal static Type GetMemberType(MemberInfo mi) {
+   internal static Type
+   GetMemberType(MemberInfo mi) {
 
       if (mi is FieldInfo fi) {
          return fi.FieldType;
@@ -112,7 +117,8 @@ static class TypeSystem {
       return null;
    }
 
-   internal static IEnumerable<FieldInfo> GetAllFields(Type type, BindingFlags flags) {
+   internal static IEnumerable<FieldInfo>
+   GetAllFields(Type type, BindingFlags flags) {
 
       var seen = new Dictionary<MetaPosition, FieldInfo>();
 
@@ -134,7 +140,8 @@ static class TypeSystem {
       return seen.Values;
    }
 
-   internal static IEnumerable<PropertyInfo> GetAllProperties(Type type, BindingFlags flags) {
+   internal static IEnumerable<PropertyInfo>
+   GetAllProperties(Type type, BindingFlags flags) {
 
       var seen = new Dictionary<MetaPosition, PropertyInfo>();
       var currentType = type;
@@ -155,7 +162,8 @@ static class TypeSystem {
       return seen.Values;
    }
 
-   static bool IsPrivate(PropertyInfo pi) {
+   static bool
+   IsPrivate(PropertyInfo pi) {
 
       var mi = pi.GetGetMethod() ?? pi.GetSetMethod();
 
@@ -175,13 +183,18 @@ static class TypeSystem {
 
 struct MetaPosition : IEqualityComparer<MetaPosition>, IEqualityComparer {
 
-   readonly int _metadataToken;
-   readonly Assembly _assembly;
+   readonly int
+   _metadataToken;
 
-   internal MetaPosition(MemberInfo mi)
+   readonly Assembly
+   _assembly;
+
+   internal
+   MetaPosition(MemberInfo mi)
       : this(mi.DeclaringType.Assembly, mi.MetadataToken) { }
 
-   private MetaPosition(Assembly assembly, int metadataToken) {
+   private
+   MetaPosition(Assembly assembly, int metadataToken) {
       _assembly = assembly;
       _metadataToken = metadataToken;
    }
@@ -190,9 +203,8 @@ struct MetaPosition : IEqualityComparer<MetaPosition>, IEqualityComparer {
    // CLR via C# 2ed, J. Richter, p 146. In particular, ValueType.Equals
    // should not be called for perf reasons.
 
-   #region Object Members
-
-   public override bool Equals(object obj) {
+   public override bool
+   Equals(object obj) {
 
       if (obj is null) {
          return false;
@@ -205,36 +217,27 @@ struct MetaPosition : IEqualityComparer<MetaPosition>, IEqualityComparer {
       return AreEqual(this, (MetaPosition)obj);
    }
 
-   public override int GetHashCode() {
-      return _metadataToken;
-   }
+   public override int
+   GetHashCode() => _metadataToken;
 
-   #endregion
+   public bool
+   Equals(MetaPosition x, MetaPosition y) =>
+      AreEqual(x, y);
 
-   #region IEqualityComparer<MetaPosition> Members
+   public int
+   GetHashCode(MetaPosition obj) =>
+      obj._metadataToken;
 
-   public bool Equals(MetaPosition x, MetaPosition y) {
-      return AreEqual(x, y);
-   }
+   bool
+   IEqualityComparer.Equals(object x, object y) =>
+      Equals((MetaPosition)x, (MetaPosition)y);
 
-   public int GetHashCode(MetaPosition obj) {
-      return obj._metadataToken;
-   }
+   int
+   IEqualityComparer.GetHashCode(object obj) =>
+      GetHashCode((MetaPosition)obj);
 
-   #endregion
-
-   #region IEqualityComparer Members
-
-   bool IEqualityComparer.Equals(object x, object y) {
-      return Equals((MetaPosition)x, (MetaPosition)y);
-   }
-   int IEqualityComparer.GetHashCode(object obj) {
-      return GetHashCode((MetaPosition)obj);
-   }
-
-   #endregion
-
-   static bool AreEqual(MetaPosition x, MetaPosition y) {
+   static bool
+   AreEqual(MetaPosition x, MetaPosition y) {
 
       return (x._metadataToken == y._metadataToken)
          && (x._assembly == y._assembly);
@@ -243,11 +246,11 @@ struct MetaPosition : IEqualityComparer<MetaPosition>, IEqualityComparer {
    // Since MetaPositions are immutable, we overload the equality operator
    // to test for value equality, rather than reference equality
 
-   public static bool operator ==(MetaPosition x, MetaPosition y) {
-      return AreEqual(x, y);
-   }
+   public static bool operator
+   ==(MetaPosition x, MetaPosition y) =>
+      AreEqual(x, y);
 
-   public static bool operator !=(MetaPosition x, MetaPosition y) {
-      return !AreEqual(x, y);
-   }
+   public static bool operator
+   !=(MetaPosition x, MetaPosition y) =>
+      !AreEqual(x, y);
 }

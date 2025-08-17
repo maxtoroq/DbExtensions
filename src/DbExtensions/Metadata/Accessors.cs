@@ -29,7 +29,8 @@ delegate void DRSet<T, V>(ref T t, V v);
 static class FieldAccessor {
 
    [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-   internal static MetaAccessor Create(Type objectType, FieldInfo fi) {
+   internal static MetaAccessor
+   Create(Type objectType, FieldInfo fi) {
 
       if (!fi.ReflectedType.IsAssignableFrom(objectType)) {
          throw Error.InvalidFieldInfo(objectType, fi.FieldType, fi);
@@ -82,17 +83,22 @@ static class FieldAccessor {
 
    class Accessor<T, V> : MetaAccessor<T, V> {
 
-      readonly DGet<T, V> _dget;
-      readonly DRSet<T, V> _drset;
+      readonly DGet<T, V>
+      _dget;
+
+      readonly DRSet<T, V>
+      _drset;
       readonly FieldInfo _fi;
 
-      internal Accessor(FieldInfo fi, DGet<T, V> dget, DRSet<T, V> drset) {
+      internal
+      Accessor(FieldInfo fi, DGet<T, V> dget, DRSet<T, V> drset) {
          _fi = fi;
          _dget = dget;
          _drset = drset;
       }
 
-      public override V GetValue(T instance) {
+      public override V
+      GetValue(T instance) {
 
          if (_dget is not null) {
             return _dget.Invoke(instance);
@@ -101,7 +107,8 @@ static class FieldAccessor {
          return (V)_fi.GetValue(instance);
       }
 
-      public override void SetValue(ref T instance, V value) {
+      public override void
+      SetValue(ref T instance, V value) {
 
          if (_drset is not null) {
             _drset.Invoke(ref instance, value);
@@ -114,18 +121,16 @@ static class FieldAccessor {
 
 static class PropertyAccessor {
 
-   internal static MetaAccessor Create(Type objectType, PropertyInfo pi, MetaAccessor storageAccessor) {
+   internal static MetaAccessor
+   Create(Type objectType, PropertyInfo pi, MetaAccessor storageAccessor) {
 
       var dset = default(Delegate);
       var drset = default(Delegate);
       var dgetType = typeof(DGet<,>).MakeGenericType(objectType, pi.PropertyType);
       var getMethod = pi.GetGetMethod(true);
 
-      var dget = Delegate.CreateDelegate(dgetType, getMethod, true);
-
-      if (dget is null) {
-         throw Error.CouldNotCreateAccessorToProperty(objectType, pi.PropertyType, pi);
-      }
+      var dget = Delegate.CreateDelegate(dgetType, getMethod, true)
+         ?? throw Error.CouldNotCreateAccessorToProperty(objectType, pi.PropertyType, pi);
 
       if (pi.CanWrite) {
 
@@ -167,13 +172,23 @@ static class PropertyAccessor {
 
    class Accessor<T, V, V2> : MetaAccessor<T, V> where V2 : V {
 
-      readonly PropertyInfo _pi;
-      readonly DGet<T, V> _dget;
-      readonly DSet<T, V> _dset;
-      readonly DRSet<T, V> _drset;
-      readonly MetaAccessor<T, V2> _storage;
+      readonly PropertyInfo
+      _pi;
 
-      internal Accessor(PropertyInfo pi, DGet<T, V> dget, DSet<T, V> dset, DRSet<T, V> drset, MetaAccessor<T, V2> storage) {
+      readonly DGet<T, V>
+      _dget;
+
+      readonly DSet<T, V>
+      _dset;
+
+      readonly DRSet<T, V>
+      _drset;
+
+      readonly MetaAccessor<T, V2>
+      _storage;
+
+      internal
+      Accessor(PropertyInfo pi, DGet<T, V> dget, DSet<T, V> dset, DRSet<T, V> drset, MetaAccessor<T, V2> storage) {
 
          _pi = pi;
          _dget = dget;
@@ -182,11 +197,12 @@ static class PropertyAccessor {
          _storage = storage;
       }
 
-      public override V GetValue(T instance) {
-         return _dget.Invoke(instance);
-      }
+      public override V
+      GetValue(T instance) =>
+         _dget.Invoke(instance);
 
-      public override void SetValue(ref T instance, V value) {
+      public override void
+      SetValue(ref T instance, V value) {
 
          if (_dset is not null) {
             _dset.Invoke(instance, value);
