@@ -19,6 +19,10 @@ namespace Samples {
       readonly string samplesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..");
 
       static void Main() {
+
+         DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySql.Data.MySqlClient.MySqlClientFactory.Instance);
+         DbProviderFactories.RegisterFactory("System.Data.SQLite", System.Data.SQLite.SQLiteFactory.Instance);
+
          new Program().Run();
       }
 
@@ -29,8 +33,8 @@ namespace Samples {
 
          var connectionStrings = ConfigurationManager.ConnectionStrings
             .Cast<ConnectionStringSettings>()
-            // Only connection strings defined in this application config file (not in machine.config)
-            .Where(c => c.ElementInformation.Source != null && c.ElementInformation.Source.EndsWith("exe.config", StringComparison.OrdinalIgnoreCase))
+            // Only connection strings defined in this application config file
+            .Where(c => c.ElementInformation.Source != null && c.ElementInformation.Source.EndsWith("dll.config", StringComparison.OrdinalIgnoreCase))
             .ToArray();
 
          int connIndex = GetArrayOption(connectionStrings.Select(c => c.Name).ToArray(), "Select a connection string (or Enter to select the first one):");

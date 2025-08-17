@@ -339,15 +339,9 @@ sealed class PocoMapper : Mapper {
       return property;
    }
 
-#if NET5_0_OR_GREATER
-   readonly
-#endif
-   record struct CacheKey(Type Type, string Names);
+   readonly record struct CacheKey(Type Type, string Names);
 
-#if NET5_0_OR_GREATER
-   readonly
-#endif
-   record struct CacheArg(PocoMapper Mapper, IDataRecord Record);
+   readonly record struct CacheArg(PocoMapper Mapper, IDataRecord Record);
 }
 
 partial class MappingContext {
@@ -1223,13 +1217,9 @@ partial class PocoNode {
          if (convertToType == typeof(string)
             && isEnum) {
 
-#if NETFRAMEWORK
-            valueExpr = Expression.Call(References.EnumParseMethod, targetTypeExpr, valueExpr);
-#else
             valueExpr = Expression.Call(
                References.EnumParseOpenMethod.MakeGenericMethod(targetType),
                valueExpr);
-#endif
 
          } else {
 
@@ -1242,24 +1232,12 @@ partial class PocoNode {
 
       } else if (isEnum) {
 
-#if NETFRAMEWORK
-         var trueExpr = (Expression)Expression.Call(
-            References.EnumParseMethod,
-            targetTypeExpr,
-            Expression.Call(recordParam, References.RecordGetMethods[TypeCode.String], ordinalExpr));
-
-         trueExpr = Expression.Convert(trueExpr, targetType);
-
-         var falseExpr = valueExpr;
-         falseExpr = Expression.Convert(falseExpr, targetType);
-#else
          var trueExpr = (Expression)Expression.Call(
             References.EnumParseOpenMethod.MakeGenericMethod(targetType),
             Expression.Call(recordParam, References.RecordGetMethods[TypeCode.String], ordinalExpr));
 
          var falseExpr = valueExpr;
          falseExpr = Expression.Convert(falseExpr, targetType);
-#endif
 
          valueExpr = Expression.Condition(
             Expression.MakeBinary(
@@ -1313,14 +1291,8 @@ partial class PocoNode {
          .GetMethod(nameof(Convert.ChangeType), BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(object), typeof(Type), typeof(IFormatProvider) }, null);
 
       public static readonly MethodInfo
-      EnumParseMethod = typeof(Enum)
-         .GetMethod(nameof(Enum.Parse), BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(Type), typeof(string) }, null);
-
-#if !NETFRAMEWORK
-      public static readonly MethodInfo
       EnumParseOpenMethod = typeof(Enum)
          .GetMethod(nameof(Enum.Parse), 1, BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string) }, null);
-#endif
 
       public static readonly MethodInfo
       GetFieldTypeMethod = typeof(IDataRecord)

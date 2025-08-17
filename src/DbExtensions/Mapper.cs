@@ -240,7 +240,7 @@ abstract partial class Mapper {
 
             if (parameters.Length != instance.ConstructorParameters.Count) {
                throw new InvalidOperationException(
-                  $"There are missing arguments for constructor with {parameters.Length.ToStringInvariant()} parameter(s) for type '{instance.TypeName}'."
+                  $"There are missing arguments for constructor with {parameters.Length} parameter(s) for type '{instance.TypeName}'."
                );
             }
 
@@ -249,14 +249,12 @@ abstract partial class Mapper {
       }
    }
 
-#if NETCOREAPP2_2_OR_GREATER
    [DoesNotReturn]
-#endif
    static void
    ThrowDuplicateConstructorArgument(uint paramIndex, int? columnOrdinal, IDataRecord record) {
 
       var message = new StringBuilder();
-      message.Append($"Already specified a positional argument {paramIndex.ToStringInvariant()}");
+      message.Append($"Already specified a positional argument {paramIndex}");
 
       if (columnOrdinal.HasValue) {
          message.Append($" ('{record.GetName(columnOrdinal.Value)}')");
@@ -267,9 +265,7 @@ abstract partial class Mapper {
       throw new InvalidOperationException(message.ToString());
    }
 
-#if NETCOREAPP2_2_OR_GREATER
    [DoesNotReturn]
-#endif
    static void
    ThrowDuplicateConstructorArgument(ParameterInfo param, int? columnOrdinal, IDataRecord record) {
 
@@ -345,13 +341,13 @@ abstract partial class Mapper {
 
       if (constructors.Length == 0) {
          throw new InvalidOperationException(
-            $"Couldn't find a public constructor with {parameterLength.ToStringInvariant()} parameter(s) for type '{node.TypeName}'."
+            $"Couldn't find a public constructor with {parameterLength} parameter(s) for type '{node.TypeName}'."
          );
       }
 
       if (constructors.Length > 1) {
          throw new InvalidOperationException(
-            $"Found more than one public constructors with {parameterLength.ToStringInvariant()} parameter(s) for type '{node.TypeName}'. Please use another constructor."
+            $"Found more than one public constructors with {parameterLength} parameter(s) for type '{node.TypeName}'. Please use another constructor."
          );
       }
 

@@ -14,9 +14,6 @@
 
 using System;
 using System.Collections;
-#if !NETCOREAPP
-using System.Collections.Concurrent;
-#endif
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -36,11 +33,6 @@ namespace DbExtensions;
 /// </summary>
 
 public partial class Database : IDisposable {
-
-#if !NETCOREAPP
-   static readonly ConcurrentDictionary<string, DbProviderFactory>
-   _factories = new();
-#endif
 
    readonly bool
    _disposeConn;
@@ -183,13 +175,7 @@ public partial class Database : IDisposable {
 
       if (providerInvariantName is null) throw new ArgumentNullException(nameof(providerInvariantName));
 
-      var factory =
-#if NETCOREAPP
-         DbProviderFactories.GetFactory(providerInvariantName);
-#else
-         _factories.GetOrAdd(providerInvariantName, DbProviderFactories.GetFactory);
-#endif
-      return factory;
+      return DbProviderFactories.GetFactory(providerInvariantName);
    }
 
    DbCommandBuilder
@@ -322,10 +308,16 @@ public partial class Database : IDisposable {
                string errorMessage = null;
 
                if (exact) {
-                  errorMessage = $"The number of affected records should be {affect.ToStringInvariant()}, the actual number is {affectedRecords.ToStringInvariant()}.";
+
+                  errorMessage = String.Create(
+                     CultureInfo.InvariantCulture,
+                     $"The number of affected records should be {affect}, the actual number is {affectedRecords}.");
 
                } else if (affectedRecords > affect) {
-                  errorMessage = $"The number of affected records should be {affect.ToStringInvariant()} or lower, the actual number is {affectedRecords.ToStringInvariant()}.";
+
+                  errorMessage = String.Create(
+                     CultureInfo.InvariantCulture,
+                     $"The number of affected records should be {affect} or lower, the actual number is {affectedRecords}.");
                }
 
                if (errorMessage is not null) {
@@ -469,7 +461,7 @@ public partial class Database : IDisposable {
          }
 
          dbParam.ParameterName = this.Configuration.ParameterNameBuilder
-            .Invoke("p" + i.ToStringInvariant());
+            .Invoke($"p{i}");
 
          command.Parameters.Add(dbParam);
 

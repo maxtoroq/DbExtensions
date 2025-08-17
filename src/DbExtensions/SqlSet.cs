@@ -413,7 +413,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       var superQuery = new SqlBuilder()
          .SELECT(selectFormat ?? "*", args)
-         .FROM(query, "dbex_set" + _setIndex.ToStringInvariant());
+         .FROM(query, $"dbex_set{_setIndex}");
 
       return superQuery;
    }

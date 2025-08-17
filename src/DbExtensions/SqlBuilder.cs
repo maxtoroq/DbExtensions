@@ -356,7 +356,7 @@ public partial class SqlBuilder {
 
    static string
    Placeholder(int index) =>
-      String.Concat("{", index.ToStringInvariant(), "}");
+      $"{{{index}}}";
 
    /// <summary>
    /// Appends the default line terminator to this instance.
