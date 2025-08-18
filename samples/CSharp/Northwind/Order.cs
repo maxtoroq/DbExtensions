@@ -50,7 +50,7 @@ namespace Samples.CSharp.Northwind {
       public string ShipCountry { get; set; }
 
       [Association(OtherKey = nameof(OrderDetail.OrderID))]
-      public Collection<OrderDetail> OrderDetails { get; } = new Collection<OrderDetail>();
+      public Collection<OrderDetail> OrderDetails { get; } = new();
 
       [Association(ThisKey = nameof(CustomerID))]
       public Customer Customer { get; set; }

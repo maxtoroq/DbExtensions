@@ -16,9 +16,11 @@ namespace Samples {
 
    class Program {
 
-      readonly string samplesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..");
+      readonly string
+      _samplesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..");
 
-      static void Main() {
+      static void
+      Main() {
 
          DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySql.Data.MySqlClient.MySqlClientFactory.Instance);
          DbProviderFactories.RegisterFactory("System.Data.SQLite", System.Data.SQLite.SQLiteFactory.Instance);
@@ -26,7 +28,8 @@ namespace Samples {
          new Program().Run();
       }
 
-      void Run() {
+      void
+      Run() {
 
          WriteLine("DbExtensions Sample Runner");
          WriteLine("==========================");
@@ -37,9 +40,9 @@ namespace Samples {
             .Where(c => c.ElementInformation.Source != null && c.ElementInformation.Source.EndsWith("dll.config", StringComparison.OrdinalIgnoreCase))
             .ToArray();
 
-         int connIndex = GetArrayOption(connectionStrings.Select(c => c.Name).ToArray(), "Select a connection string (or Enter to select the first one):");
-         ConnectionStringSettings connSettings = connectionStrings[connIndex];
-         DbProviderFactory provider = DbProviderFactories.GetFactory(connSettings.ProviderName);
+         var connIndex = GetArrayOption(connectionStrings.Select(c => c.Name).ToArray(), "Select a connection string (or Enter to select the first one):");
+         var connSettings = connectionStrings[connIndex];
+         var provider = DbProviderFactories.GetFactory(connSettings.ProviderName);
 
          WriteLine();
          WriteLine("Provider: {0}", provider.GetType().AssemblyQualifiedName);
@@ -60,10 +63,10 @@ namespace Samples {
             return;
          }
 
-         string[] samplesLangs = GetSamplesLanguages();
+         var samplesLangs = GetSamplesLanguages();
 
-         int samplesLangIndex = GetArrayOption(samplesLangs, "Select the samples language (or Enter):");
-         string samplesLanguage = samplesLangs[samplesLangIndex];
+         var samplesLangIndex = GetArrayOption(samplesLangs, "Select the samples language (or Enter):");
+         var samplesLanguage = samplesLangs[samplesLangIndex];
 
          object[] samples;
 
@@ -75,20 +78,21 @@ namespace Samples {
             return;
          }
 
-         string[] samplesOptions =
+         var samplesOptions =
             (from s in samples
              let name = s.GetType().Name
              let friendlyName = name.Substring(0, name.Length - "Samples".Length)
-             select friendlyName).Concat(new[] { "All" }).ToArray();
+             select friendlyName)
+             .Append("All")
+             .ToArray();
 
-         int samplesIndex = GetArrayOption(samplesOptions, "Select the samples category (or Enter to run all):", samplesOptions.Length - 1);
+         var samplesIndex = GetArrayOption(samplesOptions, "Select the samples category (or Enter to run all):", samplesOptions.Length - 1);
 
-         object[] selectedSamples = (samplesIndex == samplesOptions.Length - 1) ?
-            samples
-            : new[] { samples[samplesIndex] };
+         var selectedSamples = (samplesIndex == samplesOptions.Length - 1) ? samples
+            : [samples[samplesIndex]];
 
-         string[] continueOnErrorOptions = { "Yes", "No" };
-         bool continueOnError = GetArrayOption(continueOnErrorOptions, "Continue on Error:") == 0;
+         var continueOnErrorOptions = new[] { "Yes", "No" };
+         var continueOnError = GetArrayOption(continueOnErrorOptions, "Continue on Error:") == 0;
 
          WriteLine();
          WriteLine("Press key to begin...");
@@ -96,13 +100,11 @@ namespace Samples {
 
          for (int i = 0; i < selectedSamples.Length; i++) {
 
-            object sampl = selectedSamples[i];
+            var sampl = selectedSamples[i];
 
             RunSamples(sampl, continueOnError);
 
-            IDisposable disp = sampl as IDisposable;
-
-            if (disp != null) {
+            if (sampl is IDisposable disp) {
                disp.Dispose();
             }
 
@@ -112,16 +114,17 @@ namespace Samples {
          }
       }
 
-      string[] GetSamplesLanguages() {
+      string[]
+      GetSamplesLanguages() {
 
-         string appDir = AppDomain.CurrentDomain.BaseDirectory
-            .Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries)
+         var appDir = AppDomain.CurrentDomain.BaseDirectory
+            .Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries)
             .Reverse()
             .Skip(3)
             .First();
 
-         string[] projectsDir = Directory
-            .GetDirectories(this.samplesPath, "*", SearchOption.TopDirectoryOnly)
+         var projectsDir = Directory
+            .GetDirectories(_samplesPath, "*", SearchOption.TopDirectoryOnly)
             .Select(s => s.Split(Path.DirectorySeparatorChar).Last())
             .Where(s => !s.Equals(appDir))
             .ToArray();
@@ -129,27 +132,26 @@ namespace Samples {
          return projectsDir;
       }
 
-      IEnumerable<object> GetSamples(string language, ConnectionStringSettings connSettings) {
+      IEnumerable<object>
+      GetSamples(string language, ConnectionStringSettings connSettings) {
 
-         string projectDir = Path.Combine(this.samplesPath, language);
-         string projectFile = Directory.GetFiles(projectDir, String.Format("*.{0}proj", Regex.Replace(language, "[a-z]", ""))).FirstOrDefault();
+         var projectDir = Path.Combine(_samplesPath, language);
+         var projectFile = Directory.GetFiles(projectDir, String.Format("*.{0}proj", Regex.Replace(language, "[a-z]", "")))
+            .FirstOrDefault()
+            ?? throw new InvalidOperationException("Project file not found.");
 
-         if (projectFile == null) {
-            throw new InvalidOperationException("Project file not found.");
-         }
+         var projectFileName = projectFile.Split(Path.DirectorySeparatorChar).Last();
+         var assemblyName = String.Join(".", projectFileName.Split('.').Reverse().Skip(1).Reverse());
+         var assemblyDir = Directory.GetDirectories(Path.Combine(projectDir, "bin", "Debug"), "net*").First();
+         var assemblyPath = new Uri(Path.Combine(assemblyDir, assemblyName + ".dll")).LocalPath;
 
-         string projectFileName = projectFile.Split(Path.DirectorySeparatorChar).Last();
-         string assemblyName = String.Join(".", projectFileName.Split('.').Reverse().Skip(1).Reverse());
-         string assemblyDir = Directory.GetDirectories(Path.Combine(projectDir, "bin", "Debug"), "net*").First();
-         string assemblyPath = new Uri(Path.Combine(assemblyDir, assemblyName + ".dll")).LocalPath;
+         var samplesAssembly = Assembly.LoadFrom(assemblyPath);
 
-         Assembly samplesAssembly = Assembly.LoadFrom(assemblyPath);
-
-         Type dbType = samplesAssembly.GetTypes()
+         var dbType = samplesAssembly.GetTypes()
             .Where(t => typeof(Database).IsAssignableFrom(t))
             .Single();
 
-         Database db = (Database)Activator.CreateInstance(dbType, connSettings.ConnectionString, connSettings.ProviderName);
+         var db = (Database)Activator.CreateInstance(dbType, connSettings.ConnectionString, connSettings.ProviderName);
          db.Configuration.Log = Out;
          db.Configuration.UseCompiledMapping = true;
 
@@ -166,10 +168,11 @@ namespace Samples {
             select Activator.CreateInstance(t, args.ToArray());
       }
 
-      void RunSamples(object samples, bool continueOnError) {
+      void
+      RunSamples(object samples, bool continueOnError) {
 
-         Type samplesType = samples.GetType();
-         bool isDisposable = samples is IDisposable;
+         var samplesType = samples.GetType();
+         var isDisposable = samples is IDisposable;
 
          List<MethodInfo> methods = samplesType
             .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
@@ -211,7 +214,7 @@ namespace Samples {
 
             } else {
 
-               Action runSample = () => {
+               void runSample() {
                   returnValue = Expression.Lambda<Func<object>>(
                      Expression.Convert(
                         Expression.Call(Expression.Constant(samples), method)
@@ -219,10 +222,10 @@ namespace Samples {
                      )
                   ).Compile()();
 
-                  if (returnValue is IEnumerable) {
-                     returnValue = ((IEnumerable)returnValue).Cast<object>().ToArray();
+                  if (returnValue is IEnumerable ienum) {
+                     returnValue = ienum.Cast<object>().ToArray();
                   }
-               };
+               }
 
                if (continueOnError) {
 
@@ -242,23 +245,21 @@ namespace Samples {
 
                WriteLine();
 
-               var sqlbuilder = returnValue as SqlBuilder;
-
-               if (sqlbuilder != null) {
+               if (returnValue is SqlBuilder sql) {
 
                   WriteLine(returnValue);
 
-                  for (int j = 0; j < sqlbuilder.ParameterValues.Count; j++) {
+                  for (int j = 0; j < sql.ParameterValues.Count; j++) {
 
-                     object value = sqlbuilder.ParameterValues[j];
-                     Type type = (value != null) ? value.GetType() : null;
+                     var value = sql.ParameterValues[j];
+                     var type = value?.GetType();
 
                      WriteLine("-- {0}: {1} [{2}]", j, type, value);
                   }
 
                } else {
 
-                  ConsoleColor color = ForegroundColor;
+                  var color = ForegroundColor;
                   ForegroundColor = ConsoleColor.DarkGray;
 
                   ObjectDumper.Write(returnValue, 1, Out);
@@ -269,11 +270,12 @@ namespace Samples {
          }
       }
 
-      int GetArrayOption<T>(T[] options, string title, int defaultOption = 0) {
+      int
+      GetArrayOption<T>(T[] options, string title, int defaultOption = 0) {
 
-         bool firstTry = true;
-         int index = -1;
-         int left = CursorLeft;
+         var firstTry = true;
+         var index = -1;
+         var left = CursorLeft;
 
          while (index < 0 || index >= options.Length) {
 
@@ -325,9 +327,10 @@ namespace Samples {
          return index;
       }
 
-      void WriteError(Exception ex, bool fatal = false) {
+      void
+      WriteError(Exception ex, bool fatal = false) {
 
-         ConsoleColor prevColor = ForegroundColor;
+         var prevColor = ForegroundColor;
          ForegroundColor = ConsoleColor.Red;
          WriteLine(ex.Message);
          ForegroundColor = prevColor;

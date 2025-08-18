@@ -65,12 +65,12 @@ namespace Samples.CSharp.Northwind {
       public Employee ReportsToEmployee { get; set; }
 
       [Association(OtherKey = nameof(Employee.ReportsTo))]
-      public Collection<Employee> Employees { get; } = new Collection<Employee>();
+      public Collection<Employee> Employees { get; } = new();
 
       [Association(OtherKey = nameof(EmployeeTerritory.EmployeeID))]
-      public Collection<EmployeeTerritory> EmployeeTerritories { get; } = new Collection<EmployeeTerritory>();
+      public Collection<EmployeeTerritory> EmployeeTerritories { get; } = new();
 
       [Association(OtherKey = nameof(Order.EmployeeID))]
-      public Collection<Order> Orders { get; } = new Collection<Order>();
+      public Collection<Order> Orders { get; } = new();
    }
 }

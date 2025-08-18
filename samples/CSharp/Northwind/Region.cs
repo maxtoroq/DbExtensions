@@ -14,6 +14,6 @@ namespace Samples.CSharp.Northwind {
       public string RegionDescription { get; set; }
 
       [Association(OtherKey = nameof(Territory.RegionID))]
-      public Collection<Territory> Territories { get; } = new Collection<Territory>();
+      public Collection<Territory> Territories { get; } = new();
    }
 }

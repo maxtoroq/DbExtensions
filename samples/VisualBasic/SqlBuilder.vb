@@ -3,6 +3,7 @@ Imports DbExtensions
 
 Public Class SqlBuilderSamples
 
+#Disable Warning CA1822
    Function DynamicSql_1() As SqlBuilder
       Return DynamicSql(2, 3)
    End Function

@@ -20,6 +20,6 @@ namespace Samples.CSharp.Northwind {
       public byte[] Picture { get; set; }
 
       [Association(OtherKey = nameof(Product.CategoryID))]
-      public Collection<Product> Products { get; } = new Collection<Product>();
+      public Collection<Product> Products { get; } = new();
    }
 }

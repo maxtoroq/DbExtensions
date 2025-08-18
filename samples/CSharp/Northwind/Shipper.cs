@@ -17,6 +17,6 @@ namespace Samples.CSharp.Northwind {
       public string Phone { get; set; }
 
       [Association(OtherKey = nameof(Order.ShipVia))]
-      public Collection<Order> Orders { get; } = new Collection<Order>();
+      public Collection<Order> Orders { get; } = new();
    }
 }

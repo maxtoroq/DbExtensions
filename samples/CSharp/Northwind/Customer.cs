@@ -41,9 +41,9 @@ namespace Samples.CSharp.Northwind {
       public string Fax { get; set; }
 
       [Association(OtherKey = nameof(CustomerCustomerDemo.CustomerID))]
-      public Collection<CustomerCustomerDemo> CustomerCustomerDemos { get; } = new Collection<CustomerCustomerDemo>();
+      public Collection<CustomerCustomerDemo> CustomerCustomerDemos { get; } = new();
 
       [Association(OtherKey = nameof(Order.CustomerID))]
-      public Collection<Order> Orders { get; } = new Collection<Order>();
+      public Collection<Order> Orders { get; } = new();
    }
 }

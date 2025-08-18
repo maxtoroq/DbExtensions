@@ -38,7 +38,7 @@ namespace Samples.CSharp.Northwind {
       public bool Discontinued { get; set; }
 
       [Association(OtherKey = nameof(OrderDetail.ProductID))]
-      public Collection<OrderDetail> OrderDetails { get; } = new Collection<OrderDetail>();
+      public Collection<OrderDetail> OrderDetails { get; } = new();
 
       [Association(ThisKey = nameof(CategoryID))]
       public Category Category { get; set; }

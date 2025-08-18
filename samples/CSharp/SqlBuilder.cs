@@ -5,6 +5,7 @@ namespace Samples.CSharp {
 
    public class SqlBuilderSamples {
 
+#pragma warning disable CA1822
       public SqlBuilder DynamicSql_1() {
          return DynamicSql(2, 3);
       }
