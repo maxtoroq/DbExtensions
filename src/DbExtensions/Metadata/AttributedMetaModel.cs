@@ -291,7 +291,7 @@ sealed class AttributedRootType : AttributedMetaType {
                      && ((string)codeValue).Trim().Length == 0
                      && d.GetType() == typeof(string)
                      && ((string)d).Trim().Length == 0)
-                  || object.Equals(d, codeValue)) {
+                  || Object.Equals(d, codeValue)) {
 
                   throw Error.InheritanceCodeUsedForMultipleTypes(codeValue);
                }
@@ -318,7 +318,7 @@ sealed class AttributedRootType : AttributedMetaType {
       if (_types is not null) {
          this.InheritanceTypes = _types.Values.ToList().AsReadOnly();
       } else {
-         this.InheritanceTypes = new MetaType[] { this }.ToList().AsReadOnly();
+         this.InheritanceTypes = new List<MetaType>(1) { this }.AsReadOnly();
       }
 
       Validate();
@@ -397,9 +397,7 @@ sealed class AttributedRootType : AttributedMetaType {
 
       var metaType = default(MetaType);
 
-      if (_types is not null) {
-         _types.TryGetValue(type, out metaType);
-      }
+      _types?.TryGetValue(type, out metaType);
 
       return metaType;
    }
@@ -1345,7 +1343,7 @@ class AttributedMetaAssociation : MetaAssociationImpl {
 abstract class MetaAssociationImpl : MetaAssociation {
 
    static readonly char[]
-   _keySeparators = new[] { ',' };
+   _keySeparators = [','];
 
    /// <summary>
    /// Given a MetaType and a set of key fields, return the set of MetaDataMembers
@@ -1491,7 +1489,7 @@ sealed class UnmappedType : MetaType {
 
          if (_inheritanceTypes is null) {
             lock (_locktarget) {
-               _inheritanceTypes ??= new MetaType[] { this }.ToList().AsReadOnly();
+               _inheritanceTypes ??= new List<MetaType>(1) { this }.AsReadOnly();
             }
          }
 
@@ -1745,7 +1743,7 @@ static class InheritanceBaseFinder {
 
       var clrType = derivedType.Type; // start
       var rootClrType = derivedType.InheritanceRoot.Type; // end
-      var metaTable = derivedType.Table;
+
       MetaType metaType;
 
       while (true) {

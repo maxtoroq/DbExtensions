@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
-    <LangVersion>11</LangVersion>
+    <LangVersion>12</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1573</NoWarn>
     <Description>DbExtensions is a data-access framework with a strong focus on query composition, granularity and code aesthetics. It supports both POCO and dynamic (untyped) mapping.</Description>

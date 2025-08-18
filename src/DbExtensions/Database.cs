@@ -139,8 +139,7 @@ public partial class Database : IDisposable {
 
       this.Configuration = new DatabaseConfiguration(
          providerInvariantName
-         , () => CreateCommandBuilder(providerInvariantName)
-      );
+         , () => CreateCommandBuilder(providerInvariantName));
 
       Initialize2(providerInvariantName);
    }
@@ -549,12 +548,12 @@ public partial class Database : IDisposable {
             var param = command.Parameters[i] as IDbDataParameter;
 
             if (param is not null) {
-               log.WriteLine($"-- {param.ParameterName}: {param.Direction.ToString()} {param.DbType.ToString()} (Size = {param.Size.ToString(log.FormatProvider)}) [{Convert.ToString(param.Value, log.FormatProvider)}]");
+               log.WriteLine(String.Create(log.FormatProvider, $"-- {param.ParameterName}: {param.Direction} {param.DbType} (Size = {param.Size}) [{param.Value}]"));
             }
          }
 
          if (affectedRecords is not null) {
-            log.WriteLine($"-- [{affectedRecords.Value.ToString(log.FormatProvider)}] records affected.");
+            log.WriteLine(String.Create(log.FormatProvider, $"-- [{affectedRecords.Value}] records affected."));
          }
       }
    }

@@ -50,7 +50,7 @@ abstract class MappingSource {
 
       if (_primaryModel is null) {
          model = CreateModel(dataContextType);
-         Interlocked.CompareExchange<MetaModel>(ref _primaryModel, model, null);
+         Interlocked.CompareExchange(ref _primaryModel, model, null);
       }
 
       // if the primary one matches, use it!
@@ -65,13 +65,13 @@ abstract class MappingSource {
       // build a map if one is not already defined
 
       if (_secondaryModels is null) {
-         Interlocked.CompareExchange<Dictionary<Type, MetaModel>>(ref _secondaryModels, new Dictionary<Type, MetaModel>(), null);
+         Interlocked.CompareExchange(ref _secondaryModels, new Dictionary<Type, MetaModel>(), null);
       }
 
       // if we haven't created a read/writer lock, make one now
 
       if (_rwlock is null) {
-         Interlocked.CompareExchange<ReaderWriterLock>(ref _rwlock, new ReaderWriterLock(), null);
+         Interlocked.CompareExchange(ref _rwlock, new ReaderWriterLock(), null);
       }
 
       // lock the map and look inside

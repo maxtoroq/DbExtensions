@@ -92,8 +92,9 @@ partial class Database {
 
       if (!_tables.TryGetValue(metaType, out table)) {
 
-         var genericTable = (ISqlTable)
-            _tableMethod.MakeGenericMethod(metaType.Type).Invoke(this, null);
+         var genericTable = (ISqlTable)_tableMethod
+            .MakeGenericMethod(metaType.Type)
+            .Invoke(this, null);
 
          table = new SqlTable(this, metaType, genericTable);
          _tables.Add(metaType, table);
@@ -245,9 +246,9 @@ partial class Database {
       var predicateValues = predicateMembers.Select(m =>
          new KeyValuePair<string, object>(
             m.MappedName,
-            (getValueFn is not null) ? getValueFn.Invoke(m) : m.GetValueForDatabase(entity)
-         )
-      );
+            (getValueFn is not null) ?
+               getValueFn.Invoke(m)
+               : m.GetValueForDatabase(entity)));
 
       return BuildPredicateFragment(predicateValues, parametersBuffer);
    }
@@ -425,10 +426,9 @@ public sealed class SqlTable : SqlSet, ISqlTable {
 
    internal
    SqlTable(Database db, MetaType metaType, ISqlTable table)
-      : base(new string[2] { db.FromBody(metaType, null), db.SelectBody(metaType, null, null) }, metaType.Type, db) {
+      : base([db.FromBody(metaType, null), db.SelectBody(metaType, null, null)], metaType.Type, db) {
 
       _table = table;
-
       _metaType = metaType;
       this.CommandBuilder = new SqlCommandBuilder<object>(db, metaType);
    }
@@ -587,7 +587,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
    internal
    SqlTable(Database db, MetaType metaType)
-      : base(new string[2] { db.FromBody(metaType, null), db.SelectBody(metaType, null, null) }, db) {
+      : base([db.FromBody(metaType, null), db.SelectBody(metaType, null, null)], db) {
 
       _metaType = metaType;
       this.CommandBuilder = new SqlCommandBuilder<TEntity>(db, metaType);
@@ -691,11 +691,13 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
          var assoc = oneToMany[i];
 
-         var many = ((IEnumerable<object>)assoc.ThisMember.MemberAccessor.GetBoxedValue(entity) ?? new object[0])
+         var many = ((IEnumerable<object>)assoc.ThisMember.MemberAccessor.GetBoxedValue(entity) ?? [])
             .Where(o => o is not null)
             .ToArray();
 
-         if (many.Length == 0) continue;
+         if (many.Length == 0) {
+            continue;
+         }
 
          for (int j = 0; j < many.Length; j++) {
 
@@ -1471,8 +1473,7 @@ partial class SqlSet {
 
       var predicateValues = predicateMembers.ToDictionary(
          m => m.MappedName,
-         m => m.GetValueForDatabase(entity)
-      );
+         m => m.GetValueForDatabase(entity));
 
       return ContainsImpl(predicateMembers, predicateValues);
    }
@@ -1672,7 +1673,7 @@ partial class SqlSet {
                joinPredicate.Append($"{db.QuoteIdentifier(lAlias)}.{db.QuoteIdentifier(thisMember.Name)} = {db.QuoteIdentifier(rAlias)}.{db.QuoteIdentifier(otherMember.MappedName)}");
             }
 
-            query.LEFT_JOIN($"{db.QuoteIdentifier(association.OtherType.Table.TableName)} {db.QuoteIdentifier(rAlias)} ON ({joinPredicate.ToString()})");
+            query.LEFT_JOIN($"{db.QuoteIdentifier(association.OtherType.Table.TableName)} {db.QuoteIdentifier(rAlias)} ON ({joinPredicate})");
          }
 
          return query;

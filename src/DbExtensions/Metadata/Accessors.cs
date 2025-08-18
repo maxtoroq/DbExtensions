@@ -44,9 +44,8 @@ static class FieldAccessor {
          var mget = new DynamicMethod(
             "xget_" + fi.Name,
             fi.FieldType,
-            new Type[] { objectType },
-            true
-         );
+            [objectType],
+            true);
 
          var gen = mget.GetILGenerator();
          gen.Emit(OpCodes.Ldarg_0);
@@ -57,9 +56,8 @@ static class FieldAccessor {
          var mset = new DynamicMethod(
             "xset_" + fi.Name,
             typeof(void),
-            new Type[] { objectType.MakeByRefType(), fi.FieldType },
-            true
-         );
+            [objectType.MakeByRefType(), fi.FieldType],
+            true);
 
          gen = mset.GetILGenerator();
          gen.Emit(OpCodes.Ldarg_0);
@@ -77,8 +75,7 @@ static class FieldAccessor {
       return (MetaAccessor)Activator.CreateInstance(
          typeof(Accessor<,>).MakeGenericType(objectType, fi.FieldType),
          BindingFlags.Instance | BindingFlags.NonPublic, null,
-         new object[] { fi, dget, drset }, null
-      );
+         [fi, dget, drset], null);
    }
 
    class Accessor<T, V> : MetaAccessor<T, V> {
@@ -141,17 +138,12 @@ static class PropertyAccessor {
             var mset = new DynamicMethod(
                "xset_" + pi.Name,
                typeof(void),
-               new Type[] { objectType.MakeByRefType(), pi.PropertyType },
-               true
-            );
+               [objectType.MakeByRefType(), pi.PropertyType],
+               true);
 
             var gen = mset.GetILGenerator();
             gen.Emit(OpCodes.Ldarg_0);
-
-            if (!objectType.IsValueType) {
-               gen.Emit(OpCodes.Ldind_Ref);
-            }
-
+            gen.Emit(OpCodes.Ldind_Ref);
             gen.Emit(OpCodes.Ldarg_1);
             gen.Emit(OpCodes.Call, pi.GetSetMethod(true));
             gen.Emit(OpCodes.Ret);
@@ -166,7 +158,7 @@ static class PropertyAccessor {
       return (MetaAccessor)Activator.CreateInstance(
          typeof(Accessor<,,>).MakeGenericType(objectType, pi.PropertyType, saType),
          BindingFlags.Instance | BindingFlags.NonPublic, null,
-         new object[] { pi, dget, dset, drset, storageAccessor }, null
+         [pi, dget, dset, drset, storageAccessor], null
       );
    }
 

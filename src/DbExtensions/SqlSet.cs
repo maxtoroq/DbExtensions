@@ -88,7 +88,7 @@ partial class Database {
 
    public SqlSet
    From(string tableName, Type resultType) =>
-      new SqlSet(new string[2] { tableName, null }, resultType, this);
+      new SqlSet([tableName, null], resultType, this);
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided table name.
@@ -99,7 +99,7 @@ partial class Database {
 
    public SqlSet<TResult>
    From<TResult>(string tableName) =>
-      new SqlSet<TResult>(new string[2] { tableName, null }, this);
+      new SqlSet<TResult>([tableName, null], this);
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query.
@@ -368,7 +368,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       } else if (hasTake) {
 
-         var query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: "TOP({0}) *", args: new object[1] { takeBuffer.Value });
+         var query = GetDefiningQuery(ignoreBuffer: true, super: true, selectFormat: "TOP({0}) *", args: [takeBuffer.Value]);
 
          if (hasWhere) {
             query.WHERE(whereBuffer.Format, whereBuffer.Args);

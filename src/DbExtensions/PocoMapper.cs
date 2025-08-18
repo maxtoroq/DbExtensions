@@ -269,7 +269,7 @@ sealed class PocoMapper : Mapper {
 
             var containerHash = (path.Length == 1) ?
                PocoNode.RootNodeHash
-               : String.Join(".", path, 0, path.Length - 1).GetHashCode();
+               : String.Join('.', path, 0, path.Length - 1).GetHashCode();
 
             List<PocoCollection> containerCols;
 
@@ -794,7 +794,7 @@ abstract class CollectionAccessor : MetaAccessor {
       var colType = pi.PropertyType;
       var elementType = GetElementType(colType);
 
-      var addMethod = colType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, new[] { elementType }, null)
+      var addMethod = colType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, [elementType], null)
          ?? throw new InvalidOperationException($"Couldn't find a public 'Add' method on '{colType.FullName}'.");
 
       var addFn = Delegate.CreateDelegate(typeof(Action<,>)
@@ -804,9 +804,8 @@ abstract class CollectionAccessor : MetaAccessor {
          typeof(CollectionAccessor<,,>).MakeGenericType(objectType, colType, elementType),
          BindingFlags.Instance | BindingFlags.NonPublic,
          null,
-         new object[2] { propAccessor, addFn },
-         null
-      );
+         [propAccessor, addFn],
+         null);
    }
 
    static Type
@@ -948,7 +947,7 @@ partial class PocoNode {
       statements.Add(Expression.Convert(varExpr, typeof(object)));
 
       var lambda = Expression.Lambda<Func<IDataRecord, MappingContext, object>>(
-         Expression.Block(new[] { varExpr }, statements),
+         Expression.Block([varExpr], statements),
          recordParam,
          contextParam);
 
@@ -970,7 +969,7 @@ partial class PocoNode {
       GenerateLoad(varExpr, statements, recordParam, contextParam);
 
       var lambda = Expression.Lambda<Action<IDataRecord, MappingContext, object>>(
-         Expression.Block(new[] { varExpr }, statements),
+         Expression.Block([varExpr], statements),
          recordParam,
          contextParam,
          instanceParam);
@@ -988,8 +987,7 @@ partial class PocoNode {
          var buffer = new List<Expression>();
          var exprVarExpr = GenerateExpression(buffer, recordParam, contextParam);
 
-         if (buffer.Count == 1
-            && buffer[0] is BinaryExpression binExpr and { NodeType: ExpressionType.Assign }
+         if (buffer is [BinaryExpression binExpr and { NodeType: ExpressionType.Assign }]
             && binExpr.Left == exprVarExpr) {
 
             statements.Add(Expression.Assign(varExpr, binExpr.Right));
@@ -999,7 +997,7 @@ partial class PocoNode {
             buffer.Add(Expression.Assign(varExpr, exprVarExpr));
 
             statements.Add(Expression.Block(
-               new[] { exprVarExpr },
+               [exprVarExpr],
                buffer));
          }
 
@@ -1025,8 +1023,7 @@ partial class PocoNode {
          var valueExpr = (Expression)exprVarExpr;
          var simpleExpr = false;
 
-         if (falseBuffer.Count == 1
-            && falseBuffer[0] is BinaryExpression binExpr and { NodeType: ExpressionType.Assign }
+         if (falseBuffer is [BinaryExpression binExpr and { NodeType: ExpressionType.Assign }]
             && binExpr.Left == exprVarExpr) {
 
             valueExpr = binExpr.Right;
@@ -1057,7 +1054,7 @@ partial class PocoNode {
                   allNullsExpr,
                   Expression.Assign(varExpr, nullExpr),
                   Expression.Block(
-                     new[] { exprVarExpr },
+                     [exprVarExpr],
                      falseBuffer)));
          }
       }
@@ -1129,8 +1126,7 @@ partial class PocoNode {
             var buffer = new List<Expression>();
             var exprVarExpr = prop.GenerateExpressionNullable(buffer, recordParam, contextParam);
 
-            if (buffer.Count == 1
-               && buffer[0] is BinaryExpression binExpr and { NodeType: ExpressionType.Assign }
+            if (buffer is [BinaryExpression binExpr and { NodeType: ExpressionType.Assign }]
                && binExpr.Left == exprVarExpr) {
 
                statements.Add(Expression.Assign(memberExpr, binExpr.Right));
@@ -1140,7 +1136,7 @@ partial class PocoNode {
                buffer.Add(Expression.Assign(memberExpr, exprVarExpr));
 
                statements.Add(Expression.Block(
-                  new[] { exprVarExpr },
+                  [exprVarExpr],
                   buffer));
             }
 
@@ -1163,11 +1159,11 @@ partial class PocoNode {
                Expression.MakeBinary(ExpressionType.NotEqual, varExpr, nullExpr),
                (trueBuffer.Count == 1) ? trueBuffer[0] : Expression.Block(trueBuffer),
                Expression.Block(
-                  new[] { newVarExpr },
+                  [newVarExpr],
                   falseBuffer));
 
             statements.Add(Expression.Block(
-               new[] { varExpr },
+               [varExpr],
                buffer));
          }
       }
@@ -1271,7 +1267,9 @@ partial class PocoNode {
          }
 
          if (this.HasProperties) {
+#pragma warning disable IDE0220
             foreach (PocoNode prop in this.Properties) {
+#pragma warning restore IDE0220
                foreach (var o in prop.GetAllOrdinals()) {
                   yield return o;
                }

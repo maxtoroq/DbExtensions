@@ -340,7 +340,7 @@ public partial class SqlBuilder {
          this.ParameterValues.Add(obj);
       }
 
-      format ??= String.Join(" ", Enumerable.Range(0, fargs.Count).Select(i => Placeholder(i)));
+      format ??= String.Join(" ", Enumerable.Range(0, fargs.Count).Select(Placeholder));
 
       this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, fargs.ToArray());
 

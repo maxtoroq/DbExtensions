@@ -21,7 +21,7 @@ namespace DbExtensions;
 /// Provides extension methods for common ADO.NET objects.
 /// </summary>
 
-public static partial class Extensions {
+public static class Extensions {
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Boolean"/>.

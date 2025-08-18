@@ -26,7 +26,7 @@ namespace DbExtensions;
 abstract partial class Mapper {
 
    internal static readonly char[]
-   _pathSeparator = { '$' };
+   _pathSeparator = ['$'];
 
    Node
    _rootNode;
@@ -69,9 +69,9 @@ abstract partial class Mapper {
          (from i in Enumerable.Range(0, record.FieldCount)
           let columnName = record.GetName(i)
           let path = columnName.Split(_pathSeparator)
-          let property = (path.Length == 1) ? columnName : path[path.Length - 1]
-          let assoc = (path.Length == 1) ? String.Empty : path[path.Length - 2]
-          let parent = (path.Length <= 2) ? String.Empty : path[path.Length - 3]
+          let property = (path.Length == 1) ? columnName : path[^1]
+          let assoc = (path.Length == 1) ? String.Empty : path[^2]
+          let parent = (path.Length <= 2) ? String.Empty : path[^3]
           let propertyInfo = new { ColumnOrdinal = i, PropertyName = property }
           group propertyInfo by new { depth = path.Length - 1, parent, assoc } into t
           orderby t.Key.depth, t.Key.parent, t.Key.assoc
@@ -240,8 +240,7 @@ abstract partial class Mapper {
 
             if (parameters.Length != instance.ConstructorParameters.Count) {
                throw new InvalidOperationException(
-                  $"There are missing arguments for constructor with {parameters.Length} parameter(s) for type '{instance.TypeName}'."
-               );
+                  $"There are missing arguments for constructor with {parameters.Length} parameter(s) for type '{instance.TypeName}'.");
             }
 
             instance.Constructor = constructors[0];
@@ -341,14 +340,12 @@ abstract partial class Mapper {
 
       if (constructors.Length == 0) {
          throw new InvalidOperationException(
-            $"Couldn't find a public constructor with {parameterLength} parameter(s) for type '{node.TypeName}'."
-         );
+            $"Couldn't find a public constructor with {parameterLength} parameter(s) for type '{node.TypeName}'.");
       }
 
       if (constructors.Length > 1) {
          throw new InvalidOperationException(
-            $"Found more than one public constructors with {parameterLength} parameter(s) for type '{node.TypeName}'. Please use another constructor."
-         );
+            $"Found more than one public constructors with {parameterLength} parameter(s) for type '{node.TypeName}'. Please use another constructor.");
       }
 
       return constructors[0];

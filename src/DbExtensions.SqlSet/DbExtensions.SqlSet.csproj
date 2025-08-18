@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
-    <LangVersion>11</LangVersion>
+    <LangVersion>12</LangVersion>
     <DefineConstants>DBEX_NO_DYN;DBEX_NO_POCO</DefineConstants>
   </PropertyGroup>
 
