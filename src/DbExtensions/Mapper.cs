@@ -25,8 +25,8 @@ namespace DbExtensions;
 
 abstract partial class Mapper {
 
-   internal static readonly char[]
-   _pathSeparator = ['$'];
+   internal static readonly char
+   _pathSeparator = '$';
 
    Node
    _rootNode;

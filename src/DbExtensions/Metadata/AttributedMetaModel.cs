@@ -1109,7 +1109,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
 class MetaComplexProperty {
 
    internal static readonly string
-   QueryPathSeparator = new(Mapper._pathSeparator);
+   QueryPathSeparator = Mapper._pathSeparator.ToString();
 
    readonly ComplexPropertyAttribute
    _cpAttr;
@@ -1342,9 +1342,6 @@ class AttributedMetaAssociation : MetaAssociationImpl {
 
 abstract class MetaAssociationImpl : MetaAssociation {
 
-   static readonly char[]
-   _keySeparators = [','];
-
    /// <summary>
    /// Given a MetaType and a set of key fields, return the set of MetaDataMembers
    /// corresponding to the key.
@@ -1353,7 +1350,7 @@ abstract class MetaAssociationImpl : MetaAssociation {
    protected static ReadOnlyCollection<MetaDataMember>
    MakeKeys(MetaType mtype, string keyFields) {
 
-      var names = keyFields.Split(_keySeparators);
+      var names = keyFields.Split(',');
       var members = new MetaDataMember[names.Length];
 
       for (int i = 0; i < names.Length; i++) {

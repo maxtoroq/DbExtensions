@@ -548,7 +548,7 @@ public partial class SqlBuilder {
       string formatStart = String.Empty, formatEnd = String.Empty;
 
       if (format is not null) {
-         var formatSplit = format.Split(new[] { "{0}" }, StringSplitOptions.None);
+         var formatSplit = format.Split("{0}");
          formatStart = formatSplit[0];
          formatEnd = formatSplit[1];
       }

@@ -1567,15 +1567,12 @@ partial class SqlSet {
 
    static class IncludeImpl {
 
-      static readonly char[]
-      _pathSeparator = { '.' };
-
       public static SqlSet
       Expand(SqlSet source, string path, MetaType metaType) {
 
          var db = source._db;
 
-         var parts = path.Split(_pathSeparator);
+         var parts = path.Split('.');
 
          SqlBuilder selectBuild(string alias) =>
             new SqlBuilder().SELECT(db.QuoteIdentifier(alias) + ".*");
