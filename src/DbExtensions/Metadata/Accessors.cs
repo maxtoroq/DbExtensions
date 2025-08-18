@@ -78,7 +78,7 @@ static class FieldAccessor {
          [fi, dget, drset], null);
    }
 
-   class Accessor<T, V> : MetaAccessor<T, V> {
+   sealed class Accessor<T, V> : MetaAccessor<T, V> {
 
       readonly DGet<T, V>
       _dget;
@@ -162,7 +162,7 @@ static class PropertyAccessor {
       );
    }
 
-   class Accessor<T, V, V2> : MetaAccessor<T, V> where V2 : V {
+   sealed class Accessor<T, V, V2> : MetaAccessor<T, V> where V2 : V {
 
       readonly PropertyInfo
       _pi;

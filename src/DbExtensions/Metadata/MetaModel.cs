@@ -102,7 +102,7 @@ abstract class MetaTable {
    RowType { get; }
 }
 
-class MetaTableConfiguration {
+sealed class MetaTableConfiguration {
 
    public string
    DefaultComplexPropertySeparator { get; internal set; }

@@ -24,7 +24,7 @@ using System.Threading;
 
 namespace DbExtensions.Metadata;
 
-class AttributedMetaModel : MetaModel {
+sealed class AttributedMetaModel : MetaModel {
 
    readonly ReaderWriterLock
    _lock = new();
@@ -1106,7 +1106,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
       this.DeclaringType.ToString() + ":" + this.Member.ToString();
 }
 
-class MetaComplexProperty {
+sealed class MetaComplexProperty {
 
    internal static readonly string
    QueryPathSeparator = Mapper._pathSeparator.ToString();
@@ -1216,7 +1216,7 @@ class MetaComplexProperty {
    }
 }
 
-class AttributedMetaAssociation : MetaAssociationImpl {
+sealed class AttributedMetaAssociation : MetaAssociationImpl {
 
    public override MetaType
    OtherType { get; }
