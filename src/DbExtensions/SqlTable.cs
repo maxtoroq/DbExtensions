@@ -467,7 +467,7 @@ public sealed class SqlTable : SqlSet, ISqlTable {
 
    #region ISqlTable Members
 
-   // These methods just call the same method on this.table
+   // These methods just call the same method on _table
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.Add(TEntity)"/>
 
@@ -538,18 +538,6 @@ public sealed class SqlTable : SqlSet, ISqlTable {
    public void
    RemoveRange(params object[] entities) =>
       _table.RemoveRange(entities);
-
-   /// <inheritdoc cref="SqlSet.Contains(Object)" path="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
-
-   public new bool
-   Contains(object entity) =>
-      base.Contains(entity);
-
-   /// <inheritdoc cref="SqlSet.ContainsKey(Object)" path="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
-
-   public new bool
-   ContainsKey(object id) =>
-      base.ContainsKey(id);
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.Refresh(TEntity)"/>
 
@@ -1000,18 +988,6 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
          }
       }
    }
-
-   /// <inheritdoc cref="SqlSet&lt;TEntity>.Contains(TEntity)" path="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
-
-   public new bool
-   Contains(TEntity entity) =>
-      base.Contains(entity);
-
-   /// <inheritdoc cref="SqlSet.ContainsKey(Object)" path="*[not(self::exception[@cref='T:System.InvalidOperationException'])]"/>
-
-   public new bool
-   ContainsKey(object id) =>
-      base.ContainsKey(id);
 
    /// <summary>
    /// Sets all column members of <paramref name="entity"/> to their most current persisted value.
