@@ -80,7 +80,7 @@ public partial class Database : IDisposable {
    public
    Database(string connectionString) {
 
-      if (connectionString is null) throw new ArgumentNullException(nameof(connectionString));
+      ArgumentNullException.ThrowIfNull(connectionString);
 
       this.Connection = CreateConnection(connectionString, null, out var providerInvariantName);
       _disposeConn = true;
@@ -98,7 +98,7 @@ public partial class Database : IDisposable {
    public
    Database(string connectionString, string providerInvariantName) {
 
-      if (connectionString is null) throw new ArgumentNullException(nameof(connectionString));
+      ArgumentNullException.ThrowIfNull(connectionString);
 
       this.Connection = CreateConnection(connectionString, providerInvariantName, out var finalProviderInvariantName);
       _disposeConn = true;
@@ -115,7 +115,7 @@ public partial class Database : IDisposable {
    public
    Database(IDbConnection connection) {
 
-      if (connection is null) throw new ArgumentNullException(nameof(connection));
+      ArgumentNullException.ThrowIfNull(connection);
 
       this.Connection = connection;
 
@@ -125,7 +125,7 @@ public partial class Database : IDisposable {
    internal
    Database(IDbConnection connection, string providerInvariantName) {
 
-      if (connection is null) throw new ArgumentNullException(nameof(connection));
+      ArgumentNullException.ThrowIfNull(connection);
 
       this.Connection = connection;
 
@@ -172,7 +172,7 @@ public partial class Database : IDisposable {
    static DbProviderFactory
    GetProviderFactory(string providerInvariantName) {
 
-      if (providerInvariantName is null) throw new ArgumentNullException(nameof(providerInvariantName));
+      ArgumentNullException.ThrowIfNull(providerInvariantName);
 
       return DbProviderFactories.GetFactory(providerInvariantName);
    }
@@ -282,7 +282,7 @@ public partial class Database : IDisposable {
    public int
    Execute(SqlBuilder nonQuery, int affect = -1, bool exact = false) {
 
-      if (nonQuery is null) throw new ArgumentNullException(nameof(nonQuery));
+      ArgumentNullException.ThrowIfNull(nonQuery);
 
       var command = CreateCommand(nonQuery);
 
@@ -395,7 +395,7 @@ public partial class Database : IDisposable {
    public IDbCommand
    CreateCommand(SqlBuilder sqlBuilder) {
 
-      if (sqlBuilder is null) throw new ArgumentNullException(nameof(sqlBuilder));
+      ArgumentNullException.ThrowIfNull(sqlBuilder);
 
       return CreateCommand(sqlBuilder.ToString(), sqlBuilder.ParameterValues.ToArray());
    }
@@ -426,7 +426,7 @@ public partial class Database : IDisposable {
    public virtual IDbCommand
    CreateCommand(string commandText, params object[] parameters) {
 
-      if (commandText is null) throw new ArgumentNullException(nameof(commandText));
+      ArgumentNullException.ThrowIfNull(commandText);
 
       var command = this.Connection.CreateCommand();
       var transaction = this.Transaction;
@@ -483,7 +483,7 @@ public partial class Database : IDisposable {
    public virtual string
    QuoteIdentifier(string unquotedIdentifier) {
 
-      if (unquotedIdentifier is null) throw new ArgumentNullException(nameof(unquotedIdentifier));
+      ArgumentNullException.ThrowIfNull(unquotedIdentifier);
 
       if (IsQuotedIdentifier(unquotedIdentifier)) {
          return unquotedIdentifier;
@@ -511,7 +511,7 @@ public partial class Database : IDisposable {
    bool
    IsQuotedIdentifier(string identifier) {
 
-      if (identifier is null) throw new ArgumentNullException(nameof(identifier));
+      ArgumentNullException.ThrowIfNull(identifier);
 
       var quotePrefix = this.Configuration.QuotePrefix;
       var quoteSuffix = this.Configuration.QuoteSuffix;
@@ -531,7 +531,7 @@ public partial class Database : IDisposable {
    internal static void
    Trace(IDbCommand command, TextWriter log, int? affectedRecords = null, bool error = false) {
 
-      if (command is null) throw new ArgumentNullException(nameof(command));
+      ArgumentNullException.ThrowIfNull(command);
 
       if (log is not null) {
 
@@ -628,7 +628,7 @@ public partial class Database : IDisposable {
       public
       ConnectionHolder(IDbConnection conn) {
 
-         if (conn is null) throw new ArgumentNullException(nameof(conn));
+         ArgumentNullException.ThrowIfNull(conn);
 
          _conn = conn;
          _prevStateWasClosed = (conn.State == ConnectionState.Closed);
@@ -676,7 +676,7 @@ public partial class Database : IDisposable {
       public
       WrappedTransaction(Database db, IsolationLevel isolationLevel) {
 
-         if (db is null) throw new ArgumentNullException(nameof(db));
+         ArgumentNullException.ThrowIfNull(db);
 
          _db = db;
          _txAdo = _db.Transaction;
@@ -876,7 +876,7 @@ public sealed partial class DatabaseConfiguration {
    internal
    DatabaseConfiguration(string providerInvariantName, Func<DbCommandBuilder> cbFn = null) {
 
-      if (providerInvariantName is null) throw new ArgumentNullException(nameof(providerInvariantName));
+      ArgumentNullException.ThrowIfNull(providerInvariantName);
 
       switch (providerInvariantName) {
          case "System.Data.SqlClient":
@@ -1026,8 +1026,8 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDi
       public
       Enumerator(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter logger) {
 
-         if (command is null) throw new ArgumentNullException(nameof(command));
-         if (mapper is null) throw new ArgumentNullException(nameof(mapper));
+         ArgumentNullException.ThrowIfNull(command);
+         ArgumentNullException.ThrowIfNull(mapper);
 
          var conn = command.Connection
             ?? throw new ArgumentException("command.Connection cannot be null", nameof(command));

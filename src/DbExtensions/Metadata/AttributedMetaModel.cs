@@ -74,7 +74,7 @@ class AttributedMetaModel : MetaModel {
    public override MetaTable
    GetTable(Type rowType, MetaTableConfiguration config) {
 
-      if (rowType is null) throw Error.ArgumentNull(nameof(rowType));
+      ArgumentNullException.ThrowIfNull(rowType);
 
       MetaTable table;
 
@@ -154,7 +154,7 @@ class AttributedMetaModel : MetaModel {
    public override MetaType
    GetMetaType(Type type, MetaTableConfiguration config) {
 
-      if (type is null) throw Error.ArgumentNull(nameof(type));
+      ArgumentNullException.ThrowIfNull(type);
 
       MetaType mtype = null;
 
@@ -746,7 +746,7 @@ class AttributedMetaType : MetaType {
    public override MetaDataMember
    GetDataMember(MemberInfo mi) {
 
-      if (mi is null) throw Error.ArgumentNull(nameof(mi));
+      ArgumentNullException.ThrowIfNull(mi);
 
       if (_dataMemberMap.TryGetValue(new MetaPosition(mi), out var mm)) {
          return mm;
@@ -1096,7 +1096,7 @@ sealed class AttributedMetaDataMember : MetaDataMember {
    public override bool
    IsDeclaredBy(MetaType declaringMetaType) {
 
-      if (declaringMetaType is null) throw Error.ArgumentNull(nameof(declaringMetaType));
+      ArgumentNullException.ThrowIfNull(declaringMetaType);
 
       return declaringMetaType.Type == _memberDeclaringType;
    }
@@ -1545,7 +1545,7 @@ sealed class UnmappedType : MetaType {
    public override MetaDataMember
    GetDataMember(MemberInfo mi) {
 
-      if (mi is null) throw Error.ArgumentNull(nameof(mi));
+      ArgumentNullException.ThrowIfNull(mi);
 
       InitDataMembers();
 
@@ -1711,7 +1711,7 @@ sealed class UnmappedDataMember : MetaDataMember {
    public override bool
    IsDeclaredBy(MetaType metaType) {
 
-      if (metaType is null) throw Error.ArgumentNull(nameof(metaType));
+      ArgumentNullException.ThrowIfNull(metaType);
 
       return metaType.Type == this.Member.DeclaringType;
    }

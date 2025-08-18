@@ -13,12 +13,13 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Collections;
 
 namespace DbExtensions;
 
@@ -175,7 +176,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    internal
    SqlSet(SqlBuilder definingQuery, Type resultType, Database db) {
 
-      if (definingQuery is null) throw new ArgumentNullException(nameof(definingQuery));
+      ArgumentNullException.ThrowIfNull(definingQuery);
 
       _definingQuery = definingQuery.Clone();
       this.ResultType = resultType;
@@ -185,8 +186,9 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    internal
    SqlSet(string[] fromSelect, Type resultType, Database db) {
 
-      if (fromSelect is null) throw new ArgumentNullException(nameof(fromSelect));
-      if (fromSelect.Length != 2) throw new ArgumentException("fromSelect.Length must be 2.", nameof(fromSelect));
+      ArgumentNullException.ThrowIfNull(fromSelect);
+
+      Debug.Assert(fromSelect.Length == 2);
 
       _fromSelect = fromSelect;
       this.ResultType = resultType;
@@ -197,7 +199,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    SqlSet(SqlSet set, SqlBuilder superQuery, Type resultType, SqlBuffer? buffer)
       : this(set, resultType, buffer) {
 
-      if (superQuery is null) throw new ArgumentNullException(nameof(superQuery));
+      ArgumentNullException.ThrowIfNull(superQuery);
 
       _definingQuery = superQuery;
    }
@@ -206,8 +208,9 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    SqlSet(SqlSet set, string[] fromSelect, Type resultType, SqlBuffer? buffer)
       : this(set, resultType, buffer) {
 
-      if (fromSelect is null) throw new ArgumentNullException(nameof(fromSelect));
-      if (fromSelect.Length != 2) throw new ArgumentException("fromSelect.Length must be 2.", nameof(fromSelect));
+      ArgumentNullException.ThrowIfNull(fromSelect);
+
+      Debug.Assert(fromSelect.Length == 2);
 
       _fromSelect = fromSelect;
    }
@@ -215,7 +218,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    private
    SqlSet(SqlSet set, Type resultType, SqlBuffer? buffer) {
 
-      if (set is null) throw new ArgumentNullException(nameof(set));
+      ArgumentNullException.ThrowIfNull(set);
 
       this.ResultType = set.ResultType;
       _setIndex += set._setIndex;
@@ -510,7 +513,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    public bool
    All(string predicate, params object[] parameters) {
 
-      if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+      ArgumentNullException.ThrowIfNull(predicate);
 
       return !Any(String.Concat("NOT (", predicate, ")"), parameters);
    }
@@ -1037,7 +1040,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, Database db)
       : base(definingQuery, typeof(TResult), db) {
 
-      if (mapper is null) throw new ArgumentNullException(nameof(mapper));
+      ArgumentNullException.ThrowIfNull(mapper);
 
       _explicitMapper = mapper;
    }
@@ -1053,7 +1056,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    SqlSet(SqlSet<TResult> set, SqlBuilder superQuery, SqlBuffer? buffer)
       : base((SqlSet)set, superQuery, default(Type), buffer) {
 
-      if (set is null) throw new ArgumentNullException(nameof(set));
+      ArgumentNullException.ThrowIfNull(set);
 
       _explicitMapper = set._explicitMapper;
    }
@@ -1062,7 +1065,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    SqlSet(SqlSet<TResult> set, string[] fromSelect, SqlBuffer? buffer)
       : base((SqlSet)set, fromSelect, default(Type), buffer) {
 
-      if (set is null) throw new ArgumentNullException(nameof(set));
+      ArgumentNullException.ThrowIfNull(set);
 
       _explicitMapper = set._explicitMapper;
    }

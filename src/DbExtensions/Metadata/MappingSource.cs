@@ -44,7 +44,7 @@ abstract class MappingSource {
    public MetaModel
    GetModel(Type dataContextType) {
 
-      if (dataContextType is null) throw Error.ArgumentNull(nameof(dataContextType));
+      ArgumentNullException.ThrowIfNull(dataContextType);
 
       var model = default(MetaModel);
 
@@ -128,7 +128,7 @@ sealed class AttributeMappingSource : MappingSource {
    protected override MetaModel
    CreateModel(Type dataContextType) {
 
-      if (dataContextType is null) throw Error.ArgumentNull(nameof(dataContextType));
+      ArgumentNullException.ThrowIfNull(dataContextType);
 
       return new AttributedMetaModel(this, dataContextType);
    }

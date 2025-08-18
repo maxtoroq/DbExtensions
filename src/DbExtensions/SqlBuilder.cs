@@ -101,7 +101,7 @@ public partial class SqlBuilder {
    public static SqlBuilder
    JoinSql(string separator, params SqlBuilder[] values) {
 
-      if (values is null) throw new ArgumentNullException(nameof(values));
+      ArgumentNullException.ThrowIfNull(values);
 
       var sql = new SqlBuilder();
 
@@ -146,7 +146,7 @@ public partial class SqlBuilder {
    public static SqlBuilder
    JoinSql(string separator, IEnumerable<SqlBuilder> values) {
 
-      if (values is null) throw new ArgumentNullException(nameof(values));
+      ArgumentNullException.ThrowIfNull(values);
 
       var sql = new SqlBuilder();
 
@@ -541,9 +541,9 @@ public partial class SqlBuilder {
    public SqlBuilder
    _ForEach<T>(IEnumerable<T> items, string format, string itemFormat, string separator, Func<T, object[]> parametersFactory) {
 
-      if (items is null) throw new ArgumentNullException(nameof(items));
-      if (itemFormat is null) throw new ArgumentNullException(nameof(itemFormat));
-      if (separator is null) throw new ArgumentNullException(nameof(separator));
+      ArgumentNullException.ThrowIfNull(items);
+      ArgumentNullException.ThrowIfNull(itemFormat);
+      ArgumentNullException.ThrowIfNull(separator);
 
       string formatStart = String.Empty, formatEnd = String.Empty;
 
@@ -927,8 +927,10 @@ public partial class SqlBuilder {
    public SqlBuilder
    VALUES(params object[] args) {
 
-      if (args is null || args.Length == 0) {
-         throw new ArgumentException("args cannot be empty", nameof(args));
+      ArgumentNullException.ThrowIfNull(args);
+
+      if (args.Length == 0) {
+         throw new ArgumentException($"{nameof(args)} cannot be empty", nameof(args));
       }
 
       return AppendClause("VALUES", null, "({0})", SQL.List(args));

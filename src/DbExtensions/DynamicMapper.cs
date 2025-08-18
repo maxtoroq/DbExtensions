@@ -109,8 +109,11 @@ sealed class DynamicNode : Node {
    internal
    DynamicNode(string propertyName, int columnOrdinal = default, bool isComplex = default) {
 
-      if (propertyName is null) throw new ArgumentNullException(nameof(propertyName));
-      if (propertyName.Length == 0) throw new ArgumentException("Cannot map column using an empty property name.", nameof(propertyName));
+      ArgumentNullException.ThrowIfNull(propertyName);
+
+      if (propertyName.Length == 0) {
+         throw new ArgumentException("Cannot map column using an empty property name.", nameof(propertyName));
+      }
 
       if (UInt32.TryParse(propertyName, out _)) {
          throw new ArgumentException("Cannot use constructor mapping, by using numeric column names, unless you specify the type of the object you want to map to.", nameof(propertyName));

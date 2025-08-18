@@ -170,7 +170,7 @@ sealed class PocoMapper : Mapper {
    public
    PocoMapper(Type type) {
 
-      if (type is null) throw new ArgumentNullException(nameof(type));
+      ArgumentNullException.ThrowIfNull(type);
 
       _type = type;
    }
