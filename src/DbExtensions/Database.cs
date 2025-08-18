@@ -441,7 +441,7 @@ public partial class Database : IDisposable {
          command.CommandTimeout = commandTimeout;
       }
 
-      if (parameters is null || parameters.Length == 0) {
+      if (parameters is null or { Length: 0 }) {
          command.CommandText = commandText;
          return command;
       }
@@ -795,15 +795,18 @@ public sealed partial class DatabaseConfiguration {
 
    static readonly Func<DbCommandBuilder, int, string>
    _getParameterNameI = (Func<DbCommandBuilder, int, string>)
-      Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, int, string>), typeof(DbCommandBuilder).GetMethod("GetParameterName", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, new[] { typeof(int) }, null));
+      Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, int, string>), typeof(DbCommandBuilder)
+         .GetMethod("GetParameterName", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [typeof(int)], null));
 
    static readonly Func<DbCommandBuilder, string, string>
    _getParameterNameS = (Func<DbCommandBuilder, string, string>)
-      Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, string, string>), typeof(DbCommandBuilder).GetMethod("GetParameterName", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, new[] { typeof(string) }, null));
+      Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, string, string>), typeof(DbCommandBuilder)
+         .GetMethod("GetParameterName", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [typeof(string)], null));
 
    static readonly Func<DbCommandBuilder, int, string>
    _getParameterPlaceholder = (Func<DbCommandBuilder, int, string>)
-      Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, int, string>), typeof(DbCommandBuilder).GetMethod("GetParameterPlaceholder", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, new[] { typeof(int) }, null));
+      Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, int, string>), typeof(DbCommandBuilder)
+         .GetMethod("GetParameterPlaceholder", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [typeof(int)], null));
 
    /// <summary>
    /// The connection string to use as default.
