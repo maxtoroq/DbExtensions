@@ -1378,8 +1378,6 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    EnsureEntityType() =>
       SqlTable.EnsureEntityType(_metaType);
 
-   #region Object Members
-
    /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1403,8 +1401,6 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public override string
    ToString() => base.ToString();
-
-   #endregion
 }
 
 partial class SqlSet {

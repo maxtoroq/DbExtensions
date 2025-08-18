@@ -1064,8 +1064,6 @@ public static partial class SQL {
    List(params object[] values) =>
       new SqlList(values);
 
-   #region Object Members
-
    /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1079,8 +1077,6 @@ public static partial class SQL {
    public static new bool
    ReferenceEquals(object objectA, object objectB) =>
       Object.ReferenceEquals(objectA, objectB);
-
-   #endregion
 }
 
 sealed class SqlList {

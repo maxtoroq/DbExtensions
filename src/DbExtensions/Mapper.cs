@@ -351,8 +351,6 @@ abstract partial class Mapper {
       return constructors[0];
    }
 
-   #region Nested Types
-
    sealed class MapGroup {
 
       public string
@@ -390,8 +388,6 @@ abstract partial class Mapper {
          this.Group = group;
       }
    }
-
-   #endregion
 }
 
 sealed partial class MappingContext {

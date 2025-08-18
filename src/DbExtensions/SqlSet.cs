@@ -935,8 +935,6 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
    #endregion
 
-   #region Object Members
-
    /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
@@ -963,10 +961,6 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    public override string
    ToString() =>
       GetDefiningQuery(clone: false).ToString();
-
-   #endregion
-
-   #region Nested Types
 
    internal readonly struct
    SqlBuffer {
@@ -1016,8 +1010,6 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
          this.Args = args;
       }
    }
-
-   #endregion
 }
 
 /// <summary>

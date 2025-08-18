@@ -580,8 +580,6 @@ public partial class Database : IDisposable {
       }
    }
 
-   #region Object Members
-
    /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
@@ -605,10 +603,6 @@ public partial class Database : IDisposable {
    [EditorBrowsable(EditorBrowsableState.Never)]
    public override string
    ToString() => base.ToString();
-
-   #endregion
-
-   #region Nested Types
 
    sealed class ConnectionHolder : IDisposable {
 
@@ -754,8 +748,6 @@ public partial class Database : IDisposable {
          }
       }
    }
-
-   #endregion
 }
 
 /// <summary>
@@ -973,8 +965,6 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDi
    Dispose() =>
       _enumerator?.Dispose();
 
-   #region Nested Types
-
    sealed class Enumerator : IEnumerator<TResult>, IEnumerator, IDisposable {
 
       readonly IDbCommand
@@ -1092,6 +1082,4 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDi
          }
       }
    }
-
-   #endregion
 }
