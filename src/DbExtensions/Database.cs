@@ -23,7 +23,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Transactions;
 using IsolationLevel = System.Data.IsolationLevel;
 
 namespace DbExtensions;
@@ -218,14 +217,8 @@ public partial class Database : IDisposable {
    /// </returns>
    /// <remarks>
    /// This method returns a virtual transaction that wraps an existing or new transaction.
-   /// If <see cref="Transaction.Current"/> is not null, this method creates a
-   /// new <see cref="TransactionScope"/> and returns an <see cref="IDbTransaction"/>
-   /// object that wraps it, and by calling <see cref="IDbTransaction.Commit()"/> on this object it will 
-   /// then call <see cref="TransactionScope.Complete()"/> on the <see cref="TransactionScope"/>.
-   /// If <see cref="Transaction.Current"/> is null, this methods begins a new
-   /// <see cref="IDbTransaction"/>, or uses an existing transaction created by a previous call to this method, and returns 
-   /// an <see cref="IDbTransaction"/> object that wraps it, and by calling <see cref="IDbTransaction.Commit()"/> 
-   /// on this object it will then call <see cref="IDbTransaction.Commit()"/> on the wrapped transaction if the 
+   /// By calling <see cref="IDbTransaction.Commit()"/> on the returned object, this object
+   /// will then call <see cref="IDbTransaction.Commit()"/> on the wrapped transaction if the
    /// transaction was just created, or do nothing if it was previously created.
    /// <para>
    /// Calls to this method can be nested, like in the following example:
@@ -664,9 +657,6 @@ public partial class Database : IDisposable {
       readonly bool
       _txBeganHere;
 
-      readonly TransactionScope
-      _txScope;
-
       public IDbConnection
       Connection { get; }
 
@@ -688,12 +678,7 @@ public partial class Database : IDisposable {
 
          try {
 
-            if (System.Transactions.Transaction.Current is not null) {
-               _txScope = new TransactionScope();
-            }
-
-            if (_txScope is null
-               && _txAdo is null) {
+            if (_txAdo is null) {
 
                _db.Transaction = _db.Connection.BeginTransaction(isolationLevel);
                _txAdo = _db.Transaction;
@@ -711,11 +696,6 @@ public partial class Database : IDisposable {
       public void
       Commit() {
 
-         if (_txScope is not null) {
-            _txScope.Complete();
-            return;
-         }
-
          if (_txBeganHere) {
 
             try {
@@ -730,10 +710,6 @@ public partial class Database : IDisposable {
 
       public void
       Rollback() {
-
-         if (_txScope is not null) {
-            return;
-         }
 
          if (_txBeganHere) {
 
@@ -754,10 +730,6 @@ public partial class Database : IDisposable {
       Dispose() {
 
          try {
-            if (_txScope is not null) {
-               _txScope.Dispose();
-               return;
-            }
 
             if (_txBeganHere) {
                try {

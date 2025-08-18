@@ -1,5 +1,4 @@
 ﻿Imports System
-Imports System.Transactions
 Imports Samples.VisualBasic.Northwind
 
 Public Class DatabaseAnnotatedSamples
@@ -50,48 +49,27 @@ Public Class DatabaseAnnotatedSamples
       Using tx = db.EnsureInTransaction()
          ' Connection is automatically opened if not open
 
-         Transactions_DoWork()
+         Dim order As New Order With {
+            .CustomerID = "ALFKI"
+         }
+
+         order.OrderDetails.Add(New OrderDetail With {.ProductID = 77, .Quantity = 1})
+         order.OrderDetails.Add(New OrderDetail With {.ProductID = 41, .Quantity = 2})
+
+         db.Orders.Add(order)
+
+         order.Freight = 10
+
+         db.Orders.Update(order)
+
+         ' The following line is not needed when cascade delete is configured on the database
+         db.OrderDetails.RemoveRange(order.OrderDetails)
+
+         db.Orders.Remove(order)
 
          tx.Commit()
       End Using
       ' Connection is closed if wasn't open
-
-   End Sub
-
-   Sub Transactions_TransactionScope()
-
-      Using tx As New TransactionScope()
-         Using db.EnsureConnectionOpen()
-            ' Open connection if not open
-
-            Transactions_DoWork()
-
-            tx.Complete()
-         End Using
-
-         ' Connection is closed if wasn't open
-      End Using
-   End Sub
-
-   Private Sub Transactions_DoWork()
-
-      Dim order As New Order With {
-         .CustomerID = "ALFKI"
-      }
-
-      order.OrderDetails.Add(New OrderDetail With {.ProductID = 77, .Quantity = 1})
-      order.OrderDetails.Add(New OrderDetail With {.ProductID = 41, .Quantity = 2})
-
-      db.Orders.Add(order)
-
-      order.Freight = 10
-
-      db.Orders.Update(order)
-
-      ' The following line is not needed when cascade delete is configured on the database
-      db.OrderDetails.RemoveRange(order.OrderDetails)
-
-      db.Orders.Remove(order)
 
    End Sub
 

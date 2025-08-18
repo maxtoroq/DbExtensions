@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Transactions;
 using Samples.CSharp.Northwind;
 
 namespace Samples.CSharp {
@@ -47,31 +46,8 @@ namespace Samples.CSharp {
 
       public void Transactions_AdoNet() {
 
-         using (var tx = db.EnsureInTransaction()) {
-            // Connection is automatically opened if not open
-
-            Transactions_DoWork();
-
-            tx.Commit();
-         }
-         // Connection is closed if wasn't open
-      }
-
-      public void Transactions_TransactionScope() {
-
-         using (var tx = new TransactionScope()) {
-            using (db.EnsureConnectionOpen()) {
-               // Open connection if not open
-
-               Transactions_DoWork();
-
-               tx.Complete();
-            }
-            // Connection is closed if wasn't open
-         }
-      }
-
-      void Transactions_DoWork() {
+         using var tx = db.EnsureInTransaction();
+         // Connection is automatically opened if not open
 
          var order = new Order {
             CustomerID = "ALFKI",
@@ -91,6 +67,9 @@ namespace Samples.CSharp {
          db.OrderDetails.RemoveRange(order.OrderDetails);
 
          db.Orders.Remove(order);
+
+         tx.Commit();
+         // Connection is closed if wasn't open
       }
    }
 }

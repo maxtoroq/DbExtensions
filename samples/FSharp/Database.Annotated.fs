@@ -1,9 +1,6 @@
 ﻿namespace Samples.FSharp
 
 open System
-open System.Collections
-open System.Collections.Generic
-open System.Transactions
 open Samples.FSharp.Northwind
 
 type DatabaseAnnotatedSamples(db : NorthwindDatabase) =
@@ -37,41 +34,23 @@ type DatabaseAnnotatedSamples(db : NorthwindDatabase) =
 
    member this.Transactions_AdoNet() =
 
-      using (db.EnsureInTransaction())(fun tx ->
-         // Connection is automatically opened if not open
+    // Connection is automatically opened if not open
+    use tx = db.EnsureInTransaction()
 
-         this.Transactions_DoWork()
+    let order = new Order(CustomerID = "ALFKI")
+    order.OrderDetails.Add(new OrderDetail(ProductID = 77, Quantity = 1s))
+    order.OrderDetails.Add(new OrderDetail(ProductID = 41, Quantity = 2s))
 
-         tx.Commit()
-      )
-      // Connection is closed if wasn't open
+    db.Orders.Add(order)
 
-   member this.Transactions_TransactionScope() =
+    order.Freight <- new Nullable<decimal>(10m)
 
-      using (new TransactionScope())(fun tx -> 
-         using (db.EnsureConnectionOpen())(fun x ->
-            // Open connection if not open
+    db.Orders.Update(order)
 
-            this.Transactions_DoWork()
+    // The following line is not needed when cascade delete is configured on the database
+    db.OrderDetails.RemoveRange(order.OrderDetails);
 
-            tx.Complete()
-         )
-         // Connection is closed if wasn't open
-      )
+    db.Orders.Remove(order)
 
-   member private this.Transactions_DoWork() =
-
-      let order = new Order(CustomerID = "ALFKI")
-      order.OrderDetails.Add(new OrderDetail(ProductID = 77, Quantity = 1s))
-      order.OrderDetails.Add(new OrderDetail(ProductID = 41, Quantity = 2s))
-
-      db.Orders.Add(order)
-
-      order.Freight <- new Nullable<decimal>(10m)
-
-      db.Orders.Update(order)
-
-      // The following line is not needed when cascade delete is configured on the database
-      db.OrderDetails.RemoveRange(order.OrderDetails);
-
-      db.Orders.Remove(order)
+    tx.Commit()
+    // Connection is closed if wasn't open
