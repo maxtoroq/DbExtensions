@@ -30,7 +30,7 @@ namespace DbExtensions;
 /// <remarks>For information on how to use SqlBuilder see <see href="http://maxtoroq.github.io/DbExtensions/docs/SqlBuilder.html">SqlBuilder Tutorial</see>.</remarks>
 
 [CLSCompliant(true)]
-[DebuggerDisplay("{Buffer}")]
+[DebuggerDisplay($"{{{nameof(Buffer)}}}")]
 public partial class SqlBuilder {
 
    bool?
