@@ -7,9 +7,8 @@ namespace DbExtensions.Tests.Mapping.Poco {
 
    using static TestUtil;
 
-   [TestFixture(false)]
-   [TestFixture(true)]
-   public class PocoMappingConstructorBehavior(bool useCompiledMapping) {
+   [TestFixture]
+   public class PocoMappingConstructorBehavior {
 
       [Test]
       public void Map_Constructor_Named_Arguments() {
@@ -19,7 +18,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "id", 5 }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<Poco.Constructor.NamedArguments._Basic>(SQL
             .SELECT("NULL"))
@@ -37,7 +36,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "id", 5 }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<Poco.Constructor.NamedArguments._ParamsMatchProperties>(SQL
             .SELECT("NULL"))
@@ -57,7 +56,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "id", 5 }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var results = db.Map<Poco.Constructor.NamedArguments._MissingArg>(SQL
             .SELECT("NULL"));
@@ -73,7 +72,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "prop$id", 5 }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<Poco.Constructor.NamedArguments._ComplexProperty>(SQL
             .SELECT("NULL"))
@@ -91,7 +90,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "0$id", 5 }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<Poco.Constructor.NamedArguments._ComplexArgument>(SQL
             .SELECT("NULL"))
@@ -109,7 +108,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "value$id", 5 }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<Poco.Constructor.NamedArguments._Nested>(SQL
             .SELECT("NULL"))

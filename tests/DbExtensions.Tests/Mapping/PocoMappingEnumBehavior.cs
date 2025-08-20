@@ -4,11 +4,10 @@ namespace DbExtensions.Tests.Mapping.Poco {
 
    using static TestUtil;
 
-   [TestFixture(false)]
-   [TestFixture(true)]
-   public class PocoMappingEnumBehavior(bool useCompiledMapping) {
+   [TestFixture]
+   public class PocoMappingEnumBehavior {
 
-      readonly Database db = RealDatabase(useCompiledMapping);
+      readonly Database db = RealDatabase();
 
       [Test]
       public void Can_Map_Numeric_Column_To_Enum() {

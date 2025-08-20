@@ -4,11 +4,10 @@ namespace DbExtensions.Tests.Mapping.Annotated {
 
    using static TestUtil;
 
-   [TestFixture(false)]
-   [TestFixture(true)]
-   public class EnumMappingBehavior(bool useCompiledMapping) {
+   [TestFixture]
+   public class EnumMappingBehavior {
 
-      readonly Database db = RealDatabase(useCompiledMapping);
+      readonly Database db = RealDatabase();
 
       [Test]
       public void Can_Map_Numeric_Column_To_Enum() {

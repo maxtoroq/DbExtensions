@@ -1013,7 +1013,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       var entityObj = (object)entity;
 
       _ = _db.Map<object>(query, r => {
-         mapper.Load(entityObj, r);
+         mapper.PocoLoad(entityObj, r);
          return null;
 
       }).SingleOrDefault();

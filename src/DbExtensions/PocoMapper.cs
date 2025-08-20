@@ -45,7 +45,7 @@ partial class Database {
 
       var mapper = CreatePocoMapper(typeof(TResult));
 
-      return Map(query, r => (TResult)mapper.Map(r));
+      return Map(query, r => (TResult)mapper.PocoMap(r));
    }
 
    /// <summary>
@@ -62,7 +62,7 @@ partial class Database {
 
       var mapper = CreatePocoMapper(resultType);
 
-      return Map(query, mapper.Map);
+      return Map(query, mapper.PocoMap);
    }
 
    internal PocoMapper
@@ -70,19 +70,8 @@ partial class Database {
 
       return new PocoMapper(type) {
          Log = this.Configuration.Log,
-         UseCompiledMapping = this.Configuration.UseCompiledMapping,
       };
    }
-}
-
-partial class DatabaseConfiguration {
-
-   /// <summary>
-   /// true to use the new cached compiled mapping implementation for POCO objects;
-   /// otherwise, false. The default is false.
-   /// </summary>
-
-   public bool UseCompiledMapping { get; set; }
 }
 
 partial class SqlSet {
@@ -121,7 +110,7 @@ partial class SqlSet {
       mapper.SingleResult = singleResult;
       mapper.ManyIncludes = this.ManyIncludes;
 
-      return _db.Map(GetDefiningQuery(clone: false), mapper.Map);
+      return _db.Map(GetDefiningQuery(clone: false), mapper.PocoMap);
    }
 }
 
@@ -164,9 +153,6 @@ sealed class PocoMapper : Mapper {
    protected override bool
    CanUseConstructorMapping => true;
 
-   public bool
-   UseCompiledMapping { get; set; }
-
    public
    PocoMapper(Type type) {
 
@@ -175,12 +161,8 @@ sealed class PocoMapper : Mapper {
       _type = type;
    }
 
-   public override object
-   Map(IDataRecord record) {
-
-      if (!this.UseCompiledMapping) {
-         return base.Map(record);
-      }
+   public object
+   PocoMap(IDataRecord record) {
 
       if (_compiledMapFn is null) {
 
@@ -199,13 +181,8 @@ sealed class PocoMapper : Mapper {
       return instance;
    }
 
-   public override void
-   Load(object instance, IDataRecord record) {
-
-      if (!this.UseCompiledMapping) {
-         base.Load(instance, record);
-         return;
-      }
+   public void
+   PocoLoad(object instance, IDataRecord record) {
 
       if (_compiledLoadFn is null) {
 
@@ -388,12 +365,6 @@ sealed partial class PocoNode : Node {
    static readonly ConcurrentDictionary<PropertyInfo, MetaAccessor>
    _accessorCache = new(ReferenceEqualityComparer.Instance);
 
-   MetaAccessor
-   _accessor;
-
-   Func<object[], object>
-   _factory;
-
    int?
    _propertyHash;
 
@@ -429,16 +400,6 @@ sealed partial class PocoNode : Node {
       _propertyHash ??= (Property is null ? RootNodeHash
          : GetPropertyPath().GetHashCode());
 
-   private MetaAccessor
-   PropertyAccessor =>
-      _accessor ??= GetAccessor(Property);
-
-   private Func<object[], object>
-   Factory => _factory
-      ??= (Constructor is not null ?
-         ObjectFactory.GetFactory(Constructor)
-         : ObjectFactory.GetFactory(Type));
-
    public ParameterInfo
    Parameter { get; }
 
@@ -472,196 +433,25 @@ sealed partial class PocoNode : Node {
       this.Parameter = parameter;
    }
 
-   static MetaAccessor
-   GetAccessor(PropertyInfo property) =>
-      _accessorCache.GetOrAdd(property, static p => Metadata.PropertyAccessor.Create(p.ReflectedType, p, null));
-
    internal static CollectionAccessor
    GetCollectionAccessor(PropertyInfo property) =>
       (CollectionAccessor)_accessorCache.GetOrAdd(property, static p => CollectionAccessor.Create(p.ReflectedType, p));
 
    public override object
-   Create(IDataRecord record, MappingContext context) {
-
-      if (this.Constructor is null) {
-         return CreateInstance(default);
-      }
-
-      var args = this.ConstructorParameters
-         .Select(m => m.Value.Map(record, context))
-         .ToArray();
-
-      if (this.ConstructorParameters.Any(p => context.ConvertingNodes.Contains(p.Value))
-         || args.All(v => v is null)) {
-
-         // args already converted on MapSimple() call
-         return CreateInstance(args);
-      }
-
-      try {
-         return CreateInstance(args);
-
-      } catch (InvalidCastException) {
-
-         var converted = false;
-         var i = -1;
-
-         foreach (var pair in this.ConstructorParameters) {
-
-            i++;
-            var value = args[i];
-
-            if (value is null) {
-               continue;
-            }
-
-            var paramNode = (PocoNode)pair.Value;
-
-            if (!paramNode.Type.IsAssignableFrom(value.GetType())) {
-
-               context.Log?.WriteLine($"-- WARNING: Couldn't instantiate {this.UnderlyingType.FullName} with argument '{paramNode.Parameter.Name}' of type {paramNode.Type.FullName} {((value is null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}. Attempting conversion.");
-
-               args[i] = paramNode.ConvertValue(value);
-
-               context.ConvertingNodes.Add(paramNode);
-
-               converted = true;
-            }
-         }
-
-         if (converted) {
-            return CreateInstance(args);
-         }
-
-         throw;
-      }
-   }
-
-   object
-   CreateInstance(object[] args) =>
-      this.Factory.Invoke(args);
-
-   public override void
-   Load(object instance, IDataRecord record, MappingContext context) {
-
-      base.Load(instance, record, context);
-
-      if (context.ManyLoaders is { Count: > 0 }
-         && !IsInParameter()) {
-
-         context.LoadMany(this.PropertyHash, instance, record);
-      }
-   }
-
-   protected override object
-   MapSimple(IDataRecord record, MappingContext context) {
-
-      var value = base.MapSimple(record, context);
-
-      if (value is not null
-         && context.ConvertingNodes.Contains(this)) {
-
-         value = ConvertValue(value);
-      }
-
-      return value;
-   }
+   Create(IDataRecord record, MappingContext context) =>
+      throw new NotImplementedException();
 
    protected override object
    Get(object instance) =>
-      GetProperty(instance);
+      throw new NotImplementedException();
 
    protected override void
-   Set(object instance, object value, MappingContext context) {
-
-      if (this.IsComplex) {
-         SetProperty(instance, value);
-         return;
-      }
-
-      try {
-         SetSimple(instance, value, context);
-
-      } catch (Exception ex) {
-         throw new InvalidCastException($"Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Type.FullName}' {((value is null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}.", ex);
-      }
-   }
-
-   void
-   SetSimple(object instance, object value, MappingContext context) {
-
-      if (value is null
-         || context.ConvertingNodes.Contains(this)) {
-
-         // value is already converted on MapSimple() call
-         SetProperty(instance, value);
-         return;
-      }
-
-      try {
-         SetProperty(instance, value);
-
-      } catch (InvalidCastException) {
-
-         context.Log?.WriteLine($"-- WARNING: Couldn't set '{this.Property.ReflectedType.FullName}' property '{this.Property.Name}' of type '{this.Property.PropertyType.FullName}' {((value is null) ? "to null" : $"with value of type '{value.GetType().FullName}'")}. Attempting conversion.");
-
-         value = ConvertValue(value);
-
-         context.ConvertingNodes.Add(this);
-
-         SetProperty(instance, value);
-      }
-   }
-
-   object
-   GetProperty(object instance) =>
-      this.PropertyAccessor.GetBoxedValue(instance);
-
-   void
-   SetProperty(object instance, object value) =>
-      this.PropertyAccessor.SetBoxedValue(ref instance, value);
+   Set(object instance, object value, MappingContext context) =>
+      throw new NotImplementedException();
 
    public override ConstructorInfo[]
    GetConstructors(BindingFlags bindingAttr) =>
       this.UnderlyingType.GetConstructors(bindingAttr);
-
-   object
-   ConvertValue(object value) {
-
-      if (this.UnderlyingType == typeof(bool)) {
-         return ConvertToBoolean(this, value);
-      }
-
-      if (this.UnderlyingType.IsEnum) {
-         return ConvertToEnum(this, value);
-      }
-
-      return ConvertTo(this, value);
-   }
-
-   static object
-   ConvertToBoolean(PocoNode node, object value) {
-
-      if (value is string s) {
-         return Convert.ToBoolean(Convert.ToInt64(s, CultureInfo.InvariantCulture));
-      }
-
-      return ConvertTo(node, value);
-   }
-
-   static object
-   ConvertToEnum(PocoNode node, object value) {
-
-      if (value is string s) {
-         return Enum.Parse(node.UnderlyingType, s);
-      }
-
-      return Enum.ToObject(node.UnderlyingType, value);
-   }
-
-   static object
-   ConvertTo(PocoNode node, object value) =>
-      Convert.ChangeType(value, node.UnderlyingType, CultureInfo.InvariantCulture);
 
    string
    GetPropertyPath() {

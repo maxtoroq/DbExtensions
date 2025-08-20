@@ -280,7 +280,7 @@ abstract partial class Mapper {
       throw new InvalidOperationException(message.ToString());
    }
 
-   public virtual object
+   public object
    Map(IDataRecord record) {
 
       var node = GetRootNode(record);
@@ -292,7 +292,7 @@ abstract partial class Mapper {
       return instance;
    }
 
-   public virtual void
+   public void
    Load(object instance, IDataRecord record) {
 
       var node = GetRootNode(record);
@@ -448,7 +448,7 @@ abstract class Node {
       return MapSimple(record, context);
    }
 
-   protected virtual object
+   protected object
    MapComplex(IDataRecord record, MappingContext context) {
 
       if (AllColumnsNull(record)) {
@@ -478,7 +478,7 @@ abstract class Node {
       return record.IsDBNull(this.ColumnOrdinal);
    }
 
-   protected virtual object
+   protected object
    MapSimple(IDataRecord record, MappingContext context) {
 
       var isNull = record.IsDBNull(this.ColumnOrdinal);
@@ -490,7 +490,7 @@ abstract class Node {
    public abstract object
    Create(IDataRecord record, MappingContext context);
 
-   public virtual void
+   public void
    Load(object instance, IDataRecord record, MappingContext context) {
 
       for (int i = 0; i < this.Properties.Count; i++) {

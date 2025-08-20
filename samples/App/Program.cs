@@ -153,7 +153,6 @@ namespace Samples {
 
          var db = (Database)Activator.CreateInstance(dbType, connSettings.ConnectionString, connSettings.ProviderName);
          db.Configuration.Log = Out;
-         db.Configuration.UseCompiledMapping = true;
 
          return
             from t in samplesAssembly.GetTypes()

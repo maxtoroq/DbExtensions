@@ -9,7 +9,7 @@ namespace DbExtensions.Tests.Metadata {
    [TestFixture]
    public class AssociationReflection {
 
-      readonly Database db = MockDatabase(true);
+      readonly Database db = MockDatabase();
 
       [Test]
       public void One_To_Many() {

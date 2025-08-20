@@ -7,9 +7,8 @@ namespace DbExtensions.Tests.Mapping.Poco {
 
    using static TestUtil;
 
-   [TestFixture(false)]
-   [TestFixture(true)]
-   public class PocoMappingBehavior(bool useCompiledMapping) {
+   [TestFixture]
+   public class PocoMappingBehavior() {
 
       [Test]
       public void Map_Property() {
@@ -18,7 +17,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Foo", "a" }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Property>(SQL
             .SELECT("NULL"))
@@ -34,7 +33,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Foo", null }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Null_Property>(SQL
             .SELECT("NULL"))
@@ -50,7 +49,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Foo", "a" }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Object>(SQL
             .SELECT("NULL"))
@@ -66,7 +65,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Foo", "a" }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Property_Private_Setter>(SQL
             .SELECT("NULL"))
@@ -83,7 +82,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Bar", "b" }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          _ = db.Map<PocoMapping.Ignore_Unmapped_Property>(SQL
             .SELECT("NULL"))
@@ -97,7 +96,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Bar$Foo", "b" }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Complex_Property>(SQL
             .SELECT("NULL"))
@@ -114,7 +113,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Bar", null }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Null_Complex_Property>(SQL
             .SELECT("NULL"))
@@ -131,7 +130,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Nested$Bar", null }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Complex_Property_To_Null_When_All_Subproperties_Are_Null>(SQL
             .SELECT("NULL"))
@@ -147,7 +146,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Foo$B", 2 }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Load_Complex_Property>(SQL
             .SELECT("NULL"))
@@ -164,7 +163,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "2", "b" }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Constructor>(SQL
             .SELECT("NULL"))
@@ -182,7 +181,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             new("1", "http://example.com"),
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var results = db.Map<Uri>(SQL
             .SELECT("NULL"));
@@ -198,7 +197,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "2", 1 }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var results = db.Map<Uri>(SQL
             .SELECT("NULL"));
@@ -213,7 +212,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Url$1", "http://example.com" }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Complex_Property>(SQL
             .SELECT("NULL"))
@@ -231,7 +230,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Foo2", null }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Nullable_Complex_Property>(SQL
             .SELECT("NULL"))
@@ -249,7 +248,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Foo$Foo", null }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Complex_Property_To_Null_When_All_Arguments_And_Subproperties_Are_Null>(SQL
             .SELECT("NULL"))
@@ -266,7 +265,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "1$Foo", null }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Complex_Argument_To_Null_When_All_Arguments_And_Subproperties_Are_Null>(SQL
             .SELECT("NULL"))
@@ -284,7 +283,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "Foo$Bar$B", 2 }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Load_Constructor_Complex_Property>(SQL
             .SELECT("NULL"))
@@ -301,7 +300,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "1$Bar$B", 2 }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Load_Constructor_Complex_Argument>(SQL
             .SELECT("NULL"))
@@ -318,7 +317,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "2", null }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Null_Constructor_Argument>(SQL
             .SELECT("NULL"))
@@ -335,7 +334,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
             { "1$2", "b" }
          };
 
-         var db = MockQuery(useCompiledMapping, data);
+         var db = MockQuery(data);
 
          var value = db.Map<PocoMapping.Map_Constructor_Nested>(SQL
             .SELECT("NULL"))

@@ -7,11 +7,10 @@ namespace DbExtensions.Tests.Querying {
 
    using static TestUtil;
 
-   [TestFixture(false)]
-   [TestFixture(true)]
-   public class SqlSetIncludeBehavior(bool useCompiledMapping) {
+   [TestFixture]
+   public class SqlSetIncludeBehavior {
 
-      readonly Database db = RealDatabase(useCompiledMapping);
+      readonly Database db = RealDatabase();
 
       [Test]
       public void Can_Include_One() {

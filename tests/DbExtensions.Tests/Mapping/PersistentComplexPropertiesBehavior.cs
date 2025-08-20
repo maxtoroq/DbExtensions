@@ -4,11 +4,10 @@ namespace DbExtensions.Tests.Mapping.Annotated {
 
    using static TestUtil;
 
-   [TestFixture(false)]
-   [TestFixture(true)]
-   public class PersistentComplexPropertiesBehavior(bool useCompiledMapping) {
+   [TestFixture]
+   public class PersistentComplexPropertiesBehavior() {
 
-      readonly Database db = RealDatabase(useCompiledMapping);
+      readonly Database db = RealDatabase();
 
       [Test]
       public void Can_Read_Default_Name() {
@@ -114,7 +113,7 @@ namespace DbExtensions.Tests.Mapping.Annotated {
       [Test]
       public void Can_Configure_Default_Separator() {
 
-         var db = MockDatabase(useCompiledMapping);
+         var db = MockDatabase();
          db.Configuration.DefaultComplexPropertySeparator = "$";
 
          var expected = SQL
@@ -132,7 +131,7 @@ namespace DbExtensions.Tests.Mapping.Annotated {
       [Test]
       public void Can_Override_Default_Separator() {
 
-         var db = MockDatabase(useCompiledMapping);
+         var db = MockDatabase();
          db.Configuration.DefaultComplexPropertySeparator = "$";
 
          var expected = SQL
@@ -150,7 +149,7 @@ namespace DbExtensions.Tests.Mapping.Annotated {
       [Test]
       public void Can_Override_Default_Separator_With_Empty_String() {
 
-         var db = MockDatabase(useCompiledMapping);
+         var db = MockDatabase();
          db.Configuration.DefaultComplexPropertySeparator = "$";
 
          var expected = SQL

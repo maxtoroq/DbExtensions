@@ -4,14 +4,13 @@ namespace DbExtensions.Tests.Querying {
 
    using static TestUtil;
 
-   [TestFixture(false)]
-   [TestFixture(true)]
-   public class SqlTableBehavior(bool useCompiledMapping) {
+   [TestFixture]
+   public class SqlTableBehavior {
 
       [Test]
       public void Dont_Use_Subqueries_When_Methods_Are_Called_In_Order() {
 
-         var db = MockDatabase(useCompiledMapping);
+         var db = MockDatabase();
 
          SqlSet set = db.Table<SqlTable.Model1.Product>()
             .Where("UnitsInStock > 0")
@@ -31,7 +30,7 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Use_Multipart_Identifier() {
 
-         var db = MockDatabase(useCompiledMapping, "System.Data.SqlClient");
+         var db = MockDatabase("System.Data.SqlClient");
 
          SqlSet set = db.Table<SqlTable.Model2.Product>();
 
@@ -45,7 +44,7 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Update_Assigned_Key() {
 
-         var db = RealDatabase(useCompiledMapping);
+         var db = RealDatabase();
          var table = db.Table<SqlTable.Model3.Customer>();
 
          string originalId = "FISSA";
@@ -71,7 +70,7 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Refresh() {
 
-         var db = RealDatabase(useCompiledMapping);
+         var db = RealDatabase();
          var table = db.Table<SqlTable.Refresh.Product>();
 
          using (var tx = db.EnsureInTransaction()) {
