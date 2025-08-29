@@ -13,7 +13,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
       public void Can_Map_Numeric_Column_To_Enum() {
 
          var item = db.From<Enum.ToNumericColumn.Product>("Products")
-            .First("CategoryID = {0}", Enum.CategoryEnum.Condiments);
+            .First($"CategoryID = {Enum.CategoryEnum.Condiments}");
 
          Assert.AreEqual(Enum.CategoryEnum.Condiments, item.CategoryID);
          Assert.AreEqual((int)Enum.CategoryEnum.Condiments, (int)item.CategoryID);
@@ -23,7 +23,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
       public void Can_Map_Numeric_Column_To_Nullable_Enum() {
 
          var item = db.From<Enum.NullableToNumericColumn.Product>("Products")
-            .First("CategoryID = {0}", Enum.CategoryEnum.Condiments);
+            .First($"CategoryID = {Enum.CategoryEnum.Condiments}");
 
          Assert.AreEqual(Enum.CategoryEnum.Condiments, item.CategoryID);
          Assert.AreEqual((int)Enum.CategoryEnum.Condiments, (int)item.CategoryID);
@@ -33,7 +33,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
       public void Can_Map_Text_Column_To_Enum() {
 
          var item = db.From<Enum.ToTextColumn.Category>("Categories")
-            .Single("CategoryName = {0}", Enum.CategoryEnum.Condiments.ToString());
+            .Single($"CategoryName = {Enum.CategoryEnum.Condiments.ToString()}");
 
          Assert.AreEqual(Enum.CategoryEnum.Condiments, item.CategoryName);
          Assert.AreEqual(Enum.CategoryEnum.Condiments.ToString(), item.CategoryName.ToString());
@@ -43,7 +43,7 @@ namespace DbExtensions.Tests.Mapping.Poco {
       public void Can_Map_Text_Column_To_Nullable_Enum() {
 
          var item = db.From<Enum.NullableToTextColumn.Category>("Categories")
-            .Single("CategoryName = {0}", Enum.CategoryEnum.Condiments.ToString());
+            .Single($"CategoryName = {Enum.CategoryEnum.Condiments.ToString()}");
 
          Assert.AreEqual(Enum.CategoryEnum.Condiments, item.CategoryName);
          Assert.AreEqual(Enum.CategoryEnum.Condiments.ToString(), item.CategoryName.ToString());

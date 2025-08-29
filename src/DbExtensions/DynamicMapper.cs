@@ -18,8 +18,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace DbExtensions;
+
+using InterpolatedString = InterpolatedStringHandlerArgumentAttribute;
 
 partial class Database {
 
@@ -31,7 +34,7 @@ partial class Database {
    /// <returns>The results of the query as dynamic objects.</returns>
 
    public IEnumerable<dynamic>
-   Map(SqlBuilder query) {
+   Map([InterpolatedString] SqlBuilder query) {
 
       var mapper = CreateDynamicMapper();
 

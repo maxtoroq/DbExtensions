@@ -45,7 +45,7 @@ static class TestUtil {
    public static void
    SetupReader(Mock<Database> mockDb, IDataReader reader, string commandText = null) {
 
-      mockDb.Setup(db => db.CreateCommand(It.IsAny<string>(), It.IsAny<object[]>()))
+      mockDb.Setup(db => db.CreateCommand(It.IsAny<SqlBuilder>()))
          .Returns(() => {
             var command = new Mock<IDbCommand>();
             command.SetupProperty(cmd => cmd.Connection, mockDb.Object.Connection);

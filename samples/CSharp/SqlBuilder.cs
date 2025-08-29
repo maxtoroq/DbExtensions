@@ -28,44 +28,33 @@ namespace Samples.CSharp {
             .SELECT("p.ProductID, p.ProductName")
             .FROM("Products p")
             .WHERE()
-            ._If(categoryId.HasValue, "p.CategoryID = {0}", categoryId)
-            ._If(supplierId.HasValue, "p.SupplierID = {0}", supplierId)
-            .ORDER_BY("p.ProductName, p.ProductID DESC");
-      }
-
-      public SqlBuilder Or() {
-
-         int[][] parameters = { new[] { 1, 2 }, new[] { 3, 4 } };
-
-         return SQL
-            .SELECT("p.ProductID, p.ProductName")
-            .FROM("Products p")
-            .WHERE()
-            ._OR(parameters, "(p.CategoryID = {0} AND p.SupplierID = {1})", p => new object[] { p[0], p[1] })
+            ._If(categoryId.HasValue, $"p.CategoryID = {categoryId.Value}")
+            ._If(supplierId.HasValue, $"p.SupplierID = {supplierId.Value}")
             .ORDER_BY("p.ProductName, p.ProductID DESC");
       }
 
       public SqlBuilder Subquery() {
 
          return SQL
-            .SELECT("o.OrderID, o.CustomerID, ({0}) AS TotalItems", SQL
+            .SELECT($"o.OrderID, o.CustomerID, ({SQL
                .SELECT("COUNT(od.Quantity)")
                .FROM("OrderDetails od")
-               .WHERE("od.OrderID = o.OrderID"))
+               .WHERE("od.OrderID = o.OrderID")}) AS TotalItems")
             .FROM("Orders o");
       }
 
       /// <remarks>
       /// If there's a large chunk of the query that is static you can pass it to the
-      /// constructor and extend it from there.
+      /// Create() method and extend it from there.
       /// </remarks>
 
       public SqlBuilder ExtendRawSql() {
 
-         return new SqlBuilder(@"
+         return SqlBuilder.Create("""
              SELECT ProductID, ProductName
-             FROM Products")
-            .WHERE("CategoryID = {0}", 1);
+             FROM Products
+             """)
+            .WHERE($"CategoryID = {1}");
       }
 
       public SqlBuilder ListArgument() {
@@ -75,11 +64,11 @@ namespace Samples.CSharp {
          return SQL
             .SELECT("p.ProductID, p.CategoryID")
             .FROM("Products p")
-            .WHERE("p.CategoryID = {0} AND p.ProductID IN ({1})", 1, SQL.List(range))
-            ._("EXISTS ({0})", SQL
+            .WHERE($"p.CategoryID = {1} AND p.ProductID IN ({range:list})")
+            ._($"EXISTS ({SQL
                .SELECT("ProductID")
                .FROM("OrderDetails")
-               .WHERE("OrderID = {0}", 77))
+               .WHERE($"OrderID = {77}")})")
             .GROUP_BY("p.ProductID");
       }
 
@@ -94,26 +83,26 @@ namespace Samples.CSharp {
 
          return SQL
             .UPDATE("Products")
-            .SET("Discontinued = {0}", true)
-            .WHERE("ProductID = {0}", 1);
+            .SET($"Discontinued = {true}")
+            .WHERE($"ProductID = {1}");
       }
 
       public SqlBuilder UpdateWithSubquery() {
 
          return SQL
             .UPDATE("Products p")
-            .SET("p.Discontinued = {0}", true)
-            .WHERE("p.ProductID = ({0})", SQL
+            .SET($"p.Discontinued = {true}")
+            .WHERE($"p.ProductID = ({SQL
                .SELECT("p2.ProductID")
                .FROM("Products p2")
-               .WHERE("p2.ProductID <> p.ProductID"));
+               .WHERE("p2.ProductID <> p.ProductID")})");
       }
 
       public SqlBuilder Delete() {
 
          return SQL
             .DELETE_FROM("Products")
-            .WHERE("ProductID = {0}", 1);
+            .WHERE($"ProductID = {1}");
       }
 
       /// <summary>
@@ -127,8 +116,9 @@ namespace Samples.CSharp {
 
          return SQL
             .SELECT("Products.*, Categories.CategoryName")
-            .FROM("Categories").LEFT_JOIN("Products ON Categories.CategoryID = Products.CategoryID")
-            .WHERE("Products.Discontinued = {0}", 0);
+            .FROM("Categories")
+            .LEFT_JOIN("Products ON Categories.CategoryID = Products.CategoryID")
+            .WHERE($"Products.Discontinued = {0}");
       }
 
       /// <summary>
@@ -161,10 +151,9 @@ namespace Samples.CSharp {
          return SQL
             .SELECT("Products.ProductName, Products.UnitPrice")
             .FROM("Products")
-            .WHERE("Products.UnitPrice > ({0})", SQL
+            .WHERE($"Products.UnitPrice > ({SQL
                .SELECT("AVG(UnitPrice)")
-               .FROM("Products")
-            );
+               .FROM("Products")})");
       }
 
       /// <summary>
@@ -185,7 +174,7 @@ namespace Samples.CSharp {
             .SELECT("Categories.CategoryName, Products.ProductName, Sum(CONVERT(money,(\"Order Details\".UnitPrice*Quantity*(1-Discount)/100))*100) AS ProductSales")
             .FROM("(Categories").INNER_JOIN("Products ON Categories.CategoryID = Products.CategoryID)")
             .INNER_JOIN("(Orders").INNER_JOIN("\"Order Details\" ON Orders.OrderID = \"Order Details\".OrderID) ON Products.ProductID = \"Order Details\".ProductID")
-            .WHERE("(((Orders.ShippedDate) Between {0} And {1}))", DateTime.Parse("1997-01-01"), DateTime.Parse("1997-12-31"))
+            .WHERE($"(((Orders.ShippedDate) Between {new DateTime(1997, 1, 1)} And {new DateTime(1997, 12, 31)}))")
             .GROUP_BY("Categories.CategoryName, Products.ProductName");
       }
    }

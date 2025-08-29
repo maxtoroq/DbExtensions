@@ -100,7 +100,7 @@ namespace DbExtensions.Tests.Mapping.Annotated {
 
             table.Update(entity);
 
-            Assert.IsTrue(table.Any("CustomerID = {0} AND ContactName IS NULL AND ContactTitle IS NULL", entity.CustomerID));
+            Assert.IsTrue(table.Any($"CustomerID = {entity.CustomerID} AND ContactName IS NULL AND ContactTitle IS NULL"));
 
             entity = table.Find(entity.CustomerID);
 

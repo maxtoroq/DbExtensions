@@ -20,9 +20,23 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DbExtensions;
+
+using InterpolatedString = InterpolatedStringHandlerArgumentAttribute;
+
+#nullable enable
+
+interface ISqlFragment {
+
+   IList<object?>
+   ParameterValues { get; }
+
+   string
+   ToString();
+}
 
 /// <summary>
 /// Represents a mutable SQL string.
@@ -31,7 +45,11 @@ namespace DbExtensions;
 
 [CLSCompliant(true)]
 [DebuggerDisplay($"{{{nameof(Buffer)}}}")]
-public partial class SqlBuilder {
+[InterpolatedStringHandler]
+public sealed partial class SqlBuilder : ISqlFragment {
+
+   const int
+   _defaultCapacity = 48;
 
    bool?
    _ifCondition;
@@ -41,44 +59,33 @@ public partial class SqlBuilder {
    /// </summary>
 
    public StringBuilder
-   Buffer { get; } = new();
+   Buffer { get; }
 
    /// <summary>
    /// The parameter objects to be included in the database command.
    /// </summary>
 
-   public Collection<object>
-   ParameterValues { get; } = new();
+   public Collection<object?>
+   ParameterValues { get; }
+
+   IList<object?>
+   ISqlFragment.ParameterValues => ParameterValues;
 
    /// <summary>
    /// Gets or sets the current SQL clause, used to identify consecutive 
    /// appends to the same clause.
    /// </summary>
 
-   public string
+   public SqlClause?
    CurrentClause { get; set; }
 
    /// <summary>
-   /// Gets or sets the separator of the current SQL clause body.
-   /// </summary>
-
-   public string
-   CurrentSeparator { get; set; }
-
-   /// <summary>
    /// Gets or sets the next SQL clause. Used by clause continuation methods,
-   /// such as <see cref="AppendToCurrentClause(string, object[])"/> and the methods that start with "_".
+   /// such as <see cref="_(String)"/> and <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
    /// </summary>
 
-   public string
+   public SqlClause?
    NextClause { get; set; }
-
-   /// <summary>
-   /// Gets or sets the separator of the next SQL clause body.
-   /// </summary>
-
-   public string
-   NextSeparator { get; set; }
 
    /// <summary>
    /// Returns true if the buffer is empty.
@@ -86,6 +93,9 @@ public partial class SqlBuilder {
 
    public bool
    IsEmpty => Buffer.Length == 0;
+
+   internal bool
+   ElseOK => _ifCondition == false;
 
    /// <summary>
    /// Concatenates a specified separator <see cref="String"/> between each element of a 
@@ -99,7 +109,7 @@ public partial class SqlBuilder {
    /// </returns>
 
    public static SqlBuilder
-   JoinSql(string separator, params SqlBuilder[] values) {
+   JoinSql(string? separator, params SqlBuilder?[] values) {
 
       ArgumentNullException.ThrowIfNull(values);
 
@@ -144,7 +154,7 @@ public partial class SqlBuilder {
    /// </returns>
 
    public static SqlBuilder
-   JoinSql(string separator, IEnumerable<SqlBuilder> values) {
+   JoinSql(string? separator, IEnumerable<SqlBuilder?> values) {
 
       ArgumentNullException.ThrowIfNull(values);
 
@@ -176,84 +186,199 @@ public partial class SqlBuilder {
    }
 
    /// <summary>
+   /// Initializes a new instance of the <see cref="SqlBuilder"/> class
+   /// using the provided interpolated string.
+   /// </summary>
+   /// <param name="handler">The interpolated string.</param>
+
+   public static SqlBuilder
+   Create([InterpolatedString] ref AppendInterpolatedStringHandler handler) =>
+      handler.Builder;
+
+   /// <summary>
+   /// Initializes a new instance of the <see cref="SqlBuilder"/> class
+   /// using the provided text.
+   /// </summary>
+   /// <param name="text">The SQL string.</param>
+
+   public static SqlBuilder
+   Create(string? text) {
+
+      if (String.IsNullOrEmpty(text)) {
+         return new SqlBuilder();
+      }
+
+      return new SqlBuilder(Math.Max(_defaultCapacity, text.Length))
+         .Append(text);
+   }
+
+   /// <summary>
    /// Initializes a new instance of the <see cref="SqlBuilder"/> class.
    /// </summary>
 
    public
-   SqlBuilder() { }
+   SqlBuilder()
+      : this(_defaultCapacity) { }
 
-   /// <summary>
-   /// Initializes a new instance of the <see cref="SqlBuilder"/> class
-   /// using the provided format string and parameters.
-   /// </summary>
-   /// <param name="format">The SQL format string.</param>
-   /// <param name="args">The array of parameters.</param>
+   private
+   SqlBuilder(int capacity) {
 
-   public
-   SqlBuilder(string format, params object[] args) {
-      Append(format, args);
+      this.Buffer = new(capacity);
+      this.ParameterValues = new();
    }
 
+   private
+   SqlBuilder(SqlBuilder other) {
+
+      ArgumentNullException.ThrowIfNull(other);
+
+      // When you clone a builder you most likely want to modify the clone,
+      // therefore use default capacity as min.
+
+      this.Buffer = new(Math.Max(_defaultCapacity, other.Buffer.Capacity));
+      this.Buffer.Append(other.Buffer);
+      this.ParameterValues = new(new List<object?>(other.ParameterValues));
+      this.CurrentClause = other.CurrentClause;
+      this.NextClause = other.NextClause;
+      _ifCondition = other._ifCondition;
+   }
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public
+   SqlBuilder(int literalLength, int formattedCount) {
+
+      // This constructor is used by interpolated string arguments.
+      // Since these are literal "string" arguments, the query is most likely not
+      // modified. Therefore we use a "static" capacity and ignore the default
+      // capacity (although the interpolated string could still use sub-queries and
+      // dynamic literals that make the query grow).
+
+      this.Buffer = new(literalLength + PlaceholderLengthSum(formattedCount));
+      this.ParameterValues = new(new List<object?>(formattedCount));
+   }
+
+   static int
+   PlaceholderLengthSum(int formattedCount) {
+
+      var result = 0;
+
+      for (var i = 0; i < formattedCount; i++) {
+         result += i switch {
+            < 10 => 1,
+            < 100 => 2,
+            < 1_000 => 3,
+            < 10_000 => 4,
+            < 100_000 => 5,
+            < 1_000_000 => 6,
+            < 10_000_000 => 7,
+            < 100_000_000 => 8,
+            < 1_000_000_000 => 9,
+            _ => 10
+         } + 2;
+      }
+
+      return result;
+   }
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public void
+   AppendLiteral(string value) =>
+      this.Buffer.Append(value);
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public void
+   AppendFormatted(object? value, int alignment = 0, string? format = null) =>
+      AppendPlaceholder(value, format);
+
    /// <summary>
-   /// Appends the SQL clause specified by <paramref name="clauseName"/> using the provided 
-   /// <paramref name="format"/> string and parameters.
+   /// Appends the SQL clause identified by <typeparamref name="TClause"/>.
    /// </summary>
-   /// <param name="clauseName">The SQL clause.</param>
-   /// <param name="separator">The clause body separator, used for consecutive appends to the same clause.</param>
-   /// <param name="format">The format string that represents the body of the clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <typeparam name="TClause">The type of the SQL clause.</typeparam>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   AppendClause(string clauseName, string separator, string format, params object[] args) {
+   AppendClause<TClause>() where TClause : SqlClause, new() =>
+      AppendClause(SqlClause.Instance<TClause>(), null);
 
-      if (separator is null
-         || !String.Equals(clauseName, this.CurrentClause, StringComparison.OrdinalIgnoreCase)) {
+   /// <summary>
+   /// Appends the SQL clause identified by <typeparamref name="TClause"/> and
+   /// appends the interpolated string <paramref name="handler"/>.
+   /// </summary>
+   /// <typeparam name="TClause">The type of the SQL clause.</typeparam>
+   /// <param name="handler">The interpolated string to append.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   AppendClause<TClause>([InterpolatedString("")] ref SqlInterpolatedStringHandler<TClause> handler) where TClause : SqlClause, new() =>
+      this;
+
+   /// <summary>
+   /// Appends the SQL clause identified by <typeparamref name="TClause"/> and
+   /// appends the <paramref name="text"/>.
+   /// </summary>
+   /// <typeparam name="TClause">The type of the SQL clause.</typeparam>
+   /// <param name="text">The text to append.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   AppendClause<TClause>(string? text) where TClause : SqlClause, new() =>
+      AppendClause(SqlClause.Instance<TClause>(), text);
+
+   /// <summary>
+   /// Appends the SQL <paramref name="clause"/>.
+   /// </summary>
+   /// <param name="clause">The clause to append.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   AppendClause(SqlClause clause) =>
+      AppendClause(clause, null);
+
+   /// <summary>
+   /// Appends the SQL <paramref name="clause"/> and the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="clause">The clause to append.</param>
+   /// <param name="text">The text to append.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   AppendClause(SqlClause clause, string? text) {
+
+      ArgumentNullException.ThrowIfNull(clause);
+
+      if (clause is SqlClause.Current) {
+         clause = this.NextClause
+            ?? this.CurrentClause
+            ?? throw new InvalidOperationException();
+      }
+
+      if (clause.Separator is null
+         || !String.Equals(clause.Name, this.CurrentClause?.Name, StringComparison.OrdinalIgnoreCase)) {
 
          if (!this.IsEmpty) {
             this.Buffer.AppendLine();
          }
 
-         if (clauseName is not null) {
-            this.Buffer.Append(clauseName);
-            this.Buffer.Append(' ');
+         if (clause.Name is { } name) {
+            this.Buffer.Append(name)
+               .Append(' ');
          }
 
-      } else if (separator is not null) {
-         this.Buffer.Append(separator);
+      } else if (clause.Separator is { } sep) {
+         this.Buffer.Append(sep);
       }
 
-      Append(format, args);
+      this.Buffer.Append(text);
 
-      this.CurrentClause = clauseName;
-      this.CurrentSeparator = separator;
-
+      this.CurrentClause = clause;
       this.NextClause = null;
-      this.NextSeparator = null;
       _ifCondition = null;
-
-      return this;
-   }
-
-   /// <summary>
-   /// Appends <paramref name="format"/> to the current clause.
-   /// </summary>
-   /// <param name="format">The format string that represents the body of the current clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
-   /// <returns>A reference to this instance after the append operation has completed.</returns>
-
-   public SqlBuilder
-   AppendToCurrentClause(string format, params object[] args) {
-
-      var clause = this.CurrentClause;
-      var separator = this.CurrentSeparator;
-
-      if (this.NextClause is not null) {
-         clause = this.NextClause;
-         separator = this.NextSeparator;
-      }
-
-      AppendClause(clause, separator, format, args);
 
       return this;
    }
@@ -267,96 +392,135 @@ public partial class SqlBuilder {
    public SqlBuilder
    Append(SqlBuilder sql) {
 
-      this.Buffer.Append(MakeAbsolutePlaceholders(sql));
+      ArgumentNullException.ThrowIfNull(sql);
 
-      for (int i = 0; i < sql.ParameterValues.Count; i++) {
-         this.ParameterValues.Add(sql.ParameterValues[i]);
+      AppendSql(sql, this.Buffer);
+      return this;
+   }
+
+   internal SqlBuilder
+   Append(ISqlFragment sql) {
+
+      AppendSql(sql, this.Buffer);
+      return this;
+   }
+
+   void
+   AppendSql(ISqlFragment sql, StringBuilder sb) {
+
+      if (sql.ParameterValues.Count == 0) {
+
+         if (sql is SqlBuilder sqlB) {
+            sb.Append(sqlB.Buffer);
+         } else {
+            sb.Append(sql.ToString());
+         }
+
+         return;
       }
 
-      return this;
+      sb.AppendFormat(
+         CultureInfo.InvariantCulture,
+         sql.ToString(),
+         Enumerable.Range(0, sql.ParameterValues.Count)
+            .Select(x => $"{{{this.ParameterValues.Count + x}}}")
+            .ToArray());
+
+      foreach (var param in sql.ParameterValues) {
+         this.ParameterValues.Add(param);
+      }
    }
 
    /// <summary>
-   /// Appends <paramref name="format"/> to this instance.
+   /// Appends the interpolated string <paramref name="handler"/> to this instance.
    /// </summary>
-   /// <param name="format">A SQL format string.</param>
-   /// <param name="args">The array of parameters.</param>
+   /// <param name="handler">The interpolated string.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   Append(string format, params object[] args) {
+   Append([InterpolatedString("")] ref AppendInterpolatedStringHandler handler) =>
+      this;
 
-      if (args is null || args.Length == 0) {
+   /// <summary>
+   /// Appends <paramref name="text"/> to this instance.
+   /// </summary>
+   /// <param name="text">The string.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
 
-         this.Buffer.Append(format);
-         return this;
-      }
+   public SqlBuilder
+   Append(string? text) {
 
-      var fargs = new List<string>();
-
-      for (int i = 0; i < args.Length; i++) {
-
-         var obj = args[i];
-
-         if (obj is not null) {
-
-            if (obj is SqlList list) {
-
-               fargs.Add(String.Join(", ", Enumerable.Range(0, list.Count).Select(x => Placeholder(this.ParameterValues.Count + x))));
-
-               for (int j = 0; j < list.Count; j++) {
-                  this.ParameterValues.Add(list[j]);
-               }
-
-               continue;
-
-            } else {
-
-               var sqlb = obj as SqlBuilder;
-
-               if (sqlb is null) {
-                  GetDefiningQueryFromObject(obj, ref sqlb);
-               }
-
-               if (sqlb is not null) {
-
-                  var sqlfrag = new StringBuilder()
-                     .AppendLine()
-                     .Append(MakeAbsolutePlaceholders(sqlb))
-                     .Replace(Environment.NewLine, Environment.NewLine + "\t");
-
-                  fargs.Add(sqlfrag.ToString());
-
-                  for (int j = 0; j < sqlb.ParameterValues.Count; j++) {
-                     this.ParameterValues.Add(sqlb.ParameterValues[j]);
-                  }
-
-                  continue;
-               }
-            }
-         }
-
-         fargs.Add(Placeholder(this.ParameterValues.Count));
-         this.ParameterValues.Add(obj);
-      }
-
-      format ??= String.Join(" ", Enumerable.Range(0, fargs.Count).Select(Placeholder));
-
-      this.Buffer.AppendFormat(CultureInfo.InvariantCulture, format, fargs.ToArray());
-
+      this.Buffer.Append(text);
       return this;
    }
 
+   internal void
+   AppendPlaceholder(object? value, string? format) {
+
+      if (format == "sql") {
+         this.Buffer.Append(CultureInfo.InvariantCulture, $"{value}");
+         return;
+      }
+
+      if (format == "list") {
+
+         var items = (value as IEnumerable<object?>
+            ?? (value as IEnumerable)?.Cast<object?>()
+            ?? [])
+            .DefaultIfEmpty();
+
+         var first = true;
+
+         foreach (var item in items) {
+
+            if (!first) {
+               this.Buffer.Append(',')
+                  .Append(' ');
+            }
+
+            this.Buffer.Append('{')
+               .Append(this.ParameterValues.Count)
+               .Append('}');
+
+            this.ParameterValues.Add(item);
+
+            first = false;
+         }
+
+         return;
+      }
+
+      var sql = value as SqlBuilder;
+
+      if (sql is null) {
+         GetDefiningQueryFromObject(value, ref sql);
+      }
+
+      if (sql is not null) {
+         AppendPlaceholderSql(sql);
+         return;
+      }
+
+      this.Buffer.Append('{')
+         .Append(this.ParameterValues.Count)
+         .Append('}');
+
+      this.ParameterValues.Add(value);
+   }
+
+   void
+   AppendPlaceholderSql(SqlBuilder value) {
+
+      var frag = new StringBuilder();
+      AppendSql(value, frag);
+      frag.Replace(Environment.NewLine, $"{Environment.NewLine}\t");
+
+      this.Buffer.AppendLine()
+         .Append(frag);
+   }
+
    static partial void
-   GetDefiningQueryFromObject(object obj, ref SqlBuilder definingQuery);
-
-   string
-   MakeAbsolutePlaceholders(SqlBuilder sql) =>
-      String.Format(CultureInfo.InvariantCulture, sql.ToString(), Enumerable.Range(0, sql.ParameterValues.Count).Select(x => Placeholder(this.ParameterValues.Count + x)).ToArray());
-
-   static string
-   Placeholder(int index) =>
-      $"{{{index}}}";
+   GetDefiningQueryFromObject(object? obj, ref SqlBuilder? definingQuery);
 
    /// <summary>
    /// Appends the default line terminator to this instance.
@@ -378,43 +542,59 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the insert operation has completed.</returns>
 
    public SqlBuilder
-   Insert(int index, string value) {
+   InsertText(int index, string? value) {
 
       this.Buffer.Insert(index, value);
-
       return this;
    }
 
    /// <summary>
-   /// Sets <paramref name="clauseName"/> as the current SQL clause.
+   /// Sets the clause identified by <typeparamref name="TClause"/> as the current SQL clause.
    /// </summary>
-   /// <param name="clauseName">The SQL clause.</param>
-   /// <param name="separator">The clause body separator, used for consecutive appends to the same clause.</param>
+   /// <typeparam name="TClause">The type of the SQL clause.</typeparam>
    /// <returns>A reference to this instance after the operation has completed.</returns>
    /// <seealso cref="CurrentClause"/>
 
    public SqlBuilder
-   SetCurrentClause(string clauseName, string separator) {
+   SetCurrentClause<TClause>() where TClause : SqlClause, new() =>
+      SetCurrentClause(SqlClause.Instance<TClause>());
 
-      this.CurrentClause = clauseName;
-      this.CurrentSeparator = separator;
+   /// <summary>
+   /// Sets <paramref name="clause"/> as the current SQL clause.
+   /// </summary>
+   /// <param name="clause">The SQL clause.</param>
+   /// <returns>A reference to this instance after the operation has completed.</returns>
+   /// <seealso cref="CurrentClause"/>
 
+   public SqlBuilder
+   SetCurrentClause(SqlClause? clause) {
+
+      this.CurrentClause = clause;
       return this;
    }
 
    /// <summary>
-   /// Sets <paramref name="clauseName"/> as the next SQL clause.
+   /// Sets the clause identified by <typeparamref name="TClause"/> as the next SQL clause.
    /// </summary>
-   /// <param name="clauseName">The SQL clause.</param>
-   /// <param name="separator">The clause body separator, used for consecutive appends to the same clause.</param>
+   /// <typeparam name="TClause">The type of the SQL clause.</typeparam>
    /// <returns>A reference to this instance after the operation has completed.</returns>
    /// <seealso cref="NextClause"/>
 
    public SqlBuilder
-   SetNextClause(string clauseName, string separator) {
+   SetNextClause<TClause>() where TClause : SqlClause, new() =>
+      SetNextClause(SqlClause.Instance<TClause>());
 
-      this.NextClause = clauseName;
-      this.NextSeparator = separator;
+   /// <summary>
+   /// Sets <paramref name="clause"/> as the next SQL clause.
+   /// </summary>
+   /// <param name="clause">The SQL clause.</param>
+   /// <returns>A reference to this instance after the operation has completed.</returns>
+   /// <seealso cref="NextClause"/>
+
+   public SqlBuilder
+   SetNextClause(SqlClause? clause) {
+
+      this.NextClause = clause;
       _ifCondition = null;
 
       return this;
@@ -434,48 +614,41 @@ public partial class SqlBuilder {
    /// <returns>A new <see cref="SqlBuilder"/> that is equivalent to this instance.</returns>
 
    public SqlBuilder
-   Clone() {
+   Clone() => new SqlBuilder(this);
 
-      var clone = new SqlBuilder();
-      clone.Buffer.Append(this.Buffer);
-      clone.CurrentClause = this.CurrentClause;
-      clone.CurrentSeparator = this.CurrentSeparator;
-
-      foreach (var item in this.ParameterValues) {
-         clone.ParameterValues.Add(item);
-      }
-
-      return clone;
-   }
-
+#pragma warning disable IDE1006
    /// <summary>
-   /// Appends <paramref name="format"/> to the current clause. This method is a shortcut for
-   /// <see cref="AppendToCurrentClause(string, object[])"/>.
+   /// Appends the interpolated string <paramref name="handler"/> to the current clause.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the current clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the current clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    [CLSCompliant(false)]
    public SqlBuilder
-   _(string format, params object[] args) =>
-      AppendToCurrentClause(format, args);
+   _([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.Current> handler) =>
+      this;
 
    /// <summary>
-   /// Appends <paramref name="format"/> to the current clause if <paramref name="condition"/> is true.
+   /// Appends the <paramref name="text"/> to the current clause.
    /// </summary>
-   /// <param name="condition">true to append <paramref name="format"/> to the current clause; otherwise, false.</param>
-   /// <param name="format">The format string that represents the body of the current clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="text">The text that represents the body of the current clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    [CLSCompliant(false)]
    public SqlBuilder
-   _If(bool condition, string format, params object[] args) {
+   _(string? text) =>
+      AppendClause<SqlClause.Current>(text);
 
-      if (condition) {
-         _(format, args);
-      }
+   /// <summary>
+   /// Appends the interpolated string <paramref name="handler"/> to the current clause if <paramref name="condition"/> is true.
+   /// </summary>
+   /// <param name="condition">true to append <paramref name="handler"/> to the current clause; otherwise, false.</param>
+   /// <param name="handler">The interpolated string that represents the body of the current clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   [CLSCompliant(false)]
+   public SqlBuilder
+   _If(bool condition, [InterpolatedString("", nameof(condition))] ref ConditionalInterpolatedStringHandler handler) {
 
       _ifCondition = condition;
 
@@ -483,22 +656,17 @@ public partial class SqlBuilder {
    }
 
    /// <summary>
-   /// Appends <paramref name="format"/> to the current clause if <paramref name="condition"/> is true
-   /// and an antecedent call to <see cref="_If(bool, string, object[])"/> or <see cref="_ElseIf(bool, string, object[])"/>
-   /// used a false condition.
+   /// Appends <paramref name="handler"/> to the current clause if <paramref name="condition"/> is true
+   /// and an antecedent call to <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>
+   /// or <see cref="_ElseIf(Boolean, ref ConditionalElseInterpolatedStringHandler)"/> used a false condition.
    /// </summary>
-   /// <inheritdoc cref="_If(bool, string, object[])" path="*[not(self::summary)]"/>
+   /// <inheritdoc cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)" path="*[not(self::summary)]"/>
 
    [CLSCompliant(false)]
    public SqlBuilder
-   _ElseIf(bool condition, string format, params object[] args) {
+   _ElseIf(bool condition, [InterpolatedString("", nameof(condition))] ref ConditionalElseInterpolatedStringHandler handler) {
 
-      if (_ifCondition == false) {
-
-         if (condition) {
-            _(format, args);
-         }
-
+      if (this.ElseOK) {
          _ifCondition = condition;
       }
 
@@ -506,106 +674,39 @@ public partial class SqlBuilder {
    }
 
    /// <summary>
-   /// Appends <paramref name="format"/> to the current clause if an antecedent call to
-   /// <see cref="_If(bool, string, object[])"/> or <see cref="_ElseIf(bool, string, object[])"/>
-   /// used a false condition.
+   /// Appends <paramref name="handler"/> to the current clause if an antecedent call to
+   /// <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>
+   /// or <see cref="_ElseIf(Boolean, ref ConditionalElseInterpolatedStringHandler)"/> used a
+   /// false condition
    /// </summary>
-   /// <param name="format">The format string that represents the body of the current clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the current clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    [CLSCompliant(false)]
    public SqlBuilder
-   _Else(string format, params object[] args) {
-
-      if (_ifCondition == false) {
-         _(format, args);
-      }
-
-      return this;
-   }
+   _Else([InterpolatedString("")] ref ConditionalElseInterpolatedStringHandler handler) =>
+      this;
+#pragma warning restore IDE1006
 
    /// <summary>
-   /// Appends to the current clause the string made by concatenating an <paramref name="itemFormat"/> for each element
-   /// in <paramref name="items"/>, interspersed with <paramref name="separator"/>.
+   /// Appends the WITH clause using the provided interpolated string <paramref name="handler"/>.
    /// </summary>
-   /// <typeparam name="T">The type of elements in <paramref name="items"/>.</typeparam>
-   /// <param name="items">The collection of objects that contain parameters.</param>
-   /// <param name="format">The clause body format string, which must contain a {0} placeholder. This parameter can be null.</param>
-   /// <param name="itemFormat">The item format.</param>
-   /// <param name="separator">The string to use as separator between each item format.</param>
-   /// <param name="parametersFactory">The delegate that extract parameters for each element in <paramref name="items"/>. This parameter can be null.</param>
-   /// <returns>A reference to this instance after the append operation has completed.</returns>
-
-   [CLSCompliant(false)]
-   public SqlBuilder
-   _ForEach<T>(IEnumerable<T> items, string format, string itemFormat, string separator, Func<T, object[]> parametersFactory) {
-
-      ArgumentNullException.ThrowIfNull(items);
-      ArgumentNullException.ThrowIfNull(itemFormat);
-      ArgumentNullException.ThrowIfNull(separator);
-
-      string formatStart = String.Empty, formatEnd = String.Empty;
-
-      if (format is not null) {
-         var formatSplit = format.Split("{0}");
-         formatStart = formatSplit[0];
-         formatEnd = formatSplit[1];
-      }
-
-      parametersFactory ??= (item) => null;
-
-      var currentSeparator = this.NextSeparator ?? this.CurrentSeparator;
-
-      var first = true;
-
-      foreach (var item in items) {
-
-         var tempate = itemFormat;
-
-         if (first) {
-            first = false;
-            tempate = formatStart + tempate;
-         } else {
-            this.CurrentSeparator = separator;
-         }
-
-         AppendToCurrentClause(tempate, parametersFactory(item));
-      }
-
-      if (!first) {
-         Append(formatEnd);
-         this.CurrentSeparator = currentSeparator;
-      }
-
-      return this;
-   }
-
-   /// <summary>
-   /// Appends to the current clause the string made by concatenating an <paramref name="itemFormat"/> for each element
-   /// in <paramref name="items"/>, interspersed with the OR operator.
-   /// </summary>
-   /// <typeparam name="T">The type of elements in <paramref name="items"/>.</typeparam>
-   /// <param name="items">The collection of objects that contain parameters.</param>
-   /// <param name="itemFormat">The format string.</param>
-   /// <param name="parametersFactory">The delegate that extract parameters for each element in <paramref name="items"/>.</param>
-   /// <returns>A reference to this instance after the append operation has completed.</returns>
-
-   [CLSCompliant(false)]
-   public SqlBuilder
-   _OR<T>(IEnumerable<T> items, string itemFormat, Func<T, object[]> parametersFactory) =>
-      _ForEach(items, "({0})", itemFormat, " OR ", parametersFactory);
-
-   /// <summary>
-   /// Appends the WITH clause using the provided <paramref name="format"/> string and parameters.
-   /// </summary>
-   /// <param name="format">The format string that represents the body of the WITH clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the WITH clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   WITH(string format, params object[] args) =>
-      AppendClause("WITH", null, format, args);
+   WITH([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.WITH> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the WITH clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the WITH clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   WITH(string? text) =>
+      AppendClause<SqlClause.WITH>(text);
 
    /// <summary>
    /// Appends the WITH clause using the provided <paramref name="subQuery"/> as body named after
@@ -616,39 +717,80 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   WITH(SqlBuilder subQuery, string alias) =>
-      WITH(alias + " AS ({0})", subQuery);
+   WITH(string alias, SqlBuilder subQuery) {
+
+      ArgumentNullException.ThrowIfNull(alias);
+      ArgumentNullException.ThrowIfNull(subQuery);
+
+      AppendClause<SqlClause.WITH>();
+
+      this.Buffer.Append(alias)
+         .Append(" AS (");
+      AppendPlaceholderSql(subQuery);
+      this.Buffer.Append(')');
+
+      return this;
+   }
 
    /// <summary>
    /// Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
    public SqlBuilder
-   SELECT() => SetNextClause("SELECT", ", ");
+   SELECT() =>
+      SetNextClause<SqlClause.SELECT>();
 
    /// <summary>
-   /// Appends the SELECT clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the SELECT clause using the provided interpolated string <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the SELECT clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the SELECT clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   SELECT(string format, params object[] args) =>
-      AppendClause("SELECT", ", ", format, args);
+   SELECT([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.SELECT> handler) =>
+      this;
 
    /// <summary>
-   /// Appends the FROM clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the SELECT clause using the provided <paramref name="text"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the FROM clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="text">The text that represents the body of the SELECT clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   FROM(string format, params object[] args) =>
-      AppendClause("FROM", ", ", format, args);
+   SELECT(string? text) =>
+      AppendClause<SqlClause.SELECT>(text);
+
+   /// <summary>
+   /// Sets FROM as the next clause, to be used by subsequent calls to clause continuation methods,
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// </summary>
+   /// <returns>A reference to this instance after the operation has completed.</returns>
+
+   public SqlBuilder
+   FROM() =>
+      SetNextClause<SqlClause.FROM>();
+
+   /// <summary>
+   /// Appends the FROM clause using the provided interpolated string <paramref name="handler"/>.
+   /// </summary>
+   /// <param name="handler">The interpolated string that represents the body of the FROM clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   FROM([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.FROM> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the FROM clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the FROM clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   FROM(string? text) =>
+      AppendClause<SqlClause.FROM>(text);
 
    /// <summary>
    /// Appends the FROM clause using the provided <paramref name="subQuery"/> as body named after
@@ -659,172 +801,320 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   FROM(SqlBuilder subQuery, string alias) =>
-      FROM("({0}) " + alias, subQuery);
+   FROM(SqlBuilder subQuery, string alias) {
+
+      ArgumentNullException.ThrowIfNull(subQuery);
+      ArgumentNullException.ThrowIfNull(alias);
+
+      AppendClause<SqlClause.FROM>();
+
+      this.Buffer.Append('(');
+      AppendPlaceholderSql(subQuery);
+      this.Buffer.Append(") AS ")
+         .Append(alias);
+
+      return this;
+   }
 
    /// <summary>
    /// Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
    public SqlBuilder
-   JOIN() => SetNextClause("JOIN", null);
+   JOIN() =>
+      SetNextClause<SqlClause.JOIN>();
 
    /// <summary>
-   /// Appends the JOIN clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the JOIN clause using the provided interpolated string <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the JOIN clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the JOIN clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   JOIN(string format, params object[] args) =>
-      AppendClause("JOIN", null, format, args);
+   JOIN([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.JOIN> handler) =>
+      this;
 
    /// <summary>
-   /// Appends the LEFT JOIN clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the JOIN clause using the provided <paramref name="text"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the LEFT JOIN clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="text">The text that represents the body of the JOIN clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   LEFT_JOIN(string format, params object[] args) =>
-      AppendClause("LEFT JOIN", null, format, args);
+   JOIN(string? text) =>
+      AppendClause<SqlClause.JOIN>(text);
 
    /// <summary>
-   /// Appends the RIGHT JOIN clause using the provided <paramref name="format"/> string and parameters.
+   /// Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the RIGHT JOIN clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <returns>A reference to this instance after the operation has completed.</returns>
+
+   public SqlBuilder
+   LEFT_JOIN() =>
+      SetNextClause<SqlClause.LEFT_JOIN>();
+
+   /// <summary>
+   /// Appends the LEFT JOIN clause using the provided interpolated string <paramref name="handler"/>.
+   /// </summary>
+   /// <param name="handler">The interpolated string that represents the body of the LEFT JOIN clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   RIGHT_JOIN(string format, params object[] args) =>
-      AppendClause("RIGHT JOIN", null, format, args);
+   LEFT_JOIN([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.LEFT_JOIN> handler) =>
+      this;
 
    /// <summary>
-   /// Appends the INNER JOIN clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the LEFT JOIN clause using the provided <paramref name="text"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the INNER JOIN clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="text">The text that represents the body of the LEFT JOIN clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   INNER_JOIN(string format, params object[] args) =>
-      AppendClause("INNER JOIN", null, format, args);
+   LEFT_JOIN(string? text) =>
+      AppendClause<SqlClause.LEFT_JOIN>(text);
 
    /// <summary>
-   /// Appends the CROSS JOIN clause using the provided <paramref name="format"/> string and parameters.
+   /// Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the CROSS JOIN clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <returns>A reference to this instance after the operation has completed.</returns>
+
+   public SqlBuilder
+   RIGHT_JOIN() =>
+      SetNextClause<SqlClause.RIGHT_JOIN>();
+
+   /// <summary>
+   /// Appends the RIGHT JOIN clause using the provided interpolated string <paramref name="handler"/>.
+   /// </summary>
+   /// <param name="handler">The interpolated string that represents the body of the RIGHT JOIN clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   CROSS_JOIN(string format, params object[] args) =>
-      AppendClause("CROSS JOIN", null, format, args);
+   RIGHT_JOIN([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.RIGHT_JOIN> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the RIGHT JOIN clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the RIGHT JOIN clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   RIGHT_JOIN(string? text) =>
+      AppendClause<SqlClause.RIGHT_JOIN>(text);
+
+   /// <summary>
+   /// Sets INNER JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// </summary>
+   /// <returns>A reference to this instance after the operation has completed.</returns>
+
+   public SqlBuilder
+   INNER_JOIN() =>
+      SetNextClause<SqlClause.INNER_JOIN>();
+
+   /// <summary>
+   /// Appends the INNER JOIN clause using the provided interpolated string <paramref name="handler"/>.
+   /// </summary>
+   /// <param name="handler">The interpolated string that represents the body of the INNER JOIN clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   INNER_JOIN([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.INNER_JOIN> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the INNER JOIN clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the INNER JOIN clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   INNER_JOIN(string? text) =>
+      AppendClause<SqlClause.INNER_JOIN>(text);
+
+   /// <summary>
+   /// Sets CROSS JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// </summary>
+   /// <returns>A reference to this instance after the operation has completed.</returns>
+
+   public SqlBuilder
+   CROSS_JOIN() =>
+      SetNextClause<SqlClause.CROSS_JOIN>();
+
+   /// <summary>
+   /// Appends the CROSS JOIN clause using the provided interpolated string <paramref name="handler"/>.
+   /// </summary>
+   /// <param name="handler">The interpolated string that represents the body of the CROSS JOIN clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   CROSS_JOIN([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.CROSS_JOIN> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the CROSS JOIN clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the CROSS JOIN clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   CROSS_JOIN(string? text) =>
+      AppendClause<SqlClause.CROSS_JOIN>(text);
 
    /// <summary>
    /// Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
    public SqlBuilder
-   WHERE() => SetNextClause("WHERE", " AND ");
+   WHERE() =>
+      SetNextClause<SqlClause.WHERE>();
 
    /// <summary>
-   /// Appends the WHERE clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the WHERE clause using the provided interpolated string <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the WHERE clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the WHERE clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   WHERE(string format, params object[] args) =>
-      AppendClause("WHERE", " AND ", format, args);
+   WHERE([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.WHERE> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the WHERE clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the WHERE clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   WHERE(string? text) =>
+      AppendClause<SqlClause.WHERE>(text);
 
    /// <summary>
    /// Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
    public SqlBuilder
-   GROUP_BY() => SetNextClause("GROUP BY", ", ");
+   GROUP_BY() =>
+      SetNextClause<SqlClause.GROUP_BY>();
 
    /// <summary>
-   /// Appends the GROUP BY clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the GROUP BY clause using the provided interpolated string <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the GROUP BY clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the GROUP BY clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   GROUP_BY(string format, params object[] args) =>
-      AppendClause("GROUP BY", ", ", format, args);
+   GROUP_BY([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.GROUP_BY> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the GROUP BY clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the GROUP BY clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   GROUP_BY(string? text) =>
+      AppendClause<SqlClause.GROUP_BY>(text);
 
    /// <summary>
    /// Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
    public SqlBuilder
-   HAVING() => SetNextClause("HAVING", " AND ");
+   HAVING() =>
+      SetNextClause<SqlClause.HAVING>();
 
    /// <summary>
-   /// Appends the HAVING clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the HAVING clause using the provided interpolated string <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the HAVING clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the HAVING clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   HAVING(string format, params object[] args) =>
-      AppendClause("HAVING", " AND ", format, args);
+   HAVING([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.HAVING> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the HAVING clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the HAVING clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   HAVING(string? text) =>
+      AppendClause<SqlClause.HAVING>(text);
 
    /// <summary>
    /// Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
    public SqlBuilder
-   ORDER_BY() => SetNextClause("ORDER BY", ", ");
+   ORDER_BY() =>
+      SetNextClause<SqlClause.ORDER_BY>();
 
    /// <summary>
-   /// Appends the ORDER BY clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the ORDER BY clause using the provided interpolated string <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the ORDER BY clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the ORDER BY clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   ORDER_BY(string format, params object[] args) =>
-      AppendClause("ORDER BY", ", ", format, args);
+   ORDER_BY([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.ORDER_BY> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the ORDER BY clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the ORDER BY clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   ORDER_BY(string? text) =>
+      AppendClause<SqlClause.ORDER_BY>(text);
 
    /// <summary>
    /// Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
    public SqlBuilder
-   LIMIT() => SetNextClause("LIMIT", null);
+   LIMIT() =>
+      SetNextClause<SqlClause.LIMIT>();
 
    /// <summary>
-   /// Appends the LIMIT clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the LIMIT clause using the provided interpolated string <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the LIMIT clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the LIMIT clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   LIMIT(string format, params object[] args) =>
-      AppendClause("LIMIT", null, format, args);
+   LIMIT([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.LIMIT> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the LIMIT clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the LIMIT clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   LIMIT(string? text) =>
+      AppendClause<SqlClause.LIMIT>(text);
 
    /// <summary>
    /// Appends the LIMIT clause using the provided <paramref name="maxRecords"/> parameter.
@@ -833,28 +1123,48 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   LIMIT(int maxRecords) =>
-      LIMIT("{0}", maxRecords);
+   LIMIT(int maxRecords) {
+
+      AppendClause<SqlClause.LIMIT>();
+
+      this.Buffer.Append('{')
+         .Append(this.ParameterValues.Count)
+         .Append('}');
+
+      this.ParameterValues.Add(maxRecords);
+
+      return this;
+   }
 
    /// <summary>
    /// Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_(string, object[])"/> and <see cref="_If(bool, string, object[])"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
    public SqlBuilder
-   OFFSET() => SetNextClause("OFFSET", null);
+   OFFSET() =>
+      SetNextClause<SqlClause.OFFSET>();
 
    /// <summary>
-   /// Appends the OFFSET clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the OFFSET clause using the provided interpolated string <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the OFFSET clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the OFFSET clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   OFFSET(string format, params object[] args) =>
-      AppendClause("OFFSET", null, format, args);
+   OFFSET([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.OFFSET> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the OFFSET clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the OFFSET clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   OFFSET(string? text) =>
+      AppendClause<SqlClause.OFFSET>(text);
 
    /// <summary>
    /// Appends the OFFSET clause using the provided <paramref name="startIndex"/> parameter.
@@ -863,8 +1173,18 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   OFFSET(int startIndex) =>
-      OFFSET("{0}", startIndex);
+   OFFSET(int startIndex) {
+
+      AppendClause<SqlClause.OFFSET>();
+
+      this.Buffer.Append('{')
+         .Append(this.ParameterValues.Count)
+         .Append('}');
+
+      this.ParameterValues.Add(startIndex);
+
+      return this;
+   }
 
    /// <summary>
    /// Appends the UNION clause.
@@ -872,51 +1192,98 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   UNION() => AppendClause("UNION", null, null, null);
+   UNION() =>
+      AppendClause<SqlClause.UNION>();
 
    /// <summary>
-   /// Appends the INSERT INTO clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the INSERT INTO clause using the provided interpolated string <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the INSERT INTO clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the INSERT INTO clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   INSERT_INTO(string format, params object[] args) =>
-      AppendClause("INSERT INTO", null, format, args);
+   INSERT_INTO([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.INSERT_INTO> handler) =>
+      this;
 
    /// <summary>
-   /// Appends the DELETE FROM clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the INSERT INTO clause using the provided <paramref name="text"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the DELETE FROM clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="text">The text that represents the body of the INSERT INTO clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   DELETE_FROM(string format, params object[] args) =>
-      AppendClause("DELETE FROM", null, format, args);
+   INSERT_INTO(string? text) =>
+      AppendClause<SqlClause.INSERT_INTO>(text);
 
    /// <summary>
-   /// Appends the UPDATE clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the DELETE FROM clause using the provided interpolated string <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the UPDATE clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The interpolated string that represents the body of the DELETE FROM clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   UPDATE(string format, params object[] args) =>
-      AppendClause("UPDATE", null, format, args);
+   DELETE_FROM([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.DELETE_FROM> handler) =>
+      this;
 
    /// <summary>
-   /// Appends the SET clause using the provided <paramref name="format"/> string and parameters.
+   /// Appends the DELETE FROM clause using the provided <paramref name="text"/>.
    /// </summary>
-   /// <param name="format">The format string that represents the body of the SET clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="text">The text that represents the body of the DELETE FROM clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   SET(string format, params object[] args) =>
-      AppendClause("SET", ", ", format, args);
+   DELETE_FROM(string? text) =>
+      AppendClause<SqlClause.DELETE_FROM>(text);
+
+   /// <summary>
+   /// Appends the UPDATE clause using the provided interpolated string <paramref name="handler"/>.
+   /// </summary>
+   /// <param name="handler">The interpolated string that represents the body of the UPDATE clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   UPDATE([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.UPDATE> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the UPDATE clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the UPDATE clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   UPDATE(string? text) =>
+      AppendClause<SqlClause.UPDATE>(text);
+
+   /// <summary>
+   /// Appends the SET clause using the provided interpolated string <paramref name="handler"/>.
+   /// </summary>
+   /// <param name="handler">The interpolated string that represents the body of the SET clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   SET([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.SET> handler) =>
+      this;
+
+   /// <summary>
+   /// Appends the SET clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The text that represents the body of the SET clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   SET(string? text) =>
+      AppendClause<SqlClause.SET>(text);
+
+   /// <summary>
+   /// Appends the VALUES clause using the provided interpolated string <paramref name="handler"/>.
+   /// </summary>
+   /// <param name="handler">The interpolated string that represents the body of the VALUES clause.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   VALUES([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.VALUES> handler) =>
+      this;
 
    /// <summary>
    /// Appends the VALUES clause using the provided parameters.
@@ -925,7 +1292,7 @@ public partial class SqlBuilder {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   VALUES(params object[] args) {
+   VALUES(params object?[] args) {
 
       ArgumentNullException.ThrowIfNull(args);
 
@@ -933,12 +1300,162 @@ public partial class SqlBuilder {
          throw new ArgumentException($"{nameof(args)} cannot be empty", nameof(args));
       }
 
-      return AppendClause("VALUES", null, "({0})", SQL.List(args));
+      AppendClause<SqlClause.VALUES>();
+
+      this.Buffer.Append('(');
+
+      for (int i = 0; i < args.Length; i++) {
+
+         if (i > 0) {
+            this.Buffer.Append(',')
+               .Append(' ');
+         }
+
+         this.Buffer.Append('{')
+            .Append(this.ParameterValues.Count)
+            .Append('}');
+
+         this.ParameterValues.Add(args[i]);
+      }
+
+      this.Buffer.Append(')');
+
+      return this;
+   }
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   [InterpolatedStringHandler]
+   public struct AppendInterpolatedStringHandler {
+
+      internal SqlBuilder
+      Builder { get; }
+
+      /// <exclude/>
+
+      public
+      AppendInterpolatedStringHandler(int literalLength, int formattedCount) {
+
+         // This constructor is used for Create(ref AppendInterpolatedStringHandler).
+         // Capacity used is consistent with Create(String).
+
+         this.Builder = new(Math.Max(
+            _defaultCapacity,
+            literalLength + PlaceholderLengthSum(formattedCount)));
+      }
+
+      /// <exclude/>
+
+      public
+      AppendInterpolatedStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder) {
+
+         ArgumentNullException.ThrowIfNull(sqlBuilder);
+
+         this.Builder = sqlBuilder;
+      }
+
+      /// <exclude/>
+
+      public void
+      AppendLiteral(string value) =>
+         this.Builder.Buffer.Append(value);
+
+      /// <exclude/>
+
+      public void
+      AppendFormatted(object? value, int alignment = 0, string? format = null) =>
+         this.Builder.AppendPlaceholder(value, format);
+   }
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   [InterpolatedStringHandler]
+   public struct ConditionalInterpolatedStringHandler {
+
+      readonly SqlBuilder
+      _sqlBuilder;
+
+      /// <exclude/>
+
+      public
+      ConditionalInterpolatedStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder, bool condition, out bool shouldAppend) {
+
+         ArgumentNullException.ThrowIfNull(sqlBuilder);
+
+         _sqlBuilder = sqlBuilder;
+
+         shouldAppend = condition;
+
+         if (shouldAppend) {
+            sqlBuilder.AppendClause<SqlClause.Current>();
+         }
+      }
+
+      /// <exclude/>
+
+      public void
+      AppendLiteral(string value) =>
+         _sqlBuilder.Buffer.Append(value);
+
+      /// <exclude/>
+
+      public void
+      AppendFormatted(object? value, int alignment = 0, string? format = null) =>
+         _sqlBuilder.AppendPlaceholder(value, format);
+   }
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   [InterpolatedStringHandler]
+   public struct ConditionalElseInterpolatedStringHandler {
+
+      readonly SqlBuilder
+      _sqlBuilder;
+
+      /// <exclude/>
+
+      public
+      ConditionalElseInterpolatedStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder, out bool shouldAppend)
+         : this(literalLength, formattedCount, sqlBuilder, true, out shouldAppend) { }
+
+      /// <exclude/>
+
+      public
+      ConditionalElseInterpolatedStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder, bool condition, out bool shouldAppend) {
+
+         ArgumentNullException.ThrowIfNull(sqlBuilder);
+
+         _sqlBuilder = sqlBuilder;
+
+         condition = condition
+            && sqlBuilder.ElseOK;
+
+         shouldAppend = condition;
+
+         if (shouldAppend) {
+            sqlBuilder.AppendClause<SqlClause.Current>();
+         }
+      }
+
+      /// <exclude/>
+
+      public void
+      AppendLiteral(string value) =>
+         _sqlBuilder.Buffer.Append(value);
+
+      /// <exclude/>
+
+      public void
+      AppendFormatted(object? value, int alignment = 0, string? format = null) =>
+         _sqlBuilder.AppendPlaceholder(value, format);
    }
 }
 
 /// <summary>
-/// Provides a set of static (Shared in Visual Basic) methods to create <see cref="SqlBuilder"/> 
+/// Provides a set of static (Shared in Visual Basic) methods to create <see cref="SqlBuilder"/>
 /// instances.
 /// </summary>
 
@@ -946,165 +1463,358 @@ public static partial class SQL {
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
-   /// appending the WITH clause using the provided <paramref name="format"/>
-   /// and <paramref name="args"/>.
+   /// appending the WITH clause using the provided string interpolated <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The body of the WITH clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The body of the WITH clause.</param>
    /// <returns>
-   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(string, object[])"/>.
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(ref SqlInterpolatedStringHandler&lt;SqlClause.WITH>)"/>.
    /// </returns>
 
    public static SqlBuilder
-   WITH(string format, params object[] args) =>
-      new SqlBuilder().WITH(format, args);
+   WITH([InterpolatedString] ref SqlInterpolatedStringHandler<SqlClause.WITH> handler) =>
+      handler.Builder;
+
+   /// <summary>
+   /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
+   /// appending the WITH clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The body of the WITH clause.</param>
+   /// <returns>
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(String)"/>.
+   /// </returns>
+
+   public static SqlBuilder
+   WITH(string? text) =>
+      new SqlBuilder().WITH(text);
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
    /// appending the WITH clause using the provided <paramref name="subQuery"/>
    /// and <paramref name="alias"/>.
    /// </summary>
-   /// <param name="subQuery">The sub-query to use as the body of the WITH clause.</param>
    /// <param name="alias">The alias of the sub-query.</param>
+   /// <param name="subQuery">The sub-query to use as the body of the WITH clause.</param>
    /// <returns>
-   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(SqlBuilder, string)"/>.
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(string, SqlBuilder)"/>.
    /// </returns>
 
    public static SqlBuilder
-   WITH(SqlBuilder subQuery, string alias) =>
-      new SqlBuilder().WITH(subQuery, alias);
+   WITH(string alias, SqlBuilder subQuery) {
+
+      ArgumentNullException.ThrowIfNull(alias);
+      ArgumentNullException.ThrowIfNull(subQuery);
+
+      return new SqlBuilder().WITH(alias, subQuery);
+   }
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
-   /// appending the SELECT clause using the provided <paramref name="format"/>
-   /// and <paramref name="args"/>.
+   /// appending the SELECT clause using the provided string interpolated <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The body of the SELECT clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The body of the SELECT clause.</param>
    /// <returns>
-   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.SELECT(string, object[])"/>.
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.SELECT(ref SqlInterpolatedStringHandler&lt;SqlClause.SELECT>)"/>.
    /// </returns>
 
    public static SqlBuilder
-   SELECT(string format, params object[] args) =>
-      new SqlBuilder().SELECT(format, args);
+   SELECT([InterpolatedString] ref SqlInterpolatedStringHandler<SqlClause.SELECT> handler) =>
+      handler.Builder;
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
-   /// appending the INSERT INTO clause using the provided <paramref name="format"/>
-   /// and <paramref name="args"/>.
+   /// appending the SELECT clause using the provided <paramref name="text"/>.
    /// </summary>
-   /// <param name="format">The body of the INSERT INTO clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="text">The body of the SELECT clause.</param>
    /// <returns>
-   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.INSERT_INTO(string, object[])"/>.
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.SELECT(String)"/>.
    /// </returns>
 
    public static SqlBuilder
-   INSERT_INTO(string format, params object[] args) =>
-      new SqlBuilder().INSERT_INTO(format, args);
+   SELECT(string? text) =>
+      new SqlBuilder().SELECT(text);
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
-   /// appending the UPDATE clause using the provided <paramref name="format"/>
-   /// and <paramref name="args"/>.
+   /// appending the INSERT INTO clause using the provided string interpolated <paramref name="handler"/>.
    /// </summary>
-   /// <param name="format">The body of the UPDATE clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="handler">The body of the INSERT INTO clause.</param>
    /// <returns>
-   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.UPDATE(string, object[])"/>.
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.INSERT_INTO(ref SqlInterpolatedStringHandler&lt;SqlClause.INSERT_INTO>)"/>.
    /// </returns>
 
    public static SqlBuilder
-   UPDATE(string format, params object[] args) =>
-      new SqlBuilder().UPDATE(format, args);
+   INSERT_INTO([InterpolatedString] ref SqlInterpolatedStringHandler<SqlClause.INSERT_INTO> handler) =>
+      handler.Builder;
 
    /// <summary>
    /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
-   /// appending the DELETE FROM clause using the provided <paramref name="format"/>
-   /// and <paramref name="args"/>.
+   /// appending the INSERT INTO clause using the provided <paramref name="text"/>.
    /// </summary>
-   /// <param name="format">The body of the DELETE FROM clause.</param>
-   /// <param name="args">The parameters of the clause body.</param>
+   /// <param name="text">The body of the INSERT INTO clause.</param>
    /// <returns>
-   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.DELETE_FROM(string, object[])"/>.
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.INSERT_INTO(String)"/>.
    /// </returns>
 
    public static SqlBuilder
-   DELETE_FROM(string format, params object[] args) =>
-      new SqlBuilder().DELETE_FROM(format, args);
-
-   /// <inheritdoc cref="List(object[])"/>
-
-   public static object
-   List(IEnumerable values) =>
-      new SqlList(values);
+   INSERT_INTO(string? text) =>
+      new SqlBuilder().INSERT_INTO(text);
 
    /// <summary>
-   /// Returns a special parameter value that is expanded into a list of comma-separated placeholder items.
+   /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
+   /// appending the UPDATE clause using the provided string interpolated <paramref name="handler"/>.
    /// </summary>
-   /// <param name="values">The values to expand into a list.</param>
-   /// <returns>A special object to be used as parameter in <see cref="SqlBuilder"/>.</returns>
-   /// <remarks>
-   /// <para>
-   /// For example:
-   /// </para>
-   /// <code>
-   /// var query = SQL
-   ///    .SELECT("{0} IN ({1})", "a", SQL.List("a", "b", "c"));
-   /// 
-   /// Console.WriteLine(query.ToString());
-   /// </code>
-   /// <para>
-   /// The above code outputs: <c>SELECT {0} IN ({1}, {2}, {3})</c>
-   /// </para>
-   /// </remarks>
+   /// <param name="handler">The body of the UPDATE clause.</param>
+   /// <returns>
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.UPDATE(ref SqlInterpolatedStringHandler&lt;SqlClause.UPDATE>)"/>.
+   /// </returns>
 
-   public static object
-   List(params object[] values) =>
-      new SqlList(values);
+   public static SqlBuilder
+   UPDATE([InterpolatedString] ref SqlInterpolatedStringHandler<SqlClause.UPDATE> handler) =>
+      handler.Builder;
+
+   /// <summary>
+   /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
+   /// appending the UPDATE clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The body of the UPDATE clause.</param>
+   /// <returns>
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.UPDATE(String)"/>.
+   /// </returns>
+
+   public static SqlBuilder
+   UPDATE(string? text) =>
+      new SqlBuilder().UPDATE(text);
+
+   /// <summary>
+   /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
+   /// appending the DELETE FROM clause using the provided string interpolated <paramref name="handler"/>.
+   /// </summary>
+   /// <param name="handler">The body of the DELETE FROM clause.</param>
+   /// <returns>
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.DELETE_FROM(ref SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>)"/>.
+   /// </returns>
+
+   public static SqlBuilder
+   DELETE_FROM([InterpolatedString] ref SqlInterpolatedStringHandler<SqlClause.DELETE_FROM> handler) =>
+      handler.Builder;
+
+   /// <summary>
+   /// Creates and returns a new <see cref="SqlBuilder"/> initialized by
+   /// appending the DELETE FROM clause using the provided <paramref name="text"/>.
+   /// </summary>
+   /// <param name="text">The body of the DELETE FROM clause.</param>
+   /// <returns>
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.DELETE_FROM(String)"/>.
+   /// </returns>
+
+   public static SqlBuilder
+   DELETE_FROM(string? text) =>
+      new SqlBuilder().DELETE_FROM(text);
+
+   // Object Members
 
    /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    public static new bool
-   Equals(object objectA, object objectB) =>
+   Equals(object? objectA, object? objectB) =>
       Object.Equals(objectA, objectB);
 
    /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    public static new bool
-   ReferenceEquals(object objectA, object objectB) =>
+   ReferenceEquals(object? objectA, object? objectB) =>
       Object.ReferenceEquals(objectA, objectB);
 }
 
-sealed class SqlList {
+/// <exclude/>
 
-   readonly object[]
-   _values;
+[EditorBrowsable(EditorBrowsableState.Never)]
+[InterpolatedStringHandler]
+public struct SqlInterpolatedStringHandler<TClause> where TClause : SqlClause, new() {
 
-   public object
-   this[int index] => _values[index];
+   internal SqlBuilder
+   Builder { get; }
 
-   public int
-   Count => _values.Length;
+   /// <exclude/>
 
    public
-   SqlList(IEnumerable values) {
+   SqlInterpolatedStringHandler(int literalLength, int formattedCount)
+      : this(literalLength, formattedCount, new()) { }
 
-      var arr = values?.Cast<object>()
-         .ToArray();
+   /// <exclude/>
 
-      if (arr is null
-         || arr.Length == 0) {
+   public
+   SqlInterpolatedStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder) {
 
-         // ensuring at least one item to avoid building an empty list
-         // e.g. foo IN ()
+      ArgumentNullException.ThrowIfNull(sqlBuilder);
 
-         arr = new object[1];
-      }
+      this.Builder = sqlBuilder;
 
-      _values = arr;
+      sqlBuilder.AppendClause<TClause>();
+   }
+
+   /// <exclude/>
+
+   public void
+   AppendLiteral(string value) =>
+      this.Builder.Buffer.Append(value);
+
+   /// <exclude/>
+
+   public void
+   AppendFormatted(object? value, int alignment = 0, string? format = null) =>
+      this.Builder.AppendPlaceholder(value, format);
+}
+
+/// <summary>
+/// Provides information about a SQL clause. Used by <see cref="SqlBuilder"/>.
+/// </summary>
+/// <param name="Name">The name of the clause.</param>
+/// <param name="Separator">The string to use for consecutive calls.</param>
+
+public abstract record class SqlClause(string? Name, string? Separator) {
+
+   /// <summary>
+   /// The "current" clause.
+   /// </summary>
+
+   public sealed record class Current() : SqlClause(null, null);
+
+   /// <summary>
+   /// The WITH clause.
+   /// </summary>
+
+   public sealed record class WITH() : SqlClause("WITH", null);
+
+   /// <summary>
+   /// The SELECT clause.
+   /// </summary>
+
+   public sealed record class SELECT() : SqlClause("SELECT", ", ");
+
+   /// <summary>
+   /// The FROM clause.
+   /// </summary>
+
+   public sealed record class FROM() : SqlClause("FROM", ", ");
+
+   /// <summary>
+   /// The JOIN clause.
+   /// </summary>
+
+   public sealed record class JOIN() : SqlClause("JOIN", null);
+
+   /// <summary>
+   /// The LEFT JOIN clause.
+   /// </summary>
+
+   public sealed record class LEFT_JOIN() : SqlClause("LEFT JOIN", null);
+
+   /// <summary>
+   /// The RIGHT JOIN clause.
+   /// </summary>
+
+   public sealed record class RIGHT_JOIN() : SqlClause("RIGHT JOIN", null);
+
+   /// <summary>
+   /// The INNER JOIN clause.
+   /// </summary>
+
+   public sealed record class INNER_JOIN() : SqlClause("INNER JOIN", null);
+
+   /// <summary>
+   /// The CROSS JOIN clause.
+   /// </summary>
+
+   public sealed record class CROSS_JOIN() : SqlClause("CROSS JOIN", null);
+
+   /// <summary>
+   /// The WHERE clause.
+   /// </summary>
+
+   public sealed record class WHERE() : SqlClause("WHERE", " AND ");
+
+   /// <summary>
+   /// The GROUP BY clause.
+   /// </summary>
+
+   public sealed record class GROUP_BY() : SqlClause("GROUP BY", ", ");
+
+   /// <summary>
+   /// The HAVING clause.
+   /// </summary>
+
+   public sealed record class HAVING() : SqlClause("HAVING", " AND ");
+
+   /// <summary>
+   /// The ORDER BY clause.
+   /// </summary>
+
+   public sealed record class ORDER_BY() : SqlClause("ORDER BY", ", ");
+
+   /// <summary>
+   /// The LIMIT clause.
+   /// </summary>
+
+   public sealed record class LIMIT() : SqlClause("LIMIT", null);
+
+   /// <summary>
+   /// The OFFSET clause.
+   /// </summary>
+
+   public sealed record class OFFSET() : SqlClause("OFFSET", null);
+
+   /// <summary>
+   /// The UNION clause.
+   /// </summary>
+
+   public sealed record class UNION() : SqlClause("UNION", null);
+
+   /// <summary>
+   /// The INSERT INTO clause.
+   /// </summary>
+
+   public sealed record class INSERT_INTO() : SqlClause("INSERT INTO", null);
+
+   /// <summary>
+   /// The DELETE FROM clause.
+   /// </summary>
+
+   public sealed record class DELETE_FROM() : SqlClause("DELETE FROM", null);
+
+   /// <summary>
+   /// The UPDATE clause.
+   /// </summary>
+
+   public sealed record class UPDATE() : SqlClause("UPDATE", null);
+
+   /// <summary>
+   /// The SET clause.
+   /// </summary>
+
+   public sealed record class SET() : SqlClause("SET", ", ");
+
+   /// <summary>
+   /// The VALUES clause.
+   /// </summary>
+
+   public sealed record class VALUES() : SqlClause("VALUES", null);
+
+   /// <summary>
+   /// Gets a singleton instance of the clause identified by <typeparamref name="TClause"/>.
+   /// </summary>
+   /// <typeparam name="TClause">The type of the clause.</typeparam>
+   /// <returns>An instance of <typeparamref name="TClause"/>.</returns>
+
+   public static TClause
+   Instance<TClause>() where TClause : SqlClause, new() =>
+      InstanceClass<TClause>.Value;
+
+   static class InstanceClass<TClause> where TClause : SqlClause, new() {
+
+      internal static readonly TClause
+      Value = new();
    }
 }

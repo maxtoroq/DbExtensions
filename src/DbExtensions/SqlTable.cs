@@ -465,9 +465,7 @@ public sealed class SqlTable : SqlSet, ISqlTable {
       }
    }
 
-   #region ISqlTable Members
-
-   // These methods just call the same method on _table
+   // ISqlTable Members: these methods just call the same method on _table
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.Add(TEntity)"/>
 
@@ -544,8 +542,6 @@ public sealed class SqlTable : SqlSet, ISqlTable {
    public void
    Refresh(object entity) =>
       _table.Refresh(entity);
-
-   #endregion
 }
 
 /// <summary>
@@ -966,7 +962,26 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
          var sql = this.CommandBuilder
             .BuildDeleteStatement()
-            .WHERE(_db.QuoteIdentifier(idMember.MappedName) + " IN ({0})", SQL.List(ids));
+            .WHERE(String.Empty);
+
+         sql.Buffer.Append(_db.QuoteIdentifier(idMember.MappedName))
+            .Append(" IN (");
+
+         for (int i = 0; i < ids.Length; i++) {
+
+            if (i > 0) {
+               sql.Buffer.Append(',')
+                  .Append(' ');
+            }
+
+            sql.Buffer.Append('{')
+               .Append(sql.ParameterValues.Count)
+               .Append('}');
+
+            sql.ParameterValues.Add(ids[i]);
+         }
+
+         sql.Buffer.Append(')');
 
          _db.Execute(sql, affect: entities.Length);
 
@@ -1023,7 +1038,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    EnsureEntityType() =>
       SqlTable.EnsureEntityType(_metaType);
 
-   #region ISqlTable Members
+   // ISqlTable Members
 
    void
    ISqlTable.Add(object entity) =>
@@ -1088,8 +1103,6 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    void
    ISqlTable.Refresh(object entity) =>
       Refresh((TEntity)entity);
-
-   #endregion
 }
 
 /// <summary>
@@ -1199,7 +1212,9 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
          .Select(m => m.GetValueForDatabase(entity))
          .ToArray();
 
-      var sb = new StringBuilder()
+      var sql = new SqlBuilder();
+
+      var sb = sql.Buffer
          .Append("INSERT INTO ")
          .Append(QuoteIdentifier(_metaType.Table.TableName))
          .Append(" (");
@@ -1229,7 +1244,11 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       sb.Append(')');
 
-      return new SqlBuilder(sb.ToString(), parameters);
+      foreach (var item in parameters) {
+         sql.ParameterValues.Add(item);
+      }
+
+      return sql;
    }
 
    /// <summary>
@@ -1240,7 +1259,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
    public SqlBuilder
    BuildUpdateClause() =>
-      new SqlBuilder("UPDATE " + QuoteIdentifier(_metaType.Table.TableName));
+      SqlBuilder.Create("UPDATE " + QuoteIdentifier(_metaType.Table.TableName));
 
    /// <summary>
    /// Creates and returns an UPDATE command for the specified <paramref name="entity"/>.
@@ -1277,9 +1296,10 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
          throw new InvalidOperationException("The operation is not supported for entities with more than one identity member.");
       }
 
-      var parametersBuffer = new List<object>(updatingMembers.Length + predicateMembers.Length);
+      var sql = new SqlBuilder();
+      var parametersBuffer = sql.ParameterValues;
 
-      var sb = new StringBuilder()
+      var sb = sql.Buffer
          .Append("UPDATE ")
          .Append(QuoteIdentifier(_metaType.Table.TableName))
          .AppendLine()
@@ -1315,7 +1335,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
          .Append("WHERE ")
          .Append(_db.BuildPredicateFragment(entity, predicateMembers, parametersBuffer, getValuefn));
 
-      return new SqlBuilder(sb.ToString(), parametersBuffer.ToArray());
+      return sql;
    }
 
    /// <summary>
@@ -1326,7 +1346,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
    public SqlBuilder
    BuildDeleteStatement() =>
-      new SqlBuilder("DELETE FROM " + QuoteIdentifier(_metaType.Table.TableName));
+      SqlBuilder.Create("DELETE FROM " + QuoteIdentifier(_metaType.Table.TableName));
 
    /// <summary>
    /// Creates and returns a DELETE command for the specified <paramref name="entity"/>.
@@ -1366,8 +1386,15 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
          throw new InvalidOperationException("Cannot call this method when the entity has more than one identity member.");
       }
 
-      return BuildDeleteStatement()
-         .WHERE(QuoteIdentifier(_metaType.IdentityMembers[0].MappedName) + " = {0}", id);
+      var deleteSql = BuildDeleteStatement()
+         .WHERE(String.Empty);
+
+      deleteSql.Buffer
+         .Append($"{QuoteIdentifier(_metaType.IdentityMembers[0].MappedName)} = {{{deleteSql.ParameterValues.Count}}}");
+
+      deleteSql.ParameterValues.Add(id);
+
+      return deleteSql;
    }
 
    string
@@ -1377,6 +1404,8 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    void
    EnsureEntityType() =>
       SqlTable.EnsureEntityType(_metaType);
+
+   // Object Members
 
    /// <exclude/>
 
@@ -1479,7 +1508,9 @@ partial class SqlSet {
 
       var predicateParams = new List<object>(predicateMembers.Length);
 
-      return Where(_db.BuildPredicateFragment(predicateValues, predicateParams), predicateParams.ToArray())
+      var fragment = new SqlFragment(_db.BuildPredicateFragment(predicateValues, predicateParams), predicateParams);
+
+      return Where(fragment)
          .Select(_db.SelectBody(metaType, predicateMembers, null))
          .Any();
    }
@@ -1511,9 +1542,9 @@ partial class SqlSet {
       };
 
       var parameters = new List<object>(predicateValues.Length);
-      var predicate = _db.BuildPredicateFragment(predicateValues, parameters);
+      var fragment = new SqlFragment(_db.BuildPredicateFragment(predicateValues, parameters), parameters);
 
-      return Where(predicate, parameters.ToArray());
+      return Where(fragment);
    }
 
    /// <summary>
@@ -1609,9 +1640,12 @@ partial class SqlSet {
 
             associations.Add(association);
 
-            query.SELECT(String.Join(", ", association.OtherType.PersistentDataMembers
-               .Where(m => !m.IsAssociation)
-               .Select(m => $"{db.QuoteIdentifier(rAlias)}.{db.QuoteIdentifier(m.MappedName)} AS {String.Join("$", associations.Select(a => a.ThisMember.Name))}${m.Name}")));
+            foreach (var m in association.OtherType.PersistentDataMembers
+                  .Where(m => !m.IsAssociation)) {
+
+               query.SELECT(String.Empty);
+               query.Buffer.Append($"{db.QuoteIdentifier(rAlias)}.{db.QuoteIdentifier(m.MappedName)} AS {String.Join('$', associations.Select(a => a.ThisMember.Name))}${m.Name}");
+            }
 
             currentType = association.OtherType;
          }
@@ -1642,7 +1676,8 @@ partial class SqlSet {
                joinPredicate.Append($"{db.QuoteIdentifier(lAlias)}.{db.QuoteIdentifier(thisMember.Name)} = {db.QuoteIdentifier(rAlias)}.{db.QuoteIdentifier(otherMember.MappedName)}");
             }
 
-            query.LEFT_JOIN($"{db.QuoteIdentifier(association.OtherType.Table.TableName)} {db.QuoteIdentifier(rAlias)} ON ({joinPredicate})");
+            query.LEFT_JOIN(String.Empty);
+            query.Buffer.Append($"{db.QuoteIdentifier(association.OtherType.Table.TableName)} {db.QuoteIdentifier(rAlias)} ON ({joinPredicate})");
          }
 
          return query;
@@ -1709,9 +1744,9 @@ partial class SqlSet {
             new KeyValuePair<string, object>(p.MappedName, association.ThisKey[i].GetValueForDatabase(container)));
 
          var parameters = new List<object>(association.OtherKey.Count);
-         var whereFragment = set._db.BuildPredicateFragment(predicateValues, parameters);
+         var whereFragment = new SqlFragment(set._db.BuildPredicateFragment(predicateValues, parameters), parameters);
 
-         var children = set.Where(whereFragment, parameters.ToArray())
+         var children = set.Where(whereFragment)
             .AsEnumerable();
 
          var otherMember = association.OtherMember;

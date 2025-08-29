@@ -23,12 +23,14 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DbExtensions;
 
 using MetaAccessor = Metadata.MetaAccessor;
 using MetaAssociation = Metadata.MetaAssociation;
+using InterpolatedString = InterpolatedStringHandlerArgumentAttribute;
 
 partial class Database {
 
@@ -41,7 +43,7 @@ partial class Database {
    /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
 
    public IEnumerable<TResult>
-   Map<TResult>(SqlBuilder query) {
+   Map<TResult>([InterpolatedString] SqlBuilder query) {
 
       var mapper = CreatePocoMapper(typeof(TResult));
 
@@ -58,7 +60,7 @@ partial class Database {
    /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
 
    public IEnumerable<object>
-   Map(Type resultType, SqlBuilder query) {
+   Map(Type resultType, [InterpolatedString] SqlBuilder query) {
 
       var mapper = CreatePocoMapper(resultType);
 

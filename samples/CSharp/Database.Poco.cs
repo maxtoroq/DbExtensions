@@ -24,7 +24,7 @@ namespace Samples.CSharp {
             .FROM("Products p")
             .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID")
             .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID")
-            .WHERE("p.ProductID < {0}", 3);
+            .WHERE($"p.ProductID < {3}");
 
          return db.Map<Product>(query);
       }
@@ -38,7 +38,7 @@ namespace Samples.CSharp {
             .FROM("EmployeeTerritories et")
             .LEFT_JOIN("Territories t ON et.TerritoryID = t.TerritoryID")
             .LEFT_JOIN("Region r ON t.RegionID = r.RegionID")
-            .WHERE("et.EmployeeID < {0}", 3);
+            .WHERE($"et.EmployeeID < {3}");
 
          return db.Map<EmployeeTerritory>(query);
       }
@@ -48,7 +48,7 @@ namespace Samples.CSharp {
          var query = SQL
             .SELECT("p.ProductID, p.ProductName")
             .FROM("Products p")
-            .WHERE("p.ProductID < {0}", 3);
+            .WHERE($"p.ProductID < {3}");
 
          return db.Map(query, r => new {
             ProductID = r.GetInt32(0),
@@ -61,7 +61,7 @@ namespace Samples.CSharp {
          var query = SQL
             .SELECT("p.ProductID, (p.UnitPrice * p.UnitsInStock) AS ValueInStock")
             .FROM("Products p")
-            .WHERE("p.ProductID < {0}", 3)
+            .WHERE($"p.ProductID < {3}")
             .ORDER_BY("ValueInStock");
 
          return db.Map<Product>(query);
@@ -98,7 +98,7 @@ namespace Samples.CSharp {
             .FROM("Products p")
             .LEFT_JOIN("Categories c ON p.CategoryID = c.CategoryID")
             .LEFT_JOIN("Suppliers s ON p.SupplierID = s.SupplierID")
-            .WHERE("p.ProductID < {0}", 3);
+            .WHERE($"p.ProductID < {3}");
 
          return db.Map(query);
       }

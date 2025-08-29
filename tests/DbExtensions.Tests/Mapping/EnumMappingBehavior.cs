@@ -13,7 +13,7 @@ namespace DbExtensions.Tests.Mapping.Annotated {
       public void Can_Map_Numeric_Column_To_Enum() {
 
          var item = db.Table<Enum.ToNumericColumn.Product>()
-            .First("CategoryID = {0}", Enum.CategoryEnum.Condiments);
+            .First($"CategoryID = {Enum.CategoryEnum.Condiments}");
 
          Assert.AreEqual(Enum.CategoryEnum.Condiments, item.CategoryID);
          Assert.AreEqual((int)Enum.CategoryEnum.Condiments, (int)item.CategoryID);
@@ -23,7 +23,7 @@ namespace DbExtensions.Tests.Mapping.Annotated {
       public void Can_Map_Numeric_Column_To_Nullable_Enum() {
 
          var item = db.Table<Enum.NullableToNumericColumn.Product>()
-            .First("CategoryID = {0}", Enum.CategoryEnum.Condiments);
+            .First($"CategoryID = {Enum.CategoryEnum.Condiments}");
 
          Assert.AreEqual(Enum.CategoryEnum.Condiments, item.CategoryID);
          Assert.AreEqual((int)Enum.CategoryEnum.Condiments, (int)item.CategoryID);
@@ -43,7 +43,7 @@ namespace DbExtensions.Tests.Mapping.Annotated {
 
             table.Add(item);
 
-            Assert.AreEqual(1, table.Count("ProductID = {0} AND CategoryID = {1}", item.ProductID, item.CategoryID));
+            Assert.AreEqual(1, table.Count($"ProductID = {item.ProductID} AND CategoryID = {item.CategoryID}"));
 
             tx.Rollback();
          }
@@ -63,7 +63,7 @@ namespace DbExtensions.Tests.Mapping.Annotated {
 
             table.Add(item);
 
-            Assert.AreEqual(1, table.Count("ProductID = {0} AND CategoryID = {1}", item.ProductID, item.CategoryID));
+            Assert.AreEqual(1, table.Count($"ProductID = {item.ProductID} AND CategoryID = {item.CategoryID}"));
 
             tx.Rollback();
          }
@@ -73,7 +73,7 @@ namespace DbExtensions.Tests.Mapping.Annotated {
       public void Can_Map_Text_Column_To_Enum() {
 
          var item = db.Table<Enum.ToTextColumn.Category>()
-            .Single("CategoryName = {0}", Enum.CategoryEnum.Condiments.ToString());
+            .Single($"CategoryName = {Enum.CategoryEnum.Condiments.ToString()}");
 
          Assert.AreEqual(Enum.CategoryEnum.Condiments, item.CategoryName);
          Assert.AreEqual(Enum.CategoryEnum.Condiments.ToString(), item.CategoryName.ToString());
@@ -83,7 +83,7 @@ namespace DbExtensions.Tests.Mapping.Annotated {
       public void Can_Map_Text_Column_To_Nullable_Enum() {
 
          var item = db.Table<Enum.NullableToTextColumn.Category>()
-            .Single("CategoryName = {0}", Enum.CategoryEnum.Condiments.ToString());
+            .Single($"CategoryName = {Enum.CategoryEnum.Condiments.ToString()}");
 
          Assert.AreEqual(Enum.CategoryEnum.Condiments, item.CategoryName);
          Assert.AreEqual(Enum.CategoryEnum.Condiments.ToString(), item.CategoryName.ToString());
@@ -102,13 +102,13 @@ namespace DbExtensions.Tests.Mapping.Annotated {
 
             table.Add(item);
 
-            Assert.AreEqual(1, table.Count("CategoryID = {0} AND CategoryName = {1}", item.CategoryID, item.CategoryName.ToString()));
+            Assert.AreEqual(1, table.Count($"CategoryID = {item.CategoryID} AND CategoryName = {item.CategoryName.ToString()}"));
 
             item.CategoryName = Enum.CategoryEnum.Bar;
 
             table.Update(item);
 
-            Assert.AreEqual(1, table.Count("CategoryID = {0} AND CategoryName = {1}", item.CategoryID, item.CategoryName.ToString()));
+            Assert.AreEqual(1, table.Count($"CategoryID = {item.CategoryID} AND CategoryName = {item.CategoryName.ToString()}"));
 
             tx.Rollback();
          }
@@ -127,13 +127,13 @@ namespace DbExtensions.Tests.Mapping.Annotated {
 
             table.Add(item);
 
-            Assert.AreEqual(1, table.Count("CategoryID = {0} AND CategoryName = {1}", item.CategoryID, item.CategoryName.ToString()));
+            Assert.AreEqual(1, table.Count($"CategoryID = {item.CategoryID} AND CategoryName = {item.CategoryName.ToString()}"));
 
             item.CategoryName = Enum.CategoryEnum.Bar;
 
             table.Update(item);
 
-            Assert.AreEqual(1, table.Count("CategoryID = {0} AND CategoryName = {1}", item.CategoryID, item.CategoryName.ToString()));
+            Assert.AreEqual(1, table.Count($"CategoryID = {item.CategoryID} AND CategoryName = {item.CategoryName.ToString()}"));
 
             tx.Rollback();
          }

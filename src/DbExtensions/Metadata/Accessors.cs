@@ -158,8 +158,7 @@ static class PropertyAccessor {
       return (MetaAccessor)Activator.CreateInstance(
          typeof(Accessor<,,>).MakeGenericType(objectType, pi.PropertyType, saType),
          BindingFlags.Instance | BindingFlags.NonPublic, null,
-         [pi, dget, dset, drset, storageAccessor], null
-      );
+         [pi, dget, dset, drset, storageAccessor], null);
    }
 
    sealed class Accessor<T, V, V2> : MetaAccessor<T, V> where V2 : V {

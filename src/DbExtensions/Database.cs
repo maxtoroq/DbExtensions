@@ -22,10 +22,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using IsolationLevel = System.Data.IsolationLevel;
 
 namespace DbExtensions;
+
+using InterpolatedString = InterpolatedStringHandlerArgumentAttribute;
 
 /// <summary>
 /// Provides simple data access using <see cref="SqlSet"/>, <see cref="SqlBuilder"/> and <see cref="SqlTable&lt;TEntity>"/>.
@@ -273,7 +276,7 @@ public partial class Database : IDisposable {
    /// <exception cref="ChangeConflictException">The number of affected records is not equal to <paramref name="affect"/>.</exception>
 
    public int
-   Execute(SqlBuilder nonQuery, int affect = -1, bool exact = false) {
+   Execute([InterpolatedString] SqlBuilder nonQuery, int affect = -1, bool exact = false) {
 
       ArgumentNullException.ThrowIfNull(nonQuery);
 
@@ -325,20 +328,6 @@ public partial class Database : IDisposable {
    }
 
    /// <summary>
-   /// Creates and executes an <see cref="IDbCommand"/> using the provided <paramref name="commandText"/> as a composite format string 
-   /// (as used on <see cref="String.Format(String, Object[])"/>), 
-   /// where the format items are replaced with appropiate parameter names, and the objects in the
-   /// <paramref name="parameters"/> array are added to the command's <see cref="IDbCommand.Parameters"/> collection.
-   /// </summary>
-   /// <param name="commandText">The command text.</param>
-   /// <param name="parameters">The parameters to apply to the command text.</param>
-   /// <returns>The number of affected records.</returns>
-
-   public int
-   Execute(string commandText, params object[] parameters) =>
-      Execute(new SqlBuilder(commandText, parameters));
-
-   /// <summary>
    /// Maps the results of the <paramref name="query"/> to <typeparamref name="TResult"/> objects,
    /// using the provided <paramref name="mapper"/> delegate.
    /// </summary>
@@ -348,7 +337,7 @@ public partial class Database : IDisposable {
    /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
 
    public IEnumerable<TResult>
-   Map<TResult>(SqlBuilder query, Func<IDataRecord, TResult> mapper) =>
+   Map<TResult>([InterpolatedString] SqlBuilder query, Func<IDataRecord, TResult> mapper) =>
       new MappingEnumerable<TResult>(CreateCommand(query), mapper, this.Configuration.Log);
 
    /// <summary>
@@ -363,11 +352,13 @@ public partial class Database : IDisposable {
    public virtual object
    LastInsertId() {
 
-      if (String.IsNullOrEmpty(this.Configuration.LastInsertIdCommand)) {
+      var sql = this.Configuration.LastInsertIdCommand;
+
+      if (String.IsNullOrEmpty(sql)) {
          throw new InvalidOperationException("Configuration.LastInsertIdCommand cannot be null.");
       }
 
-      var command = CreateCommand(this.Configuration.LastInsertIdCommand);
+      var command = CreateCommand(new SqlBuilder(sql.Length, 0).Append(sql));
       var value = command.ExecuteScalar();
 
       Trace(command);
@@ -385,61 +376,30 @@ public partial class Database : IDisposable {
    /// property is initialized with the values from the <see cref="SqlBuilder.ParameterValues"/> property of the <paramref name="sqlBuilder"/> parameter.
    /// </returns>
 
-   public IDbCommand
-   CreateCommand(SqlBuilder sqlBuilder) {
+   public virtual IDbCommand
+   CreateCommand([InterpolatedString] SqlBuilder sqlBuilder) {
 
       ArgumentNullException.ThrowIfNull(sqlBuilder);
 
-      return CreateCommand(sqlBuilder.ToString(), sqlBuilder.ParameterValues.ToArray());
-   }
-
-   /// <summary>
-   /// Creates and returns an <see cref="IDbCommand"/> object using the provided <paramref name="commandText"/> as a composite format string 
-   /// (as used on <see cref="String.Format(String, Object[])"/>), 
-   /// where the format items are replaced with appropiate parameter names, and the objects in the
-   /// <paramref name="parameters"/> array are added to the command's <see cref="IDbCommand.Parameters"/> collection.
-   /// </summary>
-   /// <param name="commandText">The command text.</param>
-   /// <param name="parameters">
-   /// The array of parameters to be passed to the command. Note the following 
-   /// behavior: If the number of objects in the array is less than the highest 
-   /// number identified in the command string, an exception is thrown. If the 
-   /// array contains objects that are not referenced in the command string, no 
-   /// exception is thrown. If a parameter is null, it is converted to DBNull.Value. 
-   /// </param>
-   /// <returns>
-   /// A new <see cref="IDbCommand"/> object whose <see cref="IDbCommand.CommandText"/> property
-   /// is initialized with the <paramref name="commandText"/> parameter, and whose <see cref="IDbCommand.Parameters"/>
-   /// property is initialized with the values from the <paramref name="parameters"/> parameter.
-   /// </returns>
-   /// <remarks>
-   /// <see cref="Transaction"/> is associated with all commands created using this method.
-   /// </remarks>
-
-   public virtual IDbCommand
-   CreateCommand(string commandText, params object[] parameters) {
-
-      ArgumentNullException.ThrowIfNull(commandText);
-
       var command = this.Connection.CreateCommand();
-      var transaction = this.Transaction;
 
-      if (transaction is not null) {
-         command.Transaction = transaction;
+      var format = sqlBuilder.ToString();
+      var parameters = sqlBuilder.ParameterValues;
+
+      if (this.Transaction is { } tx) {
+         command.Transaction = tx;
       }
 
-      int commandTimeout = this.Configuration.CommandTimeout;
-
-      if (commandTimeout > -1) {
-         command.CommandTimeout = commandTimeout;
+      if (this.Configuration.CommandTimeout is { } timeout and > -1) {
+         command.CommandTimeout = timeout;
       }
 
-      if (parameters is null or { Length: 0 }) {
-         command.CommandText = commandText;
+      if (parameters is null or { Count: 0 }) {
+         command.CommandText = format;
          return command;
       }
 
-      var paramPlaceholders = new object[parameters.Length];
+      var paramPlaceholders = new object[parameters.Count];
 
       for (int i = 0; i < paramPlaceholders.Length; i++) {
 
@@ -461,7 +421,7 @@ public partial class Database : IDisposable {
             .Invoke(dbParam.ParameterName);
       }
 
-      command.CommandText = String.Format(CultureInfo.InvariantCulture, commandText, paramPlaceholders);
+      command.CommandText = String.Format(CultureInfo.InvariantCulture, format, paramPlaceholders);
 
       return command;
    }
@@ -579,6 +539,8 @@ public partial class Database : IDisposable {
          }
       }
    }
+
+   // Object Members
 
    /// <exclude/>
 
