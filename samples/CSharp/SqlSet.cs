@@ -48,7 +48,8 @@ namespace Samples.CSharp {
             .Where("UnitsInStock > 0")
             .OrderBy("UnitsInStock")
             .Take(5)
-            .Select(r => new { Name = r.GetString(0), UnitsInStock = r.GetInt16(1) }, "ProductName, UnitsInStock")
+            .Select("ProductName, UnitsInStock",
+               r => new { Name = r.GetString(0), UnitsInStock = r.GetInt16(1) })
             .AsEnumerable();
       }
 
@@ -56,7 +57,7 @@ namespace Samples.CSharp {
          
          return products
             .Where("UnitsInStock = 0")
-            .Select(r => r.GetString(0), "ProductName")
+            .Select("ProductName", r => r.GetString(0))
             .AsEnumerable();
       }
 

@@ -860,12 +860,12 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// Projects each element of the set into a new form.
    /// </summary>
    /// <typeparam name="TResult">The type that <paramref name="mapper"/> returns.</typeparam>
-   /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
    /// <param name="columnList">The list of columns that are used by <paramref name="mapper"/>.</param>
+   /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
    /// <returns>A new <see cref="SqlSet&lt;TResult>"/>.</returns>
 
    public SqlSet<TResult>
-   Select<TResult>(Func<IDataRecord, TResult> mapper, string columnList) {
+   Select<TResult>(string columnList, Func<IDataRecord, TResult> mapper) {
 
       ArgumentNullException.ThrowIfNull(mapper);
       ArgumentNullException.ThrowIfNull(columnList);
@@ -873,10 +873,10 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       return CreateSet<TResult>(GetDefiningQuery(select: new SqlFragment(columnList)), mapper);
    }
 
-   /// <inheritdoc cref="Select&lt;TResult>(Func&lt;IDataRecord, TResult>, String)"/>
+   /// <inheritdoc cref="Select&lt;TResult>(String, Func&lt;IDataRecord, TResult>)"/>
 
    public SqlSet<TResult>
-   Select<TResult>(Func<IDataRecord, TResult> mapper, [InterpolatedString] ref SqlFragmentHandler columnList) {
+   Select<TResult>([InterpolatedString] ref SqlFragmentHandler columnList, Func<IDataRecord, TResult> mapper) {
 
       ArgumentNullException.ThrowIfNull(mapper);
 
@@ -886,12 +886,12 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <summary>
    /// Projects each element of the set into a new form.
    /// </summary>
-   /// <param name="resultType">The type that <paramref name="columnList"/> maps to.</param>
    /// <param name="columnList">The list of columns that maps to properties on <paramref name="resultType"/>.</param>
+   /// <param name="resultType">The type that <paramref name="columnList"/> maps to.</param>
    /// <returns>A new <see cref="SqlSet"/>.</returns>
 
    public SqlSet
-   Select(Type resultType, string columnList) {
+   Select(string columnList, Type resultType) {
 
       ArgumentNullException.ThrowIfNull(resultType);
       ArgumentNullException.ThrowIfNull(columnList);
@@ -899,10 +899,10 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       return CreateSet(GetDefiningQuery(select: new SqlFragment(columnList)), resultType);
    }
 
-   /// <inheritdoc cref="Select(Type, String)"/>
+   /// <inheritdoc cref="Select(String, Type)"/>
 
    public SqlSet
-   Select(Type resultType, [InterpolatedString] ref SqlFragmentHandler columnList) {
+   Select([InterpolatedString] ref SqlFragmentHandler columnList, Type resultType) {
 
       ArgumentNullException.ThrowIfNull(resultType);
 
@@ -1496,25 +1496,25 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    Select<TResult>(string columnList);
 
    SqlSet<TResult>
+   Select<TResult>(string columnList, Func<IDataRecord, TResult> mapper);
+
+   SqlSet<TResult>
    Select<TResult>(ref SqlSet.SqlFragmentHandler columnList);
 
    SqlSet<TResult>
-   Select<TResult>(Func<IDataRecord, TResult> mapper, string columnList);
-
-   SqlSet<TResult>
-   Select<TResult>(Func<IDataRecord, TResult> mapper, ref SqlSet.SqlFragmentHandler columnList);
+   Select<TResult>(ref SqlSet.SqlFragmentHandler columnList, Func<IDataRecord, TResult> mapper);
 
    SqlSet
    Select(string columnList);
 
    SqlSet
+   Select(string columnList, Type resultType);
+
+   SqlSet
    Select(ref SqlSet.SqlFragmentHandler columnList);
 
    SqlSet
-   Select(Type resultType, string columnList);
-
-   SqlSet
-   Select(Type resultType, ref SqlSet.SqlFragmentHandler columnList);
+   Select(ref SqlSet.SqlFragmentHandler columnList, Type resultType);
 
    TSource
    Single();

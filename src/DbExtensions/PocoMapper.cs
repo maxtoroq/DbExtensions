@@ -55,12 +55,12 @@ partial class Database {
    /// specified by the <paramref name="resultType"/> parameter.
    /// The query is deferred-executed.
    /// </summary>
-   /// <param name="resultType">The type of objects to map the results to.</param>
    /// <param name="query">The query.</param>
+   /// <param name="resultType">The type of objects to map the results to.</param>
    /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
 
    public IEnumerable<object>
-   Map(Type resultType, [InterpolatedString] SqlBuilder query) {
+   Map([InterpolatedString] SqlBuilder query, Type resultType) {
 
       var mapper = CreatePocoMapper(resultType);
 
