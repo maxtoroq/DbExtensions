@@ -15,7 +15,11 @@ namespace DbExtensions.Tests.Querying {
             WHERE CategoryID = {1}
             """);
 
-         Assert.AreEqual("SELECT ProductID, ProductName\r\nFROM Products\r\nWHERE CategoryID = {0}", query.ToString());
+         Assert.AreEqual("""
+            SELECT ProductID, ProductName
+            FROM Products
+            WHERE CategoryID = {0}
+            """, query.ToString());
          Assert.AreEqual(1, query.ParameterValues.Count);
          Assert.AreEqual(1, query.ParameterValues[0]);
       }
