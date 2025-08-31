@@ -1,9 +1,9 @@
-SqlCommandBuilder&lt;TEntity>.BuildSelectStatement Method (String)
-==================================================================
+SqlCommandBuilder&lt;TEntity>.BuildSelectStatement(String) Method
+=================================================================
 Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses. All column names are qualified with the provided *tableAlias*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,12 +16,11 @@ public SqlBuilder BuildSelectStatement(
 
 #### Parameters
 
-##### *tableAlias*
-Type: [System.String][2]  
+##### *tableAlias*  [String][2]
 The table alias.
 
 #### Return Value
-Type: [SqlBuilder][3]  
+[SqlBuilder][3]  
 The SELECT query for the current table.
 
 See Also
@@ -32,6 +31,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
+[2]: https://learn.microsoft.com/dotnet/api/system.string
 [3]: ../SqlBuilder/README.md
 [4]: README.md

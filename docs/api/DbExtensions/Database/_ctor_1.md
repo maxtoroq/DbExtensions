@@ -1,9 +1,9 @@
-Database Constructor (IDbConnection)
-====================================
+Database(IDbConnection) Constructor
+===================================
 Initializes a new instance of the [Database][1] class using the provided connection.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,8 +16,7 @@ public Database(
 
 #### Parameters
 
-##### *connection*
-Type: [System.Data.IDbConnection][3]  
+##### *connection*  [IDbConnection][3]
 The connection.
 
 
@@ -30,4 +29,4 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.data.idbconnection
+[3]: https://learn.microsoft.com/dotnet/api/system.data.idbconnection

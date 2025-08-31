@@ -1,9 +1,9 @@
-SqlTable.RemoveRange Method (IEnumerable&lt;Object>)
-====================================================
+SqlTable.RemoveRange(IEnumerable&lt;Object>) Method
+===================================================
 Executes DELETE commands for the specified *entities*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,8 +16,7 @@ public void RemoveRange(
 
 #### Parameters
 
-##### *entities*
-Type: [System.Collections.Generic.IEnumerable][2]&lt;[Object][3]>  
+##### *entities*  [IEnumerable][2]&lt;[Object][3]>
 The entities whose DELETE commands are to be executed.
 
 
@@ -29,6 +28,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
-[3]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+[3]: https://learn.microsoft.com/dotnet/api/system.object
 [4]: README.md

@@ -1,9 +1,9 @@
 DatabaseConfiguration.UseVersionMember Property
 ===============================================
 true to include version column check in SQL statements' predicates; otherwise, false. The default is true.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public bool UseVersionMember { get; set; }
 ```
 
 #### Property Value
-Type: [Boolean][2]
+[Boolean][2]
 
 See Also
 --------
@@ -23,5 +23,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.boolean
+[2]: https://learn.microsoft.com/dotnet/api/system.boolean
 [3]: README.md

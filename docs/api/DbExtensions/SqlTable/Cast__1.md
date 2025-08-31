@@ -1,9 +1,9 @@
 SqlTable.Cast&lt;TEntity> Method
 ================================
 Casts the current [SqlTable][1] to the generic [SqlTable&lt;TEntity>][2] instance.
-
-  **Namespace:**  [DbExtensions][3]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][3]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -20,7 +20,7 @@ where TEntity : class
 The type of the entity.
 
 #### Return Value
-Type: [SqlTable][2]&lt;**TEntity**>  
+[SqlTable][2]&lt;**TEntity**>  
 The [SqlTable&lt;TEntity>][2] instance for TEntity.
 
 Exceptions
@@ -41,4 +41,4 @@ See Also
 [1]: README.md
 [2]: ../SqlTable_1/README.md
 [3]: ../README.md
-[4]: https://docs.microsoft.com/dotnet/api/system.invalidoperationexception
+[4]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception

@@ -1,42 +1,34 @@
-SqlSet.Where Method
-===================
+SqlSet.Where(SqlSet.SqlFragmentHandler) Method
+==============================================
 Filters the set based on a predicate.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public SqlSet Where(
-	string predicate,
-	params Object[] parameters
+	ref SqlFragmentHandler predicate
 )
 ```
 
 #### Parameters
 
-##### *predicate*
-Type: [System.String][2]  
+##### *predicate*  SqlFragmentHandler
 A SQL expression to test each row for a condition.
 
-##### *parameters*
-Type: [System.Object][3][]  
-The parameters to apply to the *predicate*.
-
 #### Return Value
-Type: [SqlSet][4]  
-A new [SqlSet][4] that contains elements from the current set that satisfy the condition.
+[SqlSet][2]  
+A new [SqlSet][2] that contains elements from the current set that satisfy the condition.
 
 See Also
 --------
 
 #### Reference
-[SqlSet Class][4]  
+[SqlSet Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: README.md
+[2]: README.md

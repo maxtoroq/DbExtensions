@@ -1,9 +1,9 @@
-Database.Find&lt;TEntity> Method (Object)
-=========================================
+Database.Find&lt;TEntity>(Object) Method
+========================================
 Gets the entity whose primary key matches the *id* parameter.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -18,8 +18,7 @@ where TEntity : class
 
 #### Parameters
 
-##### *id*
-Type: [System.Object][2]  
+##### *id*  [Object][2]
 The primary key value.
 
 #### Type Parameters
@@ -28,8 +27,8 @@ The primary key value.
 The type of the entity.
 
 #### Return Value
-Type: **TEntity**  
- The entity whose primary key matches the *id* parameter, or null if the *id* does not exist. 
+**TEntity**  
+ The entity whose primary key matches the *id* parameter, or null if the *id* does not exist.
 
 Remarks
 -------
@@ -41,9 +40,9 @@ See Also
 #### Reference
 [Database Class][3]  
 [DbExtensions Namespace][1]  
-[SqlSet&lt;TResult>.Find(Object)][4]  
+[Find(Object)][4]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: https://learn.microsoft.com/dotnet/api/system.object
 [3]: README.md
 [4]: ../SqlSet_1/Find.md

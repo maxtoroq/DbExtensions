@@ -1,9 +1,9 @@
-Database.From Method (SqlBuilder)
-=================================
+Database.From(SqlBuilder) Method
+================================
 Creates and returns a new [SqlSet][1] using the provided defining query.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,12 +16,11 @@ public SqlSet From(
 
 #### Parameters
 
-##### *definingQuery*
-Type: [DbExtensions.SqlBuilder][3]  
+##### *definingQuery*  [SqlBuilder][3]
 The SQL query that will be the source of data for the set.
 
 #### Return Value
-Type: [SqlSet][1]  
+[SqlSet][1]  
 A new [SqlSet][1] object.
 
 See Also

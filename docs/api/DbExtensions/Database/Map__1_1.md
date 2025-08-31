@@ -1,9 +1,9 @@
-Database.Map&lt;TResult> Method (SqlBuilder, Func&lt;IDataRecord, TResult>)
-===========================================================================
+Database.Map&lt;TResult>(SqlBuilder, Func&lt;IDataRecord, TResult>) Method
+==========================================================================
 Maps the results of the *query* to TResult objects, using the provided *mapper* delegate.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -18,12 +18,10 @@ public IEnumerable<TResult> Map<TResult>(
 
 #### Parameters
 
-##### *query*
-Type: [DbExtensions.SqlBuilder][2]  
+##### *query*  [SqlBuilder][2]
 The query.
 
-##### *mapper*
-Type: [System.Func][3]&lt;[IDataRecord][4], **TResult**>  
+##### *mapper*  [Func][3]&lt;[IDataRecord][4], **TResult**>
 The delegate for creating TResult objects from an [IDataRecord][4] object.
 
 #### Type Parameters
@@ -32,7 +30,7 @@ The delegate for creating TResult objects from an [IDataRecord][4] object.
 The type of objects to map the results to.
 
 #### Return Value
-Type: [IEnumerable][5]&lt;**TResult**>  
+[IEnumerable][5]&lt;**TResult**>  
 The results of the query as TResult objects.
 
 See Also
@@ -44,7 +42,7 @@ See Also
 
 [1]: ../README.md
 [2]: ../SqlBuilder/README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.func-2
-[4]: https://docs.microsoft.com/dotnet/api/system.data.idatarecord
-[5]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+[3]: https://learn.microsoft.com/dotnet/api/system.func-2
+[4]: https://learn.microsoft.com/dotnet/api/system.data.idatarecord
+[5]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
 [6]: README.md

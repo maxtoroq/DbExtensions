@@ -1,9 +1,9 @@
 SqlSet.Count Method
 ===================
 Returns the number of elements in the set.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public int Count()
 ```
 
 #### Return Value
-Type: [Int32][2]  
+[Int32][2]  
 The number of elements in the set.
 
 Exceptions
@@ -32,7 +32,7 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.int32
-[3]: https://docs.microsoft.com/dotnet/api/system.overflowexception
-[4]: https://docs.microsoft.com/dotnet/api/system.int32.maxvalue
+[2]: https://learn.microsoft.com/dotnet/api/system.int32
+[3]: https://learn.microsoft.com/dotnet/api/system.overflowexception
+[4]: https://learn.microsoft.com/dotnet/api/system.int32.maxvalue
 [5]: README.md

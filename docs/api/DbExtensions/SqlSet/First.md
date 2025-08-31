@@ -1,9 +1,9 @@
 SqlSet.First Method
 ===================
 Returns the first element of the set.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public Object First()
 ```
 
 #### Return Value
-Type: [Object][2]  
+[Object][2]  
 The first element in the set.
 
 Exceptions
@@ -32,6 +32,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.object
-[3]: https://docs.microsoft.com/dotnet/api/system.invalidoperationexception
+[2]: https://learn.microsoft.com/dotnet/api/system.object
+[3]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
 [4]: README.md

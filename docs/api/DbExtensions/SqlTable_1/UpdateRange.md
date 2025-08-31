@@ -1,9 +1,9 @@
-SqlTable&lt;TEntity>.UpdateRange Method (IEnumerable&lt;TEntity>)
-=================================================================
+SqlTable&lt;TEntity>.UpdateRange(IEnumerable&lt;TEntity>) Method
+================================================================
 Executes UPDATE commands for the specified *entities*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,8 +16,7 @@ public void UpdateRange(
 
 #### Parameters
 
-##### *entities*
-Type: [System.Collections.Generic.IEnumerable][2]&lt;[TEntity][3]>  
+##### *entities*  [IEnumerable][2]&lt;[TEntity][3]>
 The entities whose UPDATE commands are to be executed.
 
 
@@ -29,5 +28,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+[2]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
 [3]: README.md

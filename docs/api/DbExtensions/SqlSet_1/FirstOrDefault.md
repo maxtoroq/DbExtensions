@@ -1,9 +1,9 @@
 SqlSet&lt;TResult>.FirstOrDefault Method
 ========================================
 Returns the first element of the set, or a default value if the set contains no elements.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public TResult FirstOrDefault()
 ```
 
 #### Return Value
-Type: [TResult][2]  
+[TResult][2]  
 A default value if the set is empty; otherwise, the first element.
 
 See Also

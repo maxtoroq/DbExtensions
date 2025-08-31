@@ -7,105 +7,125 @@ Inheritance Hierarchy
 ---------------------
 [System.Object][1]  
   **DbExtensions.SqlBuilder**  
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
-public class SqlBuilder
+public sealed class SqlBuilder
 ```
 
 The **SqlBuilder** type exposes the following members.
 
 
-Constructors
-------------
-
-|                  | Name                              | Description                                                                                             |
-| ---------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [SqlBuilder()][3]                 | Initializes a new instance of the **SqlBuilder** class.                                                 |
-| ![Public method] | [SqlBuilder(String, Object[])][4] | Initializes a new instance of the **SqlBuilder** class using the provided format string and parameters. |
-
-
 Properties
 ----------
 
-|                    | Name                  | Description                                                                                                                                                       |
-| ------------------ | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public property] | [Buffer][5]           | The underlying [StringBuilder][6].                                                                                                                                |
-| ![Public property] | [CurrentClause][7]    | Gets or sets the current SQL clause, used to identify consecutive appends to the same clause.                                                                     |
-| ![Public property] | [CurrentSeparator][8] | Gets or sets the separator of the current SQL clause body.                                                                                                        |
-| ![Public property] | [IsEmpty][9]          | Returns true if the buffer is empty.                                                                                                                              |
-| ![Public property] | [NextClause][10]      | Gets or sets the next SQL clause. Used by clause continuation methods, such as [AppendToCurrentClause(String, Object[])][11] and the methods that start with "_". |
-| ![Public property] | [NextSeparator][12]   | Gets or sets the separator of the next SQL clause body.                                                                                                           |
-| ![Public property] | [ParameterValues][13] | The parameter objects to be included in the database command.                                                                                                     |
+|                    | Name                  | Description                                                                                                                                                |
+| ------------------ | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public property] | [Buffer][3]           | The underlying [StringBuilder][4].                                                                                                                         |
+| ![Public property] | [CurrentClause][5]    | Gets or sets the current SQL clause, used to identify consecutive appends to the same clause.                                                              |
+| ![Public property] | [IsEmpty][6]          | Returns true if the buffer is empty.                                                                                                                       |
+| ![Public property] | [NextClause][7]       | Gets or sets the next SQL clause. Used by clause continuation methods, such as [_(String)][8] and [_If(Boolean, ConditionalInterpolatedStringHandler)][9]. |
+| ![Public property] | [ParameterValues][10] | The parameter objects to be included in the database command.                                                                                              |
 
 
 Methods
 -------
 
-|                                  | Name                                              | Description                                                                                                                                                                                      |
-| -------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method]                 | [_][14]                                           | Appends *format* to the current clause. This method is a shortcut for [AppendToCurrentClause(String, Object[])][11].                                                                             |
-| ![Public method]                 | [_Else][15]                                       | Appends *format* to the current clause if an antecedent call to [_If(Boolean, String, Object[])][16] or [_ElseIf(Boolean, String, Object[])][17] used a false condition.                         |
-| ![Public method]                 | [_ElseIf][17]                                     | Appends *format* to the current clause if *condition* is true and an antecedent call to [_If(Boolean, String, Object[])][16] or [_ElseIf(Boolean, String, Object[])][17] used a false condition. |
-| ![Public method]                 | [_ForEach&lt;T>][18]                              | Appends to the current clause the string made by concatenating an *itemFormat* for each element in *items*, interspersed with *separator*.                                                       |
-| ![Public method]                 | [_If][16]                                         | Appends *format* to the current clause if *condition* is true.                                                                                                                                   |
-| ![Public method]                 | [_OR&lt;T>][19]                                   | Appends to the current clause the string made by concatenating an *itemFormat* for each element in *items*, interspersed with the OR operator.                                                   |
-| ![Public method]                 | [Append(SqlBuilder)][20]                          | Appends *sql* to this instance.                                                                                                                                                                  |
-| ![Public method]                 | [Append(String, Object[])][21]                    | Appends *format* to this instance.                                                                                                                                                               |
-| ![Public method]                 | [AppendClause][22]                                | Appends the SQL clause specified by *clauseName* using the provided *format* string and parameters.                                                                                              |
-| ![Public method]                 | [AppendLine][23]                                  | Appends the default line terminator to this instance.                                                                                                                                            |
-| ![Public method]                 | [AppendToCurrentClause][11]                       | Appends *format* to the current clause.                                                                                                                                                          |
-| ![Public method]                 | [Clone][24]                                       | Creates and returns a copy of this instance.                                                                                                                                                     |
-| ![Public method]                 | [CROSS_JOIN][25]                                  | Appends the CROSS JOIN clause using the provided *format* string and parameters.                                                                                                                 |
-| ![Public method]                 | [DELETE_FROM][26]                                 | Appends the DELETE FROM clause using the provided *format* string and parameters.                                                                                                                |
-| ![Public method]                 | [FROM(String, Object[])][27]                      | Appends the FROM clause using the provided *format* string and parameters.                                                                                                                       |
-| ![Public method]                 | [FROM(SqlBuilder, String)][28]                    | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                                                               |
-| ![Public method]                 | [FROM(SqlSet, String)][29]                        | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                                                               |
-| ![Public method]                 | [GROUP_BY()][30]                                  | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][14] and [_If(Boolean, String, Object[])][16].                     |
-| ![Public method]                 | [GROUP_BY(String, Object[])][31]                  | Appends the GROUP BY clause using the provided *format* string and parameters.                                                                                                                   |
-| ![Public method]                 | [HAVING()][32]                                    | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][14] and [_If(Boolean, String, Object[])][16].                       |
-| ![Public method]                 | [HAVING(String, Object[])][33]                    | Appends the HAVING clause using the provided *format* string and parameters.                                                                                                                     |
-| ![Public method]                 | [INNER_JOIN][34]                                  | Appends the INNER JOIN clause using the provided *format* string and parameters.                                                                                                                 |
-| ![Public method]                 | [Insert][35]                                      | Inserts a string into this instance at the specified character position.                                                                                                                         |
-| ![Public method]                 | [INSERT_INTO][36]                                 | Appends the INSERT INTO clause using the provided *format* string and parameters.                                                                                                                |
-| ![Public method]                 | [JOIN()][37]                                      | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][14] and [_If(Boolean, String, Object[])][16].                         |
-| ![Public method]                 | [JOIN(String, Object[])][38]                      | Appends the JOIN clause using the provided *format* string and parameters.                                                                                                                       |
-| ![Public method]![Static member] | [JoinSql(String, SqlBuilder[])][39]               | Concatenates a specified separator [String][40] between each element of a specified **SqlBuilder** array, yielding a single concatenated **SqlBuilder**.                                         |
-| ![Public method]![Static member] | [JoinSql(String, IEnumerable&lt;SqlBuilder>)][41] | Concatenates the members of a constructed [IEnumerable&lt;T>][42] collection of type **SqlBuilder**, using the specified *separator* between each member.                                        |
-| ![Public method]                 | [LEFT_JOIN][43]                                   | Appends the LEFT JOIN clause using the provided *format* string and parameters.                                                                                                                  |
-| ![Public method]                 | [LIMIT()][44]                                     | Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][14] and [_If(Boolean, String, Object[])][16].                        |
-| ![Public method]                 | [LIMIT(Int32)][45]                                | Appends the LIMIT clause using the provided *maxRecords* parameter.                                                                                                                              |
-| ![Public method]                 | [LIMIT(String, Object[])][46]                     | Appends the LIMIT clause using the provided *format* string and parameters.                                                                                                                      |
-| ![Public method]                 | [OFFSET()][47]                                    | Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][14] and [_If(Boolean, String, Object[])][16].                       |
-| ![Public method]                 | [OFFSET(Int32)][48]                               | Appends the OFFSET clause using the provided *startIndex* parameter.                                                                                                                             |
-| ![Public method]                 | [OFFSET(String, Object[])][49]                    | Appends the OFFSET clause using the provided *format* string and parameters.                                                                                                                     |
-| ![Public method]                 | [ORDER_BY()][50]                                  | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][14] and [_If(Boolean, String, Object[])][16].                     |
-| ![Public method]                 | [ORDER_BY(String, Object[])][51]                  | Appends the ORDER BY clause using the provided *format* string and parameters.                                                                                                                   |
-| ![Public method]                 | [RIGHT_JOIN][52]                                  | Appends the RIGHT JOIN clause using the provided *format* string and parameters.                                                                                                                 |
-| ![Public method]                 | [SELECT()][53]                                    | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][14] and [_If(Boolean, String, Object[])][16].                       |
-| ![Public method]                 | [SELECT(String, Object[])][54]                    | Appends the SELECT clause using the provided *format* string and parameters.                                                                                                                     |
-| ![Public method]                 | [SET][55]                                         | Appends the SET clause using the provided *format* string and parameters.                                                                                                                        |
-| ![Public method]                 | [SetCurrentClause][56]                            | Sets *clauseName* as the current SQL clause.                                                                                                                                                     |
-| ![Public method]                 | [SetNextClause][57]                               | Sets *clauseName* as the next SQL clause.                                                                                                                                                        |
-| ![Public method]                 | [ToString][58]                                    | Converts the value of this instance to a [String][40]. (Overrides [Object.ToString()][59].)                                                                                                      |
-| ![Public method]                 | [UNION][60]                                       | Appends the UNION clause.                                                                                                                                                                        |
-| ![Public method]                 | [UPDATE][61]                                      | Appends the UPDATE clause using the provided *format* string and parameters.                                                                                                                     |
-| ![Public method]                 | [VALUES][62]                                      | Appends the VALUES clause using the provided parameters.                                                                                                                                         |
-| ![Public method]                 | [WHERE()][63]                                     | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][14] and [_If(Boolean, String, Object[])][16].                        |
-| ![Public method]                 | [WHERE(String, Object[])][64]                     | Appends the WHERE clause using the provided *format* string and parameters.                                                                                                                      |
-| ![Public method]                 | [WITH(String, Object[])][65]                      | Appends the WITH clause using the provided *format* string and parameters.                                                                                                                       |
-| ![Public method]                 | [WITH(SqlBuilder, String)][66]                    | Appends the WITH clause using the provided *subQuery* as body named after *alias*.                                                                                                               |
-| ![Public method]                 | [WITH(SqlSet, String)][67]                        | Appends the WITH clause using the provided *subQuery* as body named after *alias*.                                                                                                               |
+|                                  | Name                                                                      | Description                                                                                                                                                                                                                                  |
+| -------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method]                 | [_(SqlInterpolatedStringHandler&lt;SqlClause.Current>)][11]               | Appends the interpolated string *handler* to the current clause.                                                                                                                                                                             |
+| ![Public method]                 | [_(String)][8]                                                            | Appends the *text* to the current clause.                                                                                                                                                                                                    |
+| ![Public method]                 | [_Else][12]                                                               | Appends *handler* to the current clause if an antecedent call to [_If(Boolean, ConditionalInterpolatedStringHandler)][9] or [_ElseIf(Boolean, ConditionalElseInterpolatedStringHandler)][13] used a false condition                          |
+| ![Public method]                 | [_ElseIf][13]                                                             | Appends *handler* to the current clause if *condition* is true and an antecedent call to [_If(Boolean, ConditionalInterpolatedStringHandler)][9] or [_ElseIf(Boolean, ConditionalElseInterpolatedStringHandler)][13] used a false condition. |
+| ![Public method]                 | [_If][9]                                                                  | Appends the interpolated string *handler* to the current clause if *condition* is true.                                                                                                                                                      |
+| ![Public method]                 | [Append(AppendInterpolatedStringHandler)][14]                             | Appends the interpolated string *handler* to this instance.                                                                                                                                                                                  |
+| ![Public method]                 | [Append(SqlBuilder)][15]                                                  | Appends *sql* to this instance.                                                                                                                                                                                                              |
+| ![Public method]                 | [Append(String)][16]                                                      | Appends *text* to this instance.                                                                                                                                                                                                             |
+| ![Public method]                 | [AppendClause(SqlClause)][17]                                             | Appends the SQL *clause*.                                                                                                                                                                                                                    |
+| ![Public method]                 | [AppendClause(SqlClause, String)][18]                                     | Appends the SQL *clause* and the provided *text*.                                                                                                                                                                                            |
+| ![Public method]                 | [AppendClause&lt;TClause>()][19]                                          | Appends the SQL clause identified by TClause.                                                                                                                                                                                                |
+| ![Public method]                 | [AppendClause&lt;TClause>(SqlInterpolatedStringHandler&lt;TClause>)][20]  | Appends the SQL clause identified by TClause and appends the interpolated string *handler*.                                                                                                                                                  |
+| ![Public method]                 | [AppendClause&lt;TClause>(String)][21]                                    | Appends the SQL clause identified by TClause and appends the *text*.                                                                                                                                                                         |
+| ![Public method]                 | [AppendLine][22]                                                          | Appends the default line terminator to this instance.                                                                                                                                                                                        |
+| ![Public method]                 | [Clone][23]                                                               | Creates and returns a copy of this instance.                                                                                                                                                                                                 |
+| ![Public method]![Static member] | [Create(AppendInterpolatedStringHandler)][24]                             | Initializes a new instance of the **SqlBuilder** class using the provided interpolated string.                                                                                                                                               |
+| ![Public method]![Static member] | [Create(String)][25]                                                      | Initializes a new instance of the **SqlBuilder** class using the provided text.                                                                                                                                                              |
+| ![Public method]                 | [CROSS_JOIN()][26]                                                        | Sets CROSS JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                          |
+| ![Public method]                 | [CROSS_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.CROSS_JOIN>)][27]   | Appends the CROSS JOIN clause using the provided interpolated string *handler*.                                                                                                                                                              |
+| ![Public method]                 | [CROSS_JOIN(String)][28]                                                  | Appends the CROSS JOIN clause using the provided *text*.                                                                                                                                                                                     |
+| ![Public method]                 | [DELETE_FROM(SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>)][29] | Appends the DELETE FROM clause using the provided interpolated string *handler*.                                                                                                                                                             |
+| ![Public method]                 | [DELETE_FROM(String)][30]                                                 | Appends the DELETE FROM clause using the provided *text*.                                                                                                                                                                                    |
+| ![Public method]                 | [FROM()][31]                                                              | Sets FROM as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                                |
+| ![Public method]                 | [FROM(SqlInterpolatedStringHandler&lt;SqlClause.FROM>)][32]               | Appends the FROM clause using the provided interpolated string *handler*.                                                                                                                                                                    |
+| ![Public method]                 | [FROM(String)][33]                                                        | Appends the FROM clause using the provided *text*.                                                                                                                                                                                           |
+| ![Public method]                 | [FROM(SqlBuilder, String)][34]                                            | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                                                                                                           |
+| ![Public method]                 | [FROM(SqlSet, String)][35]                                                | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                                                                                                           |
+| ![Public method]                 | [GROUP_BY()][36]                                                          | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                            |
+| ![Public method]                 | [GROUP_BY(SqlInterpolatedStringHandler&lt;SqlClause.GROUP_BY>)][37]       | Appends the GROUP BY clause using the provided interpolated string *handler*.                                                                                                                                                                |
+| ![Public method]                 | [GROUP_BY(String)][38]                                                    | Appends the GROUP BY clause using the provided *text*.                                                                                                                                                                                       |
+| ![Public method]                 | [HAVING()][39]                                                            | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                              |
+| ![Public method]                 | [HAVING(SqlInterpolatedStringHandler&lt;SqlClause.HAVING>)][40]           | Appends the HAVING clause using the provided interpolated string *handler*.                                                                                                                                                                  |
+| ![Public method]                 | [HAVING(String)][41]                                                      | Appends the HAVING clause using the provided *text*.                                                                                                                                                                                         |
+| ![Public method]                 | [INNER_JOIN()][42]                                                        | Sets INNER JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                          |
+| ![Public method]                 | [INNER_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.INNER_JOIN>)][43]   | Appends the INNER JOIN clause using the provided interpolated string *handler*.                                                                                                                                                              |
+| ![Public method]                 | [INNER_JOIN(String)][44]                                                  | Appends the INNER JOIN clause using the provided *text*.                                                                                                                                                                                     |
+| ![Public method]                 | [INSERT_INTO(SqlInterpolatedStringHandler&lt;SqlClause.INSERT_INTO>)][45] | Appends the INSERT INTO clause using the provided interpolated string *handler*.                                                                                                                                                             |
+| ![Public method]                 | [INSERT_INTO(String)][46]                                                 | Appends the INSERT INTO clause using the provided *text*.                                                                                                                                                                                    |
+| ![Public method]                 | [InsertText][47]                                                          | Inserts a string into this instance at the specified character position.                                                                                                                                                                     |
+| ![Public method]                 | [JOIN()][48]                                                              | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                                |
+| ![Public method]                 | [JOIN(SqlInterpolatedStringHandler&lt;SqlClause.JOIN>)][49]               | Appends the JOIN clause using the provided interpolated string *handler*.                                                                                                                                                                    |
+| ![Public method]                 | [JOIN(String)][50]                                                        | Appends the JOIN clause using the provided *text*.                                                                                                                                                                                           |
+| ![Public method]![Static member] | [JoinSql(String, SqlBuilder[])][51]                                       | Concatenates a specified separator [String][52] between each element of a specified **SqlBuilder** array, yielding a single concatenated **SqlBuilder**.                                                                                     |
+| ![Public method]![Static member] | [JoinSql(String, IEnumerable&lt;SqlBuilder>)][53]                         | Concatenates the members of a constructed [IEnumerable&lt;T>][54] collection of type **SqlBuilder**, using the specified *separator* between each member.                                                                                    |
+| ![Public method]                 | [LEFT_JOIN()][55]                                                         | Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                           |
+| ![Public method]                 | [LEFT_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.LEFT_JOIN>)][56]     | Appends the LEFT JOIN clause using the provided interpolated string *handler*.                                                                                                                                                               |
+| ![Public method]                 | [LEFT_JOIN(String)][57]                                                   | Appends the LEFT JOIN clause using the provided *text*.                                                                                                                                                                                      |
+| ![Public method]                 | [LIMIT()][58]                                                             | Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                               |
+| ![Public method]                 | [LIMIT(Int32)][59]                                                        | Appends the LIMIT clause using the provided *maxRecords* parameter.                                                                                                                                                                          |
+| ![Public method]                 | [LIMIT(SqlInterpolatedStringHandler&lt;SqlClause.LIMIT>)][60]             | Appends the LIMIT clause using the provided interpolated string *handler*.                                                                                                                                                                   |
+| ![Public method]                 | [LIMIT(String)][61]                                                       | Appends the LIMIT clause using the provided *text*.                                                                                                                                                                                          |
+| ![Public method]                 | [OFFSET()][62]                                                            | Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                              |
+| ![Public method]                 | [OFFSET(Int32)][63]                                                       | Appends the OFFSET clause using the provided *startIndex* parameter.                                                                                                                                                                         |
+| ![Public method]                 | [OFFSET(SqlInterpolatedStringHandler&lt;SqlClause.OFFSET>)][64]           | Appends the OFFSET clause using the provided interpolated string *handler*.                                                                                                                                                                  |
+| ![Public method]                 | [OFFSET(String)][65]                                                      | Appends the OFFSET clause using the provided *text*.                                                                                                                                                                                         |
+| ![Public method]                 | [ORDER_BY()][66]                                                          | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                            |
+| ![Public method]                 | [ORDER_BY(SqlInterpolatedStringHandler&lt;SqlClause.ORDER_BY>)][67]       | Appends the ORDER BY clause using the provided interpolated string *handler*.                                                                                                                                                                |
+| ![Public method]                 | [ORDER_BY(String)][68]                                                    | Appends the ORDER BY clause using the provided *text*.                                                                                                                                                                                       |
+| ![Public method]                 | [RIGHT_JOIN()][69]                                                        | Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                          |
+| ![Public method]                 | [RIGHT_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.RIGHT_JOIN>)][70]   | Appends the RIGHT JOIN clause using the provided interpolated string *handler*.                                                                                                                                                              |
+| ![Public method]                 | [RIGHT_JOIN(String)][71]                                                  | Appends the RIGHT JOIN clause using the provided *text*.                                                                                                                                                                                     |
+| ![Public method]                 | [SELECT()][72]                                                            | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                              |
+| ![Public method]                 | [SELECT(SqlInterpolatedStringHandler&lt;SqlClause.SELECT>)][73]           | Appends the SELECT clause using the provided interpolated string *handler*.                                                                                                                                                                  |
+| ![Public method]                 | [SELECT(String)][74]                                                      | Appends the SELECT clause using the provided *text*.                                                                                                                                                                                         |
+| ![Public method]                 | [SET(SqlInterpolatedStringHandler&lt;SqlClause.SET>)][75]                 | Appends the SET clause using the provided interpolated string *handler*.                                                                                                                                                                     |
+| ![Public method]                 | [SET(String)][76]                                                         | Appends the SET clause using the provided *text*.                                                                                                                                                                                            |
+| ![Public method]                 | [SetCurrentClause(SqlClause)][77]                                         | Sets *clause* as the current SQL clause.                                                                                                                                                                                                     |
+| ![Public method]                 | [SetCurrentClause&lt;TClause>()][78]                                      | Sets the clause identified by TClause as the current SQL clause.                                                                                                                                                                             |
+| ![Public method]                 | [SetNextClause(SqlClause)][79]                                            | Sets *clause* as the next SQL clause.                                                                                                                                                                                                        |
+| ![Public method]                 | [SetNextClause&lt;TClause>()][80]                                         | Sets the clause identified by TClause as the next SQL clause.                                                                                                                                                                                |
+| ![Public method]                 | [ToString][81]                                                            | Converts the value of this instance to a [String][52]. <br/>(Overrides [Object.ToString()][82])                                                                                                                                              |
+| ![Public method]                 | [UNION][83]                                                               | Appends the UNION clause.                                                                                                                                                                                                                    |
+| ![Public method]                 | [UPDATE(SqlInterpolatedStringHandler&lt;SqlClause.UPDATE>)][84]           | Appends the UPDATE clause using the provided interpolated string *handler*.                                                                                                                                                                  |
+| ![Public method]                 | [UPDATE(String)][85]                                                      | Appends the UPDATE clause using the provided *text*.                                                                                                                                                                                         |
+| ![Public method]                 | [VALUES(Object[])][86]                                                    | Appends the VALUES clause using the provided parameters.                                                                                                                                                                                     |
+| ![Public method]                 | [VALUES(SqlInterpolatedStringHandler&lt;SqlClause.VALUES>)][87]           | Appends the VALUES clause using the provided interpolated string *handler*.                                                                                                                                                                  |
+| ![Public method]                 | [WHERE()][88]                                                             | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][9].                                                                               |
+| ![Public method]                 | [WHERE(SqlInterpolatedStringHandler&lt;SqlClause.WHERE>)][89]             | Appends the WHERE clause using the provided interpolated string *handler*.                                                                                                                                                                   |
+| ![Public method]                 | [WHERE(String)][90]                                                       | Appends the WHERE clause using the provided *text*.                                                                                                                                                                                          |
+| ![Public method]                 | [WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>)][91]               | Appends the WITH clause using the provided interpolated string *handler*.                                                                                                                                                                    |
+| ![Public method]                 | [WITH(String)][92]                                                        | Appends the WITH clause using the provided *text*.                                                                                                                                                                                           |
+| ![Public method]                 | [WITH(String, SqlBuilder)][93]                                            | Appends the WITH clause using the provided *subQuery* as body named after *alias*.                                                                                                                                                           |
+| ![Public method]                 | [WITH(String, SqlSet)][94]                                                | Appends the WITH clause using the provided *subQuery* as body named after *alias*.                                                                                                                                                           |
 
 
 Remarks
 -------
-For information on how to use SqlBuilder see [SqlBuilder Tutorial][68].
+For information on how to use SqlBuilder see [SqlBuilder Tutorial][95].
 
 See Also
 --------
@@ -113,74 +133,101 @@ See Also
 #### Reference
 [DbExtensions Namespace][2]  
 
-[1]: https://docs.microsoft.com/dotnet/api/system.object
+[1]: https://learn.microsoft.com/dotnet/api/system.object
 [2]: ../README.md
-[3]: _ctor.md
-[4]: _ctor_1.md
-[5]: Buffer.md
-[6]: https://docs.microsoft.com/dotnet/api/system.text.stringbuilder
-[7]: CurrentClause.md
-[8]: CurrentSeparator.md
-[9]: IsEmpty.md
-[10]: NextClause.md
-[11]: AppendToCurrentClause.md
-[12]: NextSeparator.md
-[13]: ParameterValues.md
-[14]: _.md
-[15]: _Else.md
-[16]: _If.md
-[17]: _ElseIf.md
-[18]: _ForEach__1.md
-[19]: _OR__1.md
-[20]: Append.md
-[21]: Append_1.md
-[22]: AppendClause.md
-[23]: AppendLine.md
-[24]: Clone.md
-[25]: CROSS_JOIN.md
-[26]: DELETE_FROM.md
-[27]: FROM_2.md
-[28]: FROM.md
-[29]: FROM_1.md
-[30]: GROUP_BY.md
-[31]: GROUP_BY_1.md
-[32]: HAVING.md
-[33]: HAVING_1.md
-[34]: INNER_JOIN.md
-[35]: Insert.md
-[36]: INSERT_INTO.md
-[37]: JOIN.md
-[38]: JOIN_1.md
-[39]: JoinSql.md
-[40]: https://docs.microsoft.com/dotnet/api/system.string
-[41]: JoinSql_1.md
-[42]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
-[43]: LEFT_JOIN.md
-[44]: LIMIT.md
-[45]: LIMIT_1.md
-[46]: LIMIT_2.md
-[47]: OFFSET.md
-[48]: OFFSET_1.md
-[49]: OFFSET_2.md
-[50]: ORDER_BY.md
-[51]: ORDER_BY_1.md
-[52]: RIGHT_JOIN.md
-[53]: SELECT.md
-[54]: SELECT_1.md
-[55]: SET.md
-[56]: SetCurrentClause.md
-[57]: SetNextClause.md
-[58]: ToString.md
-[59]: https://docs.microsoft.com/dotnet/api/system.object.tostring#System_Object_ToString
-[60]: UNION.md
-[61]: UPDATE.md
-[62]: VALUES.md
-[63]: WHERE.md
-[64]: WHERE_1.md
-[65]: WITH_2.md
-[66]: WITH.md
-[67]: WITH_1.md
-[68]: http://maxtoroq.github.io/DbExtensions/docs/SqlBuilder.html
-[Public method]: ../../icons/pubmethod.svg "Public method"
+[3]: Buffer.md
+[4]: https://learn.microsoft.com/dotnet/api/system.text.stringbuilder
+[5]: CurrentClause.md
+[6]: IsEmpty.md
+[7]: NextClause.md
+[8]: __1.md
+[9]: _If.md
+[10]: ParameterValues.md
+[11]: _.md
+[12]: _Else.md
+[13]: _ElseIf.md
+[14]: Append_1.md
+[15]: Append.md
+[16]: Append_2.md
+[17]: AppendClause.md
+[18]: AppendClause_1.md
+[19]: AppendClause__1.md
+[20]: AppendClause__1_1.md
+[21]: AppendClause__1_2.md
+[22]: AppendLine.md
+[23]: Clone.md
+[24]: Create.md
+[25]: Create_1.md
+[26]: CROSS_JOIN.md
+[27]: CROSS_JOIN_1.md
+[28]: CROSS_JOIN_2.md
+[29]: DELETE_FROM.md
+[30]: DELETE_FROM_1.md
+[31]: FROM.md
+[32]: FROM_2.md
+[33]: FROM_4.md
+[34]: FROM_1.md
+[35]: FROM_3.md
+[36]: GROUP_BY.md
+[37]: GROUP_BY_1.md
+[38]: GROUP_BY_2.md
+[39]: HAVING.md
+[40]: HAVING_1.md
+[41]: HAVING_2.md
+[42]: INNER_JOIN.md
+[43]: INNER_JOIN_1.md
+[44]: INNER_JOIN_2.md
+[45]: INSERT_INTO.md
+[46]: INSERT_INTO_1.md
+[47]: InsertText.md
+[48]: JOIN.md
+[49]: JOIN_1.md
+[50]: JOIN_2.md
+[51]: JoinSql.md
+[52]: https://learn.microsoft.com/dotnet/api/system.string
+[53]: JoinSql_1.md
+[54]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+[55]: LEFT_JOIN.md
+[56]: LEFT_JOIN_1.md
+[57]: LEFT_JOIN_2.md
+[58]: LIMIT.md
+[59]: LIMIT_2.md
+[60]: LIMIT_1.md
+[61]: LIMIT_3.md
+[62]: OFFSET.md
+[63]: OFFSET_2.md
+[64]: OFFSET_1.md
+[65]: OFFSET_3.md
+[66]: ORDER_BY.md
+[67]: ORDER_BY_1.md
+[68]: ORDER_BY_2.md
+[69]: RIGHT_JOIN.md
+[70]: RIGHT_JOIN_1.md
+[71]: RIGHT_JOIN_2.md
+[72]: SELECT.md
+[73]: SELECT_1.md
+[74]: SELECT_2.md
+[75]: SET.md
+[76]: SET_1.md
+[77]: SetCurrentClause.md
+[78]: SetCurrentClause__1.md
+[79]: SetNextClause.md
+[80]: SetNextClause__1.md
+[81]: ToString.md
+[82]: https://learn.microsoft.com/dotnet/api/system.object.tostring
+[83]: UNION.md
+[84]: UPDATE.md
+[85]: UPDATE_1.md
+[86]: VALUES_1.md
+[87]: VALUES.md
+[88]: WHERE.md
+[89]: WHERE_1.md
+[90]: WHERE_2.md
+[91]: WITH.md
+[92]: WITH_1.md
+[93]: WITH_2.md
+[94]: WITH_3.md
+[95]: http://maxtoroq.github.io/DbExtensions/docs/SqlBuilder.html
 [Public property]: ../../icons/pubproperty.svg "Public property"
-[Static member]: ../../icons/static.gif "Static member"
+[Public method]: ../../icons/pubmethod.svg "Public method"
+[Static member]: ../../icons/Static.gif "Static member"

@@ -17,12 +17,34 @@ Classes
 | ![Public class] | [Extensions][11]                    | Provides extension methods for common ADO.NET objects.                                                                                                                                                                                                                                               |
 | ![Public class] | [SQL][12]                           | Provides a set of static (Shared in Visual Basic) methods to create [SqlBuilder][7] instances.                                                                                                                                                                                                       |
 | ![Public class] | [SqlBuilder][7]                     | Represents a mutable SQL string.                                                                                                                                                                                                                                                                     |
-| ![Public class] | [SqlCommandBuilder&lt;TEntity>][13] | Generates SQL commands for annotated classes. This class cannot be instantiated, to get an instance use the [CommandBuilder][14] or [CommandBuilder][15] properties.                                                                                                                                 |
-| ![Public class] | [SqlSet][6]                         | Represents an immutable, connected SQL query. This class cannot be instantiated, to get an instance use the [From(String)][16] method.                                                                                                                                                               |
-| ![Public class] | [SqlSet&lt;TResult>][17]            | Represents an immutable, connected SQL query that maps to TResult objects. This class cannot be instantiated, to get an instance use the [From&lt;TResult>(String)][18] method.                                                                                                                      |
-| ![Public class] | [SqlTable][19]                      | A non-generic version of [SqlTable&lt;TEntity>][8] which can be used when the type of the entity is not known at build time. This class cannot be instantiated, to get an instance use the [Table(Type)][20] method.                                                                                 |
-| ![Public class] | [SqlTable&lt;TEntity>][8]           | A [SqlSet&lt;TResult>][17] that provides CRUD (Create, Read, Update, Delete) operations for annotated classes. This class cannot be instantiated, to get an instance use the [Table&lt;TEntity>()][21] method.                                                                                       |
-| ![Public class] | [TableAttribute][22]                | Designates a class as an entity class that is associated with a database table.                                                                                                                                                                                                                      |
+| ![Public class] | [SqlClause][13]                     | Provides information about a SQL clause. Used by [SqlBuilder][7].                                                                                                                                                                                                                                    |
+| ![Public class] | [SqlClause.CROSS_JOIN][14]          | The CROSS JOIN clause.                                                                                                                                                                                                                                                                               |
+| ![Public class] | [SqlClause.Current][15]             | The "current" clause.                                                                                                                                                                                                                                                                                |
+| ![Public class] | [SqlClause.DELETE_FROM][16]         | The DELETE FROM clause.                                                                                                                                                                                                                                                                              |
+| ![Public class] | [SqlClause.FROM][17]                | The FROM clause.                                                                                                                                                                                                                                                                                     |
+| ![Public class] | [SqlClause.GROUP_BY][18]            | The GROUP BY clause.                                                                                                                                                                                                                                                                                 |
+| ![Public class] | [SqlClause.HAVING][19]              | The HAVING clause.                                                                                                                                                                                                                                                                                   |
+| ![Public class] | [SqlClause.INNER_JOIN][20]          | The INNER JOIN clause.                                                                                                                                                                                                                                                                               |
+| ![Public class] | [SqlClause.INSERT_INTO][21]         | The INSERT INTO clause.                                                                                                                                                                                                                                                                              |
+| ![Public class] | [SqlClause.JOIN][22]                | The JOIN clause.                                                                                                                                                                                                                                                                                     |
+| ![Public class] | [SqlClause.LEFT_JOIN][23]           | The LEFT JOIN clause.                                                                                                                                                                                                                                                                                |
+| ![Public class] | [SqlClause.LIMIT][24]               | The LIMIT clause.                                                                                                                                                                                                                                                                                    |
+| ![Public class] | [SqlClause.OFFSET][25]              | The OFFSET clause.                                                                                                                                                                                                                                                                                   |
+| ![Public class] | [SqlClause.ORDER_BY][26]            | The ORDER BY clause.                                                                                                                                                                                                                                                                                 |
+| ![Public class] | [SqlClause.RIGHT_JOIN][27]          | The RIGHT JOIN clause.                                                                                                                                                                                                                                                                               |
+| ![Public class] | [SqlClause.SELECT][28]              | The SELECT clause.                                                                                                                                                                                                                                                                                   |
+| ![Public class] | [SqlClause.SET][29]                 | The SET clause.                                                                                                                                                                                                                                                                                      |
+| ![Public class] | [SqlClause.UNION][30]               | The UNION clause.                                                                                                                                                                                                                                                                                    |
+| ![Public class] | [SqlClause.UPDATE][31]              | The UPDATE clause.                                                                                                                                                                                                                                                                                   |
+| ![Public class] | [SqlClause.VALUES][32]              | The VALUES clause.                                                                                                                                                                                                                                                                                   |
+| ![Public class] | [SqlClause.WHERE][33]               | The WHERE clause.                                                                                                                                                                                                                                                                                    |
+| ![Public class] | [SqlClause.WITH][34]                | The WITH clause.                                                                                                                                                                                                                                                                                     |
+| ![Public class] | [SqlCommandBuilder&lt;TEntity>][35] | Generates SQL commands for annotated classes. This class cannot be instantiated, to get an instance use the [CommandBuilder][36] or [CommandBuilder][37] properties.                                                                                                                                 |
+| ![Public class] | [SqlSet][6]                         | Represents an immutable, connected SQL query. This class cannot be instantiated, to get an instance use the [From(String)][38] method.                                                                                                                                                               |
+| ![Public class] | [SqlSet&lt;TResult>][39]            | Represents an immutable, connected SQL query that maps to TResult objects. This class cannot be instantiated, to get an instance use the [From&lt;TResult>(String)][40] method.                                                                                                                      |
+| ![Public class] | [SqlTable][41]                      | A non-generic version of [SqlTable&lt;TEntity>][8] which can be used when the type of the entity is not known at build time. This class cannot be instantiated, to get an instance use the [Table(Type)][42] method.                                                                                 |
+| ![Public class] | [SqlTable&lt;TEntity>][8]           | A [SqlSet&lt;TResult>][39] that provides CRUD (Create, Read, Update, Delete) operations for annotated classes. This class cannot be instantiated, to get an instance use the [Table&lt;TEntity>()][43] method.                                                                                       |
+| ![Public class] | [TableAttribute][44]                | Designates a class as an entity class that is associated with a database table.                                                                                                                                                                                                                      |
 
 
 Enumerations
@@ -30,7 +52,7 @@ Enumerations
 
 |                       | Enumeration    | Description                                                                                                                   |
 | --------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| ![Public enumeration] | [AutoSync][23] | Used to specify for during INSERT and UPDATE operations when a data member should be read back after the operation completes. |
+| ![Public enumeration] | [AutoSync][45] | Used to specify for during INSERT and UPDATE operations when a data member should be read back after the operation completes. |
 
 [1]: Database/README.md
 [2]: AssociationAttribute/README.md
@@ -44,16 +66,38 @@ Enumerations
 [10]: Database/Configuration.md
 [11]: Extensions/README.md
 [12]: SQL/README.md
-[13]: SqlCommandBuilder_1/README.md
-[14]: SqlTable_1/CommandBuilder.md
-[15]: SqlTable/CommandBuilder.md
-[16]: Database/From_2.md
-[17]: SqlSet_1/README.md
-[18]: Database/From__1_2.md
-[19]: SqlTable/README.md
-[20]: Database/Table.md
-[21]: Database/Table__1.md
-[22]: TableAttribute/README.md
-[23]: AutoSync/README.md
+[13]: SqlClause/README.md
+[14]: SqlClause_CROSS_JOIN/README.md
+[15]: SqlClause_Current/README.md
+[16]: SqlClause_DELETE_FROM/README.md
+[17]: SqlClause_FROM/README.md
+[18]: SqlClause_GROUP_BY/README.md
+[19]: SqlClause_HAVING/README.md
+[20]: SqlClause_INNER_JOIN/README.md
+[21]: SqlClause_INSERT_INTO/README.md
+[22]: SqlClause_JOIN/README.md
+[23]: SqlClause_LEFT_JOIN/README.md
+[24]: SqlClause_LIMIT/README.md
+[25]: SqlClause_OFFSET/README.md
+[26]: SqlClause_ORDER_BY/README.md
+[27]: SqlClause_RIGHT_JOIN/README.md
+[28]: SqlClause_SELECT/README.md
+[29]: SqlClause_SET/README.md
+[30]: SqlClause_UNION/README.md
+[31]: SqlClause_UPDATE/README.md
+[32]: SqlClause_VALUES/README.md
+[33]: SqlClause_WHERE/README.md
+[34]: SqlClause_WITH/README.md
+[35]: SqlCommandBuilder_1/README.md
+[36]: SqlTable_1/CommandBuilder.md
+[37]: SqlTable/CommandBuilder.md
+[38]: Database/From_2.md
+[39]: SqlSet_1/README.md
+[40]: Database/From__1_2.md
+[41]: SqlTable/README.md
+[42]: Database/Table.md
+[43]: Database/Table__1.md
+[44]: TableAttribute/README.md
+[45]: AutoSync/README.md
 [Public class]: ../icons/pubclass.svg "Public class"
 [Public enumeration]: ../icons/pubenumeration.svg "Public enumeration"

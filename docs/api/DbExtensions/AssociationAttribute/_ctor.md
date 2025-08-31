@@ -1,9 +1,9 @@
 AssociationAttribute Constructor
 ================================
 Initializes a new instance of the [AssociationAttribute][1] class
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------

@@ -1,9 +1,9 @@
-Database.Execute Method (SqlBuilder, Int32, Boolean)
-====================================================
+Database.Execute Method
+=======================
 Executes the *nonQuery* command. Optionally uses a transaction and validates affected records value before committing.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -18,20 +18,17 @@ public int Execute(
 
 #### Parameters
 
-##### *nonQuery*
-Type: [DbExtensions.SqlBuilder][2]  
+##### *nonQuery*  [SqlBuilder][2]
 The non-query command to execute.
 
-##### *affect* (Optional)
-Type: [System.Int32][3]  
+##### *affect*  [Int32][3]  (Optional)
 The number of records the command should affect. This value is ignored if less or equal to -1.
 
-##### *exact* (Optional)
-Type: [System.Boolean][4]  
+##### *exact*  [Boolean][4]  (Optional)
 true if the number of affected records should exactly match *affect*; false if a lower number is acceptable.
 
 #### Return Value
-Type: [Int32][3]  
+[Int32][3]  
 The number of affected records.
 
 Exceptions
@@ -51,7 +48,7 @@ See Also
 
 [1]: ../README.md
 [2]: ../SqlBuilder/README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.int32
-[4]: https://docs.microsoft.com/dotnet/api/system.boolean
+[3]: https://learn.microsoft.com/dotnet/api/system.int32
+[4]: https://learn.microsoft.com/dotnet/api/system.boolean
 [5]: ../ChangeConflictException/README.md
 [6]: README.md

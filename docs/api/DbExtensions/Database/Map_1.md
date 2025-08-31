@@ -1,32 +1,30 @@
-Database.Map Method (Type, SqlBuilder)
-======================================
+Database.Map(SqlBuilder, Type) Method
+=====================================
 Maps the results of the *query* to objects of type specified by the *resultType* parameter. The query is deferred-executed.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public IEnumerable<Object> Map(
-	Type resultType,
-	SqlBuilder query
+	SqlBuilder query,
+	Type resultType
 )
 ```
 
 #### Parameters
 
-##### *resultType*
-Type: [System.Type][2]  
-The type of objects to map the results to.
-
-##### *query*
-Type: [DbExtensions.SqlBuilder][3]  
+##### *query*  [SqlBuilder][2]
 The query.
 
+##### *resultType*  [Type][3]
+The type of objects to map the results to.
+
 #### Return Value
-Type: [IEnumerable][4]&lt;[Object][5]>  
+[IEnumerable][4]&lt;[Object][5]>  
 The results of the query as objects of type specified by the *resultType* parameter.
 
 See Also
@@ -37,8 +35,8 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.type
-[3]: ../SqlBuilder/README.md
-[4]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
-[5]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: ../SqlBuilder/README.md
+[3]: https://learn.microsoft.com/dotnet/api/system.type
+[4]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+[5]: https://learn.microsoft.com/dotnet/api/system.object
 [6]: README.md

@@ -1,9 +1,9 @@
-Database.Map&lt;TResult> Method (SqlBuilder)
-============================================
+Database.Map&lt;TResult>(SqlBuilder) Method
+===========================================
 Maps the results of the *query* to TResult objects. The query is deferred-executed.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -17,8 +17,7 @@ public IEnumerable<TResult> Map<TResult>(
 
 #### Parameters
 
-##### *query*
-Type: [DbExtensions.SqlBuilder][2]  
+##### *query*  [SqlBuilder][2]
 The query.
 
 #### Type Parameters
@@ -27,7 +26,7 @@ The query.
 The type of objects to map the results to.
 
 #### Return Value
-Type: [IEnumerable][3]&lt;**TResult**>  
+[IEnumerable][3]&lt;**TResult**>  
 The results of the query as TResult objects.
 
 See Also
@@ -39,5 +38,5 @@ See Also
 
 [1]: ../README.md
 [2]: ../SqlBuilder/README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+[3]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
 [4]: README.md

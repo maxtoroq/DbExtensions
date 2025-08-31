@@ -1,9 +1,9 @@
 SqlSet&lt;TResult>.Include Method
 =================================
 Specifies the related objects to include in the query results.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,12 +16,11 @@ public SqlSet<TResult> Include(
 
 #### Parameters
 
-##### *path*
-Type: [System.String][2]  
+##### *path*  [String][2]
 Dot-separated list of related objects to return in the query results.
 
 #### Return Value
-Type: [SqlSet][3]&lt;[TResult][3]>  
+[SqlSet][3]&lt;[TResult][3]>  
 A new [SqlSet&lt;TResult>][3] with the defined query path.
 
 Exceptions
@@ -40,6 +39,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
+[2]: https://learn.microsoft.com/dotnet/api/system.string
 [3]: README.md
-[4]: https://docs.microsoft.com/dotnet/api/system.invalidoperationexception
+[4]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception

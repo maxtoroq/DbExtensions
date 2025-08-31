@@ -1,9 +1,9 @@
 ComplexPropertyAttribute Constructor
 ====================================
 Initializes a new instance of the [ComplexPropertyAttribute][1] class
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------

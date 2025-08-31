@@ -1,9 +1,9 @@
-Database.From Method (String)
-=============================
+Database.From(String) Method
+============================
 Creates and returns a new [SqlSet][1] using the provided table name.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,12 +16,11 @@ public SqlSet From(
 
 #### Parameters
 
-##### *tableName*
-Type: [System.String][3]  
+##### *tableName*  [String][3]
 The name of the table that will be the source of data for the set.
 
 #### Return Value
-Type: [SqlSet][1]  
+[SqlSet][1]  
 A new [SqlSet][1] object.
 
 See Also
@@ -33,5 +32,5 @@ See Also
 
 [1]: ../SqlSet/README.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.string
+[3]: https://learn.microsoft.com/dotnet/api/system.string
 [4]: README.md

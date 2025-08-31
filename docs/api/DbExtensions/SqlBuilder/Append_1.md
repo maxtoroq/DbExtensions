@@ -1,42 +1,34 @@
-SqlBuilder.Append Method (String, Object[])
-===========================================
-Appends *format* to this instance.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+SqlBuilder.Append(SqlBuilder.AppendInterpolatedStringHandler) Method
+====================================================================
+Appends the interpolated string *handler* to this instance.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public SqlBuilder Append(
-	string format,
-	params Object[] args
+	ref AppendInterpolatedStringHandler handler
 )
 ```
 
 #### Parameters
 
-##### *format*
-Type: [System.String][2]  
-A SQL format string.
-
-##### *args*
-Type: [System.Object][3][]  
-The array of parameters.
+##### *handler*  AppendInterpolatedStringHandler
+The interpolated string.
 
 #### Return Value
-Type: [SqlBuilder][4]  
+[SqlBuilder][2]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
+[SqlBuilder Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: README.md
+[2]: README.md

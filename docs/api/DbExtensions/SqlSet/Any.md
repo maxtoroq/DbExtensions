@@ -1,9 +1,9 @@
 SqlSet.Any Method
 =================
 Determines whether the set contains any elements.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public bool Any()
 ```
 
 #### Return Value
-Type: [Boolean][2]  
+[Boolean][2]  
 true if the sequence contains any elements; otherwise, false.
 
 See Also
@@ -24,5 +24,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.boolean
+[2]: https://learn.microsoft.com/dotnet/api/system.boolean
 [3]: README.md

@@ -1,27 +1,26 @@
-SqlBuilder.LIMIT Method (Int32)
-===============================
-Appends the LIMIT clause using the provided *maxRecords* parameter.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+SqlBuilder.LIMIT(SqlInterpolatedStringHandler&lt;SqlClause.LIMIT>) Method
+=========================================================================
+Appends the LIMIT clause using the provided interpolated string *handler*.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public SqlBuilder LIMIT(
-	int maxRecords
+	ref SqlInterpolatedStringHandler<SqlClause.LIMIT> handler
 )
 ```
 
 #### Parameters
 
-##### *maxRecords*
-Type: [System.Int32][2]  
-The value to use as parameter.
+##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.LIMIT][2]>
+The interpolated string that represents the body of the LIMIT clause.
 
 #### Return Value
-Type: [SqlBuilder][3]  
+[SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also
@@ -32,5 +31,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.int32
+[2]: ../SqlClause_LIMIT/README.md
 [3]: README.md

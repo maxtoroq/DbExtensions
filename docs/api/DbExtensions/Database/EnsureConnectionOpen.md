@@ -1,9 +1,9 @@
 Database.EnsureConnectionOpen Method
 ====================================
 Opens [Connection][1] (if it's not open) and returns an [IDisposable][2] object you can use to close it (if it wasn't open).
-
-  **Namespace:**  [DbExtensions][3]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][3]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,15 +13,15 @@ public IDisposable EnsureConnectionOpen()
 ```
 
 #### Return Value
-Type: [IDisposable][2]  
+[IDisposable][2]  
 An [IDisposable][2] object to close the connection.
 
 Remarks
 -------
- Use this method with the `using` statement in C# or Visual Basic to ensure that a block of code is always executed with an open connection. 
+Use this method with the `using` statement in C# or Visual Basic to ensure that a block of code is always executed with an open connection.
 
-Examples
---------
+Example
+-------
 
 ```csharp
 using (db.EnsureConnectionOpen()) {
@@ -38,6 +38,6 @@ See Also
 [DbExtensions Namespace][3]  
 
 [1]: Connection.md
-[2]: https://docs.microsoft.com/dotnet/api/system.idisposable
+[2]: https://learn.microsoft.com/dotnet/api/system.idisposable
 [3]: ../README.md
 [4]: README.md

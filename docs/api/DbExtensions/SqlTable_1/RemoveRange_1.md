@@ -1,9 +1,9 @@
-SqlTable&lt;TEntity>.RemoveRange Method (TEntity[])
-===================================================
+SqlTable&lt;TEntity>.RemoveRange(TEntity[]) Method
+==================================================
 Executes DELETE commands for the specified *entities*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,8 +16,7 @@ public void RemoveRange(
 
 #### Parameters
 
-##### *entities*
-Type: [TEntity][2][]  
+##### *entities*  [TEntity][2][]
 The entities whose DELETE commands are to be executed.
 
 

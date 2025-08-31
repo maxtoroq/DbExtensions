@@ -1,48 +1,39 @@
-SqlSet.Select Method (Type, String, Object[])
-=============================================
+SqlSet.Select(SqlSet.SqlFragmentHandler, Type) Method
+=====================================================
 Projects each element of the set into a new form.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public SqlSet Select(
-	Type resultType,
-	string columnList,
-	params Object[] parameters
+	ref SqlFragmentHandler columnList,
+	Type resultType
 )
 ```
 
 #### Parameters
 
-##### *resultType*
-Type: [System.Type][2]  
-The type that *columnList* maps to.
-
-##### *columnList*
-Type: [System.String][3]  
+##### *columnList*  SqlFragmentHandler
 The list of columns that maps to properties on *resultType*.
 
-##### *parameters*
-Type: [System.Object][4][]  
-The parameters to apply to the *columnList*.
+##### *resultType*  [Type][2]
+The type that *columnList* maps to.
 
 #### Return Value
-Type: [SqlSet][5]  
-A new [SqlSet][5].
+[SqlSet][3]  
+A new [SqlSet][3].
 
 See Also
 --------
 
 #### Reference
-[SqlSet Class][5]  
+[SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.type
-[3]: https://docs.microsoft.com/dotnet/api/system.string
-[4]: https://docs.microsoft.com/dotnet/api/system.object
-[5]: README.md
+[2]: https://learn.microsoft.com/dotnet/api/system.type
+[3]: README.md

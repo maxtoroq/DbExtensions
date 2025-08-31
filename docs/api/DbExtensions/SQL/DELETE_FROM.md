@@ -1,44 +1,37 @@
-SQL.DELETE_FROM Method
-======================
-Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *format* and *args*.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+SQL.DELETE_FROM(SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>) Method
+==============================================================================
+Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided string interpolated *handler*.
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public static SqlBuilder DELETE_FROM(
-	string format,
-	params Object[] args
+	ref SqlInterpolatedStringHandler<SqlClause.DELETE_FROM> handler
 )
 ```
 
 #### Parameters
 
-##### *format*
-Type: [System.String][3]  
+##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.DELETE_FROM][3]>
 The body of the DELETE FROM clause.
 
-##### *args*
-Type: [System.Object][4][]  
-The parameters of the clause body.
-
 #### Return Value
-Type: [SqlBuilder][1]  
- A new [SqlBuilder][1] after calling [DELETE_FROM(String, Object[])][5]. 
+[SqlBuilder][1]  
+ A new [SqlBuilder][1] after calling [DELETE_FROM(SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>)][4].
 
 See Also
 --------
 
 #### Reference
-[SQL Class][6]  
+[SQL Class][5]  
 [DbExtensions Namespace][2]  
 
 [1]: ../SqlBuilder/README.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.string
-[4]: https://docs.microsoft.com/dotnet/api/system.object
-[5]: ../SqlBuilder/DELETE_FROM.md
-[6]: README.md
+[3]: ../SqlClause_DELETE_FROM/README.md
+[4]: ../SqlBuilder/DELETE_FROM.md
+[5]: README.md

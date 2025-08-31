@@ -1,9 +1,9 @@
 SqlSet.LongCount Method
 =======================
 Returns an [Int64][1] that represents the total number of elements in the set.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public long LongCount()
 ```
 
 #### Return Value
-Type: [Int64][1]  
+[Int64][1]  
 The number of elements in the set.
 
 Exceptions
@@ -31,8 +31,8 @@ See Also
 [SqlSet Class][5]  
 [DbExtensions Namespace][2]  
 
-[1]: https://docs.microsoft.com/dotnet/api/system.int64
+[1]: https://learn.microsoft.com/dotnet/api/system.int64
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.overflowexception
-[4]: https://docs.microsoft.com/dotnet/api/system.int64.maxvalue
+[3]: https://learn.microsoft.com/dotnet/api/system.overflowexception
+[4]: https://learn.microsoft.com/dotnet/api/system.int64.maxvalue
 [5]: README.md

@@ -1,33 +1,31 @@
-SqlBuilder.JoinSql Method (String, SqlBuilder[])
-================================================
+SqlBuilder.JoinSql(String, SqlBuilder[]) Method
+===============================================
 Concatenates a specified separator [String][1] between each element of a specified [SqlBuilder][2] array, yielding a single concatenated [SqlBuilder][2].
-
-  **Namespace:**  [DbExtensions][3]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][3]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public static SqlBuilder JoinSql(
-	string separator,
-	params SqlBuilder[] values
+	string? separator,
+	params SqlBuilder?[] values
 )
 ```
 
 #### Parameters
 
-##### *separator*
-Type: [System.String][1]  
+##### *separator*  [String][1]
 The string to use as a separator.
 
-##### *values*
-Type: [DbExtensions.SqlBuilder][2][]  
+##### *values*  [SqlBuilder][2][]
 An array of [SqlBuilder][2].
 
 #### Return Value
-Type: [SqlBuilder][2]  
- A [SqlBuilder][2] consisting of the elements of *values* interspersed with the *separator* string. 
+[SqlBuilder][2]  
+ A [SqlBuilder][2] consisting of the elements of *values* interspersed with the *separator* string.
 
 See Also
 --------
@@ -36,6 +34,6 @@ See Also
 [SqlBuilder Class][2]  
 [DbExtensions Namespace][3]  
 
-[1]: https://docs.microsoft.com/dotnet/api/system.string
+[1]: https://learn.microsoft.com/dotnet/api/system.string
 [2]: README.md
 [3]: ../README.md

@@ -1,9 +1,9 @@
-SqlTable&lt;TEntity>.Update Method (TEntity)
-============================================
+SqlTable&lt;TEntity>.Update(TEntity) Method
+===========================================
 Executes an UPDATE command for the specified *entity*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,8 +16,7 @@ public void Update(
 
 #### Parameters
 
-##### *entity*
-Type: [TEntity][2]  
+##### *entity*  [TEntity][2]
 The entity whose UPDATE command is to be executed.
 
 

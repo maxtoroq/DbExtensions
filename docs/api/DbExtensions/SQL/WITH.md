@@ -1,33 +1,27 @@
-SQL.WITH Method (SqlBuilder, String)
-====================================
-Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+SQL.WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>) Method
+================================================================
+Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided string interpolated *handler*.
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public static SqlBuilder WITH(
-	SqlBuilder subQuery,
-	string alias
+	ref SqlInterpolatedStringHandler<SqlClause.WITH> handler
 )
 ```
 
 #### Parameters
 
-##### *subQuery*
-Type: [DbExtensions.SqlBuilder][1]  
-The sub-query to use as the body of the WITH clause.
-
-##### *alias*
-Type: [System.String][3]  
-The alias of the sub-query.
+##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.WITH][3]>
+The body of the WITH clause.
 
 #### Return Value
-Type: [SqlBuilder][1]  
- A new [SqlBuilder][1] after calling [WITH(SqlBuilder, String)][4]. 
+[SqlBuilder][1]  
+ A new [SqlBuilder][1] after calling [WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>)][4].
 
 See Also
 --------
@@ -38,6 +32,6 @@ See Also
 
 [1]: ../SqlBuilder/README.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.string
+[3]: ../SqlClause_WITH/README.md
 [4]: ../SqlBuilder/WITH.md
 [5]: README.md

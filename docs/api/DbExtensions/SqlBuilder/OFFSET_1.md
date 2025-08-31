@@ -1,27 +1,26 @@
-SqlBuilder.OFFSET Method (Int32)
-================================
-Appends the OFFSET clause using the provided *startIndex* parameter.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+SqlBuilder.OFFSET(SqlInterpolatedStringHandler&lt;SqlClause.OFFSET>) Method
+===========================================================================
+Appends the OFFSET clause using the provided interpolated string *handler*.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public SqlBuilder OFFSET(
-	int startIndex
+	ref SqlInterpolatedStringHandler<SqlClause.OFFSET> handler
 )
 ```
 
 #### Parameters
 
-##### *startIndex*
-Type: [System.Int32][2]  
-The value to use as parameter.
+##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.OFFSET][2]>
+The interpolated string that represents the body of the OFFSET clause.
 
 #### Return Value
-Type: [SqlBuilder][3]  
+[SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also
@@ -32,5 +31,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.int32
+[2]: ../SqlClause_OFFSET/README.md
 [3]: README.md

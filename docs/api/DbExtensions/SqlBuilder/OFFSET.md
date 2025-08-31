@@ -1,9 +1,9 @@
 SqlBuilder.OFFSET Method
 ========================
-Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][1] and [_If(Boolean, String, Object[])][2].
-
-  **Namespace:**  [DbExtensions][3]  
-  **Assembly:** DbExtensions.dll
+Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1].
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,17 +13,16 @@ public SqlBuilder OFFSET()
 ```
 
 #### Return Value
-Type: [SqlBuilder][4]  
+[SqlBuilder][3]  
 A reference to this instance after the operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
-[DbExtensions Namespace][3]  
+[SqlBuilder Class][3]  
+[DbExtensions Namespace][2]  
 
-[1]: _.md
-[2]: _If.md
-[3]: ../README.md
-[4]: README.md
+[1]: _If.md
+[2]: ../README.md
+[3]: README.md

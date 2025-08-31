@@ -1,9 +1,9 @@
-Database.ContainsKey&lt;TEntity> Method (Object)
-================================================
+Database.ContainsKey&lt;TEntity>(Object) Method
+===============================================
 Checks the existance of an entity whose primary matches the *id* parameter.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -18,8 +18,7 @@ where TEntity : class
 
 #### Parameters
 
-##### *id*
-Type: [System.Object][2]  
+##### *id*  [Object][2]
 The primary key value.
 
 #### Type Parameters
@@ -28,7 +27,7 @@ The primary key value.
 The type of the entity.
 
 #### Return Value
-Type: [Boolean][3]  
+[Boolean][3]  
 true if the primary key value exists in the database; otherwise false.
 
 Remarks
@@ -41,10 +40,10 @@ See Also
 #### Reference
 [Database Class][4]  
 [DbExtensions Namespace][1]  
-[SqlSet.ContainsKey(Object)][5]  
+[ContainsKey(Object)][5]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.object
-[3]: https://docs.microsoft.com/dotnet/api/system.boolean
+[2]: https://learn.microsoft.com/dotnet/api/system.object
+[3]: https://learn.microsoft.com/dotnet/api/system.boolean
 [4]: README.md
 [5]: ../SqlSet/ContainsKey.md

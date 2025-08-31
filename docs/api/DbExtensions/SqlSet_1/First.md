@@ -1,9 +1,9 @@
 SqlSet&lt;TResult>.First Method
 ===============================
 Returns the first element of the set.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public TResult First()
 ```
 
 #### Return Value
-Type: [TResult][2]  
+[TResult][2]  
 The first element in the set.
 
 Exceptions
@@ -33,4 +33,4 @@ See Also
 
 [1]: ../README.md
 [2]: README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.invalidoperationexception
+[3]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception

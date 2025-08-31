@@ -1,9 +1,9 @@
-Database.From&lt;TResult> Method (String)
-=========================================
+Database.From&lt;TResult>(String) Method
+========================================
 Creates and returns a new [SqlSet&lt;TResult>][1] using the provided table name.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -17,8 +17,7 @@ public SqlSet<TResult> From<TResult>(
 
 #### Parameters
 
-##### *tableName*
-Type: [System.String][3]  
+##### *tableName*  [String][3]
 The name of the table that will be the source of data for the set.
 
 #### Type Parameters
@@ -27,7 +26,7 @@ The name of the table that will be the source of data for the set.
 The type of objects to map the results to.
 
 #### Return Value
-Type: [SqlSet][1]&lt;**TResult**>  
+[SqlSet][1]&lt;**TResult**>  
 A new [SqlSet&lt;TResult>][1] object.
 
 See Also
@@ -39,5 +38,5 @@ See Also
 
 [1]: ../SqlSet_1/README.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.string
+[3]: https://learn.microsoft.com/dotnet/api/system.string
 [4]: README.md

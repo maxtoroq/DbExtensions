@@ -1,9 +1,9 @@
-Database.Table Method (Type)
-============================
+Database.Table(Type) Method
+===========================
 Returns the [SqlTable][1] instance for the specified *entityType*.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,12 +16,11 @@ public SqlTable Table(
 
 #### Parameters
 
-##### *entityType*
-Type: [System.Type][3]  
+##### *entityType*  [Type][3]
 The type of the entity.
 
 #### Return Value
-Type: [SqlTable][1]  
+[SqlTable][1]  
 The [SqlTable][1] instance for *entityType*.
 
 See Also
@@ -33,5 +32,5 @@ See Also
 
 [1]: ../SqlTable/README.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.type
+[3]: https://learn.microsoft.com/dotnet/api/system.type
 [4]: README.md

@@ -1,9 +1,9 @@
 SqlTable.CommandBuilder Property
 ================================
 Gets a [SqlCommandBuilder&lt;TEntity>][1] object for the current table.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public SqlCommandBuilder<Object> CommandBuilder { get; }
 ```
 
 #### Property Value
-Type: [SqlCommandBuilder][1]&lt;[Object][3]>
+[SqlCommandBuilder][1]&lt;[Object][3]>
 
 See Also
 --------
@@ -24,5 +24,5 @@ See Also
 
 [1]: ../SqlCommandBuilder_1/README.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.object
+[3]: https://learn.microsoft.com/dotnet/api/system.object
 [4]: README.md

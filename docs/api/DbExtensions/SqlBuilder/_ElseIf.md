@@ -1,9 +1,9 @@
 SqlBuilder._ElseIf Method
 =========================
-Appends *format* to the current clause if *condition* is true and an antecedent call to [_If(Boolean, String, Object[])][1] or **_ElseIf(Boolean, String, Object[])** used a false condition.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+Appends *handler* to the current clause if *condition* is true and an antecedent call to [_If(Boolean, ConditionalInterpolatedStringHandler)][1] or **_ElseIf(Boolean, ConditionalElseInterpolatedStringHandler)** used a false condition.
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -11,39 +11,30 @@ Syntax
 ```csharp
 public SqlBuilder _ElseIf(
 	bool condition,
-	string format,
-	params Object[] args
+	ref ConditionalElseInterpolatedStringHandler handler
 )
 ```
 
 #### Parameters
 
-##### *condition*
-Type: [System.Boolean][3]  
-true to append *format* to the current clause; otherwise, false.
+##### *condition*  [Boolean][3]
+true to append *handler* to the current clause; otherwise, false.
 
-##### *format*
-Type: [System.String][4]  
-The format string that represents the body of the current clause.
-
-##### *args*
-Type: [System.Object][5][]  
-The parameters of the clause body.
+##### *handler*  ConditionalElseInterpolatedStringHandler
+The interpolated string that represents the body of the current clause.
 
 #### Return Value
-Type: [SqlBuilder][6]  
+[SqlBuilder][4]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][6]  
+[SqlBuilder Class][4]  
 [DbExtensions Namespace][2]  
 
 [1]: _If.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.boolean
-[4]: https://docs.microsoft.com/dotnet/api/system.string
-[5]: https://docs.microsoft.com/dotnet/api/system.object
-[6]: README.md
+[3]: https://learn.microsoft.com/dotnet/api/system.boolean
+[4]: README.md

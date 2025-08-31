@@ -7,9 +7,9 @@ Inheritance Hierarchy
 ---------------------
 [System.Object][3]  
   **DbExtensions.SqlCommandBuilder&lt;TEntity>**  
-
-  **Namespace:**  [DbExtensions][4]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][4]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -54,7 +54,7 @@ See Also
 
 [1]: ../SqlTable_1/CommandBuilder.md
 [2]: ../SqlTable/CommandBuilder.md
-[3]: https://docs.microsoft.com/dotnet/api/system.object
+[3]: https://learn.microsoft.com/dotnet/api/system.object
 [4]: ../README.md
 [5]: BuildDeleteStatement.md
 [6]: BuildDeleteStatementForEntity.md

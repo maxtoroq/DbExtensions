@@ -1,9 +1,9 @@
-Database Constructor (String)
-=============================
+Database(String) Constructor
+============================
 Initializes a new instance of the [Database][1] class using the provided connection string.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,8 +16,7 @@ public Database(
 
 #### Parameters
 
-##### *connectionString*
-Type: [System.String][3]  
+##### *connectionString*  [String][3]
 The connection string.
 
 
@@ -30,4 +29,4 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.string
+[3]: https://learn.microsoft.com/dotnet/api/system.string

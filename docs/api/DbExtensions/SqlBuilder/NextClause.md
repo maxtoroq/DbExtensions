@@ -1,28 +1,29 @@
 SqlBuilder.NextClause Property
 ==============================
-Gets or sets the next SQL clause. Used by clause continuation methods, such as [AppendToCurrentClause(String, Object[])][1] and the methods that start with "_".
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+Gets or sets the next SQL clause. Used by clause continuation methods, such as [_(String)][1] and [_If(Boolean, ConditionalInterpolatedStringHandler)][2].
+  
+**Namespace:** [DbExtensions][3]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
-public string NextClause { get; set; }
+public SqlClause? NextClause { get; set; }
 ```
 
 #### Property Value
-Type: [String][3]
+[SqlClause][4]
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
-[DbExtensions Namespace][2]  
+[SqlBuilder Class][5]  
+[DbExtensions Namespace][3]  
 
-[1]: AppendToCurrentClause.md
-[2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.string
-[4]: README.md
+[1]: __1.md
+[2]: _If.md
+[3]: ../README.md
+[4]: ../SqlClause/README.md
+[5]: README.md

@@ -1,42 +1,35 @@
-SqlBuilder.LIMIT Method (String, Object[])
-==========================================
-Appends the LIMIT clause using the provided *format* string and parameters.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+SqlBuilder.LIMIT(Int32) Method
+==============================
+Appends the LIMIT clause using the provided *maxRecords* parameter.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public SqlBuilder LIMIT(
-	string format,
-	params Object[] args
+	int maxRecords
 )
 ```
 
 #### Parameters
 
-##### *format*
-Type: [System.String][2]  
-The format string that represents the body of the LIMIT clause.
-
-##### *args*
-Type: [System.Object][3][]  
-The parameters of the clause body.
+##### *maxRecords*  [Int32][2]
+The value to use as parameter.
 
 #### Return Value
-Type: [SqlBuilder][4]  
+[SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
+[SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: README.md
+[2]: https://learn.microsoft.com/dotnet/api/system.int32
+[3]: README.md

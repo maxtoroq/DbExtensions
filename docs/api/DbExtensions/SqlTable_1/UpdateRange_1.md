@@ -1,9 +1,9 @@
-SqlTable&lt;TEntity>.UpdateRange Method (TEntity[])
-===================================================
+SqlTable&lt;TEntity>.UpdateRange(TEntity[]) Method
+==================================================
 Executes UPDATE commands for the specified *entities*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,8 +16,7 @@ public void UpdateRange(
 
 #### Parameters
 
-##### *entities*
-Type: [TEntity][2][]  
+##### *entities*  [TEntity][2][]
 The entities whose UPDATE commands are to be executed.
 
 

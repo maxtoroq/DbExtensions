@@ -1,9 +1,9 @@
 Database.Table&lt;TEntity> Method
 =================================
 Returns the [SqlTable&lt;TEntity>][1] instance for the specified TEntity.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -20,7 +20,7 @@ where TEntity : class
 The type of the entity.
 
 #### Return Value
-Type: [SqlTable][1]&lt;**TEntity**>  
+[SqlTable][1]&lt;**TEntity**>  
 The [SqlTable&lt;TEntity>][1] instance for TEntity.
 
 See Also

@@ -1,41 +1,28 @@
-SqlBuilder.FROM Method (SqlBuilder, String)
-===========================================
-Appends the FROM clause using the provided *subQuery* as body named after *alias*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+SqlBuilder.FROM Method
+======================
+Sets FROM as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1].
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
-public SqlBuilder FROM(
-	SqlBuilder subQuery,
-	string alias
-)
+public SqlBuilder FROM()
 ```
 
-#### Parameters
-
-##### *subQuery*
-Type: [DbExtensions.SqlBuilder][2]  
-The sub-query to use as the body of the FROM clause.
-
-##### *alias*
-Type: [System.String][3]  
-The alias of the sub-query.
-
 #### Return Value
-Type: [SqlBuilder][2]  
-A reference to this instance after the append operation has completed.
+[SqlBuilder][3]  
+A reference to this instance after the operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][2]  
-[DbExtensions Namespace][1]  
+[SqlBuilder Class][3]  
+[DbExtensions Namespace][2]  
 
-[1]: ../README.md
-[2]: README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.string
+[1]: _If.md
+[2]: ../README.md
+[3]: README.md

@@ -1,42 +1,34 @@
-SqlSet.Select Method (String, Object[])
-=======================================
+SqlSet.Select(SqlSet.SqlFragmentHandler) Method
+===============================================
 Projects each element of the set into a new form.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public SqlSet Select(
-	string columnList,
-	params Object[] parameters
+	ref SqlFragmentHandler columnList
 )
 ```
 
 #### Parameters
 
-##### *columnList*
-Type: [System.String][2]  
+##### *columnList*  SqlFragmentHandler
 The list of columns to select.
 
-##### *parameters*
-Type: [System.Object][3][]  
-The parameters to apply to the *columnList*.
-
 #### Return Value
-Type: [SqlSet][4]  
-A new [SqlSet][4].
+[SqlSet][2]  
+A new [SqlSet][2].
 
 See Also
 --------
 
 #### Reference
-[SqlSet Class][4]  
+[SqlSet Class][2]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: README.md
+[2]: README.md

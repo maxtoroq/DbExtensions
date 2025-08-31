@@ -1,42 +1,35 @@
-SqlSet.SingleOrDefault Method (String, Object[])
-================================================
+SqlSet.SingleOrDefault(SqlSet.SqlFragmentHandler) Method
+========================================================
 Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
-public Object SingleOrDefault(
-	string predicate,
-	params Object[] parameters
+public Object? SingleOrDefault(
+	ref SqlFragmentHandler? predicate
 )
 ```
 
 #### Parameters
 
-##### *predicate*
-Type: [System.String][2]  
+##### *predicate*  SqlFragmentHandler
 A SQL expression to test each row for a condition.
 
-##### *parameters*
-Type: [System.Object][3][]  
-The parameters to apply to the *predicate*.
-
 #### Return Value
-Type: [Object][3]  
+[Object][2]  
 The single element of the set that satisfies the condition, or a default value if no such element is found.
 
 See Also
 --------
 
 #### Reference
-[SqlSet Class][4]  
+[SqlSet Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: README.md
+[2]: https://learn.microsoft.com/dotnet/api/system.object
+[3]: README.md

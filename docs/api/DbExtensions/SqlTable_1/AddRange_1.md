@@ -1,9 +1,9 @@
-SqlTable&lt;TEntity>.AddRange Method (TEntity[])
-================================================
+SqlTable&lt;TEntity>.AddRange(TEntity[]) Method
+===============================================
 Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,8 +16,7 @@ public void AddRange(
 
 #### Parameters
 
-##### *entities*
-Type: [TEntity][2][]  
+##### *entities*  [TEntity][2][]
 The entities whose INSERT commands are to be executed.
 
 

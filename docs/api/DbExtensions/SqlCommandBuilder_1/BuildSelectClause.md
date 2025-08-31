@@ -1,9 +1,9 @@
 SqlCommandBuilder&lt;TEntity>.BuildSelectClause Method
 ======================================================
 Creates and returns a SELECT query for the current table that includes the SELECT clause only.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public SqlBuilder BuildSelectClause()
 ```
 
 #### Return Value
-Type: [SqlBuilder][2]  
+[SqlBuilder][2]  
 The SELECT query for the current table.
 
 See Also

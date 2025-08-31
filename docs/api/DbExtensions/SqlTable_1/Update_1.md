@@ -1,9 +1,9 @@
-SqlTable&lt;TEntity>.Update Method (TEntity, Object)
-====================================================
+SqlTable&lt;TEntity>.Update(TEntity, Object) Method
+===================================================
 Executes an UPDATE command for the specified *entity*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -17,12 +17,10 @@ public void Update(
 
 #### Parameters
 
-##### *entity*
-Type: [TEntity][2]  
+##### *entity*  [TEntity][2]
 The entity whose UPDATE command is to be executed.
 
-##### *originalId*
-Type: [System.Object][3]  
+##### *originalId*  [Object][3]
 The original primary key value.
 
 
@@ -39,4 +37,4 @@ See Also
 
 [1]: ../README.md
 [2]: README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.object
+[3]: https://learn.microsoft.com/dotnet/api/system.object

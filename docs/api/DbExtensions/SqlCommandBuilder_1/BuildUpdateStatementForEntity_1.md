@@ -1,9 +1,9 @@
-SqlCommandBuilder&lt;TEntity>.BuildUpdateStatementForEntity Method (TEntity, Object)
-====================================================================================
+SqlCommandBuilder&lt;TEntity>.BuildUpdateStatementForEntity(TEntity, Object) Method
+===================================================================================
 Creates and returns an UPDATE command for the specified *entity*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -17,16 +17,14 @@ public SqlBuilder BuildUpdateStatementForEntity(
 
 #### Parameters
 
-##### *entity*
-Type: [TEntity][2]  
+##### *entity*  [TEntity][2]
 The entity whose UPDATE command is to be created.
 
-##### *originalId*
-Type: [System.Object][3]  
+##### *originalId*  [Object][3]
 The original primary key value.
 
 #### Return Value
-Type: [SqlBuilder][4]  
+[SqlBuilder][4]  
 The UPDATE command for *entity*.
 
 Remarks
@@ -42,5 +40,5 @@ See Also
 
 [1]: ../README.md
 [2]: README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.object
+[3]: https://learn.microsoft.com/dotnet/api/system.object
 [4]: ../SqlBuilder/README.md

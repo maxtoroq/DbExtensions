@@ -1,42 +1,39 @@
-SqlBuilder.WITH Method (String, Object[])
-=========================================
-Appends the WITH clause using the provided *format* string and parameters.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+SqlBuilder.WITH(String, SqlBuilder) Method
+==========================================
+Appends the WITH clause using the provided *subQuery* as body named after *alias*.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public SqlBuilder WITH(
-	string format,
-	params Object[] args
+	string alias,
+	SqlBuilder subQuery
 )
 ```
 
 #### Parameters
 
-##### *format*
-Type: [System.String][2]  
-The format string that represents the body of the WITH clause.
+##### *alias*  [String][2]
+The alias of the sub-query.
 
-##### *args*
-Type: [System.Object][3][]  
-The parameters of the clause body.
+##### *subQuery*  [SqlBuilder][3]
+The sub-query to use as the body of the WITH clause.
 
 #### Return Value
-Type: [SqlBuilder][4]  
+[SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
+[SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: README.md
+[2]: https://learn.microsoft.com/dotnet/api/system.string
+[3]: README.md

@@ -1,9 +1,9 @@
-Database.Dispose Method (Boolean)
-=================================
+Database.Dispose(Boolean) Method
+================================
 Releases the resources used by this [Database][1] instance.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,9 +16,8 @@ protected virtual void Dispose(
 
 #### Parameters
 
-##### *disposing*
-Type: [System.Boolean][3]  
- true if this method is being called due to a call to [Dispose()][4]; otherwise, false.
+##### *disposing*  [Boolean][3]
+true if this method is being called due to a call to [Dispose()][4]; otherwise, false.
 
 
 See Also
@@ -30,5 +29,5 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.boolean
+[3]: https://learn.microsoft.com/dotnet/api/system.boolean
 [4]: Dispose.md

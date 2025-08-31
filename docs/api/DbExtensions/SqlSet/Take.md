@@ -1,9 +1,9 @@
 SqlSet.Take Method
 ==================
 Returns a specified number of contiguous elements from the start of the set.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,12 +16,11 @@ public SqlSet Take(
 
 #### Parameters
 
-##### *count*
-Type: [System.Int32][2]  
+##### *count*  [Int32][2]
 The number of elements to return.
 
 #### Return Value
-Type: [SqlSet][3]  
+[SqlSet][3]  
 A new [SqlSet][3] that contains the specified number of elements from the start of the current set.
 
 See Also
@@ -32,5 +31,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.int32
+[2]: https://learn.microsoft.com/dotnet/api/system.int32
 [3]: README.md

@@ -1,42 +1,35 @@
-SqlBuilder.OFFSET Method (String, Object[])
-===========================================
-Appends the OFFSET clause using the provided *format* string and parameters.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+SqlBuilder.OFFSET(Int32) Method
+===============================
+Appends the OFFSET clause using the provided *startIndex* parameter.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
 
 ```csharp
 public SqlBuilder OFFSET(
-	string format,
-	params Object[] args
+	int startIndex
 )
 ```
 
 #### Parameters
 
-##### *format*
-Type: [System.String][2]  
-The format string that represents the body of the OFFSET clause.
-
-##### *args*
-Type: [System.Object][3][]  
-The parameters of the clause body.
+##### *startIndex*  [Int32][2]
+The value to use as parameter.
 
 #### Return Value
-Type: [SqlBuilder][4]  
+[SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
+[SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: README.md
+[2]: https://learn.microsoft.com/dotnet/api/system.int32
+[3]: README.md
