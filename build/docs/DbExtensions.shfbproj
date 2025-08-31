@@ -24,22 +24,21 @@
     <HelpTitle>DbExtensions</HelpTitle>
     <NamingMethod>MemberName</NamingMethod>
     <SdkLinkTarget>Top</SdkLinkTarget>
-    <SyntaxFilters>C#, Visual Basic, F#</SyntaxFilters>
+    <SyntaxFilters>C#</SyntaxFilters>
     <BinaryTOC>False</BinaryTOC>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\src\DbExtensions\bin\Release\net45\DbExtensions.dll" />
-      <DocumentationSource sourceFile="..\..\src\DbExtensions\bin\Release\net45\DbExtensions.xml" />
+      <DocumentationSource sourceFile="..\..\src\DbExtensions\DbExtensions.csproj" />
     </DocumentationSources>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="DbExtensions" isDocumented="True">DbExtensions is a data-access framework with a strong focus on query composition, granularity and code aesthetics. &lt;see cref="T:DbExtensions.Database"/&gt; is the entry point of the &lt;see cref="N:DbExtensions"/&gt; API.</NamespaceSummaryItem>
     </NamespaceSummaries>
     <RootNamespaceContainer>True</RootNamespaceContainer>
-    <PresentationStyle>VS2010</PresentationStyle>
+    <PresentationStyle>VS2013</PresentationStyle>
     <Preliminary>False</Preliminary>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <IndentHtml>False</IndentHtml>
-    <FrameworkVersion>.NET Framework 4.5</FrameworkVersion>
+    <FrameworkVersion>.NET Core/.NET Standard/.NET 5.0+</FrameworkVersion>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <CppCommentsFixup>False</CppCommentsFixup>
     <CleanIntermediates>False</CleanIntermediates>
