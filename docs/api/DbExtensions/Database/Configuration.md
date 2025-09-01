@@ -1,9 +1,9 @@
 Database.Configuration Property
 ===============================
 Provides access to configuration options for this instance.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public DatabaseConfiguration Configuration { get; }
 ```
 
 #### Property Value
-Type: [DatabaseConfiguration][2]
+[DatabaseConfiguration][2]
 
 See Also
 --------

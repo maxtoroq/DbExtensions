@@ -1,9 +1,18 @@
-SqlTable.AddRange Method (IEnumerable&lt;Object>)
-=================================================
+SqlTable.AddRange(IEnumerable&lt;Object>) Method
+================================================
 Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                                 | Description                                                                                                              |
+| ---------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| ![Public method] | **AddRange(IEnumerable&lt;Object>)** | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| ![Public method] | [AddRange(Object[])][2]              | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+
 
 Syntax
 ------
@@ -16,8 +25,7 @@ public void AddRange(
 
 #### Parameters
 
-##### *entities*
-Type: [System.Collections.Generic.IEnumerable][2]&lt;[Object][3]>  
+##### *entities*  [IEnumerable][3]&lt;[Object][4]>
 The entities whose INSERT commands are to be executed.
 
 
@@ -25,10 +33,12 @@ See Also
 --------
 
 #### Reference
-[SqlTable Class][4]  
+[SqlTable Class][5]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: README.md
+[2]: AddRange_1.md
+[3]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+[4]: https://learn.microsoft.com/dotnet/api/system.object
+[5]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

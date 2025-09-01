@@ -1,9 +1,18 @@
-SqlTable.UpdateRange Method (Object[])
-======================================
+SqlTable.UpdateRange(Object[]) Method
+=====================================
 Executes UPDATE commands for the specified *entities*.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                                     | Description                                            |
+| ---------------- | ---------------------------------------- | ------------------------------------------------------ |
+| ![Public method] | [UpdateRange(IEnumerable&lt;Object>)][2] | Executes UPDATE commands for the specified *entities*. |
+| ![Public method] | **UpdateRange(Object[])**                | Executes UPDATE commands for the specified *entities*. |
+
 
 Syntax
 ------
@@ -16,8 +25,7 @@ public void UpdateRange(
 
 #### Parameters
 
-##### *entities*
-Type: [System.Object][2][]  
+##### *entities*  [Object][3][]
 The entities whose UPDATE commands are to be executed.
 
 
@@ -25,9 +33,11 @@ See Also
 --------
 
 #### Reference
-[SqlTable Class][3]  
+[SqlTable Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.object
-[3]: README.md
+[2]: UpdateRange.md
+[3]: https://learn.microsoft.com/dotnet/api/system.object
+[4]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

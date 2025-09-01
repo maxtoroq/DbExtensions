@@ -1,9 +1,18 @@
-SqlTable&lt;TEntity>.RemoveRange Method (TEntity[])
-===================================================
+SqlTable&lt;TEntity>.RemoveRange(TEntity[]) Method
+==================================================
 Executes DELETE commands for the specified *entities*.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                                      | Description                                            |
+| ---------------- | ----------------------------------------- | ------------------------------------------------------ |
+| ![Public method] | [RemoveRange(IEnumerable&lt;TEntity>)][2] | Executes DELETE commands for the specified *entities*. |
+| ![Public method] | **RemoveRange(TEntity[])**                | Executes DELETE commands for the specified *entities*. |
+
 
 Syntax
 ------
@@ -16,8 +25,7 @@ public void RemoveRange(
 
 #### Parameters
 
-##### *entities*
-Type: [TEntity][2][]  
+##### *entities*  [TEntity][3][]
 The entities whose DELETE commands are to be executed.
 
 
@@ -25,8 +33,10 @@ See Also
 --------
 
 #### Reference
-[SqlTable&lt;TEntity> Class][2]  
+[SqlTable&lt;TEntity> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: README.md
+[2]: RemoveRange.md
+[3]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

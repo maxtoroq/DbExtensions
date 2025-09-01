@@ -1,9 +1,19 @@
-SqlBuilder.LIMIT Method (String, Object[])
-==========================================
+SqlBuilder.LIMIT(String, Object[]) Method
+=========================================
 Appends the LIMIT clause using the provided *format* string and parameters.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                        | Description                                                                                                                                                             |
+| ---------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [LIMIT()][2]                | Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][3] and [_If(Boolean, String, Object[])][4]. |
+| ![Public method] | [LIMIT(Int32)][5]           | Appends the LIMIT clause using the provided *maxRecords* parameter.                                                                                                     |
+| ![Public method] | **LIMIT(String, Object[])** | Appends the LIMIT clause using the provided *format* string and parameters.                                                                                             |
+
 
 Syntax
 ------
@@ -17,26 +27,29 @@ public SqlBuilder LIMIT(
 
 #### Parameters
 
-##### *format*
-Type: [System.String][2]  
+##### *format*  [String][6]
 The format string that represents the body of the LIMIT clause.
 
-##### *args*
-Type: [System.Object][3][]  
+##### *args*  [Object][7][]
 The parameters of the clause body.
 
 #### Return Value
-Type: [SqlBuilder][4]  
+[SqlBuilder][8]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
+[SqlBuilder Class][8]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: README.md
+[2]: LIMIT.md
+[3]: _.md
+[4]: _If.md
+[5]: LIMIT_1.md
+[6]: https://learn.microsoft.com/dotnet/api/system.string
+[7]: https://learn.microsoft.com/dotnet/api/system.object
+[8]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

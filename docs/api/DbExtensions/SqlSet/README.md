@@ -9,9 +9,9 @@ Inheritance Hierarchy
   **DbExtensions.SqlSet**  
     [DbExtensions.SqlSet&lt;TResult>][3]  
     [DbExtensions.SqlTable][4]  
-
-  **Namespace:**  [DbExtensions][5]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][5]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -69,7 +69,7 @@ Methods
 | ![Public method] | [Take][38]                                                                | Returns a specified number of contiguous elements from the start of the set.                                                                                                                             |
 | ![Public method] | [ToArray][39]                                                             | Creates an array from the set.                                                                                                                                                                           |
 | ![Public method] | [ToList][40]                                                              | Creates a List&lt;object> from the set.                                                                                                                                                                  |
-| ![Public method] | [ToString][41]                                                            | Returns the SQL query of the set. (Overrides [Object.ToString()][42].)                                                                                                                                   |
+| ![Public method] | [ToString][41]                                                            | Returns the SQL query of the set. <br/>(Overrides [Object.ToString()][42])                                                                                                                               |
 | ![Public method] | [Where][43]                                                               | Filters the set based on a predicate.                                                                                                                                                                    |
 
 
@@ -84,7 +84,7 @@ See Also
 [DbExtensions Namespace][5]  
 
 [1]: ../Database/From_2.md
-[2]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: https://learn.microsoft.com/dotnet/api/system.object
 [3]: ../SqlSet_1/README.md
 [4]: ../SqlTable/README.md
 [5]: ../README.md
@@ -108,7 +108,7 @@ See Also
 [23]: GetEnumerator.md
 [24]: Include.md
 [25]: LongCount.md
-[26]: https://docs.microsoft.com/dotnet/api/system.int64
+[26]: https://learn.microsoft.com/dotnet/api/system.int64
 [27]: LongCount_1.md
 [28]: OrderBy.md
 [29]: Select.md
@@ -124,7 +124,7 @@ See Also
 [39]: ToArray.md
 [40]: ToList.md
 [41]: ToString.md
-[42]: https://docs.microsoft.com/dotnet/api/system.object.tostring#System_Object_ToString
+[42]: https://learn.microsoft.com/dotnet/api/system.object.tostring
 [43]: Where.md
 [44]: http://maxtoroq.github.io/DbExtensions/docs/SqlSet.html
 [Public property]: ../../icons/pubproperty.svg "Public property"

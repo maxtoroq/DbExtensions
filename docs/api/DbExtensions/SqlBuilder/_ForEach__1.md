@@ -1,9 +1,9 @@
 SqlBuilder._ForEach&lt;T> Method
 ================================
 Appends to the current clause the string made by concatenating an *itemFormat* for each element in *items*, interspersed with *separator*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -21,24 +21,19 @@ public SqlBuilder _ForEach<T>(
 
 #### Parameters
 
-##### *items*
-Type: [System.Collections.Generic.IEnumerable][2]&lt;**T**>  
+##### *items*  [IEnumerable][2]&lt;**T**>
 The collection of objects that contain parameters.
 
-##### *format*
-Type: [System.String][3]  
+##### *format*  [String][3]
 The clause body format string, which must contain a {0} placeholder. This parameter can be null.
 
-##### *itemFormat*
-Type: [System.String][3]  
+##### *itemFormat*  [String][3]
 The item format.
 
-##### *separator*
-Type: [System.String][3]  
+##### *separator*  [String][3]
 The string to use as separator between each item format.
 
-##### *parametersFactory*
-Type: [System.Func][4]&lt;**T**, [Object][5][]>  
+##### *parametersFactory*  [Func][4]&lt;**T**, [Object][5][]>
 The delegate that extract parameters for each element in *items*. This parameter can be null.
 
 #### Type Parameters
@@ -47,7 +42,7 @@ The delegate that extract parameters for each element in *items*. This parameter
 The type of elements in *items*.
 
 #### Return Value
-Type: [SqlBuilder][6]  
+[SqlBuilder][6]  
 A reference to this instance after the append operation has completed.
 
 See Also
@@ -58,8 +53,8 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
-[3]: https://docs.microsoft.com/dotnet/api/system.string
-[4]: https://docs.microsoft.com/dotnet/api/system.func-2
-[5]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+[3]: https://learn.microsoft.com/dotnet/api/system.string
+[4]: https://learn.microsoft.com/dotnet/api/system.func-2
+[5]: https://learn.microsoft.com/dotnet/api/system.object
 [6]: README.md

@@ -1,9 +1,9 @@
 SqlCommandBuilder&lt;TEntity>.BuildInsertStatementForEntity Method
 ==================================================================
 Creates and returns an INSERT command for the specified *entity*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,12 +16,11 @@ public SqlBuilder BuildInsertStatementForEntity(
 
 #### Parameters
 
-##### *entity*
-Type: [TEntity][2]  
- The object whose INSERT command is to be created. This parameter is named entity for consistency with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't need to have a primary key.
+##### *entity*  [TEntity][2]
+The object whose INSERT command is to be created. This parameter is named entity for consistency with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't need to have a primary key.
 
 #### Return Value
-Type: [SqlBuilder][3]  
+[SqlBuilder][3]  
 The INSERT command for *entity*.
 
 See Also

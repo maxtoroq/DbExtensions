@@ -1,9 +1,9 @@
 SqlSet.GetDefiningQuery Method
 ==============================
 Returns the SQL query that is the source of data for the set.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public SqlBuilder GetDefiningQuery()
 ```
 
 #### Return Value
-Type: [SqlBuilder][2]  
+[SqlBuilder][2]  
 The SQL query that is the source of data for the set
 
 See Also

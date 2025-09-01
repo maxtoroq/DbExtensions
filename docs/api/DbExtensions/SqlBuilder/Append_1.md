@@ -1,9 +1,18 @@
-SqlBuilder.Append Method (String, Object[])
-===========================================
+SqlBuilder.Append(String, Object[]) Method
+==========================================
 Appends *format* to this instance.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                         | Description                        |
+| ---------------- | ---------------------------- | ---------------------------------- |
+| ![Public method] | [Append(SqlBuilder)][2]      | Appends *sql* to this instance.    |
+| ![Public method] | **Append(String, Object[])** | Appends *format* to this instance. |
+
 
 Syntax
 ------
@@ -17,26 +26,26 @@ public SqlBuilder Append(
 
 #### Parameters
 
-##### *format*
-Type: [System.String][2]  
+##### *format*  [String][3]
 A SQL format string.
 
-##### *args*
-Type: [System.Object][3][]  
+##### *args*  [Object][4][]
 The array of parameters.
 
 #### Return Value
-Type: [SqlBuilder][4]  
+[SqlBuilder][5]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
+[SqlBuilder Class][5]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: README.md
+[2]: Append.md
+[3]: https://learn.microsoft.com/dotnet/api/system.string
+[4]: https://learn.microsoft.com/dotnet/api/system.object
+[5]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

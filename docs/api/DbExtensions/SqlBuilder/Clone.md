@@ -1,9 +1,9 @@
 SqlBuilder.Clone Method
 =======================
 Creates and returns a copy of this instance.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public SqlBuilder Clone()
 ```
 
 #### Return Value
-Type: [SqlBuilder][2]  
+[SqlBuilder][2]  
 A new [SqlBuilder][2] that is equivalent to this instance.
 
 See Also

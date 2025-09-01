@@ -9,9 +9,9 @@ Inheritance Hierarchy
   [DbExtensions.SqlSet][3]  
     **DbExtensions.SqlSet&lt;TResult>**  
       [DbExtensions.SqlTable&lt;TEntity>][4]  
-
-  **Namespace:**  [DbExtensions][5]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][5]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -32,9 +32,9 @@ The **SqlSet&lt;TResult>** type exposes the following members.
 Properties
 ----------
 
-|                    | Name            | Description                                                                                    |
-| ------------------ | --------------- | ---------------------------------------------------------------------------------------------- |
-| ![Public property] | [ResultType][6] | The type of objects this set returns. This property can be null. (Inherited from [SqlSet][3].) |
+|                    | Name            | Description                                                                                        |
+| ------------------ | --------------- | -------------------------------------------------------------------------------------------------- |
+| ![Public property] | [ResultType][6] | The type of objects this set returns. This property can be null. <br/>(Inherited from [SqlSet][3]) |
 
 
 Methods
@@ -42,31 +42,31 @@ Methods
 
 |                  | Name                                                                      | Description                                                                                                                                                                                              |
 | ---------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [All][7]                                                                  | Determines whether all elements of the set satisfy a condition. (Inherited from [SqlSet][3].)                                                                                                            |
-| ![Public method] | [Any()][8]                                                                | Determines whether the set contains any elements. (Inherited from [SqlSet][3].)                                                                                                                          |
-| ![Public method] | [Any(String, Object[])][9]                                                | Determines whether any element of the set satisfies a condition. (Inherited from [SqlSet][3].)                                                                                                           |
+| ![Public method] | [All][7]                                                                  | Determines whether all elements of the set satisfy a condition. <br/>(Inherited from [SqlSet][3])                                                                                                        |
+| ![Public method] | [Any()][8]                                                                | Determines whether the set contains any elements. <br/>(Inherited from [SqlSet][3])                                                                                                                      |
+| ![Public method] | [Any(String, Object[])][9]                                                | Determines whether any element of the set satisfies a condition. <br/>(Inherited from [SqlSet][3])                                                                                                       |
 | ![Public method] | [AsEnumerable][10]                                                        | Gets all TResult objects in the set. The query is deferred-executed.                                                                                                                                     |
 | ![Public method] | [Cast(Type)][11]                                                          | Casts the elements of the set to the specified type.                                                                                                                                                     |
 | ![Public method] | [Cast&lt;T>()][12]                                                        | Casts the elements of the set to the specified type.                                                                                                                                                     |
 | ![Public method] | [Contains(Object)][13]                                                    | Checks the existance of the *entity*, using the primary key value.                                                                                                                                       |
 | ![Public method] | [Contains(TResult)][14]                                                   | Checks the existance of the *entity*, using the primary key value.                                                                                                                                       |
-| ![Public method] | [ContainsKey][15]                                                         | Checks the existance of an entity whose primary matches the *id* parameter. (Inherited from [SqlSet][3].)                                                                                                |
-| ![Public method] | [Count()][16]                                                             | Returns the number of elements in the set. (Inherited from [SqlSet][3].)                                                                                                                                 |
-| ![Public method] | [Count(String, Object[])][17]                                             | Returns a number that represents how many elements in the set satisfy a condition. (Inherited from [SqlSet][3].)                                                                                         |
+| ![Public method] | [ContainsKey][15]                                                         | Checks the existance of an entity whose primary matches the *id* parameter. <br/>(Inherited from [SqlSet][3])                                                                                            |
+| ![Public method] | [Count()][16]                                                             | Returns the number of elements in the set. <br/>(Inherited from [SqlSet][3])                                                                                                                             |
+| ![Public method] | [Count(String, Object[])][17]                                             | Returns a number that represents how many elements in the set satisfy a condition. <br/>(Inherited from [SqlSet][3])                                                                                     |
 | ![Public method] | [Find][18]                                                                | Gets the entity whose primary key matches the *id* parameter.                                                                                                                                            |
 | ![Public method] | [First()][19]                                                             | Returns the first element of the set.                                                                                                                                                                    |
 | ![Public method] | [First(String, Object[])][20]                                             | Returns the first element in the set that satisfies a specified condition.                                                                                                                               |
 | ![Public method] | [FirstOrDefault()][21]                                                    | Returns the first element of the set, or a default value if the set contains no elements.                                                                                                                |
 | ![Public method] | [FirstOrDefault(String, Object[])][22]                                    | Returns the first element of the set that satisfies a condition or a default value if no such element is found.                                                                                          |
-| ![Public method] | [GetDefiningQuery][23]                                                    | Returns the SQL query that is the source of data for the set. (Inherited from [SqlSet][3].)                                                                                                              |
+| ![Public method] | [GetDefiningQuery][23]                                                    | Returns the SQL query that is the source of data for the set. <br/>(Inherited from [SqlSet][3])                                                                                                          |
 | ![Public method] | [GetEnumerator][24]                                                       | Returns an enumerator that iterates through the set.                                                                                                                                                     |
 | ![Public method] | [Include][25]                                                             | Specifies the related objects to include in the query results.                                                                                                                                           |
-| ![Public method] | [LongCount()][26]                                                         | Returns an [Int64][27] that represents the total number of elements in the set. (Inherited from [SqlSet][3].)                                                                                            |
-| ![Public method] | [LongCount(String, Object[])][28]                                         | Returns an [Int64][27] that represents how many elements in the set satisfy a condition. (Inherited from [SqlSet][3].)                                                                                   |
+| ![Public method] | [LongCount()][26]                                                         | Returns an [Int64][27] that represents the total number of elements in the set. <br/>(Inherited from [SqlSet][3])                                                                                        |
+| ![Public method] | [LongCount(String, Object[])][28]                                         | Returns an [Int64][27] that represents how many elements in the set satisfy a condition. <br/>(Inherited from [SqlSet][3])                                                                               |
 | ![Public method] | [OrderBy][29]                                                             | Sorts the elements of the set according to the *columnList*.                                                                                                                                             |
-| ![Public method] | [Select(Type, String, Object[])][30]                                      | Projects each element of the set into a new form. (Inherited from [SqlSet][3].)                                                                                                                          |
-| ![Public method] | [Select&lt;TResult>(String, Object[])][31]                                | Projects each element of the set into a new form. (Inherited from [SqlSet][3].)                                                                                                                          |
-| ![Public method] | [Select&lt;TResult>(Func&lt;IDataRecord, TResult>, String, Object[])][32] | Projects each element of the set into a new form. (Inherited from [SqlSet][3].)                                                                                                                          |
+| ![Public method] | [Select(Type, String, Object[])][30]                                      | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][3])                                                                                                                      |
+| ![Public method] | [Select&lt;TResult>(String, Object[])][31]                                | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][3])                                                                                                                      |
+| ![Public method] | [Select&lt;TResult>(Func&lt;IDataRecord, TResult>, String, Object[])][32] | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][3])                                                                                                                      |
 | ![Public method] | [Single()][33]                                                            | The single element of the set.                                                                                                                                                                           |
 | ![Public method] | [Single(String, Object[])][34]                                            | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  |
 | ![Public method] | [SingleOrDefault()][35]                                                   | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.                                               |
@@ -75,7 +75,7 @@ Methods
 | ![Public method] | [Take][38]                                                                | Returns a specified number of contiguous elements from the start of the set.                                                                                                                             |
 | ![Public method] | [ToArray][39]                                                             | Creates an array from the set.                                                                                                                                                                           |
 | ![Public method] | [ToList][40]                                                              | Creates a List&lt;TResult> from the set.                                                                                                                                                                 |
-| ![Public method] | [ToString][41]                                                            | Returns the SQL query of the set. (Inherited from [SqlSet][3].)                                                                                                                                          |
+| ![Public method] | [ToString][41]                                                            | Returns the SQL query of the set. <br/>(Inherited from [SqlSet][3])                                                                                                                                      |
 | ![Public method] | [Where][42]                                                               | Filters the set based on a predicate.                                                                                                                                                                    |
 
 
@@ -90,7 +90,7 @@ See Also
 [DbExtensions Namespace][5]  
 
 [1]: ../Database/From__1_2.md
-[2]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: https://learn.microsoft.com/dotnet/api/system.object
 [3]: ../SqlSet/README.md
 [4]: ../SqlTable_1/README.md
 [5]: ../README.md
@@ -115,7 +115,7 @@ See Also
 [24]: GetEnumerator.md
 [25]: Include.md
 [26]: ../SqlSet/LongCount.md
-[27]: https://docs.microsoft.com/dotnet/api/system.int64
+[27]: https://learn.microsoft.com/dotnet/api/system.int64
 [28]: ../SqlSet/LongCount_1.md
 [29]: OrderBy.md
 [30]: ../SqlSet/Select_1.md

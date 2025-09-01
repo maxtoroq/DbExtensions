@@ -1,9 +1,9 @@
 SqlBuilder.ToString Method
 ==========================
 Converts the value of this instance to a [String][1].
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public override string ToString()
 ```
 
 #### Return Value
-Type: [String][1]  
+[String][1]  
 A string whose value is the same as this instance.
 
 See Also
@@ -23,6 +23,6 @@ See Also
 [SqlBuilder Class][3]  
 [DbExtensions Namespace][2]  
 
-[1]: https://docs.microsoft.com/dotnet/api/system.string
+[1]: https://learn.microsoft.com/dotnet/api/system.string
 [2]: ../README.md
 [3]: README.md

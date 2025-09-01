@@ -1,9 +1,18 @@
-SQL.List Method (IEnumerable)
-=============================
+SQL.List(IEnumerable) Method
+============================
 Returns a special parameter value that is expanded into a list of comma-separated placeholder items.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                                  | Name                  | Description                                                                                          |
+| -------------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | **List(IEnumerable)** | Returns a special parameter value that is expanded into a list of comma-separated placeholder items. |
+| ![Public method]![Static member] | [List(Object[])][2]   | Returns a special parameter value that is expanded into a list of comma-separated placeholder items. |
+
 
 Syntax
 ------
@@ -16,13 +25,12 @@ public static Object List(
 
 #### Parameters
 
-##### *values*
-Type: [System.Collections.IEnumerable][2]  
+##### *values*  [IEnumerable][3]
 The values to expand into a list.
 
 #### Return Value
-Type: [Object][3]  
-A special object to be used as parameter in [SqlBuilder][4].
+[Object][4]  
+A special object to be used as parameter in [SqlBuilder][5].
 
 Remarks
 -------
@@ -43,11 +51,14 @@ See Also
 --------
 
 #### Reference
-[SQL Class][5]  
+[SQL Class][6]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.collections.ienumerable
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: ../SqlBuilder/README.md
-[5]: README.md
+[2]: List_1.md
+[3]: https://learn.microsoft.com/dotnet/api/system.collections.ienumerable
+[4]: https://learn.microsoft.com/dotnet/api/system.object
+[5]: ../SqlBuilder/README.md
+[6]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"
+[Static member]: ../../icons/Static.gif "Static member"

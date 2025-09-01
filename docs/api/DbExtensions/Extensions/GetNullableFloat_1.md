@@ -1,15 +1,24 @@
-Extensions.GetNullableFloat Method (IDataRecord, String)
-========================================================
+Extensions.GetNullableFloat(IDataRecord, String) Method
+=======================================================
 Gets the value of the specified column as a [Nullable&lt;T>][1] of [Single][2].
+  
+**Namespace:** [DbExtensions][3]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][3]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                            | Name                                      | Description                                                                     |
+| -------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------- |
+| ![Public Extension Method] | [GetNullableFloat(IDataRecord, Int32)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Single][2]. |
+| ![Public Extension Method] | **GetNullableFloat(IDataRecord, String)** | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Single][2]. |
+
 
 Syntax
 ------
 
 ```csharp
-public static Nullable<float> GetNullableFloat(
+public static float? GetNullableFloat(
 	this IDataRecord record,
 	string name
 )
@@ -17,32 +26,32 @@ public static Nullable<float> GetNullableFloat(
 
 #### Parameters
 
-##### *record*
-Type: [System.Data.IDataRecord][4]  
+##### *record*  [IDataRecord][5]
 The data record.
 
-##### *name*
-Type: [System.String][5]  
+##### *name*  [String][6]
 The name of the column to find.
 
 #### Return Value
-Type: [Nullable][1]&lt;[Single][2]>  
+[Nullable][1]&lt;[Single][2]>  
 The value of the column.
 #### Usage Note
-In Visual Basic and C#, you can call this method as an instance method on any object of type [IDataRecord][4]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][6] or [Extension Methods (C# Programming Guide)][7].
+In Visual Basic and C#, you can call this method as an instance method on any object of type [IDataRecord][5]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][7] or [Extension Methods (C# Programming Guide)][8].
 
 See Also
 --------
 
 #### Reference
-[Extensions Class][8]  
+[Extensions Class][9]  
 [DbExtensions Namespace][3]  
 
-[1]: https://docs.microsoft.com/dotnet/api/system.nullable-1
-[2]: https://docs.microsoft.com/dotnet/api/system.single
+[1]: https://learn.microsoft.com/dotnet/api/system.nullable-1
+[2]: https://learn.microsoft.com/dotnet/api/system.single
 [3]: ../README.md
-[4]: https://docs.microsoft.com/dotnet/api/system.data.idatarecord
-[5]: https://docs.microsoft.com/dotnet/api/system.string
-[6]: https://docs.microsoft.com/dotnet/visual-basic/programming-guide/language-features/procedures/extension-methods
-[7]: https://docs.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
-[8]: README.md
+[4]: GetNullableFloat.md
+[5]: https://learn.microsoft.com/dotnet/api/system.data.idatarecord
+[6]: https://learn.microsoft.com/dotnet/api/system.string
+[7]: https://docs.microsoft.com/dotnet/visual-basic/programming-guide/language-features/procedures/extension-methods
+[8]: https://docs.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
+[9]: README.md
+[Public Extension Method]: ../../icons/pubextension.svg "Public Extension Method"

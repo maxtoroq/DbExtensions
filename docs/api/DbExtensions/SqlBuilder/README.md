@@ -7,9 +7,9 @@ Inheritance Hierarchy
 ---------------------
 [System.Object][1]  
   **DbExtensions.SqlBuilder**  
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -63,9 +63,9 @@ Methods
 | ![Public method]                 | [Clone][24]                                       | Creates and returns a copy of this instance.                                                                                                                                                     |
 | ![Public method]                 | [CROSS_JOIN][25]                                  | Appends the CROSS JOIN clause using the provided *format* string and parameters.                                                                                                                 |
 | ![Public method]                 | [DELETE_FROM][26]                                 | Appends the DELETE FROM clause using the provided *format* string and parameters.                                                                                                                |
-| ![Public method]                 | [FROM(String, Object[])][27]                      | Appends the FROM clause using the provided *format* string and parameters.                                                                                                                       |
-| ![Public method]                 | [FROM(SqlBuilder, String)][28]                    | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                                                               |
-| ![Public method]                 | [FROM(SqlSet, String)][29]                        | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                                                               |
+| ![Public method]                 | [FROM(SqlBuilder, String)][27]                    | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                                                               |
+| ![Public method]                 | [FROM(SqlSet, String)][28]                        | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                                                               |
+| ![Public method]                 | [FROM(String, Object[])][29]                      | Appends the FROM clause using the provided *format* string and parameters.                                                                                                                       |
 | ![Public method]                 | [GROUP_BY()][30]                                  | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][14] and [_If(Boolean, String, Object[])][16].                     |
 | ![Public method]                 | [GROUP_BY(String, Object[])][31]                  | Appends the GROUP BY clause using the provided *format* string and parameters.                                                                                                                   |
 | ![Public method]                 | [HAVING()][32]                                    | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][14] and [_If(Boolean, String, Object[])][16].                       |
@@ -92,15 +92,15 @@ Methods
 | ![Public method]                 | [SET][55]                                         | Appends the SET clause using the provided *format* string and parameters.                                                                                                                        |
 | ![Public method]                 | [SetCurrentClause][56]                            | Sets *clauseName* as the current SQL clause.                                                                                                                                                     |
 | ![Public method]                 | [SetNextClause][57]                               | Sets *clauseName* as the next SQL clause.                                                                                                                                                        |
-| ![Public method]                 | [ToString][58]                                    | Converts the value of this instance to a [String][40]. (Overrides [Object.ToString()][59].)                                                                                                      |
+| ![Public method]                 | [ToString][58]                                    | Converts the value of this instance to a [String][40]. <br/>(Overrides [Object.ToString()][59])                                                                                                  |
 | ![Public method]                 | [UNION][60]                                       | Appends the UNION clause.                                                                                                                                                                        |
 | ![Public method]                 | [UPDATE][61]                                      | Appends the UPDATE clause using the provided *format* string and parameters.                                                                                                                     |
 | ![Public method]                 | [VALUES][62]                                      | Appends the VALUES clause using the provided parameters.                                                                                                                                         |
 | ![Public method]                 | [WHERE()][63]                                     | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_(String, Object[])][14] and [_If(Boolean, String, Object[])][16].                        |
 | ![Public method]                 | [WHERE(String, Object[])][64]                     | Appends the WHERE clause using the provided *format* string and parameters.                                                                                                                      |
-| ![Public method]                 | [WITH(String, Object[])][65]                      | Appends the WITH clause using the provided *format* string and parameters.                                                                                                                       |
-| ![Public method]                 | [WITH(SqlBuilder, String)][66]                    | Appends the WITH clause using the provided *subQuery* as body named after *alias*.                                                                                                               |
-| ![Public method]                 | [WITH(SqlSet, String)][67]                        | Appends the WITH clause using the provided *subQuery* as body named after *alias*.                                                                                                               |
+| ![Public method]                 | [WITH(SqlBuilder, String)][65]                    | Appends the WITH clause using the provided *subQuery* as body named after *alias*.                                                                                                               |
+| ![Public method]                 | [WITH(SqlSet, String)][66]                        | Appends the WITH clause using the provided *subQuery* as body named after *alias*.                                                                                                               |
+| ![Public method]                 | [WITH(String, Object[])][67]                      | Appends the WITH clause using the provided *format* string and parameters.                                                                                                                       |
 
 
 Remarks
@@ -113,12 +113,12 @@ See Also
 #### Reference
 [DbExtensions Namespace][2]  
 
-[1]: https://docs.microsoft.com/dotnet/api/system.object
+[1]: https://learn.microsoft.com/dotnet/api/system.object
 [2]: ../README.md
 [3]: _ctor.md
 [4]: _ctor_1.md
 [5]: Buffer.md
-[6]: https://docs.microsoft.com/dotnet/api/system.text.stringbuilder
+[6]: https://learn.microsoft.com/dotnet/api/system.text.stringbuilder
 [7]: CurrentClause.md
 [8]: CurrentSeparator.md
 [9]: IsEmpty.md
@@ -139,9 +139,9 @@ See Also
 [24]: Clone.md
 [25]: CROSS_JOIN.md
 [26]: DELETE_FROM.md
-[27]: FROM_2.md
-[28]: FROM.md
-[29]: FROM_1.md
+[27]: FROM.md
+[28]: FROM_1.md
+[29]: FROM_2.md
 [30]: GROUP_BY.md
 [31]: GROUP_BY_1.md
 [32]: HAVING.md
@@ -152,9 +152,9 @@ See Also
 [37]: JOIN.md
 [38]: JOIN_1.md
 [39]: JoinSql.md
-[40]: https://docs.microsoft.com/dotnet/api/system.string
+[40]: https://learn.microsoft.com/dotnet/api/system.string
 [41]: JoinSql_1.md
-[42]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+[42]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
 [43]: LEFT_JOIN.md
 [44]: LIMIT.md
 [45]: LIMIT_1.md
@@ -171,16 +171,16 @@ See Also
 [56]: SetCurrentClause.md
 [57]: SetNextClause.md
 [58]: ToString.md
-[59]: https://docs.microsoft.com/dotnet/api/system.object.tostring#System_Object_ToString
+[59]: https://learn.microsoft.com/dotnet/api/system.object.tostring
 [60]: UNION.md
 [61]: UPDATE.md
 [62]: VALUES.md
 [63]: WHERE.md
 [64]: WHERE_1.md
-[65]: WITH_2.md
-[66]: WITH.md
-[67]: WITH_1.md
+[65]: WITH.md
+[66]: WITH_1.md
+[67]: WITH_2.md
 [68]: http://maxtoroq.github.io/DbExtensions/docs/SqlBuilder.html
 [Public method]: ../../icons/pubmethod.svg "Public method"
 [Public property]: ../../icons/pubproperty.svg "Public property"
-[Static member]: ../../icons/static.gif "Static member"
+[Static member]: ../../icons/Static.gif "Static member"

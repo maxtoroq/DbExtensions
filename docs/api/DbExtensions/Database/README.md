@@ -7,9 +7,9 @@ Inheritance Hierarchy
 ---------------------
 [System.Object][4]  
   **DbExtensions.Database**  
-
-  **Namespace:**  [DbExtensions][5]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][5]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -62,12 +62,12 @@ Methods
 | ![Public method]                | [Execute(SqlBuilder, Int32, Boolean)][29]                         | Executes the *nonQuery* command. Optionally uses a transaction and validates affected records value before committing.                                                                                                                                                                                                           |
 | ![Public method]                | [Find(Type, Object)][30]                                          | Gets the entity whose primary key matches the *id* parameter.                                                                                                                                                                                                                                                                    |
 | ![Public method]                | [Find&lt;TEntity>(Object)][31]                                    | Gets the entity whose primary key matches the *id* parameter.                                                                                                                                                                                                                                                                    |
-| ![Public method]                | [From(String)][32]                                                | Creates and returns a new [SqlSet][1] using the provided table name.                                                                                                                                                                                                                                                             |
-| ![Public method]                | [From(SqlBuilder)][33]                                            | Creates and returns a new [SqlSet][1] using the provided defining query.                                                                                                                                                                                                                                                         |
-| ![Public method]                | [From(String, Type)][34]                                          | Creates and returns a new [SqlSet][1] using the provided table name.                                                                                                                                                                                                                                                             |
-| ![Public method]                | [From(SqlBuilder, Type)][35]                                      | Creates and returns a new [SqlSet][1] using the provided defining query.                                                                                                                                                                                                                                                         |
-| ![Public method]                | [From&lt;TResult>(String)][36]                                    | Creates and returns a new [SqlSet&lt;TResult>][37] using the provided table name.                                                                                                                                                                                                                                                |
-| ![Public method]                | [From&lt;TResult>(SqlBuilder)][38]                                | Creates and returns a new [SqlSet&lt;TResult>][37] using the provided defining query.                                                                                                                                                                                                                                            |
+| ![Public method]                | [From(SqlBuilder)][32]                                            | Creates and returns a new [SqlSet][1] using the provided defining query.                                                                                                                                                                                                                                                         |
+| ![Public method]                | [From(String)][33]                                                | Creates and returns a new [SqlSet][1] using the provided table name.                                                                                                                                                                                                                                                             |
+| ![Public method]                | [From(SqlBuilder, Type)][34]                                      | Creates and returns a new [SqlSet][1] using the provided defining query.                                                                                                                                                                                                                                                         |
+| ![Public method]                | [From(String, Type)][35]                                          | Creates and returns a new [SqlSet][1] using the provided table name.                                                                                                                                                                                                                                                             |
+| ![Public method]                | [From&lt;TResult>(SqlBuilder)][36]                                | Creates and returns a new [SqlSet&lt;TResult>][37] using the provided defining query.                                                                                                                                                                                                                                            |
+| ![Public method]                | [From&lt;TResult>(String)][38]                                    | Creates and returns a new [SqlSet&lt;TResult>][37] using the provided table name.                                                                                                                                                                                                                                                |
 | ![Public method]                | [From&lt;TResult>(SqlBuilder, Func&lt;IDataRecord, TResult>)][39] | Creates and returns a new [SqlSet&lt;TResult>][37] using the provided defining query and mapper.                                                                                                                                                                                                                                 |
 | ![Public method]                | [LastInsertId][40]                                                | Gets the identity value of the last inserted record.                                                                                                                                                                                                                                                                             |
 | ![Public method]                | [Map(SqlBuilder)][41]                                             | Maps the results of the *query* to dynamic objects. The query is deferred-executed.                                                                                                                                                                                                                                              |
@@ -93,7 +93,7 @@ See Also
 [1]: ../SqlSet/README.md
 [2]: ../SqlBuilder/README.md
 [3]: ../SqlTable_1/README.md
-[4]: https://docs.microsoft.com/dotnet/api/system.object
+[4]: https://learn.microsoft.com/dotnet/api/system.object
 [5]: ../README.md
 [6]: _ctor.md
 [7]: _ctor_1.md
@@ -107,27 +107,27 @@ See Also
 [15]: ContainsKey.md
 [16]: ContainsKey__1.md
 [17]: CreateCommand.md
-[18]: https://docs.microsoft.com/dotnet/api/system.data.idbcommand
+[18]: https://learn.microsoft.com/dotnet/api/system.data.idbcommand
 [19]: CreateCommand_1.md
-[20]: https://docs.microsoft.com/dotnet/api/system.string.format#System_String_Format_System_String_System_Object___
-[21]: https://docs.microsoft.com/dotnet/api/system.data.idbcommand.parameters#System_Data_IDbCommand_Parameters
+[20]: https://learn.microsoft.com/dotnet/api/system.string.format#system-string-format(system-string-system-object())
+[21]: https://learn.microsoft.com/dotnet/api/system.data.idbcommand.parameters
 [22]: Dispose.md
 [23]: Dispose_1.md
 [24]: EnsureConnectionOpen.md
-[25]: https://docs.microsoft.com/dotnet/api/system.idisposable
+[25]: https://learn.microsoft.com/dotnet/api/system.idisposable
 [26]: EnsureInTransaction.md
 [27]: EnsureInTransaction_1.md
 [28]: Execute_1.md
 [29]: Execute.md
 [30]: Find.md
 [31]: Find__1.md
-[32]: From_2.md
-[33]: From.md
-[34]: From_3.md
-[35]: From_1.md
-[36]: From__1_2.md
+[32]: From.md
+[33]: From_2.md
+[34]: From_1.md
+[35]: From_3.md
+[36]: From__1.md
 [37]: ../SqlSet_1/README.md
-[38]: From__1.md
+[38]: From__1_2.md
 [39]: From__1_1.md
 [40]: LastInsertId.md
 [41]: Map.md

@@ -1,9 +1,9 @@
 SqlTable&lt;TEntity>.Remove Method
 ==================================
 Executes a DELETE command for the specified *entity*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,8 +16,7 @@ public void Remove(
 
 #### Parameters
 
-##### *entity*
-Type: [TEntity][2]  
+##### *entity*  [TEntity][2]
 The entity whose DELETE command is to be executed.
 
 

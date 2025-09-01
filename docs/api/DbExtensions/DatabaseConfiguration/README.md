@@ -7,9 +7,9 @@ Inheritance Hierarchy
 ---------------------
 [System.Object][3]  
   **DbExtensions.DatabaseConfiguration**  
-
-  **Namespace:**  [DbExtensions][4]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][4]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -49,7 +49,7 @@ See Also
 
 [1]: ../Database/README.md
 [2]: ../Database/Configuration.md
-[3]: https://docs.microsoft.com/dotnet/api/system.object
+[3]: https://learn.microsoft.com/dotnet/api/system.object
 [4]: ../README.md
 [5]: CommandTimeout.md
 [6]: DefaultComplexPropertySeparator.md
@@ -60,11 +60,11 @@ See Also
 [11]: LastInsertIdCommand.md
 [12]: Log.md
 [13]: ParameterNameBuilder.md
-[14]: https://docs.microsoft.com/dotnet/api/system.data.idataparameter.parametername#System_Data_IDataParameter_ParameterName
+[14]: https://learn.microsoft.com/dotnet/api/system.data.idataparameter.parametername
 [15]: ParameterPlaceholderBuilder.md
 [16]: QuotePrefix.md
 [17]: QuoteSuffix.md
 [18]: UseCompiledMapping.md
 [19]: UseVersionMember.md
 [Public property]: ../../icons/pubproperty.svg "Public property"
-[Static member]: ../../icons/static.gif "Static member"
+[Static member]: ../../icons/Static.gif "Static member"

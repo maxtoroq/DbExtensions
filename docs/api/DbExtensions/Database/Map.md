@@ -1,9 +1,20 @@
-Database.Map Method (SqlBuilder)
-================================
+Database.Map(SqlBuilder) Method
+===============================
 Maps the results of the *query* to dynamic objects. The query is deferred-executed.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                                                            | Description                                                                                                                 |
+| ---------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | **Map(SqlBuilder)**                                             | Maps the results of the *query* to dynamic objects. The query is deferred-executed.                                         |
+| ![Public method] | [Map(Type, SqlBuilder)][2]                                      | Maps the results of the *query* to objects of type specified by the *resultType* parameter. The query is deferred-executed. |
+| ![Public method] | [Map&lt;TResult>(SqlBuilder)][3]                                | Maps the results of the *query* to TResult objects. The query is deferred-executed.                                         |
+| ![Public method] | [Map&lt;TResult>(SqlBuilder, Func&lt;IDataRecord, TResult>)][4] | Maps the results of the *query* to TResult objects, using the provided *mapper* delegate.                                   |
+
 
 Syntax
 ------
@@ -16,23 +27,26 @@ public IEnumerable<Object> Map(
 
 #### Parameters
 
-##### *query*
-Type: [DbExtensions.SqlBuilder][2]  
+##### *query*  [SqlBuilder][5]
 The query.
 
 #### Return Value
-Type: [IEnumerable][3]&lt;[Object][4]>  
+[IEnumerable][6]&lt;[Object][7]>  
 The results of the query as dynamic objects.
 
 See Also
 --------
 
 #### Reference
-[Database Class][5]  
+[Database Class][8]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: ../SqlBuilder/README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
-[4]: https://docs.microsoft.com/dotnet/api/system.object
-[5]: README.md
+[2]: Map_1.md
+[3]: Map__1.md
+[4]: Map__1_1.md
+[5]: ../SqlBuilder/README.md
+[6]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+[7]: https://learn.microsoft.com/dotnet/api/system.object
+[8]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

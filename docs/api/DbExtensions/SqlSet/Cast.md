@@ -1,9 +1,18 @@
-SqlSet.Cast Method (Type)
-=========================
+SqlSet.Cast(Type) Method
+========================
 Casts the elements of the set to the specified type.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                    | Description                                          |
+| ---------------- | ----------------------- | ---------------------------------------------------- |
+| ![Public method] | **Cast(Type)**          | Casts the elements of the set to the specified type. |
+| ![Public method] | [Cast&lt;TResult>()][2] | Casts the elements of the set to the specified type. |
+
 
 Syntax
 ------
@@ -16,21 +25,22 @@ public SqlSet Cast(
 
 #### Parameters
 
-##### *resultType*
-Type: [System.Type][2]  
+##### *resultType*  [Type][3]
 The type to cast the elements of the set to.
 
 #### Return Value
-Type: [SqlSet][3]  
-A new [SqlSet][3] that contains each element of the current set cast to the specified type.
+[SqlSet][4]  
+A new [SqlSet][4] that contains each element of the current set cast to the specified type.
 
 See Also
 --------
 
 #### Reference
-[SqlSet Class][3]  
+[SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.type
-[3]: README.md
+[2]: Cast__1.md
+[3]: https://learn.microsoft.com/dotnet/api/system.type
+[4]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

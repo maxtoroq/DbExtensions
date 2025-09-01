@@ -1,9 +1,18 @@
-SqlSet&lt;TResult>.Contains Method (Object)
-===========================================
+SqlSet&lt;TResult>.Contains(Object) Method
+==========================================
 Checks the existance of the *entity*, using the primary key value.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                   | Description                                                        |
+| ---------------- | ---------------------- | ------------------------------------------------------------------ |
+| ![Public method] | **Contains(Object)**   | Checks the existance of the *entity*, using the primary key value. |
+| ![Public method] | [Contains(TResult)][2] | Checks the existance of the *entity*, using the primary key value. |
+
 
 Syntax
 ------
@@ -16,12 +25,11 @@ public bool Contains(
 
 #### Parameters
 
-##### *entity*
-Type: [System.Object][2]  
+##### *entity*  [Object][3]
 The entity whose existance is to be checked.
 
 #### Return Value
-Type: [Boolean][3]  
+[Boolean][4]  
 true if the primary key value exists in the database; otherwise false.
 
 Exceptions
@@ -29,18 +37,20 @@ Exceptions
 
 | Exception                      | Condition                                                                         |
 | ------------------------------ | --------------------------------------------------------------------------------- |
-| [InvalidOperationException][4] | This method can only be used on sets where the result type is an annotated class. |
+| [InvalidOperationException][5] | This method can only be used on sets where the result type is an annotated class. |
 
 
 See Also
 --------
 
 #### Reference
-[SqlSet&lt;TResult> Class][5]  
+[SqlSet&lt;TResult> Class][6]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.object
-[3]: https://docs.microsoft.com/dotnet/api/system.boolean
-[4]: https://docs.microsoft.com/dotnet/api/system.invalidoperationexception
-[5]: README.md
+[2]: Contains_1.md
+[3]: https://learn.microsoft.com/dotnet/api/system.object
+[4]: https://learn.microsoft.com/dotnet/api/system.boolean
+[5]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
+[6]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

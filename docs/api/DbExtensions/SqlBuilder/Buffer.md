@@ -1,9 +1,9 @@
 SqlBuilder.Buffer Property
 ==========================
 The underlying [StringBuilder][1].
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public StringBuilder Buffer { get; }
 ```
 
 #### Property Value
-Type: [StringBuilder][1]
+[StringBuilder][1]
 
 See Also
 --------
@@ -22,6 +22,6 @@ See Also
 [SqlBuilder Class][3]  
 [DbExtensions Namespace][2]  
 
-[1]: https://docs.microsoft.com/dotnet/api/system.text.stringbuilder
+[1]: https://learn.microsoft.com/dotnet/api/system.text.stringbuilder
 [2]: ../README.md
 [3]: README.md

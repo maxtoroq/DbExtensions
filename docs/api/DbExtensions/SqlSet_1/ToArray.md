@@ -1,9 +1,9 @@
 SqlSet&lt;TResult>.ToArray Method
 =================================
 Creates an array from the set.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public TResult[] ToArray()
 ```
 
 #### Return Value
-Type: [TResult][2][]  
+[TResult][2][]  
 An array that contains the elements from the set.
 
 See Also

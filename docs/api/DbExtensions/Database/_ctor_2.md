@@ -1,9 +1,20 @@
-Database Constructor (String)
-=============================
+Database(String) Constructor
+============================
 Initializes a new instance of the [Database][1] class using the provided connection string.
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                          | Description                                                                                                               |
+| ---------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [Database()][3]               | Initializes a new instance of the [Database][1] class.                                                                    |
+| ![Public method] | [Database(IDbConnection)][4]  | Initializes a new instance of the [Database][1] class using the provided connection.                                      |
+| ![Public method] | **Database(String)**          | Initializes a new instance of the [Database][1] class using the provided connection string.                               |
+| ![Public method] | [Database(String, String)][5] | Initializes a new instance of the [Database][1] class using the provided connection string and provider's invariant name. |
+
 
 Syntax
 ------
@@ -16,8 +27,7 @@ public Database(
 
 #### Parameters
 
-##### *connectionString*
-Type: [System.String][3]  
+##### *connectionString*  [String][6]
 The connection string.
 
 
@@ -30,4 +40,8 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.string
+[3]: _ctor.md
+[4]: _ctor_1.md
+[5]: _ctor_3.md
+[6]: https://learn.microsoft.com/dotnet/api/system.string
+[Public method]: ../../icons/pubmethod.svg "Public method"

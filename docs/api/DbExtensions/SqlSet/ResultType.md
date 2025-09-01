@@ -1,9 +1,9 @@
 SqlSet.ResultType Property
 ==========================
 The type of objects this set returns. This property can be null.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public Type ResultType { get; }
 ```
 
 #### Property Value
-Type: [Type][2]
+[Type][2]
 
 See Also
 --------
@@ -23,5 +23,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.type
+[2]: https://learn.microsoft.com/dotnet/api/system.type
 [3]: README.md

@@ -8,9 +8,9 @@ Inheritance Hierarchy
 [System.Object][1]  
   [System.Exception][2]  
     **DbExtensions.ChangeConflictException**  
-
-  **Namespace:**  [DbExtensions][3]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][3]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -37,8 +37,8 @@ See Also
 #### Reference
 [DbExtensions Namespace][3]  
 
-[1]: https://docs.microsoft.com/dotnet/api/system.object
-[2]: https://docs.microsoft.com/dotnet/api/system.exception
+[1]: https://learn.microsoft.com/dotnet/api/system.object
+[2]: https://learn.microsoft.com/dotnet/api/system.exception
 [3]: ../README.md
 [4]: _ctor.md
 [Public method]: ../../icons/pubmethod.svg "Public method"

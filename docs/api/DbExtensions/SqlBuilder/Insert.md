@@ -1,9 +1,9 @@
 SqlBuilder.Insert Method
 ========================
 Inserts a string into this instance at the specified character position.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -17,16 +17,14 @@ public SqlBuilder Insert(
 
 #### Parameters
 
-##### *index*
-Type: [System.Int32][2]  
+##### *index*  [Int32][2]
 The position in this instance where insertion begins.
 
-##### *value*
-Type: [System.String][3]  
+##### *value*  [String][3]
 The string to insert.
 
 #### Return Value
-Type: [SqlBuilder][4]  
+[SqlBuilder][4]  
 A reference to this instance after the insert operation has completed.
 
 See Also
@@ -37,6 +35,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.int32
-[3]: https://docs.microsoft.com/dotnet/api/system.string
+[2]: https://learn.microsoft.com/dotnet/api/system.int32
+[3]: https://learn.microsoft.com/dotnet/api/system.string
 [4]: README.md

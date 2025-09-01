@@ -1,9 +1,9 @@
 SqlBuilder.LEFT_JOIN Method
 ===========================
 Appends the LEFT JOIN clause using the provided *format* string and parameters.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -17,16 +17,14 @@ public SqlBuilder LEFT_JOIN(
 
 #### Parameters
 
-##### *format*
-Type: [System.String][2]  
+##### *format*  [String][2]
 The format string that represents the body of the LEFT JOIN clause.
 
-##### *args*
-Type: [System.Object][3][]  
+##### *args*  [Object][3][]
 The parameters of the clause body.
 
 #### Return Value
-Type: [SqlBuilder][4]  
+[SqlBuilder][4]  
 A reference to this instance after the append operation has completed.
 
 See Also
@@ -37,6 +35,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
-[3]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: https://learn.microsoft.com/dotnet/api/system.string
+[3]: https://learn.microsoft.com/dotnet/api/system.object
 [4]: README.md

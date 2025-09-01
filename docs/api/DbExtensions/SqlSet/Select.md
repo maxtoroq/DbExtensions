@@ -1,9 +1,20 @@
-SqlSet.Select Method (String, Object[])
-=======================================
+SqlSet.Select(String, Object[]) Method
+======================================
 Projects each element of the set into a new form.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                                                                     | Description                                       |
+| ---------------- | ------------------------------------------------------------------------ | ------------------------------------------------- |
+| ![Public method] | **Select(String, Object[])**                                             | Projects each element of the set into a new form. |
+| ![Public method] | [Select(Type, String, Object[])][2]                                      | Projects each element of the set into a new form. |
+| ![Public method] | [Select&lt;TResult>(String, Object[])][3]                                | Projects each element of the set into a new form. |
+| ![Public method] | [Select&lt;TResult>(Func&lt;IDataRecord, TResult>, String, Object[])][4] | Projects each element of the set into a new form. |
+
 
 Syntax
 ------
@@ -17,26 +28,28 @@ public SqlSet Select(
 
 #### Parameters
 
-##### *columnList*
-Type: [System.String][2]  
+##### *columnList*  [String][5]
 The list of columns to select.
 
-##### *parameters*
-Type: [System.Object][3][]  
+##### *parameters*  [Object][6][]
 The parameters to apply to the *columnList*.
 
 #### Return Value
-Type: [SqlSet][4]  
-A new [SqlSet][4].
+[SqlSet][7]  
+A new [SqlSet][7].
 
 See Also
 --------
 
 #### Reference
-[SqlSet Class][4]  
+[SqlSet Class][7]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: README.md
+[2]: Select_1.md
+[3]: Select__1_1.md
+[4]: Select__1.md
+[5]: https://learn.microsoft.com/dotnet/api/system.string
+[6]: https://learn.microsoft.com/dotnet/api/system.object
+[7]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

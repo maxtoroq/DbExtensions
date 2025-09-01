@@ -1,9 +1,9 @@
 DatabaseConfiguration.ParameterPlaceholderBuilder Property
 ==========================================================
 Specifies a function that builds a parameter placeholder to be used in SQL statements.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public Func<string, string> ParameterPlaceholderBuilder { get; set; }
 ```
 
 #### Property Value
-Type: [Func][2]&lt;[String][3], [String][3]>
+[Func][2]&lt;[String][3], [String][3]>
 
 See Also
 --------
@@ -23,6 +23,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.func-2
-[3]: https://docs.microsoft.com/dotnet/api/system.string
+[2]: https://learn.microsoft.com/dotnet/api/system.func-2
+[3]: https://learn.microsoft.com/dotnet/api/system.string
 [4]: README.md

@@ -1,9 +1,9 @@
 SqlTable&lt;TEntity>.CommandBuilder Property
 ============================================
 Gets a [SqlCommandBuilder&lt;TEntity>][1] object for the current table.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -13,7 +13,7 @@ public SqlCommandBuilder<TEntity> CommandBuilder { get; }
 ```
 
 #### Property Value
-Type: [SqlCommandBuilder][1]&lt;[TEntity][3]>
+[SqlCommandBuilder][1]&lt;[TEntity][3]>
 
 See Also
 --------

@@ -1,9 +1,9 @@
 SqlBuilder._ElseIf Method
 =========================
 Appends *format* to the current clause if *condition* is true and an antecedent call to [_If(Boolean, String, Object[])][1] or **_ElseIf(Boolean, String, Object[])** used a false condition.
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -18,20 +18,17 @@ public SqlBuilder _ElseIf(
 
 #### Parameters
 
-##### *condition*
-Type: [System.Boolean][3]  
+##### *condition*  [Boolean][3]
 true to append *format* to the current clause; otherwise, false.
 
-##### *format*
-Type: [System.String][4]  
+##### *format*  [String][4]
 The format string that represents the body of the current clause.
 
-##### *args*
-Type: [System.Object][5][]  
+##### *args*  [Object][5][]
 The parameters of the clause body.
 
 #### Return Value
-Type: [SqlBuilder][6]  
+[SqlBuilder][6]  
 A reference to this instance after the append operation has completed.
 
 See Also
@@ -43,7 +40,7 @@ See Also
 
 [1]: _If.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.boolean
-[4]: https://docs.microsoft.com/dotnet/api/system.string
-[5]: https://docs.microsoft.com/dotnet/api/system.object
+[3]: https://learn.microsoft.com/dotnet/api/system.boolean
+[4]: https://learn.microsoft.com/dotnet/api/system.string
+[5]: https://learn.microsoft.com/dotnet/api/system.object
 [6]: README.md

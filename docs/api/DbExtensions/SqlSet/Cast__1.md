@@ -1,9 +1,18 @@
 SqlSet.Cast&lt;TResult> Method
 ==============================
 Casts the elements of the set to the specified type.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                   | Description                                          |
+| ---------------- | ---------------------- | ---------------------------------------------------- |
+| ![Public method] | [Cast(Type)][2]        | Casts the elements of the set to the specified type. |
+| ![Public method] | **Cast&lt;TResult>()** | Casts the elements of the set to the specified type. |
+
 
 Syntax
 ------
@@ -19,16 +28,18 @@ public SqlSet<TResult> Cast<TResult>()
 The type to cast the elements of the set to.
 
 #### Return Value
-Type: [SqlSet][2]&lt;**TResult**>  
-A new [SqlSet&lt;TResult>][2] that contains each element of the current set cast to the specified type.
+[SqlSet][3]&lt;**TResult**>  
+A new [SqlSet&lt;TResult>][3] that contains each element of the current set cast to the specified type.
 
 See Also
 --------
 
 #### Reference
-[SqlSet Class][3]  
+[SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: ../SqlSet_1/README.md
-[3]: README.md
+[2]: Cast.md
+[3]: ../SqlSet_1/README.md
+[4]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

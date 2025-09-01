@@ -1,9 +1,9 @@
 ColumnAttribute Constructor
 ===========================
 Initializes a new instance of the [ColumnAttribute][1] class
-
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------

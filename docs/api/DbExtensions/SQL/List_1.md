@@ -1,9 +1,18 @@
-SQL.List Method (Object[])
-==========================
+SQL.List(Object[]) Method
+=========================
 Returns a special parameter value that is expanded into a list of comma-separated placeholder items.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                                  | Name                   | Description                                                                                          |
+| -------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | [List(IEnumerable)][2] | Returns a special parameter value that is expanded into a list of comma-separated placeholder items. |
+| ![Public method]![Static member] | **List(Object[])**     | Returns a special parameter value that is expanded into a list of comma-separated placeholder items. |
+
 
 Syntax
 ------
@@ -16,13 +25,12 @@ public static Object List(
 
 #### Parameters
 
-##### *values*
-Type: [System.Object][2][]  
+##### *values*  [Object][3][]
 The values to expand into a list.
 
 #### Return Value
-Type: [Object][2]  
-A special object to be used as parameter in [SqlBuilder][3].
+[Object][3]  
+A special object to be used as parameter in [SqlBuilder][4].
 
 Remarks
 -------
@@ -43,10 +51,13 @@ See Also
 --------
 
 #### Reference
-[SQL Class][4]  
+[SQL Class][5]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.object
-[3]: ../SqlBuilder/README.md
-[4]: README.md
+[2]: List.md
+[3]: https://learn.microsoft.com/dotnet/api/system.object
+[4]: ../SqlBuilder/README.md
+[5]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"
+[Static member]: ../../icons/Static.gif "Static member"

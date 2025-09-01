@@ -1,9 +1,18 @@
-Database.ContainsKey Method (Type, Object)
-==========================================
+Database.ContainsKey(Type, Object) Method
+=========================================
 Checks the existance of an entity whose primary matches the *id* parameter.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                                 | Description                                                                 |
+| ---------------- | ------------------------------------ | --------------------------------------------------------------------------- |
+| ![Public method] | **ContainsKey(Type, Object)**        | Checks the existance of an entity whose primary matches the *id* parameter. |
+| ![Public method] | [ContainsKey&lt;TEntity>(Object)][2] | Checks the existance of an entity whose primary matches the *id* parameter. |
+
 
 Syntax
 ------
@@ -17,16 +26,14 @@ public bool ContainsKey(
 
 #### Parameters
 
-##### *entityType*
-Type: [System.Type][2]  
+##### *entityType*  [Type][3]
 The type of the entity.
 
-##### *id*
-Type: [System.Object][3]  
+##### *id*  [Object][4]
 The primary key value.
 
 #### Return Value
-Type: [Boolean][4]  
+[Boolean][5]  
 true if the primary key value exists in the database; otherwise false.
 
 Remarks
@@ -37,13 +44,15 @@ See Also
 --------
 
 #### Reference
-[Database Class][5]  
+[Database Class][6]  
 [DbExtensions Namespace][1]  
-[SqlSet.ContainsKey(Object)][6]  
+[SqlSet.ContainsKey(Object)][7]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.type
-[3]: https://docs.microsoft.com/dotnet/api/system.object
-[4]: https://docs.microsoft.com/dotnet/api/system.boolean
-[5]: README.md
-[6]: ../SqlSet/ContainsKey.md
+[2]: ContainsKey__1.md
+[3]: https://learn.microsoft.com/dotnet/api/system.type
+[4]: https://learn.microsoft.com/dotnet/api/system.object
+[5]: https://learn.microsoft.com/dotnet/api/system.boolean
+[6]: README.md
+[7]: ../SqlSet/ContainsKey.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

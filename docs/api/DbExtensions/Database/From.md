@@ -1,9 +1,23 @@
-Database.From Method (SqlBuilder)
-=================================
+Database.From(SqlBuilder) Method
+================================
 Creates and returns a new [SqlSet][1] using the provided defining query.
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                                                             | Description                                                                                     |
+| ---------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| ![Public method] | **From(SqlBuilder)**                                             | Creates and returns a new [SqlSet][1] using the provided defining query.                        |
+| ![Public method] | [From(String)][3]                                                | Creates and returns a new [SqlSet][1] using the provided table name.                            |
+| ![Public method] | [From(SqlBuilder, Type)][4]                                      | Creates and returns a new [SqlSet][1] using the provided defining query.                        |
+| ![Public method] | [From(String, Type)][5]                                          | Creates and returns a new [SqlSet][1] using the provided table name.                            |
+| ![Public method] | [From&lt;TResult>(SqlBuilder)][6]                                | Creates and returns a new [SqlSet&lt;TResult>][7] using the provided defining query.            |
+| ![Public method] | [From&lt;TResult>(String)][8]                                    | Creates and returns a new [SqlSet&lt;TResult>][7] using the provided table name.                |
+| ![Public method] | [From&lt;TResult>(SqlBuilder, Func&lt;IDataRecord, TResult>)][9] | Creates and returns a new [SqlSet&lt;TResult>][7] using the provided defining query and mapper. |
+
 
 Syntax
 ------
@@ -16,22 +30,29 @@ public SqlSet From(
 
 #### Parameters
 
-##### *definingQuery*
-Type: [DbExtensions.SqlBuilder][3]  
+##### *definingQuery*  [SqlBuilder][10]
 The SQL query that will be the source of data for the set.
 
 #### Return Value
-Type: [SqlSet][1]  
+[SqlSet][1]  
 A new [SqlSet][1] object.
 
 See Also
 --------
 
 #### Reference
-[Database Class][4]  
+[Database Class][11]  
 [DbExtensions Namespace][2]  
 
 [1]: ../SqlSet/README.md
 [2]: ../README.md
-[3]: ../SqlBuilder/README.md
-[4]: README.md
+[3]: From_2.md
+[4]: From_1.md
+[5]: From_3.md
+[6]: From__1.md
+[7]: ../SqlSet_1/README.md
+[8]: From__1_2.md
+[9]: From__1_1.md
+[10]: ../SqlBuilder/README.md
+[11]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

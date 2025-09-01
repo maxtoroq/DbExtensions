@@ -8,9 +8,9 @@ Inheritance Hierarchy
 [System.Object][1]  
   [System.Attribute][2]  
     **DbExtensions.ComplexPropertyAttribute**  
-
-  **Namespace:**  [DbExtensions][3]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][3]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -45,13 +45,13 @@ See Also
 #### Reference
 [DbExtensions Namespace][3]  
 
-[1]: https://docs.microsoft.com/dotnet/api/system.object
-[2]: https://docs.microsoft.com/dotnet/api/system.attribute
+[1]: https://learn.microsoft.com/dotnet/api/system.object
+[2]: https://learn.microsoft.com/dotnet/api/system.attribute
 [3]: ../README.md
 [4]: _ctor.md
 [5]: Name.md
 [6]: Separator.md
 [7]: ../DatabaseConfiguration/DefaultComplexPropertySeparator.md
-[8]: https://docs.microsoft.com/dotnet/api/system.string
+[8]: https://learn.microsoft.com/dotnet/api/system.string
 [Public method]: ../../icons/pubmethod.svg "Public method"
 [Public property]: ../../icons/pubproperty.svg "Public property"

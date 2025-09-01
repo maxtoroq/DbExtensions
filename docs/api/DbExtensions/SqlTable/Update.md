@@ -1,9 +1,18 @@
-SqlTable.Update Method (Object)
-===============================
+SqlTable.Update(Object) Method
+==============================
 Executes an UPDATE command for the specified *entity*.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                        | Description                                            |
+| ---------------- | --------------------------- | ------------------------------------------------------ |
+| ![Public method] | **Update(Object)**          | Executes an UPDATE command for the specified *entity*. |
+| ![Public method] | [Update(Object, Object)][2] | Executes an UPDATE command for the specified *entity*. |
+
 
 Syntax
 ------
@@ -16,8 +25,7 @@ public void Update(
 
 #### Parameters
 
-##### *entity*
-Type: [System.Object][2]  
+##### *entity*  [Object][3]
 The entity whose UPDATE command is to be executed.
 
 
@@ -25,9 +33,11 @@ See Also
 --------
 
 #### Reference
-[SqlTable Class][3]  
+[SqlTable Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.object
-[3]: README.md
+[2]: Update_1.md
+[3]: https://learn.microsoft.com/dotnet/api/system.object
+[4]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

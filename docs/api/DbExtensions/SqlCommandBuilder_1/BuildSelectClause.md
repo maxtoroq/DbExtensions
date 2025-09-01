@@ -1,9 +1,18 @@
 SqlCommandBuilder&lt;TEntity>.BuildSelectClause Method
 ======================================================
 Creates and returns a SELECT query for the current table that includes the SELECT clause only.
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                           | Description                                                                                                                                                   |
+| ---------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | **BuildSelectClause()**        | Creates and returns a SELECT query for the current table that includes the SELECT clause only.                                                                |
+| ![Public method] | [BuildSelectClause(String)][2] | Creates and returns a SELECT query for the current table that includes the SELECT clause only. All column names are qualified with the provided *tableAlias*. |
+
 
 Syntax
 ------
@@ -13,16 +22,18 @@ public SqlBuilder BuildSelectClause()
 ```
 
 #### Return Value
-Type: [SqlBuilder][2]  
+[SqlBuilder][3]  
 The SELECT query for the current table.
 
 See Also
 --------
 
 #### Reference
-[SqlCommandBuilder&lt;TEntity> Class][3]  
+[SqlCommandBuilder&lt;TEntity> Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: ../SqlBuilder/README.md
-[3]: README.md
+[2]: BuildSelectClause_1.md
+[3]: ../SqlBuilder/README.md
+[4]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

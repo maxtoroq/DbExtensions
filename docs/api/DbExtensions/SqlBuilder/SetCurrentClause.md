@@ -1,9 +1,9 @@
 SqlBuilder.SetCurrentClause Method
 ==================================
 Sets *clauseName* as the current SQL clause.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -17,16 +17,14 @@ public SqlBuilder SetCurrentClause(
 
 #### Parameters
 
-##### *clauseName*
-Type: [System.String][2]  
+##### *clauseName*  [String][2]
 The SQL clause.
 
-##### *separator*
-Type: [System.String][2]  
+##### *separator*  [String][2]
 The clause body separator, used for consecutive appends to the same clause.
 
 #### Return Value
-Type: [SqlBuilder][3]  
+[SqlBuilder][3]  
 A reference to this instance after the operation has completed.
 
 See Also
@@ -35,9 +33,9 @@ See Also
 #### Reference
 [SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
-[SqlBuilder.CurrentClause][4]  
+[CurrentClause][4]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
+[2]: https://learn.microsoft.com/dotnet/api/system.string
 [3]: README.md
 [4]: CurrentClause.md

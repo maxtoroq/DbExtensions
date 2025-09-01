@@ -1,9 +1,9 @@
 SqlTable.Refresh Method
 =======================
 Sets all column members of *entity* to their most current persisted value.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -16,8 +16,7 @@ public void Refresh(
 
 #### Parameters
 
-##### *entity*
-Type: [System.Object][2]  
+##### *entity*  [Object][2]
 The entity to refresh.
 
 
@@ -29,5 +28,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: https://learn.microsoft.com/dotnet/api/system.object
 [3]: README.md

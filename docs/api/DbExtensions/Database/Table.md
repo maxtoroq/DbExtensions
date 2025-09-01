@@ -1,9 +1,18 @@
-Database.Table Method (Type)
-============================
+Database.Table(Type) Method
+===========================
 Returns the [SqlTable][1] instance for the specified *entityType*.
+  
+**Namespace:** [DbExtensions][2]  
+**Assembly:** DbExtensions.dll
 
-  **Namespace:**  [DbExtensions][2]  
-  **Assembly:** DbExtensions.dll
+Overloads
+---------
+
+|                  | Name                     | Description                                                               |
+| ---------------- | ------------------------ | ------------------------------------------------------------------------- |
+| ![Public method] | **Table(Type)**          | Returns the [SqlTable][1] instance for the specified *entityType*.        |
+| ![Public method] | [Table&lt;TEntity>()][3] | Returns the [SqlTable&lt;TEntity>][4] instance for the specified TEntity. |
+
 
 Syntax
 ------
@@ -16,22 +25,24 @@ public SqlTable Table(
 
 #### Parameters
 
-##### *entityType*
-Type: [System.Type][3]  
+##### *entityType*  [Type][5]
 The type of the entity.
 
 #### Return Value
-Type: [SqlTable][1]  
+[SqlTable][1]  
 The [SqlTable][1] instance for *entityType*.
 
 See Also
 --------
 
 #### Reference
-[Database Class][4]  
+[Database Class][6]  
 [DbExtensions Namespace][2]  
 
 [1]: ../SqlTable/README.md
 [2]: ../README.md
-[3]: https://docs.microsoft.com/dotnet/api/system.type
-[4]: README.md
+[3]: Table__1.md
+[4]: ../SqlTable_1/README.md
+[5]: https://learn.microsoft.com/dotnet/api/system.type
+[6]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

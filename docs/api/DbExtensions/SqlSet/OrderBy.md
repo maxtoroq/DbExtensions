@@ -1,9 +1,9 @@
 SqlSet.OrderBy Method
 =====================
 Sorts the elements of the set according to the *columnList*.
-
-  **Namespace:**  [DbExtensions][1]  
-  **Assembly:** DbExtensions.dll
+  
+**Namespace:** [DbExtensions][1]  
+**Assembly:** DbExtensions.dll
 
 Syntax
 ------
@@ -17,16 +17,14 @@ public SqlSet OrderBy(
 
 #### Parameters
 
-##### *columnList*
-Type: [System.String][2]  
+##### *columnList*  [String][2]
 The list of columns to base the sort on.
 
-##### *parameters*
-Type: [System.Object][3][]  
+##### *parameters*  [Object][3][]
 The parameters to apply to the *columnList*.
 
 #### Return Value
-Type: [SqlSet][4]  
+[SqlSet][4]  
 A new [SqlSet][4] whose elements are sorted according to *columnList*.
 
 See Also
@@ -37,6 +35,6 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://docs.microsoft.com/dotnet/api/system.string
-[3]: https://docs.microsoft.com/dotnet/api/system.object
+[2]: https://learn.microsoft.com/dotnet/api/system.string
+[3]: https://learn.microsoft.com/dotnet/api/system.object
 [4]: README.md
