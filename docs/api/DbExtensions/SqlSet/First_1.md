@@ -5,6 +5,16 @@ Returns the first element in the set that satisfies a specified condition.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                      | Description                                                                |
+| ---------------- | ------------------------- | -------------------------------------------------------------------------- |
+| ![Public method] | [First()][2]              | Returns the first element of the set.                                      |
+| ![Public method] | First(SqlFragmentHandler) | Returns the first element in the set that satisfies a specified condition. |
+| ![Public method] | [First(String)][3]        | Returns the first element in the set that satisfies a specified condition. |
+
+
 Syntax
 ------
 
@@ -20,7 +30,7 @@ public Object First(
 A SQL expression to test each row for a condition.
 
 #### Return Value
-[Object][2]  
+[Object][4]  
 The first element in the set that passes the test in the specified *predicate*.
 
 Exceptions
@@ -28,17 +38,20 @@ Exceptions
 
 | Exception                      | Condition                                                               |
 | ------------------------------ | ----------------------------------------------------------------------- |
-| [InvalidOperationException][3] | No element satisfies the condition in *predicate*.-or-The set is empty. |
+| [InvalidOperationException][5] | No element satisfies the condition in *predicate*.-or-The set is empty. |
 
 
 See Also
 --------
 
 #### Reference
-[SqlSet Class][4]  
+[SqlSet Class][6]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://learn.microsoft.com/dotnet/api/system.object
-[3]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
-[4]: README.md
+[2]: First.md
+[3]: First_2.md
+[4]: https://learn.microsoft.com/dotnet/api/system.object
+[5]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
+[6]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

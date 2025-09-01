@@ -5,6 +5,15 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FR
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                                  | Name                                                                     | Description                                                                                                                                 |
+| -------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | [DELETE_FROM(SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided string interpolated *handler*. |
+| ![Public method]![Static member] | DELETE_FROM(String)                                                      | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *text*.                        |
+
+
 Syntax
 ------
 
@@ -16,22 +25,25 @@ public static SqlBuilder DELETE_FROM(
 
 #### Parameters
 
-##### *text*  [String][3]
+##### *text*  [String][4]
 The body of the DELETE FROM clause.
 
 #### Return Value
 [SqlBuilder][1]  
- A new [SqlBuilder][1] after calling [DELETE_FROM(String)][4].
+ A new [SqlBuilder][1] after calling [DELETE_FROM(String)][5].
 
 See Also
 --------
 
 #### Reference
-[SQL Class][5]  
+[SQL Class][6]  
 [DbExtensions Namespace][2]  
 
 [1]: ../SqlBuilder/README.md
 [2]: ../README.md
-[3]: https://learn.microsoft.com/dotnet/api/system.string
-[4]: ../SqlBuilder/DELETE_FROM_1.md
-[5]: README.md
+[3]: DELETE_FROM.md
+[4]: https://learn.microsoft.com/dotnet/api/system.string
+[5]: ../SqlBuilder/DELETE_FROM_1.md
+[6]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"
+[Static member]: ../../icons/Static.gif "Static member"

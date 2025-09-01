@@ -5,6 +5,15 @@ Gets the entity whose primary key matches the *id* parameter.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                     | Description                                                   |
+| ---------------- | ------------------------ | ------------------------------------------------------------- |
+| ![Public method] | [Find(Type, Object)][2]  | Gets the entity whose primary key matches the *id* parameter. |
+| ![Public method] | Find&lt;TEntity>(Object) | Gets the entity whose primary key matches the *id* parameter. |
+
+
 Syntax
 ------
 
@@ -18,7 +27,7 @@ where TEntity : class
 
 #### Parameters
 
-##### *id*  [Object][2]
+##### *id*  [Object][3]
 The primary key value.
 
 #### Type Parameters
@@ -38,11 +47,13 @@ See Also
 --------
 
 #### Reference
-[Database Class][3]  
+[Database Class][4]  
 [DbExtensions Namespace][1]  
-[Find(Object)][4]  
+[Find(Object)][5]  
 
 [1]: ../README.md
-[2]: https://learn.microsoft.com/dotnet/api/system.object
-[3]: README.md
-[4]: ../SqlSet_1/Find.md
+[2]: Find.md
+[3]: https://learn.microsoft.com/dotnet/api/system.object
+[4]: README.md
+[5]: ../SqlSet_1/Find.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -5,6 +5,15 @@ Concatenates the members of a constructed [IEnumerable&lt;T>][1] collection of t
 **Namespace:** [DbExtensions][3]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                                  | Name                                        | Description                                                                                                                                               |
+| -------------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | [JoinSql(String, SqlBuilder[])][4]          | Concatenates a specified separator [String][5] between each element of a specified [SqlBuilder][2] array, yielding a single concatenated [SqlBuilder][2]. |
+| ![Public method]![Static member] | JoinSql(String, IEnumerable&lt;SqlBuilder>) | Concatenates the members of a constructed [IEnumerable&lt;T>][1] collection of type [SqlBuilder][2], using the specified *separator* between each member. |
+
+
 Syntax
 ------
 
@@ -17,7 +26,7 @@ public static SqlBuilder JoinSql(
 
 #### Parameters
 
-##### *separator*  [String][4]
+##### *separator*  [String][5]
 The string to use as a separator.
 
 ##### *values*  [IEnumerable][1]&lt;[SqlBuilder][2]>
@@ -37,4 +46,7 @@ See Also
 [1]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
 [2]: README.md
 [3]: ../README.md
-[4]: https://learn.microsoft.com/dotnet/api/system.string
+[4]: JoinSql.md
+[5]: https://learn.microsoft.com/dotnet/api/system.string
+[Public method]: ../../icons/pubmethod.svg "Public method"
+[Static member]: ../../icons/Static.gif "Static member"

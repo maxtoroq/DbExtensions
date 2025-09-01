@@ -5,6 +5,15 @@ Executes a DELETE command for the entity whose primary key matches the *id* para
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                               | Description                                                                            |
+| ---------------- | ---------------------------------- | -------------------------------------------------------------------------------------- |
+| ![Public method] | RemoveKey(Type, Object)            | Executes a DELETE command for the entity whose primary key matches the *id* parameter. |
+| ![Public method] | [RemoveKey&lt;TEntity>(Object)][2] | Executes a DELETE command for the entity whose primary key matches the *id* parameter. |
+
+
 Syntax
 ------
 
@@ -17,10 +26,10 @@ public void RemoveKey(
 
 #### Parameters
 
-##### *entityType*  [Type][2]
+##### *entityType*  [Type][3]
 The type of the entity.
 
-##### *id*  [Object][3]
+##### *id*  [Object][4]
 The primary key value.
 
 
@@ -32,12 +41,14 @@ See Also
 --------
 
 #### Reference
-[Database Class][4]  
+[Database Class][5]  
 [DbExtensions Namespace][1]  
-[RemoveKey(Object)][5]  
+[RemoveKey(Object)][6]  
 
 [1]: ../README.md
-[2]: https://learn.microsoft.com/dotnet/api/system.type
-[3]: https://learn.microsoft.com/dotnet/api/system.object
-[4]: README.md
-[5]: ../SqlTable/RemoveKey.md
+[2]: RemoveKey__1.md
+[3]: https://learn.microsoft.com/dotnet/api/system.type
+[4]: https://learn.microsoft.com/dotnet/api/system.object
+[5]: README.md
+[6]: ../SqlTable/RemoveKey.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

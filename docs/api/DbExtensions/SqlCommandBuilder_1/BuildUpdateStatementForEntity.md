@@ -5,6 +5,15 @@ Creates and returns an UPDATE command for the specified *entity*.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                                                | Description                                                       |
+| ---------------- | --------------------------------------------------- | ----------------------------------------------------------------- |
+| ![Public method] | BuildUpdateStatementForEntity(TEntity)              | Creates and returns an UPDATE command for the specified *entity*. |
+| ![Public method] | [BuildUpdateStatementForEntity(TEntity, Object)][2] | Creates and returns an UPDATE command for the specified *entity*. |
+
+
 Syntax
 ------
 
@@ -16,20 +25,22 @@ public SqlBuilder BuildUpdateStatementForEntity(
 
 #### Parameters
 
-##### *entity*  [TEntity][2]
+##### *entity*  [TEntity][3]
 The entity whose UPDATE command is to be created.
 
 #### Return Value
-[SqlBuilder][3]  
+[SqlBuilder][4]  
 The UPDATE command for *entity*.
 
 See Also
 --------
 
 #### Reference
-[SqlCommandBuilder&lt;TEntity> Class][2]  
+[SqlCommandBuilder&lt;TEntity> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: README.md
-[3]: ../SqlBuilder/README.md
+[2]: BuildUpdateStatementForEntity_1.md
+[3]: README.md
+[4]: ../SqlBuilder/README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

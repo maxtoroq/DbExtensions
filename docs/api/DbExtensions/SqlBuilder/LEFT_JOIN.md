@@ -5,6 +5,16 @@ Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause cont
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                                                                 | Description                                                                                                                                                        |
+| ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ![Public method] | LEFT_JOIN()                                                          | Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
+| ![Public method] | [LEFT_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.LEFT_JOIN>)][3] | Appends the LEFT JOIN clause using the provided interpolated string *handler*.                                                                                     |
+| ![Public method] | [LEFT_JOIN(String)][4]                                               | Appends the LEFT JOIN clause using the provided *text*.                                                                                                            |
+
+
 Syntax
 ------
 
@@ -13,16 +23,19 @@ public SqlBuilder LEFT_JOIN()
 ```
 
 #### Return Value
-[SqlBuilder][3]  
+[SqlBuilder][5]  
 A reference to this instance after the operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][3]  
+[SqlBuilder Class][5]  
 [DbExtensions Namespace][2]  
 
 [1]: _If.md
 [2]: ../README.md
-[3]: README.md
+[3]: LEFT_JOIN_1.md
+[4]: LEFT_JOIN_2.md
+[5]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

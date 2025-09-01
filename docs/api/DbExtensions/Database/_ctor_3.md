@@ -5,6 +5,17 @@ Initializes a new instance of the [Database][1] class using the provided connect
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                         | Description                                                                                                               |
+| ---------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [Database()][3]              | Initializes a new instance of the [Database][1] class.                                                                    |
+| ![Public method] | [Database(IDbConnection)][4] | Initializes a new instance of the [Database][1] class using the provided connection.                                      |
+| ![Public method] | [Database(String)][5]        | Initializes a new instance of the [Database][1] class using the provided connection string.                               |
+| ![Public method] | Database(String, String)     | Initializes a new instance of the [Database][1] class using the provided connection string and provider's invariant name. |
+
+
 Syntax
 ------
 
@@ -17,10 +28,10 @@ public Database(
 
 #### Parameters
 
-##### *connectionString*  [String][3]
+##### *connectionString*  [String][6]
 The connection string.
 
-##### *providerInvariantName*  [String][3]
+##### *providerInvariantName*  [String][6]
 The provider's invariant name.
 
 
@@ -33,4 +44,8 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: https://learn.microsoft.com/dotnet/api/system.string
+[3]: _ctor.md
+[4]: _ctor_1.md
+[5]: _ctor_2.md
+[6]: https://learn.microsoft.com/dotnet/api/system.string
+[Public method]: ../../icons/pubmethod.svg "Public method"

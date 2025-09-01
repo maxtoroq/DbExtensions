@@ -5,6 +5,16 @@ Appends the SELECT clause using the provided interpolated string *handler*.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                                                      | Description                                                                                                                                                     |
+| ---------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [SELECT()][2]                                             | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
+| ![Public method] | SELECT(SqlInterpolatedStringHandler&lt;SqlClause.SELECT>) | Appends the SELECT clause using the provided interpolated string *handler*.                                                                                     |
+| ![Public method] | [SELECT(String)][4]                                       | Appends the SELECT clause using the provided *text*.                                                                                                            |
+
+
 Syntax
 ------
 
@@ -16,20 +26,24 @@ public SqlBuilder SELECT(
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.SELECT][2]>
+##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.SELECT][5]>
 The interpolated string that represents the body of the SELECT clause.
 
 #### Return Value
-[SqlBuilder][3]  
+[SqlBuilder][6]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][3]  
+[SqlBuilder Class][6]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: ../SqlClause_SELECT/README.md
-[3]: README.md
+[2]: SELECT.md
+[3]: _If.md
+[4]: SELECT_2.md
+[5]: ../SqlClause_SELECT/README.md
+[6]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

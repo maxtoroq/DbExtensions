@@ -5,6 +5,15 @@ Initializes a new instance of the [SqlBuilder][1] class using the provided text.
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                                  | Name                                         | Description                                                                                     |
+| -------------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | [Create(AppendInterpolatedStringHandler)][3] | Initializes a new instance of the [SqlBuilder][1] class using the provided interpolated string. |
+| ![Public method]![Static member] | Create(String)                               | Initializes a new instance of the [SqlBuilder][1] class using the provided text.                |
+
+
 Syntax
 ------
 
@@ -16,7 +25,7 @@ public static SqlBuilder Create(
 
 #### Parameters
 
-##### *text*  [String][3]
+##### *text*  [String][4]
 The SQL string.
 
 #### Return Value
@@ -31,4 +40,7 @@ See Also
 
 [1]: README.md
 [2]: ../README.md
-[3]: https://learn.microsoft.com/dotnet/api/system.string
+[3]: Create.md
+[4]: https://learn.microsoft.com/dotnet/api/system.string
+[Public method]: ../../icons/pubmethod.svg "Public method"
+[Static member]: ../../icons/Static.gif "Static member"

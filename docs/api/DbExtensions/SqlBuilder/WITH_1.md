@@ -5,6 +5,17 @@ Appends the WITH clause using the provided *text*.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                                                       | Description                                                                        |
+| ---------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| ![Public method] | [WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>)][2] | Appends the WITH clause using the provided interpolated string *handler*.          |
+| ![Public method] | WITH(String)                                               | Appends the WITH clause using the provided *text*.                                 |
+| ![Public method] | [WITH(String, SqlBuilder)][3]                              | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
+| ![Public method] | [WITH(String, SqlSet)][4]                                  | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
+
+
 Syntax
 ------
 
@@ -16,20 +27,24 @@ public SqlBuilder WITH(
 
 #### Parameters
 
-##### *text*  [String][2]
+##### *text*  [String][5]
 The text that represents the body of the WITH clause.
 
 #### Return Value
-[SqlBuilder][3]  
+[SqlBuilder][6]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][3]  
+[SqlBuilder Class][6]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://learn.microsoft.com/dotnet/api/system.string
-[3]: README.md
+[2]: WITH.md
+[3]: WITH_2.md
+[4]: WITH_3.md
+[5]: https://learn.microsoft.com/dotnet/api/system.string
+[6]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

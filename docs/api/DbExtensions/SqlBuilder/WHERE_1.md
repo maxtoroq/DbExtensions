@@ -5,6 +5,16 @@ Appends the WHERE clause using the provided interpolated string *handler*.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                                                    | Description                                                                                                                                                    |
+| ---------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [WHERE()][2]                                            | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
+| ![Public method] | WHERE(SqlInterpolatedStringHandler&lt;SqlClause.WHERE>) | Appends the WHERE clause using the provided interpolated string *handler*.                                                                                     |
+| ![Public method] | [WHERE(String)][4]                                      | Appends the WHERE clause using the provided *text*.                                                                                                            |
+
+
 Syntax
 ------
 
@@ -16,20 +26,24 @@ public SqlBuilder WHERE(
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.WHERE][2]>
+##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.WHERE][5]>
 The interpolated string that represents the body of the WHERE clause.
 
 #### Return Value
-[SqlBuilder][3]  
+[SqlBuilder][6]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][3]  
+[SqlBuilder Class][6]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: ../SqlClause_WHERE/README.md
-[3]: README.md
+[2]: WHERE.md
+[3]: _If.md
+[4]: WHERE_2.md
+[5]: ../SqlClause_WHERE/README.md
+[6]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

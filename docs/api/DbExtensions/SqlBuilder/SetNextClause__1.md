@@ -5,6 +5,15 @@ Sets the clause identified by TClause as the next SQL clause.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                          | Description                                                   |
+| ---------------- | ----------------------------- | ------------------------------------------------------------- |
+| ![Public method] | [SetNextClause(SqlClause)][2] | Sets *clause* as the next SQL clause.                         |
+| ![Public method] | SetNextClause&lt;TClause>()   | Sets the clause identified by TClause as the next SQL clause. |
+
+
 Syntax
 ------
 
@@ -20,17 +29,19 @@ where TClause : new(), SqlClause
 The type of the SQL clause.
 
 #### Return Value
-[SqlBuilder][2]  
+[SqlBuilder][3]  
 A reference to this instance after the operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][2]  
+[SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
-[NextClause][3]  
+[NextClause][4]  
 
 [1]: ../README.md
-[2]: README.md
-[3]: NextClause.md
+[2]: SetNextClause.md
+[3]: README.md
+[4]: NextClause.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

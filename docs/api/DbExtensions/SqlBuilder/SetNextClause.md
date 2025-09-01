@@ -5,6 +5,15 @@ Sets *clause* as the next SQL clause.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                             | Description                                                   |
+| ---------------- | -------------------------------- | ------------------------------------------------------------- |
+| ![Public method] | SetNextClause(SqlClause)         | Sets *clause* as the next SQL clause.                         |
+| ![Public method] | [SetNextClause&lt;TClause>()][2] | Sets the clause identified by TClause as the next SQL clause. |
+
+
 Syntax
 ------
 
@@ -16,22 +25,24 @@ public SqlBuilder SetNextClause(
 
 #### Parameters
 
-##### *clause*  [SqlClause][2]
+##### *clause*  [SqlClause][3]
 The SQL clause.
 
 #### Return Value
-[SqlBuilder][3]  
+[SqlBuilder][4]  
 A reference to this instance after the operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][3]  
+[SqlBuilder Class][4]  
 [DbExtensions Namespace][1]  
-[NextClause][4]  
+[NextClause][5]  
 
 [1]: ../README.md
-[2]: ../SqlClause/README.md
-[3]: README.md
-[4]: NextClause.md
+[2]: SetNextClause__1.md
+[3]: ../SqlClause/README.md
+[4]: README.md
+[5]: NextClause.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

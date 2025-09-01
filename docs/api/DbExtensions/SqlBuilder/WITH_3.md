@@ -5,6 +5,17 @@ Appends the WITH clause using the provided *subQuery* as body named after *alias
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                                                       | Description                                                                        |
+| ---------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| ![Public method] | [WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>)][2] | Appends the WITH clause using the provided interpolated string *handler*.          |
+| ![Public method] | [WITH(String)][3]                                          | Appends the WITH clause using the provided *text*.                                 |
+| ![Public method] | [WITH(String, SqlBuilder)][4]                              | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
+| ![Public method] | WITH(String, SqlSet)                                       | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
+
+
 Syntax
 ------
 
@@ -17,24 +28,28 @@ public SqlBuilder WITH(
 
 #### Parameters
 
-##### *alias*  [String][2]
+##### *alias*  [String][5]
 The alias of the sub-query.
 
-##### *subQuery*  [SqlSet][3]
+##### *subQuery*  [SqlSet][6]
 The sub-query to use as the body of the WITH clause.
 
 #### Return Value
-[SqlBuilder][4]  
+[SqlBuilder][7]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
+[SqlBuilder Class][7]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://learn.microsoft.com/dotnet/api/system.string
-[3]: ../SqlSet/README.md
-[4]: README.md
+[2]: WITH.md
+[3]: WITH_1.md
+[4]: WITH_2.md
+[5]: https://learn.microsoft.com/dotnet/api/system.string
+[6]: ../SqlSet/README.md
+[7]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

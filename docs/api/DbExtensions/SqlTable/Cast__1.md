@@ -5,6 +5,15 @@ Casts the current [SqlTable][1] to the generic [SqlTable&lt;TEntity>][2] instanc
 **Namespace:** [DbExtensions][3]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name               | Description                                                                        |
+| ---------------- | ------------------ | ---------------------------------------------------------------------------------- |
+| ![Public method] | [Cast(Type)][4]    | Casts the elements of the set to the specified type.                               |
+| ![Public method] | Cast&lt;TEntity>() | Casts the current [SqlTable][1] to the generic [SqlTable&lt;TEntity>][2] instance. |
+
+
 Syntax
 ------
 
@@ -28,7 +37,7 @@ Exceptions
 
 | Exception                      | Condition                                             |
 | ------------------------------ | ----------------------------------------------------- |
-| [InvalidOperationException][4] | The specified TEntity is not valid for this instance. |
+| [InvalidOperationException][5] | The specified TEntity is not valid for this instance. |
 
 
 See Also
@@ -41,4 +50,6 @@ See Also
 [1]: README.md
 [2]: ../SqlTable_1/README.md
 [3]: ../README.md
-[4]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
+[4]: Cast.md
+[5]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
+[Public method]: ../../icons/pubmethod.svg "Public method"

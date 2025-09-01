@@ -5,6 +5,17 @@ Appends the WITH clause using the provided interpolated string *handler*.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                                                  | Description                                                                        |
+| ---------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| ![Public method] | WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>) | Appends the WITH clause using the provided interpolated string *handler*.          |
+| ![Public method] | [WITH(String)][2]                                     | Appends the WITH clause using the provided *text*.                                 |
+| ![Public method] | [WITH(String, SqlBuilder)][3]                         | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
+| ![Public method] | [WITH(String, SqlSet)][4]                             | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
+
+
 Syntax
 ------
 
@@ -16,20 +27,24 @@ public SqlBuilder WITH(
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.WITH][2]>
+##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.WITH][5]>
 The interpolated string that represents the body of the WITH clause.
 
 #### Return Value
-[SqlBuilder][3]  
+[SqlBuilder][6]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][3]  
+[SqlBuilder Class][6]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: ../SqlClause_WITH/README.md
-[3]: README.md
+[2]: WITH_1.md
+[3]: WITH_2.md
+[4]: WITH_3.md
+[5]: ../SqlClause_WITH/README.md
+[6]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

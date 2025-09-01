@@ -5,6 +5,18 @@ Appends the SQL clause identified by TClause and appends the *text*.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                                                                    | Description                                                                                 |
+| ---------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| ![Public method] | [AppendClause(SqlClause)][2]                                            | Appends the SQL *clause*.                                                                   |
+| ![Public method] | [AppendClause(SqlClause, String)][3]                                    | Appends the SQL *clause* and the provided *text*.                                           |
+| ![Public method] | [AppendClause&lt;TClause>()][4]                                         | Appends the SQL clause identified by TClause.                                               |
+| ![Public method] | [AppendClause&lt;TClause>(SqlInterpolatedStringHandler&lt;TClause>)][5] | Appends the SQL clause identified by TClause and appends the interpolated string *handler*. |
+| ![Public method] | AppendClause&lt;TClause>(String)                                        | Appends the SQL clause identified by TClause and appends the *text*.                        |
+
+
 Syntax
 ------
 
@@ -18,7 +30,7 @@ where TClause : new(), SqlClause
 
 #### Parameters
 
-##### *text*  [String][2]
+##### *text*  [String][6]
 The text to append.
 
 #### Type Parameters
@@ -27,16 +39,21 @@ The text to append.
 The type of the SQL clause.
 
 #### Return Value
-[SqlBuilder][3]  
+[SqlBuilder][7]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][3]  
+[SqlBuilder Class][7]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://learn.microsoft.com/dotnet/api/system.string
-[3]: README.md
+[2]: AppendClause.md
+[3]: AppendClause_1.md
+[4]: AppendClause__1.md
+[5]: AppendClause__1_1.md
+[6]: https://learn.microsoft.com/dotnet/api/system.string
+[7]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -5,6 +5,15 @@ Sorts the elements of the set according to the *columnList*.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                             | Description                                                  |
+| ---------------- | -------------------------------- | ------------------------------------------------------------ |
+| ![Public method] | [OrderBy(SqlFragmentHandler)][2] | Sorts the elements of the set according to the *columnList*. |
+| ![Public method] | OrderBy(String)                  | Sorts the elements of the set according to the *columnList*. |
+
+
 Syntax
 ------
 
@@ -16,20 +25,22 @@ public SqlSet OrderBy(
 
 #### Parameters
 
-##### *columnList*  [String][2]
+##### *columnList*  [String][3]
 The list of columns to base the sort on.
 
 #### Return Value
-[SqlSet][3]  
-A new [SqlSet][3] whose elements are sorted according to *columnList*.
+[SqlSet][4]  
+A new [SqlSet][4] whose elements are sorted according to *columnList*.
 
 See Also
 --------
 
 #### Reference
-[SqlSet Class][3]  
+[SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://learn.microsoft.com/dotnet/api/system.string
-[3]: README.md
+[2]: OrderBy.md
+[3]: https://learn.microsoft.com/dotnet/api/system.string
+[4]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

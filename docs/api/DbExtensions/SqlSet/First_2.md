@@ -5,6 +5,16 @@ Returns the first element in the set that satisfies a specified condition.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                           | Description                                                                |
+| ---------------- | ------------------------------ | -------------------------------------------------------------------------- |
+| ![Public method] | [First()][2]                   | Returns the first element of the set.                                      |
+| ![Public method] | [First(SqlFragmentHandler)][3] | Returns the first element in the set that satisfies a specified condition. |
+| ![Public method] | First(String)                  | Returns the first element in the set that satisfies a specified condition. |
+
+
 Syntax
 ------
 
@@ -16,11 +26,11 @@ public Object First(
 
 #### Parameters
 
-##### *predicate*  [String][2]
+##### *predicate*  [String][4]
 A SQL expression to test each row for a condition.
 
 #### Return Value
-[Object][3]  
+[Object][5]  
 The first element in the set that passes the test in the specified *predicate*.
 
 Exceptions
@@ -28,18 +38,21 @@ Exceptions
 
 | Exception                      | Condition                                                               |
 | ------------------------------ | ----------------------------------------------------------------------- |
-| [InvalidOperationException][4] | No element satisfies the condition in *predicate*.-or-The set is empty. |
+| [InvalidOperationException][6] | No element satisfies the condition in *predicate*.-or-The set is empty. |
 
 
 See Also
 --------
 
 #### Reference
-[SqlSet Class][5]  
+[SqlSet Class][7]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://learn.microsoft.com/dotnet/api/system.string
-[3]: https://learn.microsoft.com/dotnet/api/system.object
-[4]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
-[5]: README.md
+[2]: First.md
+[3]: First_1.md
+[4]: https://learn.microsoft.com/dotnet/api/system.string
+[5]: https://learn.microsoft.com/dotnet/api/system.object
+[6]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
+[7]: README.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

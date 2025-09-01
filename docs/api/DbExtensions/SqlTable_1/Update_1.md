@@ -5,6 +5,15 @@ Executes an UPDATE command for the specified *entity*.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                    | Description                                            |
+| ---------------- | ----------------------- | ------------------------------------------------------ |
+| ![Public method] | [Update(TEntity)][2]    | Executes an UPDATE command for the specified *entity*. |
+| ![Public method] | Update(TEntity, Object) | Executes an UPDATE command for the specified *entity*. |
+
+
 Syntax
 ------
 
@@ -17,10 +26,10 @@ public void Update(
 
 #### Parameters
 
-##### *entity*  [TEntity][2]
+##### *entity*  [TEntity][3]
 The entity whose UPDATE command is to be executed.
 
-##### *originalId*  [Object][3]
+##### *originalId*  [Object][4]
 The original primary key value.
 
 
@@ -32,9 +41,11 @@ See Also
 --------
 
 #### Reference
-[SqlTable&lt;TEntity> Class][2]  
+[SqlTable&lt;TEntity> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: README.md
-[3]: https://learn.microsoft.com/dotnet/api/system.object
+[2]: Update.md
+[3]: README.md
+[4]: https://learn.microsoft.com/dotnet/api/system.object
+[Public method]: ../../icons/pubmethod.svg "Public method"

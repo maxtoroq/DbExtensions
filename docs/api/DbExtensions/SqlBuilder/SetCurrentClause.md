@@ -5,6 +5,15 @@ Sets *clause* as the current SQL clause.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                                | Description                                                      |
+| ---------------- | ----------------------------------- | ---------------------------------------------------------------- |
+| ![Public method] | SetCurrentClause(SqlClause)         | Sets *clause* as the current SQL clause.                         |
+| ![Public method] | [SetCurrentClause&lt;TClause>()][2] | Sets the clause identified by TClause as the current SQL clause. |
+
+
 Syntax
 ------
 
@@ -16,22 +25,24 @@ public SqlBuilder SetCurrentClause(
 
 #### Parameters
 
-##### *clause*  [SqlClause][2]
+##### *clause*  [SqlClause][3]
 The SQL clause.
 
 #### Return Value
-[SqlBuilder][3]  
+[SqlBuilder][4]  
 A reference to this instance after the operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][3]  
+[SqlBuilder Class][4]  
 [DbExtensions Namespace][1]  
-[CurrentClause][4]  
+[CurrentClause][5]  
 
 [1]: ../README.md
-[2]: ../SqlClause/README.md
-[3]: README.md
-[4]: CurrentClause.md
+[2]: SetCurrentClause__1.md
+[3]: ../SqlClause/README.md
+[4]: README.md
+[5]: CurrentClause.md
+[Public method]: ../../icons/pubmethod.svg "Public method"

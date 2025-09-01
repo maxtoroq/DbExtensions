@@ -5,6 +5,16 @@ The single element of the set.
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
 
+Overloads
+---------
+
+|                  | Name                            | Description                                                                                                                             |
+| ---------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | Single()                        | The single element of the set.                                                                                                          |
+| ![Public method] | [Single(SqlFragmentHandler)][2] | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+| ![Public method] | [Single(String)][3]             | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+
+
 Syntax
 ------
 
@@ -13,7 +23,7 @@ public TResult Single()
 ```
 
 #### Return Value
-[TResult][2]  
+[TResult][4]  
 The single element of the set.
 
 Exceptions
@@ -21,16 +31,19 @@ Exceptions
 
 | Exception                      | Condition                                                    |
 | ------------------------------ | ------------------------------------------------------------ |
-| [InvalidOperationException][3] | The set contains more than one element.-or-The set is empty. |
+| [InvalidOperationException][5] | The set contains more than one element.-or-The set is empty. |
 
 
 See Also
 --------
 
 #### Reference
-[SqlSet&lt;TResult> Class][2]  
+[SqlSet&lt;TResult> Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: README.md
-[3]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
+[2]: Single_1.md
+[3]: Single_2.md
+[4]: README.md
+[5]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
+[Public method]: ../../icons/pubmethod.svg "Public method"
