@@ -8,10 +8,10 @@ Sets the clause identified by TClause as the current SQL clause.
 Overloads
 ---------
 
-|                  | Name                             | Description                                                      |
-| ---------------- | -------------------------------- | ---------------------------------------------------------------- |
-| ![Public method] | [SetCurrentClause(SqlClause)][2] | Sets *clause* as the current SQL clause.                         |
-| ![Public method] | SetCurrentClause&lt;TClause>()   | Sets the clause identified by TClause as the current SQL clause. |
+|                  | Name                               | Description                                                      |
+| ---------------- | ---------------------------------- | ---------------------------------------------------------------- |
+| ![Public method] | [SetCurrentClause(SqlClause)][2]   | Sets *clause* as the current SQL clause.                         |
+| ![Public method] | **SetCurrentClause&lt;TClause>()** | Sets the clause identified by TClause as the current SQL clause. |
 
 
 Syntax

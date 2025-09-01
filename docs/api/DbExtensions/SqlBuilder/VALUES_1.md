@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                                                           | Description                                                                 |
 | ---------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| ![Public method] | VALUES(Object[])                                               | Appends the VALUES clause using the provided parameters.                    |
+| ![Public method] | **VALUES(Object[])**                                           | Appends the VALUES clause using the provided parameters.                    |
 | ![Public method] | [VALUES(SqlInterpolatedStringHandler&lt;SqlClause.VALUES>)][2] | Appends the VALUES clause using the provided interpolated string *handler*. |
 
 

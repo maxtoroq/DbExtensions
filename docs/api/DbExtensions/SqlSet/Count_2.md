@@ -12,7 +12,7 @@ Overloads
 | ---------------- | ------------------------------ | ---------------------------------------------------------------------------------- |
 | ![Public method] | [Count()][2]                   | Returns the number of elements in the set.                                         |
 | ![Public method] | [Count(SqlFragmentHandler)][3] | Returns a number that represents how many elements in the set satisfy a condition. |
-| ![Public method] | Count(String)                  | Returns a number that represents how many elements in the set satisfy a condition. |
+| ![Public method] | **Count(String)**              | Returns a number that represents how many elements in the set satisfy a condition. |
 
 
 Syntax

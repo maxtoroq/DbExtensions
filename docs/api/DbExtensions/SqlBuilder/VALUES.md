@@ -8,10 +8,10 @@ Appends the VALUES clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                      | Description                                                                 |
-| ---------------- | --------------------------------------------------------- | --------------------------------------------------------------------------- |
-| ![Public method] | [VALUES(Object[])][2]                                     | Appends the VALUES clause using the provided parameters.                    |
-| ![Public method] | VALUES(SqlInterpolatedStringHandler&lt;SqlClause.VALUES>) | Appends the VALUES clause using the provided interpolated string *handler*. |
+|                  | Name                                                          | Description                                                                 |
+| ---------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| ![Public method] | [VALUES(Object[])][2]                                         | Appends the VALUES clause using the provided parameters.                    |
+| ![Public method] | **VALUES(SqlInterpolatedStringHandler&lt;SqlClause.VALUES>)** | Appends the VALUES clause using the provided interpolated string *handler*. |
 
 
 Syntax

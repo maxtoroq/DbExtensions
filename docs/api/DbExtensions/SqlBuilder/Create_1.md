@@ -11,7 +11,7 @@ Overloads
 |                                  | Name                                         | Description                                                                                     |
 | -------------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | ![Public method]![Static member] | [Create(AppendInterpolatedStringHandler)][3] | Initializes a new instance of the [SqlBuilder][1] class using the provided interpolated string. |
-| ![Public method]![Static member] | Create(String)                               | Initializes a new instance of the [SqlBuilder][1] class using the provided text.                |
+| ![Public method]![Static member] | **Create(String)**                           | Initializes a new instance of the [SqlBuilder][1] class using the provided text.                |
 
 
 Syntax

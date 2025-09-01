@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                                                             | Description                                                                                     |
 | ---------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| ![Public method] | From(SqlBuilder)                                                 | Creates and returns a new [SqlSet][1] using the provided defining query.                        |
+| ![Public method] | **From(SqlBuilder)**                                             | Creates and returns a new [SqlSet][1] using the provided defining query.                        |
 | ![Public method] | [From(String)][3]                                                | Creates and returns a new [SqlSet][1] using the provided table name.                            |
 | ![Public method] | [From(SqlBuilder, Type)][4]                                      | Creates and returns a new [SqlSet][1] using the provided defining query.                        |
 | ![Public method] | [From(String, Type)][5]                                          | Creates and returns a new [SqlSet][1] using the provided table name.                            |

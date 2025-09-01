@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                                | Description                                                      |
 | ---------------- | ----------------------------------- | ---------------------------------------------------------------- |
-| ![Public method] | SetCurrentClause(SqlClause)         | Sets *clause* as the current SQL clause.                         |
+| ![Public method] | **SetCurrentClause(SqlClause)**     | Sets *clause* as the current SQL clause.                         |
 | ![Public method] | [SetCurrentClause&lt;TClause>()][2] | Sets the clause identified by TClause as the current SQL clause. |
 
 

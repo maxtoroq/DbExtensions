@@ -11,7 +11,7 @@ Overloads
 |                  | Name                         | Description                                                     |
 | ---------------- | ---------------------------- | --------------------------------------------------------------- |
 | ![Public method] | [All(SqlFragmentHandler)][2] | Determines whether all elements of the set satisfy a condition. |
-| ![Public method] | All(String)                  | Determines whether all elements of the set satisfy a condition. |
+| ![Public method] | **All(String)**              | Determines whether all elements of the set satisfy a condition. |
 
 
 Syntax

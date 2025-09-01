@@ -11,7 +11,7 @@ Overloads
 |                  | Name                  | Description                                                        |
 | ---------------- | --------------------- | ------------------------------------------------------------------ |
 | ![Public method] | [Contains(Object)][2] | Checks the existance of the *entity*, using the primary key value. |
-| ![Public method] | Contains(TResult)     | Checks the existance of the *entity*, using the primary key value. |
+| ![Public method] | **Contains(TResult)** | Checks the existance of the *entity*, using the primary key value. |
 
 
 Syntax

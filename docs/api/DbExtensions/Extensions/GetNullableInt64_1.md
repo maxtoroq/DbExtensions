@@ -11,7 +11,7 @@ Overloads
 |                            | Name                                      | Description                                                                    |
 | -------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------ |
 | ![Public Extension Method] | [GetNullableInt64(IDataRecord, Int32)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Int64][2]. |
-| ![Public Extension Method] | GetNullableInt64(IDataRecord, String)     | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Int64][2]. |
+| ![Public Extension Method] | **GetNullableInt64(IDataRecord, String)** | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Int64][2]. |
 
 
 Syntax

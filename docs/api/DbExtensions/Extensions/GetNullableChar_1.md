@@ -11,7 +11,7 @@ Overloads
 |                            | Name                                     | Description                                                                   |
 | -------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------- |
 | ![Public Extension Method] | [GetNullableChar(IDataRecord, Int32)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Char][2]. |
-| ![Public Extension Method] | GetNullableChar(IDataRecord, String)     | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Char][2]. |
+| ![Public Extension Method] | **GetNullableChar(IDataRecord, String)** | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Char][2]. |
 
 
 Syntax

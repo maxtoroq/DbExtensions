@@ -8,11 +8,11 @@ Appends the INNER JOIN clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                              | Description                                                                                                                                                         |
-| ---------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [INNER_JOIN()][2]                                                 | Sets INNER JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | INNER_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.INNER_JOIN>) | Appends the INNER JOIN clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [INNER_JOIN(String)][4]                                           | Appends the INNER JOIN clause using the provided *text*.                                                                                                            |
+|                  | Name                                                                  | Description                                                                                                                                                         |
+| ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [INNER_JOIN()][2]                                                     | Sets INNER JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
+| ![Public method] | **INNER_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.INNER_JOIN>)** | Appends the INNER JOIN clause using the provided interpolated string *handler*.                                                                                     |
+| ![Public method] | [INNER_JOIN(String)][4]                                               | Appends the INNER JOIN clause using the provided *text*.                                                                                                            |
 
 
 Syntax

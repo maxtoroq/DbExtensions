@@ -8,10 +8,10 @@ Recursively executes INSERT commands for the specified *entities* and all their 
 Overloads
 ---------
 
-|                  | Name                              | Description                                                                                                              |
-| ---------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method] | AddRange(IEnumerable&lt;TEntity>) | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
-| ![Public method] | [AddRange(TEntity[])][2]          | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+|                  | Name                                  | Description                                                                                                              |
+| ---------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| ![Public method] | **AddRange(IEnumerable&lt;TEntity>)** | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| ![Public method] | [AddRange(TEntity[])][2]              | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
 
 
 Syntax

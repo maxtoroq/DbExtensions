@@ -13,7 +13,7 @@ Overloads
 | ![Public method] | [Database()][3]              | Initializes a new instance of the [Database][1] class.                                                                    |
 | ![Public method] | [Database(IDbConnection)][4] | Initializes a new instance of the [Database][1] class using the provided connection.                                      |
 | ![Public method] | [Database(String)][5]        | Initializes a new instance of the [Database][1] class using the provided connection string.                               |
-| ![Public method] | Database(String, String)     | Initializes a new instance of the [Database][1] class using the provided connection string and provider's invariant name. |
+| ![Public method] | **Database(String, String)** | Initializes a new instance of the [Database][1] class using the provided connection string and provider's invariant name. |
 
 
 Syntax

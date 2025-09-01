@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                        | Description                                            |
 | ---------------- | --------------------------- | ------------------------------------------------------ |
-| ![Public method] | Update(Object)              | Executes an UPDATE command for the specified *entity*. |
+| ![Public method] | **Update(Object)**          | Executes an UPDATE command for the specified *entity*. |
 | ![Public method] | [Update(Object, Object)][2] | Executes an UPDATE command for the specified *entity*. |
 
 

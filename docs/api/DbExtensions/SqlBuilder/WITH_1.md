@@ -11,7 +11,7 @@ Overloads
 |                  | Name                                                       | Description                                                                        |
 | ---------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | ![Public method] | [WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>)][2] | Appends the WITH clause using the provided interpolated string *handler*.          |
-| ![Public method] | WITH(String)                                               | Appends the WITH clause using the provided *text*.                                 |
+| ![Public method] | **WITH(String)**                                           | Appends the WITH clause using the provided *text*.                                 |
 | ![Public method] | [WITH(String, SqlBuilder)][3]                              | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
 | ![Public method] | [WITH(String, SqlSet)][4]                                  | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
 

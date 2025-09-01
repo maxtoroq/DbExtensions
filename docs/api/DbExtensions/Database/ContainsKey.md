@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                                 | Description                                                                 |
 | ---------------- | ------------------------------------ | --------------------------------------------------------------------------- |
-| ![Public method] | ContainsKey(Type, Object)            | Checks the existance of an entity whose primary matches the *id* parameter. |
+| ![Public method] | **ContainsKey(Type, Object)**        | Checks the existance of an entity whose primary matches the *id* parameter. |
 | ![Public method] | [ContainsKey&lt;TEntity>(Object)][2] | Checks the existance of an entity whose primary matches the *id* parameter. |
 
 
@@ -46,7 +46,7 @@ See Also
 #### Reference
 [Database Class][6]  
 [DbExtensions Namespace][1]  
-[ContainsKey(Object)][7]  
+[SqlSet.ContainsKey(Object)][7]  
 
 [1]: ../README.md
 [2]: ContainsKey__1.md

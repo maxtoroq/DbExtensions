@@ -10,7 +10,7 @@ Overloads
 
 |                     | Name                  | Description                                                                     |
 | ------------------- | --------------------- | ------------------------------------------------------------------------------- |
-| ![Public method]    | Dispose()             | Releases all resources used by the current instance of the [Database][1] class. |
+| ![Public method]    | **Dispose()**         | Releases all resources used by the current instance of the [Database][1] class. |
 | ![Protected method] | [Dispose(Boolean)][3] | Releases the resources used by this [Database][1] instance.                     |
 
 

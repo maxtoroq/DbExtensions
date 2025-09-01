@@ -8,11 +8,11 @@ Appends the interpolated string *handler* to this instance.
 Overloads
 ---------
 
-|                  | Name                                    | Description                                                 |
-| ---------------- | --------------------------------------- | ----------------------------------------------------------- |
-| ![Public method] | Append(AppendInterpolatedStringHandler) | Appends the interpolated string *handler* to this instance. |
-| ![Public method] | [Append(SqlBuilder)][2]                 | Appends *sql* to this instance.                             |
-| ![Public method] | [Append(String)][3]                     | Appends *text* to this instance.                            |
+|                  | Name                                        | Description                                                 |
+| ---------------- | ------------------------------------------- | ----------------------------------------------------------- |
+| ![Public method] | **Append(AppendInterpolatedStringHandler)** | Appends the interpolated string *handler* to this instance. |
+| ![Public method] | [Append(SqlBuilder)][2]                     | Appends *sql* to this instance.                             |
+| ![Public method] | [Append(String)][3]                         | Appends *text* to this instance.                            |
 
 
 Syntax

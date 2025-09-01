@@ -8,10 +8,10 @@ Checks the existance of an entity whose primary matches the *id* parameter.
 Overloads
 ---------
 
-|                  | Name                            | Description                                                                 |
-| ---------------- | ------------------------------- | --------------------------------------------------------------------------- |
-| ![Public method] | [ContainsKey(Type, Object)][2]  | Checks the existance of an entity whose primary matches the *id* parameter. |
-| ![Public method] | ContainsKey&lt;TEntity>(Object) | Checks the existance of an entity whose primary matches the *id* parameter. |
+|                  | Name                                | Description                                                                 |
+| ---------------- | ----------------------------------- | --------------------------------------------------------------------------- |
+| ![Public method] | [ContainsKey(Type, Object)][2]      | Checks the existance of an entity whose primary matches the *id* parameter. |
+| ![Public method] | **ContainsKey&lt;TEntity>(Object)** | Checks the existance of an entity whose primary matches the *id* parameter. |
 
 
 Syntax
@@ -49,7 +49,7 @@ See Also
 #### Reference
 [Database Class][5]  
 [DbExtensions Namespace][1]  
-[ContainsKey(Object)][6]  
+[SqlSet.ContainsKey(Object)][6]  
 
 [1]: ../README.md
 [2]: ContainsKey.md

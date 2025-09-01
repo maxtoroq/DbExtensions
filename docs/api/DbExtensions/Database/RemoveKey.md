@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                               | Description                                                                            |
 | ---------------- | ---------------------------------- | -------------------------------------------------------------------------------------- |
-| ![Public method] | RemoveKey(Type, Object)            | Executes a DELETE command for the entity whose primary key matches the *id* parameter. |
+| ![Public method] | **RemoveKey(Type, Object)**        | Executes a DELETE command for the entity whose primary key matches the *id* parameter. |
 | ![Public method] | [RemoveKey&lt;TEntity>(Object)][2] | Executes a DELETE command for the entity whose primary key matches the *id* parameter. |
 
 
@@ -43,7 +43,7 @@ See Also
 #### Reference
 [Database Class][5]  
 [DbExtensions Namespace][1]  
-[RemoveKey(Object)][6]  
+[SqlTable.RemoveKey(Object)][6]  
 
 [1]: ../README.md
 [2]: RemoveKey__1.md

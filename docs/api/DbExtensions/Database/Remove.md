@@ -30,7 +30,7 @@ See Also
 #### Reference
 [Database Class][3]  
 [DbExtensions Namespace][1]  
-[Remove(Object)][4]  
+[SqlTable.Remove(Object)][4]  
 
 [1]: ../README.md
 [2]: https://learn.microsoft.com/dotnet/api/system.object

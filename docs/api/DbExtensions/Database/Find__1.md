@@ -8,10 +8,10 @@ Gets the entity whose primary key matches the *id* parameter.
 Overloads
 ---------
 
-|                  | Name                     | Description                                                   |
-| ---------------- | ------------------------ | ------------------------------------------------------------- |
-| ![Public method] | [Find(Type, Object)][2]  | Gets the entity whose primary key matches the *id* parameter. |
-| ![Public method] | Find&lt;TEntity>(Object) | Gets the entity whose primary key matches the *id* parameter. |
+|                  | Name                         | Description                                                   |
+| ---------------- | ---------------------------- | ------------------------------------------------------------- |
+| ![Public method] | [Find(Type, Object)][2]      | Gets the entity whose primary key matches the *id* parameter. |
+| ![Public method] | **Find&lt;TEntity>(Object)** | Gets the entity whose primary key matches the *id* parameter. |
 
 
 Syntax
@@ -49,7 +49,7 @@ See Also
 #### Reference
 [Database Class][4]  
 [DbExtensions Namespace][1]  
-[Find(Object)][5]  
+[SqlSet&lt;TResult>.Find(Object)][5]  
 
 [1]: ../README.md
 [2]: Find.md

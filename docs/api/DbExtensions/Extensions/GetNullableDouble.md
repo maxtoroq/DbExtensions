@@ -10,7 +10,7 @@ Overloads
 
 |                            | Name                                        | Description                                                                     |
 | -------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------- |
-| ![Public Extension Method] | GetNullableDouble(IDataRecord, Int32)       | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Double][2]. |
+| ![Public Extension Method] | **GetNullableDouble(IDataRecord, Int32)**   | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Double][2]. |
 | ![Public Extension Method] | [GetNullableDouble(IDataRecord, String)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Double][2]. |
 
 

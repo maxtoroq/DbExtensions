@@ -8,11 +8,11 @@ Appends the HAVING clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                      | Description                                                                                                                                                     |
-| ---------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [HAVING()][2]                                             | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | HAVING(SqlInterpolatedStringHandler&lt;SqlClause.HAVING>) | Appends the HAVING clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [HAVING(String)][4]                                       | Appends the HAVING clause using the provided *text*.                                                                                                            |
+|                  | Name                                                          | Description                                                                                                                                                     |
+| ---------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [HAVING()][2]                                                 | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
+| ![Public method] | **HAVING(SqlInterpolatedStringHandler&lt;SqlClause.HAVING>)** | Appends the HAVING clause using the provided interpolated string *handler*.                                                                                     |
+| ![Public method] | [HAVING(String)][4]                                           | Appends the HAVING clause using the provided *text*.                                                                                                            |
 
 
 Syntax

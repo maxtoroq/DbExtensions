@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                                                           | Description                                                                                                                                                     |
 | ---------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | SELECT()                                                       | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
+| ![Public method] | **SELECT()**                                                   | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
 | ![Public method] | [SELECT(SqlInterpolatedStringHandler&lt;SqlClause.SELECT>)][3] | Appends the SELECT clause using the provided interpolated string *handler*.                                                                                     |
 | ![Public method] | [SELECT(String)][4]                                            | Appends the SELECT clause using the provided *text*.                                                                                                            |
 

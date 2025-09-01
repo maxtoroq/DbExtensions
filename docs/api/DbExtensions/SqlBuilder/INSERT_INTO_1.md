@@ -11,7 +11,7 @@ Overloads
 |                  | Name                                                                     | Description                                                                      |
 | ---------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
 | ![Public method] | [INSERT_INTO(SqlInterpolatedStringHandler&lt;SqlClause.INSERT_INTO>)][2] | Appends the INSERT INTO clause using the provided interpolated string *handler*. |
-| ![Public method] | INSERT_INTO(String)                                                      | Appends the INSERT INTO clause using the provided *text*.                        |
+| ![Public method] | **INSERT_INTO(String)**                                                  | Appends the INSERT INTO clause using the provided *text*.                        |
 
 
 Syntax

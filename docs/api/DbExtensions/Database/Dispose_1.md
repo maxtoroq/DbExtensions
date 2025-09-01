@@ -8,10 +8,10 @@ Releases the resources used by this [Database][1] instance.
 Overloads
 ---------
 
-|                     | Name             | Description                                                                     |
-| ------------------- | ---------------- | ------------------------------------------------------------------------------- |
-| ![Public method]    | [Dispose()][3]   | Releases all resources used by the current instance of the [Database][1] class. |
-| ![Protected method] | Dispose(Boolean) | Releases the resources used by this [Database][1] instance.                     |
+|                     | Name                 | Description                                                                     |
+| ------------------- | -------------------- | ------------------------------------------------------------------------------- |
+| ![Public method]    | [Dispose()][3]       | Releases all resources used by the current instance of the [Database][1] class. |
+| ![Protected method] | **Dispose(Boolean)** | Releases the resources used by this [Database][1] instance.                     |
 
 
 Syntax

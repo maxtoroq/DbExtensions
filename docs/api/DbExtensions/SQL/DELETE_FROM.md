@@ -8,10 +8,10 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FR
 Overloads
 ---------
 
-|                                  | Name                                                                | Description                                                                                                                                 |
-| -------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | DELETE_FROM(SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>) | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | [DELETE_FROM(String)][3]                                            | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *text*.                        |
+|                                  | Name                                                                    | Description                                                                                                                                 |
+| -------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | **DELETE_FROM(SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided string interpolated *handler*. |
+| ![Public method]![Static member] | [DELETE_FROM(String)][3]                                                | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *text*.                        |
 
 
 Syntax

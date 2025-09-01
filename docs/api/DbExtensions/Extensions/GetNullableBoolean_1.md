@@ -11,7 +11,7 @@ Overloads
 |                            | Name                                        | Description                                                                      |
 | -------------------------- | ------------------------------------------- | -------------------------------------------------------------------------------- |
 | ![Public Extension Method] | [GetNullableBoolean(IDataRecord, Int32)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Boolean][2]. |
-| ![Public Extension Method] | GetNullableBoolean(IDataRecord, String)     | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Boolean][2]. |
+| ![Public Extension Method] | **GetNullableBoolean(IDataRecord, String)** | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Boolean][2]. |
 
 
 Syntax

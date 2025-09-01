@@ -11,7 +11,7 @@ Overloads
 |                  | Name                                      | Description                                            |
 | ---------------- | ----------------------------------------- | ------------------------------------------------------ |
 | ![Public method] | [UpdateRange(IEnumerable&lt;TEntity>)][2] | Executes UPDATE commands for the specified *entities*. |
-| ![Public method] | UpdateRange(TEntity[])                    | Executes UPDATE commands for the specified *entities*. |
+| ![Public method] | **UpdateRange(TEntity[])**                | Executes UPDATE commands for the specified *entities*. |
 
 
 Syntax

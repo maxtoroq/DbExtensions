@@ -8,10 +8,10 @@ Executes DELETE commands for the specified *entities*.
 Overloads
 ---------
 
-|                  | Name                                | Description                                            |
-| ---------------- | ----------------------------------- | ------------------------------------------------------ |
-| ![Public method] | RemoveRange(IEnumerable&lt;Object>) | Executes DELETE commands for the specified *entities*. |
-| ![Public method] | [RemoveRange(Object[])][2]          | Executes DELETE commands for the specified *entities*. |
+|                  | Name                                    | Description                                            |
+| ---------------- | --------------------------------------- | ------------------------------------------------------ |
+| ![Public method] | **RemoveRange(IEnumerable&lt;Object>)** | Executes DELETE commands for the specified *entities*. |
+| ![Public method] | [RemoveRange(Object[])][2]              | Executes DELETE commands for the specified *entities*. |
 
 
 Syntax

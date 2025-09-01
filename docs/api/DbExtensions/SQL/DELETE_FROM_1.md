@@ -11,7 +11,7 @@ Overloads
 |                                  | Name                                                                     | Description                                                                                                                                 |
 | -------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | ![Public method]![Static member] | [DELETE_FROM(SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | DELETE_FROM(String)                                                      | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *text*.                        |
+| ![Public method]![Static member] | **DELETE_FROM(String)**                                                  | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *text*.                        |
 
 
 Syntax

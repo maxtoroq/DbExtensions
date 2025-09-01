@@ -11,7 +11,7 @@ Overloads
 |                  | Name                                                         | Description                                                                                                                                                    |
 | ---------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ![Public method] | [LIMIT()][2]                                                 | Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | LIMIT(Int32)                                                 | Appends the LIMIT clause using the provided *maxRecords* parameter.                                                                                            |
+| ![Public method] | **LIMIT(Int32)**                                             | Appends the LIMIT clause using the provided *maxRecords* parameter.                                                                                            |
 | ![Public method] | [LIMIT(SqlInterpolatedStringHandler&lt;SqlClause.LIMIT>)][4] | Appends the LIMIT clause using the provided interpolated string *handler*.                                                                                     |
 | ![Public method] | [LIMIT(String)][5]                                           | Appends the LIMIT clause using the provided *text*.                                                                                                            |
 

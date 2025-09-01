@@ -13,7 +13,7 @@ Overloads
 | ![Public method] | [OFFSET()][2]                                                  | Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
 | ![Public method] | [OFFSET(Int32)][4]                                             | Appends the OFFSET clause using the provided *startIndex* parameter.                                                                                            |
 | ![Public method] | [OFFSET(SqlInterpolatedStringHandler&lt;SqlClause.OFFSET>)][5] | Appends the OFFSET clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | OFFSET(String)                                                 | Appends the OFFSET clause using the provided *text*.                                                                                                            |
+| ![Public method] | **OFFSET(String)**                                             | Appends the OFFSET clause using the provided *text*.                                                                                                            |
 
 
 Syntax

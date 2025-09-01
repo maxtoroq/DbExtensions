@@ -11,7 +11,7 @@ Overloads
 |                                  | Name                                                       | Description                                                                                                                          |
 | -------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | ![Public method]![Static member] | [WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | WITH(String)                                               | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *text*.                        |
+| ![Public method]![Static member] | **WITH(String)**                                           | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *text*.                        |
 | ![Public method]![Static member] | [WITH(String, SqlBuilder)][4]                              | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.        |
 | ![Public method]![Static member] | [WITH(String, SqlSet)][5]                                  | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.        |
 

@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                        | Description                                            |
 | ---------------- | --------------------------- | ------------------------------------------------------ |
-| ![Public method] | Update(Object)              | Executes an UPDATE command for the specified *entity*. |
+| ![Public method] | **Update(Object)**          | Executes an UPDATE command for the specified *entity*. |
 | ![Public method] | [Update(Object, Object)][2] | Executes an UPDATE command for the specified *entity*. |
 
 
@@ -39,7 +39,7 @@ See Also
 #### Reference
 [Database Class][4]  
 [DbExtensions Namespace][1]  
-[Update(Object)][5]  
+[SqlTable.Update(Object)][5]  
 
 [1]: ../README.md
 [2]: Update_1.md

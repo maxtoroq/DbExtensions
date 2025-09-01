@@ -8,10 +8,10 @@ Appends the INSERT INTO clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                                | Description                                                                      |
-| ---------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| ![Public method] | INSERT_INTO(SqlInterpolatedStringHandler&lt;SqlClause.INSERT_INTO>) | Appends the INSERT INTO clause using the provided interpolated string *handler*. |
-| ![Public method] | [INSERT_INTO(String)][2]                                            | Appends the INSERT INTO clause using the provided *text*.                        |
+|                  | Name                                                                    | Description                                                                      |
+| ---------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| ![Public method] | **INSERT_INTO(SqlInterpolatedStringHandler&lt;SqlClause.INSERT_INTO>)** | Appends the INSERT INTO clause using the provided interpolated string *handler*. |
+| ![Public method] | [INSERT_INTO(String)][2]                                                | Appends the INSERT INTO clause using the provided *text*.                        |
 
 
 Syntax

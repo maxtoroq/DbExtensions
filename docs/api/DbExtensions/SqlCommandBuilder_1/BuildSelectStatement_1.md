@@ -8,10 +8,10 @@ Creates and returns a SELECT query for the current table that includes the SELEC
 Overloads
 ---------
 
-|                  | Name                         | Description                                                                                                                                                        |
-| ---------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method] | [BuildSelectStatement()][2]  | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses.                                                                |
-| ![Public method] | BuildSelectStatement(String) | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses. All column names are qualified with the provided *tableAlias*. |
+|                  | Name                             | Description                                                                                                                                                        |
+| ---------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ![Public method] | [BuildSelectStatement()][2]      | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses.                                                                |
+| ![Public method] | **BuildSelectStatement(String)** | Creates and returns a SELECT query for the current table that includes the SELECT and FROM clauses. All column names are qualified with the provided *tableAlias*. |
 
 
 Syntax

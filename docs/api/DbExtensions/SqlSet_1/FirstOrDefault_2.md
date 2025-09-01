@@ -12,7 +12,7 @@ Overloads
 | ---------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | ![Public method] | [FirstOrDefault()][2]                   | Returns the first element of the set, or a default value if the set contains no elements.                       |
 | ![Public method] | [FirstOrDefault(SqlFragmentHandler)][3] | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
-| ![Public method] | FirstOrDefault(String)                  | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
+| ![Public method] | **FirstOrDefault(String)**              | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
 
 
 Syntax

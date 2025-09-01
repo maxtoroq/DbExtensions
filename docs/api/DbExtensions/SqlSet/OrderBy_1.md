@@ -11,7 +11,7 @@ Overloads
 |                  | Name                             | Description                                                  |
 | ---------------- | -------------------------------- | ------------------------------------------------------------ |
 | ![Public method] | [OrderBy(SqlFragmentHandler)][2] | Sorts the elements of the set according to the *columnList*. |
-| ![Public method] | OrderBy(String)                  | Sorts the elements of the set according to the *columnList*. |
+| ![Public method] | **OrderBy(String)**              | Sorts the elements of the set according to the *columnList*. |
 
 
 Syntax

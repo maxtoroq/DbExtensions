@@ -8,10 +8,10 @@ Casts the current [SqlTable][1] to the generic [SqlTable&lt;TEntity>][2] instanc
 Overloads
 ---------
 
-|                  | Name               | Description                                                                        |
-| ---------------- | ------------------ | ---------------------------------------------------------------------------------- |
-| ![Public method] | [Cast(Type)][4]    | Casts the elements of the set to the specified type.                               |
-| ![Public method] | Cast&lt;TEntity>() | Casts the current [SqlTable][1] to the generic [SqlTable&lt;TEntity>][2] instance. |
+|                  | Name                   | Description                                                                        |
+| ---------------- | ---------------------- | ---------------------------------------------------------------------------------- |
+| ![Public method] | [Cast(Type)][4]        | Casts the elements of the set to the specified type.                               |
+| ![Public method] | **Cast&lt;TEntity>()** | Casts the current [SqlTable][1] to the generic [SqlTable&lt;TEntity>][2] instance. |
 
 
 Syntax

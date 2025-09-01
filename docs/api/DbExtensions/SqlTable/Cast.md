@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                    | Description                                                                        |
 | ---------------- | ----------------------- | ---------------------------------------------------------------------------------- |
-| ![Public method] | Cast(Type)              | Casts the elements of the set to the specified type.                               |
+| ![Public method] | **Cast(Type)**          | Casts the elements of the set to the specified type.                               |
 | ![Public method] | [Cast&lt;TEntity>()][2] | Casts the current [SqlTable][3] to the generic [SqlTable&lt;TEntity>][4] instance. |
 
 

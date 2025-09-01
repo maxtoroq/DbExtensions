@@ -8,11 +8,11 @@ Appends the WHERE clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                    | Description                                                                                                                                                    |
-| ---------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [WHERE()][2]                                            | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | WHERE(SqlInterpolatedStringHandler&lt;SqlClause.WHERE>) | Appends the WHERE clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [WHERE(String)][4]                                      | Appends the WHERE clause using the provided *text*.                                                                                                            |
+|                  | Name                                                        | Description                                                                                                                                                    |
+| ---------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [WHERE()][2]                                                | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
+| ![Public method] | **WHERE(SqlInterpolatedStringHandler&lt;SqlClause.WHERE>)** | Appends the WHERE clause using the provided interpolated string *handler*.                                                                                     |
+| ![Public method] | [WHERE(String)][4]                                          | Appends the WHERE clause using the provided *text*.                                                                                                            |
 
 
 Syntax

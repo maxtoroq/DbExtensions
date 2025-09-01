@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                                                       | Description                                                                                                                                                   |
 | ---------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | FROM()                                                     | Sets FROM as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
+| ![Public method] | **FROM()**                                                 | Sets FROM as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
 | ![Public method] | [FROM(SqlInterpolatedStringHandler&lt;SqlClause.FROM>)][3] | Appends the FROM clause using the provided interpolated string *handler*.                                                                                     |
 | ![Public method] | [FROM(String)][4]                                          | Appends the FROM clause using the provided *text*.                                                                                                            |
 | ![Public method] | [FROM(SqlBuilder, String)][5]                              | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                            |

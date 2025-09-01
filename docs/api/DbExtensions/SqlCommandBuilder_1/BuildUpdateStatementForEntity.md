@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                                                | Description                                                       |
 | ---------------- | --------------------------------------------------- | ----------------------------------------------------------------- |
-| ![Public method] | BuildUpdateStatementForEntity(TEntity)              | Creates and returns an UPDATE command for the specified *entity*. |
+| ![Public method] | **BuildUpdateStatementForEntity(TEntity)**          | Creates and returns an UPDATE command for the specified *entity*. |
 | ![Public method] | [BuildUpdateStatementForEntity(TEntity, Object)][2] | Creates and returns an UPDATE command for the specified *entity*. |
 
 

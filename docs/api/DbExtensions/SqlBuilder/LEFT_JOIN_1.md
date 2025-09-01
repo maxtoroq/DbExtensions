@@ -8,11 +8,11 @@ Appends the LEFT JOIN clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                            | Description                                                                                                                                                        |
-| ---------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method] | [LEFT_JOIN()][2]                                                | Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | LEFT_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.LEFT_JOIN>) | Appends the LEFT JOIN clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [LEFT_JOIN(String)][4]                                          | Appends the LEFT JOIN clause using the provided *text*.                                                                                                            |
+|                  | Name                                                                | Description                                                                                                                                                        |
+| ---------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ![Public method] | [LEFT_JOIN()][2]                                                    | Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
+| ![Public method] | **LEFT_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.LEFT_JOIN>)** | Appends the LEFT JOIN clause using the provided interpolated string *handler*.                                                                                     |
+| ![Public method] | [LEFT_JOIN(String)][4]                                              | Appends the LEFT JOIN clause using the provided *text*.                                                                                                            |
 
 
 Syntax

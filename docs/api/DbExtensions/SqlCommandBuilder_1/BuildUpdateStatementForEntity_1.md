@@ -8,10 +8,10 @@ Creates and returns an UPDATE command for the specified *entity*.
 Overloads
 ---------
 
-|                  | Name                                           | Description                                                       |
-| ---------------- | ---------------------------------------------- | ----------------------------------------------------------------- |
-| ![Public method] | [BuildUpdateStatementForEntity(TEntity)][2]    | Creates and returns an UPDATE command for the specified *entity*. |
-| ![Public method] | BuildUpdateStatementForEntity(TEntity, Object) | Creates and returns an UPDATE command for the specified *entity*. |
+|                  | Name                                               | Description                                                       |
+| ---------------- | -------------------------------------------------- | ----------------------------------------------------------------- |
+| ![Public method] | [BuildUpdateStatementForEntity(TEntity)][2]        | Creates and returns an UPDATE command for the specified *entity*. |
+| ![Public method] | **BuildUpdateStatementForEntity(TEntity, Object)** | Creates and returns an UPDATE command for the specified *entity*. |
 
 
 Syntax

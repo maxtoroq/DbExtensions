@@ -8,10 +8,10 @@ Appends the SET clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                | Description                                                              |
-| ---------------- | --------------------------------------------------- | ------------------------------------------------------------------------ |
-| ![Public method] | SET(SqlInterpolatedStringHandler&lt;SqlClause.SET>) | Appends the SET clause using the provided interpolated string *handler*. |
-| ![Public method] | [SET(String)][2]                                    | Appends the SET clause using the provided *text*.                        |
+|                  | Name                                                    | Description                                                              |
+| ---------------- | ------------------------------------------------------- | ------------------------------------------------------------------------ |
+| ![Public method] | **SET(SqlInterpolatedStringHandler&lt;SqlClause.SET>)** | Appends the SET clause using the provided interpolated string *handler*. |
+| ![Public method] | [SET(String)][2]                                        | Appends the SET clause using the provided *text*.                        |
 
 
 Syntax

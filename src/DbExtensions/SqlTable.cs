@@ -105,7 +105,7 @@ partial class Database {
 
    /// <inheritdoc cref="SqlTable.Add(Object)"/>
    /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Add(entity)</c>.</remarks>
-   /// <seealso cref="SqlTable.Add(Object)"/>
+   /// <seealso cref="SqlTable.Add(Object)" qualifyHint="true"/>
 
    public void
    Add(object entity) {
@@ -119,7 +119,7 @@ partial class Database {
    /// <inheritdoc cref="SqlSet&lt;TEntity>.Find(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
    /// <typeparam name="TEntity">The type of the entity.</typeparam>
    /// <remarks>This method is a shortcut for <c>db.Table&lt;TEntity>().Find(id)</c>.</remarks>
-   /// <seealso cref="SqlSet&lt;TEntity>.Find(Object)"/>
+   /// <seealso cref="SqlSet&lt;TEntity>.Find(Object)" qualifyHint="true"/>
 
    public TEntity
    Find<TEntity>(object id) where TEntity : class =>
@@ -128,7 +128,7 @@ partial class Database {
    /// <inheritdoc cref="SqlSet.Find(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
    /// <param name="entityType">The type of the entity.</param>
    /// <remarks>This method is a shortcut for <c>db.Table(entityType).Find(id)</c>.</remarks>
-   /// <seealso cref="SqlSet.Find(Object)"/>
+   /// <seealso cref="SqlSet.Find(Object)" qualifyHint="true"/>
 
    public object
    Find(Type entityType, object id) {
@@ -141,7 +141,7 @@ partial class Database {
 
    /// <inheritdoc cref="SqlSet.Contains(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
    /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Contains(entity)</c>.</remarks>
-   /// <seealso cref="SqlSet.Contains(Object)"/>
+   /// <seealso cref="SqlSet.Contains(Object)" qualifyHint="true"/>
 
    public bool
    Contains(object entity) {
@@ -155,7 +155,7 @@ partial class Database {
    /// <inheritdoc cref="SqlSet.ContainsKey(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
    /// <typeparam name="TEntity">The type of the entity.</typeparam>
    /// <remarks>This method is a shortcut for <c>db.Table&lt;TEntity>().ContainsKey(id)</c>.</remarks>
-   /// <seealso cref="SqlSet.ContainsKey(Object)"/>
+   /// <seealso cref="SqlSet.ContainsKey(Object)" qualifyHint="true"/>
 
    public bool
    ContainsKey<TEntity>(object id) where TEntity : class =>
@@ -164,7 +164,7 @@ partial class Database {
    /// <inheritdoc cref="SqlSet.ContainsKey(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
    /// <param name="entityType">The type of the entity.</param>
    /// <remarks>This method is a shortcut for <c>db.Table(entityType).ContainsKey(id)</c>.</remarks>
-   /// <seealso cref="SqlSet.ContainsKey(Object)"/>
+   /// <seealso cref="SqlSet.ContainsKey(Object)" qualifyHint="true"/>
 
    public bool
    ContainsKey(Type entityType, object id) {
@@ -177,7 +177,7 @@ partial class Database {
 
    /// <inheritdoc cref="SqlTable.Update(Object)"/>
    /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Update(entity)</c>.</remarks>
-   /// <seealso cref="SqlTable.Update(Object)"/>
+   /// <seealso cref="SqlTable.Update(Object)" qualifyHint="true"/>
 
    public void
    Update(object entity) {
@@ -190,7 +190,7 @@ partial class Database {
 
    /// <inheritdoc cref="SqlTable.Update(Object, Object)"/>
    /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Update(entity, originalId)</c>.</remarks>
-   /// <seealso cref="SqlTable.Update(Object, Object)"/>
+   /// <seealso cref="SqlTable.Update(Object, Object)" qualifyHint="true"/>
 
    public void
    Update(object entity, object originalId) {
@@ -203,7 +203,7 @@ partial class Database {
 
    /// <inheritdoc cref="SqlTable.Remove(Object)"/>
    /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Remove(entity)</c>.</remarks>
-   /// <seealso cref="SqlTable.Remove(Object)"/>
+   /// <seealso cref="SqlTable.Remove(Object)" qualifyHint="true"/>
 
    public void
    Remove(object entity) {
@@ -216,7 +216,7 @@ partial class Database {
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveKey(Object)"/>
    /// <remarks>This method is a shortcut for <c>db.Table&lt;TEntity>().RemoveKey(id)</c>.</remarks>
-   /// <seealso cref="SqlTable&lt;TEntity>.RemoveKey(Object)"/>
+   /// <seealso cref="SqlTable&lt;TEntity>.RemoveKey(Object)" qualifyHint="true"/>
 
    public void
    RemoveKey<TEntity>(object id) where TEntity : class =>
@@ -225,7 +225,7 @@ partial class Database {
    /// <inheritdoc cref="SqlTable.RemoveKey(Object)"/>
    /// <param name="entityType">The type of the entity.</param>
    /// <remarks>This method is a shortcut for <c>db.Table(entityType).RemoveKey(id)</c>.</remarks>
-   /// <seealso cref="SqlTable.RemoveKey(Object)"/>
+   /// <seealso cref="SqlTable.RemoveKey(Object)" qualifyHint="true"/>
 
    public void
    RemoveKey(Type entityType, object id) {

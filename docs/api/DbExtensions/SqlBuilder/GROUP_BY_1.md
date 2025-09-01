@@ -8,11 +8,11 @@ Appends the GROUP BY clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                          | Description                                                                                                                                                       |
-| ---------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [GROUP_BY()][2]                                               | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | GROUP_BY(SqlInterpolatedStringHandler&lt;SqlClause.GROUP_BY>) | Appends the GROUP BY clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [GROUP_BY(String)][4]                                         | Appends the GROUP BY clause using the provided *text*.                                                                                                            |
+|                  | Name                                                              | Description                                                                                                                                                       |
+| ---------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [GROUP_BY()][2]                                                   | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
+| ![Public method] | **GROUP_BY(SqlInterpolatedStringHandler&lt;SqlClause.GROUP_BY>)** | Appends the GROUP BY clause using the provided interpolated string *handler*.                                                                                     |
+| ![Public method] | [GROUP_BY(String)][4]                                             | Appends the GROUP BY clause using the provided *text*.                                                                                                            |
 
 
 Syntax

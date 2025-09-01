@@ -11,7 +11,7 @@ Overloads
 |                  | Name                                  | Description                                                                                                              |
 | ---------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | ![Public method] | [AddRange(IEnumerable&lt;Object>)][2] | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
-| ![Public method] | AddRange(Object[])                    | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| ![Public method] | **AddRange(Object[])**                | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
 
 
 Syntax

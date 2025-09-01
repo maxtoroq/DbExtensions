@@ -8,10 +8,10 @@ Executes an UPDATE command for the specified *entity*.
 Overloads
 ---------
 
-|                  | Name                   | Description                                            |
-| ---------------- | ---------------------- | ------------------------------------------------------ |
-| ![Public method] | [Update(Object)][2]    | Executes an UPDATE command for the specified *entity*. |
-| ![Public method] | Update(Object, Object) | Executes an UPDATE command for the specified *entity*. |
+|                  | Name                       | Description                                            |
+| ---------------- | -------------------------- | ------------------------------------------------------ |
+| ![Public method] | [Update(Object)][2]        | Executes an UPDATE command for the specified *entity*. |
+| ![Public method] | **Update(Object, Object)** | Executes an UPDATE command for the specified *entity*. |
 
 
 Syntax

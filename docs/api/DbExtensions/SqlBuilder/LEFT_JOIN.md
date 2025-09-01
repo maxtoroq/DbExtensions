@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                                                                 | Description                                                                                                                                                        |
 | ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method] | LEFT_JOIN()                                                          | Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
+| ![Public method] | **LEFT_JOIN()**                                                      | Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
 | ![Public method] | [LEFT_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.LEFT_JOIN>)][3] | Appends the LEFT JOIN clause using the provided interpolated string *handler*.                                                                                     |
 | ![Public method] | [LEFT_JOIN(String)][4]                                               | Appends the LEFT JOIN clause using the provided *text*.                                                                                                            |
 

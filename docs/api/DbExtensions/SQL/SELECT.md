@@ -8,10 +8,10 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT cl
 Overloads
 ---------
 
-|                                  | Name                                                      | Description                                                                                                                            |
-| -------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | SELECT(SqlInterpolatedStringHandler&lt;SqlClause.SELECT>) | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | [SELECT(String)][3]                                       | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *text*.                        |
+|                                  | Name                                                          | Description                                                                                                                            |
+| -------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | **SELECT(SqlInterpolatedStringHandler&lt;SqlClause.SELECT>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided string interpolated *handler*. |
+| ![Public method]![Static member] | [SELECT(String)][3]                                           | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *text*.                        |
 
 
 Syntax

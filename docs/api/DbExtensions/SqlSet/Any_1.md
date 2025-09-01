@@ -8,11 +8,11 @@ Determines whether any element of the set satisfies a condition.
 Overloads
 ---------
 
-|                  | Name                    | Description                                                      |
-| ---------------- | ----------------------- | ---------------------------------------------------------------- |
-| ![Public method] | [Any()][2]              | Determines whether the set contains any elements.                |
-| ![Public method] | Any(SqlFragmentHandler) | Determines whether any element of the set satisfies a condition. |
-| ![Public method] | [Any(String)][3]        | Determines whether any element of the set satisfies a condition. |
+|                  | Name                        | Description                                                      |
+| ---------------- | --------------------------- | ---------------------------------------------------------------- |
+| ![Public method] | [Any()][2]                  | Determines whether the set contains any elements.                |
+| ![Public method] | **Any(SqlFragmentHandler)** | Determines whether any element of the set satisfies a condition. |
+| ![Public method] | [Any(String)][3]            | Determines whether any element of the set satisfies a condition. |
 
 
 Syntax

@@ -10,7 +10,7 @@ Overloads
 
 |                            | Name                                      | Description                                                                                 |
 | -------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------- |
-| ![Public Extension Method] | GetStringOrNull(IDataRecord, Int32)       | Gets the value of the specified column as a [String][1], or null (Nothing in Visual Basic). |
+| ![Public Extension Method] | **GetStringOrNull(IDataRecord, Int32)**   | Gets the value of the specified column as a [String][1], or null (Nothing in Visual Basic). |
 | ![Public Extension Method] | [GetStringOrNull(IDataRecord, String)][3] | Gets the value of the specified column as a [String][1], or null (Nothing in Visual Basic). |
 
 

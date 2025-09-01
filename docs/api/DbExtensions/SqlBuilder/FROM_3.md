@@ -14,7 +14,7 @@ Overloads
 | ![Public method] | [FROM(SqlInterpolatedStringHandler&lt;SqlClause.FROM>)][4] | Appends the FROM clause using the provided interpolated string *handler*.                                                                                     |
 | ![Public method] | [FROM(String)][5]                                          | Appends the FROM clause using the provided *text*.                                                                                                            |
 | ![Public method] | [FROM(SqlBuilder, String)][6]                              | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                            |
-| ![Public method] | FROM(SqlSet, String)                                       | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                            |
+| ![Public method] | **FROM(SqlSet, String)**                                   | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                            |
 
 
 Syntax

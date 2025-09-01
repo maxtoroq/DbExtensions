@@ -8,10 +8,10 @@ Executes UPDATE commands for the specified *entities*.
 Overloads
 ---------
 
-|                  | Name                                 | Description                                            |
-| ---------------- | ------------------------------------ | ------------------------------------------------------ |
-| ![Public method] | UpdateRange(IEnumerable&lt;TEntity>) | Executes UPDATE commands for the specified *entities*. |
-| ![Public method] | [UpdateRange(TEntity[])][2]          | Executes UPDATE commands for the specified *entities*. |
+|                  | Name                                     | Description                                            |
+| ---------------- | ---------------------------------------- | ------------------------------------------------------ |
+| ![Public method] | **UpdateRange(IEnumerable&lt;TEntity>)** | Executes UPDATE commands for the specified *entities*. |
+| ![Public method] | [UpdateRange(TEntity[])][2]              | Executes UPDATE commands for the specified *entities*. |
 
 
 Syntax

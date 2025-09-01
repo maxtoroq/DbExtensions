@@ -11,7 +11,7 @@ Overloads
 |                  | Name                                     | Description                                            |
 | ---------------- | ---------------------------------------- | ------------------------------------------------------ |
 | ![Public method] | [RemoveRange(IEnumerable&lt;Object>)][2] | Executes DELETE commands for the specified *entities*. |
-| ![Public method] | RemoveRange(Object[])                    | Executes DELETE commands for the specified *entities*. |
+| ![Public method] | **RemoveRange(Object[])**                | Executes DELETE commands for the specified *entities*. |
 
 
 Syntax

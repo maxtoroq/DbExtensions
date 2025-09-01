@@ -12,7 +12,7 @@ Overloads
 | ---------------- | ------------------------------ | -------------------------------------------------------------------------- |
 | ![Public method] | [First()][2]                   | Returns the first element of the set.                                      |
 | ![Public method] | [First(SqlFragmentHandler)][3] | Returns the first element in the set that satisfies a specified condition. |
-| ![Public method] | First(String)                  | Returns the first element in the set that satisfies a specified condition. |
+| ![Public method] | **First(String)**              | Returns the first element in the set that satisfies a specified condition. |
 
 
 Syntax

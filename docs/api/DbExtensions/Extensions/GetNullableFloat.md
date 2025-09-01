@@ -10,7 +10,7 @@ Overloads
 
 |                            | Name                                       | Description                                                                     |
 | -------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------- |
-| ![Public Extension Method] | GetNullableFloat(IDataRecord, Int32)       | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Single][2]. |
+| ![Public Extension Method] | **GetNullableFloat(IDataRecord, Int32)**   | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Single][2]. |
 | ![Public Extension Method] | [GetNullableFloat(IDataRecord, String)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Single][2]. |
 
 

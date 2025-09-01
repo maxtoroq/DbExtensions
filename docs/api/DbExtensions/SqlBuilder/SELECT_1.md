@@ -8,11 +8,11 @@ Appends the SELECT clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                      | Description                                                                                                                                                     |
-| ---------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [SELECT()][2]                                             | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | SELECT(SqlInterpolatedStringHandler&lt;SqlClause.SELECT>) | Appends the SELECT clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [SELECT(String)][4]                                       | Appends the SELECT clause using the provided *text*.                                                                                                            |
+|                  | Name                                                          | Description                                                                                                                                                     |
+| ---------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [SELECT()][2]                                                 | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
+| ![Public method] | **SELECT(SqlInterpolatedStringHandler&lt;SqlClause.SELECT>)** | Appends the SELECT clause using the provided interpolated string *handler*.                                                                                     |
+| ![Public method] | [SELECT(String)][4]                                           | Appends the SELECT clause using the provided *text*.                                                                                                            |
 
 
 Syntax

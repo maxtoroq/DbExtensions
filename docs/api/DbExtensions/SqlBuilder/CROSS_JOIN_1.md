@@ -8,11 +8,11 @@ Appends the CROSS JOIN clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                              | Description                                                                                                                                                         |
-| ---------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [CROSS_JOIN()][2]                                                 | Sets CROSS JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | CROSS_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.CROSS_JOIN>) | Appends the CROSS JOIN clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [CROSS_JOIN(String)][4]                                           | Appends the CROSS JOIN clause using the provided *text*.                                                                                                            |
+|                  | Name                                                                  | Description                                                                                                                                                         |
+| ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [CROSS_JOIN()][2]                                                     | Sets CROSS JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
+| ![Public method] | **CROSS_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.CROSS_JOIN>)** | Appends the CROSS JOIN clause using the provided interpolated string *handler*.                                                                                     |
+| ![Public method] | [CROSS_JOIN(String)][4]                                               | Appends the CROSS JOIN clause using the provided *text*.                                                                                                            |
 
 
 Syntax

@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                     | Description                                                               |
 | ---------------- | ------------------------ | ------------------------------------------------------------------------- |
-| ![Public method] | Table(Type)              | Returns the [SqlTable][1] instance for the specified *entityType*.        |
+| ![Public method] | **Table(Type)**          | Returns the [SqlTable][1] instance for the specified *entityType*.        |
 | ![Public method] | [Table&lt;TEntity>()][3] | Returns the [SqlTable&lt;TEntity>][4] instance for the specified TEntity. |
 
 

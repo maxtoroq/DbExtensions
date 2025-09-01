@@ -11,7 +11,7 @@ Overloads
 |                  | Name                                                     | Description                                                              |
 | ---------------- | -------------------------------------------------------- | ------------------------------------------------------------------------ |
 | ![Public method] | [SET(SqlInterpolatedStringHandler&lt;SqlClause.SET>)][2] | Appends the SET clause using the provided interpolated string *handler*. |
-| ![Public method] | SET(String)                                              | Appends the SET clause using the provided *text*.                        |
+| ![Public method] | **SET(String)**                                          | Appends the SET clause using the provided *text*.                        |
 
 
 Syntax

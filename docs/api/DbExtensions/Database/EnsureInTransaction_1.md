@@ -8,10 +8,10 @@ Returns a virtual transaction that you can use to ensure a code block is always 
 Overloads
 ---------
 
-|                  | Name                                | Description                                                                                                                 |
-| ---------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [EnsureInTransaction()][2]          | Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing. |
-| ![Public method] | EnsureInTransaction(IsolationLevel) | Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing. |
+|                  | Name                                    | Description                                                                                                                 |
+| ---------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [EnsureInTransaction()][2]              | Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing. |
+| ![Public method] | **EnsureInTransaction(IsolationLevel)** | Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing. |
 
 
 Syntax

@@ -15,7 +15,7 @@ Overloads
 | ![Public method] | [Select(SqlFragmentHandler, Type)][4]                                      | Projects each element of the set into a new form. |
 | ![Public method] | [Select(String, Type)][5]                                                  | Projects each element of the set into a new form. |
 | ![Public method] | [Select&lt;TResult>(SqlFragmentHandler)][6]                                | Projects each element of the set into a new form. |
-| ![Public method] | Select&lt;TResult>(String)                                                 | Projects each element of the set into a new form. |
+| ![Public method] | **Select&lt;TResult>(String)**                                             | Projects each element of the set into a new form. |
 | ![Public method] | [Select&lt;TResult>(SqlFragmentHandler, Func&lt;IDataRecord, TResult>)][7] | Projects each element of the set into a new form. |
 | ![Public method] | [Select&lt;TResult>(String, Func&lt;IDataRecord, TResult>)][8]             | Projects each element of the set into a new form. |
 

@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name                                                           | Description                                                                                                                                                     |
 | ---------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | HAVING()                                                       | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
+| ![Public method] | **HAVING()**                                                   | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
 | ![Public method] | [HAVING(SqlInterpolatedStringHandler&lt;SqlClause.HAVING>)][3] | Appends the HAVING clause using the provided interpolated string *handler*.                                                                                     |
 | ![Public method] | [HAVING(String)][4]                                            | Appends the HAVING clause using the provided *text*.                                                                                                            |
 

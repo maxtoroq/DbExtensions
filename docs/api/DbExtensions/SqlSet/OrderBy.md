@@ -8,10 +8,10 @@ Sorts the elements of the set according to the *columnList*.
 Overloads
 ---------
 
-|                  | Name                        | Description                                                  |
-| ---------------- | --------------------------- | ------------------------------------------------------------ |
-| ![Public method] | OrderBy(SqlFragmentHandler) | Sorts the elements of the set according to the *columnList*. |
-| ![Public method] | [OrderBy(String)][2]        | Sorts the elements of the set according to the *columnList*. |
+|                  | Name                            | Description                                                  |
+| ---------------- | ------------------------------- | ------------------------------------------------------------ |
+| ![Public method] | **OrderBy(SqlFragmentHandler)** | Sorts the elements of the set according to the *columnList*. |
+| ![Public method] | [OrderBy(String)][2]            | Sorts the elements of the set according to the *columnList*. |
 
 
 Syntax

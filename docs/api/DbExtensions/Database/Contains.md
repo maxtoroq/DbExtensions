@@ -33,7 +33,7 @@ See Also
 #### Reference
 [Database Class][4]  
 [DbExtensions Namespace][1]  
-[Contains(Object)][5]  
+[SqlSet.Contains(Object)][5]  
 
 [1]: ../README.md
 [2]: https://learn.microsoft.com/dotnet/api/system.object

@@ -11,7 +11,7 @@ Overloads
 |                  | Name                                     | Description                                            |
 | ---------------- | ---------------------------------------- | ------------------------------------------------------ |
 | ![Public method] | [UpdateRange(IEnumerable&lt;Object>)][2] | Executes UPDATE commands for the specified *entities*. |
-| ![Public method] | UpdateRange(Object[])                    | Executes UPDATE commands for the specified *entities*. |
+| ![Public method] | **UpdateRange(Object[])**                | Executes UPDATE commands for the specified *entities*. |
 
 
 Syntax

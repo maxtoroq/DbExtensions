@@ -8,10 +8,10 @@ Sets the clause identified by TClause as the next SQL clause.
 Overloads
 ---------
 
-|                  | Name                          | Description                                                   |
-| ---------------- | ----------------------------- | ------------------------------------------------------------- |
-| ![Public method] | [SetNextClause(SqlClause)][2] | Sets *clause* as the next SQL clause.                         |
-| ![Public method] | SetNextClause&lt;TClause>()   | Sets the clause identified by TClause as the next SQL clause. |
+|                  | Name                            | Description                                                   |
+| ---------------- | ------------------------------- | ------------------------------------------------------------- |
+| ![Public method] | [SetNextClause(SqlClause)][2]   | Sets *clause* as the next SQL clause.                         |
+| ![Public method] | **SetNextClause&lt;TClause>()** | Sets the clause identified by TClause as the next SQL clause. |
 
 
 Syntax

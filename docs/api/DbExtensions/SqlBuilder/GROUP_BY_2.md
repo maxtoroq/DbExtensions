@@ -12,7 +12,7 @@ Overloads
 | ---------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ![Public method] | [GROUP_BY()][2]                                                    | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
 | ![Public method] | [GROUP_BY(SqlInterpolatedStringHandler&lt;SqlClause.GROUP_BY>)][4] | Appends the GROUP BY clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | GROUP_BY(String)                                                   | Appends the GROUP BY clause using the provided *text*.                                                                                                            |
+| ![Public method] | **GROUP_BY(String)**                                               | Appends the GROUP BY clause using the provided *text*.                                                                                                            |
 
 
 Syntax

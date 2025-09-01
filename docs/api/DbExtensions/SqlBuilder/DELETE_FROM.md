@@ -8,10 +8,10 @@ Appends the DELETE FROM clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                                | Description                                                                      |
-| ---------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| ![Public method] | DELETE_FROM(SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>) | Appends the DELETE FROM clause using the provided interpolated string *handler*. |
-| ![Public method] | [DELETE_FROM(String)][2]                                            | Appends the DELETE FROM clause using the provided *text*.                        |
+|                  | Name                                                                    | Description                                                                      |
+| ---------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| ![Public method] | **DELETE_FROM(SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>)** | Appends the DELETE FROM clause using the provided interpolated string *handler*. |
+| ![Public method] | [DELETE_FROM(String)][2]                                                | Appends the DELETE FROM clause using the provided *text*.                        |
 
 
 Syntax

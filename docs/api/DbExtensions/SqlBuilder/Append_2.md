@@ -12,7 +12,7 @@ Overloads
 | ---------------- | -------------------------------------------- | ----------------------------------------------------------- |
 | ![Public method] | [Append(AppendInterpolatedStringHandler)][2] | Appends the interpolated string *handler* to this instance. |
 | ![Public method] | [Append(SqlBuilder)][3]                      | Appends *sql* to this instance.                             |
-| ![Public method] | Append(String)                               | Appends *text* to this instance.                            |
+| ![Public method] | **Append(String)**                           | Appends *text* to this instance.                            |
 
 
 Syntax

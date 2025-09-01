@@ -14,7 +14,7 @@ Overloads
 | ![Public method] | [AppendClause(SqlClause, String)][3]                                    | Appends the SQL *clause* and the provided *text*.                                           |
 | ![Public method] | [AppendClause&lt;TClause>()][4]                                         | Appends the SQL clause identified by TClause.                                               |
 | ![Public method] | [AppendClause&lt;TClause>(SqlInterpolatedStringHandler&lt;TClause>)][5] | Appends the SQL clause identified by TClause and appends the interpolated string *handler*. |
-| ![Public method] | AppendClause&lt;TClause>(String)                                        | Appends the SQL clause identified by TClause and appends the *text*.                        |
+| ![Public method] | **AppendClause&lt;TClause>(String)**                                    | Appends the SQL clause identified by TClause and appends the *text*.                        |
 
 
 Syntax

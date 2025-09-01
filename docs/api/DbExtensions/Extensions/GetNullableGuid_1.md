@@ -11,7 +11,7 @@ Overloads
 |                            | Name                                     | Description                                                                   |
 | -------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------- |
 | ![Public Extension Method] | [GetNullableGuid(IDataRecord, Int32)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Guid][2]. |
-| ![Public Extension Method] | GetNullableGuid(IDataRecord, String)     | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Guid][2]. |
+| ![Public Extension Method] | **GetNullableGuid(IDataRecord, String)** | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Guid][2]. |
 
 
 Syntax

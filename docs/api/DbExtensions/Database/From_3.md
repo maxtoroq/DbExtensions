@@ -13,7 +13,7 @@ Overloads
 | ![Public method] | [From(SqlBuilder)][3]                                            | Creates and returns a new [SqlSet][1] using the provided defining query.                        |
 | ![Public method] | [From(String)][4]                                                | Creates and returns a new [SqlSet][1] using the provided table name.                            |
 | ![Public method] | [From(SqlBuilder, Type)][5]                                      | Creates and returns a new [SqlSet][1] using the provided defining query.                        |
-| ![Public method] | From(String, Type)                                               | Creates and returns a new [SqlSet][1] using the provided table name.                            |
+| ![Public method] | **From(String, Type)**                                           | Creates and returns a new [SqlSet][1] using the provided table name.                            |
 | ![Public method] | [From&lt;TResult>(SqlBuilder)][6]                                | Creates and returns a new [SqlSet&lt;TResult>][7] using the provided defining query.            |
 | ![Public method] | [From&lt;TResult>(String)][8]                                    | Creates and returns a new [SqlSet&lt;TResult>][7] using the provided table name.                |
 | ![Public method] | [From&lt;TResult>(SqlBuilder, Func&lt;IDataRecord, TResult>)][9] | Creates and returns a new [SqlSet&lt;TResult>][7] using the provided defining query and mapper. |

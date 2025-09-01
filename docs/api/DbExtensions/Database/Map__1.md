@@ -12,7 +12,7 @@ Overloads
 | ---------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | ![Public method] | [Map(SqlBuilder)][2]                                            | Maps the results of the *query* to dynamic objects. The query is deferred-executed.                                         |
 | ![Public method] | [Map(SqlBuilder, Type)][3]                                      | Maps the results of the *query* to objects of type specified by the *resultType* parameter. The query is deferred-executed. |
-| ![Public method] | Map&lt;TResult>(SqlBuilder)                                     | Maps the results of the *query* to TResult objects. The query is deferred-executed.                                         |
+| ![Public method] | **Map&lt;TResult>(SqlBuilder)**                                 | Maps the results of the *query* to TResult objects. The query is deferred-executed.                                         |
 | ![Public method] | [Map&lt;TResult>(SqlBuilder, Func&lt;IDataRecord, TResult>)][4] | Maps the results of the *query* to TResult objects, using the provided *mapper* delegate.                                   |
 
 

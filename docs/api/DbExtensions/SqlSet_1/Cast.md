@@ -10,7 +10,7 @@ Overloads
 
 |                  | Name              | Description                                          |
 | ---------------- | ----------------- | ---------------------------------------------------- |
-| ![Public method] | Cast(Type)        | Casts the elements of the set to the specified type. |
+| ![Public method] | **Cast(Type)**    | Casts the elements of the set to the specified type. |
 | ![Public method] | [Cast&lt;T>()][2] | Casts the elements of the set to the specified type. |
 
 

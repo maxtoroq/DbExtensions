@@ -8,10 +8,10 @@ Determines whether all elements of the set satisfy a condition.
 Overloads
 ---------
 
-|                  | Name                    | Description                                                     |
-| ---------------- | ----------------------- | --------------------------------------------------------------- |
-| ![Public method] | All(SqlFragmentHandler) | Determines whether all elements of the set satisfy a condition. |
-| ![Public method] | [All(String)][2]        | Determines whether all elements of the set satisfy a condition. |
+|                  | Name                        | Description                                                     |
+| ---------------- | --------------------------- | --------------------------------------------------------------- |
+| ![Public method] | **All(SqlFragmentHandler)** | Determines whether all elements of the set satisfy a condition. |
+| ![Public method] | [All(String)][2]            | Determines whether all elements of the set satisfy a condition. |
 
 
 Syntax

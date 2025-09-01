@@ -8,10 +8,10 @@ Casts the elements of the set to the specified type.
 Overloads
 ---------
 
-|                  | Name            | Description                                          |
-| ---------------- | --------------- | ---------------------------------------------------- |
-| ![Public method] | [Cast(Type)][2] | Casts the elements of the set to the specified type. |
-| ![Public method] | Cast&lt;T>()    | Casts the elements of the set to the specified type. |
+|                  | Name             | Description                                          |
+| ---------------- | ---------------- | ---------------------------------------------------- |
+| ![Public method] | [Cast(Type)][2]  | Casts the elements of the set to the specified type. |
+| ![Public method] | **Cast&lt;T>()** | Casts the elements of the set to the specified type. |
 
 
 Syntax

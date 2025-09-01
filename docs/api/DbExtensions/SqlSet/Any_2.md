@@ -12,7 +12,7 @@ Overloads
 | ---------------- | ---------------------------- | ---------------------------------------------------------------- |
 | ![Public method] | [Any()][2]                   | Determines whether the set contains any elements.                |
 | ![Public method] | [Any(SqlFragmentHandler)][3] | Determines whether any element of the set satisfies a condition. |
-| ![Public method] | Any(String)                  | Determines whether any element of the set satisfies a condition. |
+| ![Public method] | **Any(String)**              | Determines whether any element of the set satisfies a condition. |
 
 
 Syntax
