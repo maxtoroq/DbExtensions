@@ -110,7 +110,7 @@ public sealed class ColumnAttribute : Attribute, IDataAttribute {
    UpdateCheck { get; set; } = UpdateCheck.Always;
 
    /// <summary>
-   /// Gets or sets the <see cref="AutoSync"/> enumeration.
+   /// Gets or sets the <see cref="DbExtensions.AutoSync"/> enumeration.
    /// </summary>
 
    public AutoSync

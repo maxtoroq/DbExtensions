@@ -1,8 +1,8 @@
 ColumnAttribute.AutoSync Property
 =================================
-Gets or sets the **AutoSync** enumeration.
+Gets or sets the [AutoSync][1] enumeration.
   
-**Namespace:** [DbExtensions][1]  
+**Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
 
 Syntax
@@ -13,15 +13,15 @@ public AutoSync AutoSync { get; set; }
 ```
 
 #### Property Value
-[AutoSync][2]
+[AutoSync][1]
 
 See Also
 --------
 
 #### Reference
 [ColumnAttribute Class][3]  
-[DbExtensions Namespace][1]  
+[DbExtensions Namespace][2]  
 
-[1]: ../README.md
-[2]: ../AutoSync/README.md
+[1]: ../AutoSync/README.md
+[2]: ../README.md
 [3]: README.md
