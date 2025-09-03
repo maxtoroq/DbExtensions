@@ -5,7 +5,7 @@ DbExtensions is a data-access framework with a strong focus on **query compositi
 See the [project home][1] and the [documentation][2] for more information.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/qw9hoyur7yvlpi8y/branch/v6?svg=true)](https://ci.appveyor.com/project/maxtoroq/dbextensions/branch/v6)
-[![NuGet](https://img.shields.io/nuget/vpre/DbExtensions.svg?label=DbExtensions)](https://www.nuget.org/packages/DbExtensions)
+![Tests](https://img.shields.io/appveyor/tests/maxtoroq/DbExtensions/v6)
 
 [1]: https://maxtoroq.github.io/DbExtensions/
 [2]: https://maxtoroq.github.io/DbExtensions/docs/
