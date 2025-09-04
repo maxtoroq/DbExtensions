@@ -898,36 +898,7 @@ public class ChangeConflictException : Exception {
       : base(message) { }
 }
 
-sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDisposable {
-
-   IEnumerator<TResult>
-   _enumerator;
-
-   public
-   MappingEnumerable(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter logger = null) {
-      _enumerator = new Enumerator(command, mapper, logger);
-   }
-
-   public IEnumerator<TResult>
-   GetEnumerator() {
-
-      var e = _enumerator
-         ?? throw new InvalidOperationException("Cannot enumerate more than once.");
-
-      _enumerator = null;
-
-      return e;
-   }
-
-   IEnumerator
-   IEnumerable.GetEnumerator() =>
-      GetEnumerator();
-
-   public void
-   Dispose() =>
-      _enumerator?.Dispose();
-
-   sealed class Enumerator : IEnumerator<TResult>, IEnumerator, IDisposable {
+sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IEnumerator<TResult>, IEnumerator, IDisposable {
 
       readonly IDbCommand
       _command;
@@ -935,23 +906,29 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDi
       readonly Func<IDataRecord, TResult>
       _mapper;
 
-      readonly TextWriter
+      readonly TextWriter?
       _logger;
 
       readonly bool
       _prevStateWasClosed;
 
-      IDataReader
+   bool
+   _used;
+
+      IDataReader?
       _reader;
 
+      TResult
+      _current;
+
       public TResult
-      Current { get; private set; }
+      Current => _current;
 
       object
       IEnumerator.Current => Current;
 
       public
-      Enumerator(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter logger) {
+      MappingEnumerable(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter? logger) {
 
          ArgumentNullException.ThrowIfNull(command);
          ArgumentNullException.ThrowIfNull(mapper);
@@ -965,6 +942,21 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDi
          _mapper = mapper;
          _logger = logger;
       }
+
+   public IEnumerator<TResult>
+   GetEnumerator() {
+
+      if (!_used) {
+         _used = true;
+         return this;
+      }
+
+      throw new InvalidOperationException("Cannot enumerate more than once.");
+   }
+
+   IEnumerator
+   IEnumerable.GetEnumerator() =>
+      GetEnumerator();
 
       public bool
       MoveNext() {
@@ -996,7 +988,7 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDi
 
          try {
             if (_reader.Read()) {
-               this.Current = _mapper.Invoke(_reader);
+               _current = _mapper.Invoke(_reader);
                return true;
             }
 
@@ -1043,5 +1035,4 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IDi
             }
          }
       }
-   }
 }
