@@ -900,48 +900,48 @@ public class ChangeConflictException : Exception {
 
 sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IEnumerator<TResult>, IEnumerator, IDisposable {
 
-      readonly IDbCommand
-      _command;
+   readonly IDbCommand
+   _command;
 
-      readonly Func<IDataRecord, TResult>
-      _mapper;
+   readonly Func<IDataRecord, TResult>
+   _mapper;
 
-      readonly TextWriter?
-      _logger;
+   readonly TextWriter?
+   _logger;
 
-      readonly bool
-      _prevStateWasClosed;
+   readonly bool
+   _prevStateWasClosed;
 
    bool
    _used;
 
-      IDataReader?
-      _reader;
+   IDataReader?
+   _reader;
 
-      TResult
-      _current;
+   TResult
+   _current;
 
-      public TResult
-      Current => _current;
+   public TResult
+   Current => _current;
 
-      object
-      IEnumerator.Current => Current;
+   object
+   IEnumerator.Current => Current;
 
-      public
-      MappingEnumerable(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter? logger) {
+   public
+   MappingEnumerable(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter? logger) {
 
-         ArgumentNullException.ThrowIfNull(command);
-         ArgumentNullException.ThrowIfNull(mapper);
+      ArgumentNullException.ThrowIfNull(command);
+      ArgumentNullException.ThrowIfNull(mapper);
 
-         var conn = command.Connection
-            ?? throw new ArgumentException("command.Connection cannot be null", nameof(command));
+      var conn = command.Connection
+         ?? throw new ArgumentException("command.Connection cannot be null", nameof(command));
 
-         _prevStateWasClosed = (conn.State == ConnectionState.Closed);
+      _prevStateWasClosed = (conn.State == ConnectionState.Closed);
 
-         _command = command;
-         _mapper = mapper;
-         _logger = logger;
-      }
+      _command = command;
+      _mapper = mapper;
+      _logger = logger;
+   }
 
    public IEnumerator<TResult>
    GetEnumerator() {
@@ -958,81 +958,81 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IEn
    IEnumerable.GetEnumerator() =>
       GetEnumerator();
 
-      public bool
-      MoveNext() {
+   public bool
+   MoveNext() {
 
-         if (_reader is null) {
+      if (_reader is null) {
 
-            PossiblyOpenConnection();
-
-            try {
-               _reader = _command.ExecuteReader();
-               Database.Trace(_command, _logger, _reader.RecordsAffected);
-
-            } catch {
-
-               try {
-                  Database.Trace(_command, _logger, error: true);
-               } finally {
-                  PossiblyCloseConnection();
-               }
-
-               throw;
-            }
-         }
-
-         if (_reader.IsClosed) {
-            // see MappingContext.LoadMany()
-            return false;
-         }
+         PossiblyOpenConnection();
 
          try {
-            if (_reader.Read()) {
-               _current = _mapper.Invoke(_reader);
-               return true;
-            }
+            _reader = _command.ExecuteReader();
+            Database.Trace(_command, _logger, _reader.RecordsAffected);
 
          } catch {
 
-            PossiblyCloseConnection();
+            try {
+               Database.Trace(_command, _logger, error: true);
+            } finally {
+               PossiblyCloseConnection();
+            }
+
             throw;
          }
+      }
 
-         PossiblyCloseConnection();
-
+      if (_reader.IsClosed) {
+         // see MappingContext.LoadMany()
          return false;
       }
 
-      public void
-      Reset() =>
-         throw new NotSupportedException();
+      try {
+         if (_reader.Read()) {
+            _current = _mapper.Invoke(_reader);
+            return true;
+         }
 
-      public void
-      Dispose() {
-
-         _reader?.Dispose();
+      } catch {
 
          PossiblyCloseConnection();
+         throw;
       }
 
-      void
-      PossiblyOpenConnection() {
+      PossiblyCloseConnection();
 
-         if (_prevStateWasClosed) {
-            _command.Connection.Open();
+      return false;
+   }
+
+   public void
+   Reset() =>
+      throw new NotSupportedException();
+
+   public void
+   Dispose() {
+
+      _reader?.Dispose();
+
+      PossiblyCloseConnection();
+   }
+
+   void
+   PossiblyOpenConnection() {
+
+      if (_prevStateWasClosed) {
+         _command.Connection.Open();
+      }
+   }
+
+   void
+   PossiblyCloseConnection() {
+
+      if (_prevStateWasClosed) {
+
+         var conn = _command.Connection;
+
+         if (conn.State != ConnectionState.Closed) {
+            conn.Close();
          }
       }
-
-      void
-      PossiblyCloseConnection() {
-
-         if (_prevStateWasClosed) {
-
-            var conn = _command.Connection;
-
-            if (conn.State != ConnectionState.Closed) {
-               conn.Close();
-            }
-         }
-      }
+   }
 }
