@@ -61,36 +61,6 @@ public partial class Database : IDisposable {
    Configuration { get; private set; }
 
    /// <summary>
-   /// Initializes a new instance of the <see cref="Database"/> class.
-   /// </summary>
-
-   public
-   Database() {
-
-      this.Connection = CreateConnection(null, null, out var providerInvariantName);
-      _disposeConn = true;
-
-      Initialize(providerInvariantName);
-   }
-
-   /// <summary>
-   /// Initializes a new instance of the <see cref="Database"/> class
-   /// using the provided connection string.
-   /// </summary>
-   /// <param name="connectionString">The connection string.</param>
-
-   public
-   Database(string connectionString) {
-
-      ArgumentNullException.ThrowIfNull(connectionString);
-
-      this.Connection = CreateConnection(connectionString, null, out var providerInvariantName);
-      _disposeConn = true;
-
-      Initialize(providerInvariantName);
-   }
-
-   /// <summary>
    /// Initializes a new instance of the <see cref="Database"/> class
    /// using the provided connection string and provider's invariant name.
    /// </summary>
@@ -101,11 +71,19 @@ public partial class Database : IDisposable {
    Database(string connectionString, string providerInvariantName) {
 
       ArgumentNullException.ThrowIfNull(connectionString);
+      ArgumentNullException.ThrowIfNull(providerInvariantName);
 
-      this.Connection = CreateConnection(connectionString, providerInvariantName, out var finalProviderInvariantName);
+      var factory = DbProviderFactories.GetFactory(providerInvariantName);
+
+      var connection = factory.CreateConnection()
+         ?? throw new ArgumentException("The provider factory CreateConnection() returned null.", nameof(providerInvariantName));
+
+      connection.ConnectionString = connectionString;
+
+      this.Connection = connection;
       _disposeConn = true;
 
-      Initialize(finalProviderInvariantName);
+      Initialize(providerInvariantName);
    }
 
    /// <summary>
@@ -124,7 +102,7 @@ public partial class Database : IDisposable {
       Initialize(null);
    }
 
-   internal
+   internal // Used by tests
    Database(IDbConnection connection, string providerInvariantName) {
 
       ArgumentNullException.ThrowIfNull(connection);
@@ -135,9 +113,10 @@ public partial class Database : IDisposable {
    }
 
    void
-   Initialize(string providerInvariantName) {
+   Initialize(string? providerInvariantName) {
 
-      providerInvariantName ??= this.Connection.GetType().Namespace;
+      providerInvariantName ??= this.Connection.GetType().Namespace
+         ?? throw new InvalidOperationException("Couldn't determine provider invariant name.");
 
       this.Configuration = new DatabaseConfiguration(
          providerInvariantName
@@ -149,42 +128,12 @@ public partial class Database : IDisposable {
    partial void
    Initialize2(string providerInvariantName);
 
-   static IDbConnection
-   CreateConnection(string connectionString, string callerProviderInvariantName, out string providerInvariantName) {
-
-      connectionString ??= DatabaseConfiguration.DefaultConnectionString;
-      providerInvariantName = callerProviderInvariantName ?? DatabaseConfiguration.DefaultProviderInvariantName;
-
-      if (connectionString is null) {
-         throw new InvalidOperationException($"A default connection string name must be specified in the {typeof(DatabaseConfiguration).FullName}.{nameof(DatabaseConfiguration.DefaultConnectionString)} property.");
-      }
-
-      if (providerInvariantName is null) {
-         throw new InvalidOperationException($"A default provider name must be specified in the {typeof(DatabaseConfiguration).FullName}.{nameof(DatabaseConfiguration.DefaultProviderInvariantName)} property.");
-      }
-
-      var factory = GetProviderFactory(providerInvariantName);
-
-      var connection = factory.CreateConnection();
-      connection.ConnectionString = connectionString;
-
-      return connection;
-   }
-
-   static DbProviderFactory
-   GetProviderFactory(string providerInvariantName) {
-
-      ArgumentNullException.ThrowIfNull(providerInvariantName);
-
-      return DbProviderFactories.GetFactory(providerInvariantName);
-   }
-
-   DbCommandBuilder
+   DbCommandBuilder?
    CreateCommandBuilder(string providerInvariantName) {
 
       var factory = ((this.Connection is DbConnection dbConn) ?
          DbProviderFactories.GetFactory(dbConn) : null)
-         ?? GetProviderFactory(providerInvariantName);
+         ?? DbProviderFactories.GetFactory(providerInvariantName);
 
       return factory.CreateCommandBuilder();
    }
@@ -733,20 +682,6 @@ public sealed partial class DatabaseConfiguration {
    _getParameterPlaceholder = (Func<DbCommandBuilder, int, string>)
       Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, int, string>), typeof(DbCommandBuilder)
          .GetMethod("GetParameterPlaceholder", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [typeof(int)], null));
-
-   /// <summary>
-   /// The connection string to use as default.
-   /// </summary>
-
-   public static string
-   DefaultConnectionString { get; set; }
-
-   /// <summary>
-   /// The provider's invariant name to use as default.
-   /// </summary>
-
-   public static string
-   DefaultProviderInvariantName { get; set; }
 
    /// <summary>
    /// Gets or sets the beginning character or characters to use when specifying database objects (for example, tables or columns)
