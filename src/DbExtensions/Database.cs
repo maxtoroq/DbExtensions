@@ -18,9 +18,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -29,6 +29,8 @@ using IsolationLevel = System.Data.IsolationLevel;
 namespace DbExtensions;
 
 using InterpolatedString = InterpolatedStringHandlerArgumentAttribute;
+
+#nullable enable
 
 /// <summary>
 /// Provides simple data access using <see cref="SqlSet"/>, <see cref="SqlBuilder"/> and <see cref="SqlTable&lt;TEntity>"/>.
@@ -50,7 +52,7 @@ public partial class Database : IDisposable {
    /// Gets or sets a transaction to associate with new commands.
    /// </summary>		
 
-   public IDbTransaction
+   public IDbTransaction?
    Transaction { get; set; }
 
    /// <summary>
@@ -67,6 +69,7 @@ public partial class Database : IDisposable {
    /// <param name="connectionString">The connection string.</param>
    /// <param name="providerInvariantName">The provider's invariant name.</param>
 
+#pragma warning disable CS8618
    public
    Database(string connectionString, string providerInvariantName) {
 
@@ -111,6 +114,7 @@ public partial class Database : IDisposable {
 
       Initialize(providerInvariantName);
    }
+#pragma warning restore CS8618
 
    void
    Initialize(string? providerInvariantName) {
@@ -119,8 +123,8 @@ public partial class Database : IDisposable {
          ?? throw new InvalidOperationException("Couldn't determine provider invariant name.");
 
       this.Configuration = new DatabaseConfiguration(
-         providerInvariantName
-         , () => CreateCommandBuilder(providerInvariantName));
+         providerInvariantName,
+         () => CreateCommandBuilder(providerInvariantName));
 
       Initialize2(providerInvariantName);
    }
@@ -249,7 +253,7 @@ public partial class Database : IDisposable {
             if (tx is not null
                && affectedRecords != affect) {
 
-               string errorMessage = null;
+               var errorMessage = default(string);
 
                if (exact) {
 
@@ -286,8 +290,13 @@ public partial class Database : IDisposable {
    /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
 
    public IEnumerable<TResult>
-   Map<TResult>([InterpolatedString] SqlBuilder query, Func<IDataRecord, TResult> mapper) =>
-      new MappingEnumerable<TResult>(CreateCommand(query), mapper, this.Configuration.Log);
+   Map<TResult>([InterpolatedString] SqlBuilder query, Func<IDataRecord, TResult> mapper) {
+
+      ArgumentNullException.ThrowIfNull(query);
+      ArgumentNullException.ThrowIfNull(mapper);
+
+      return new MappingEnumerable<TResult>(CreateCommand(query), mapper, this.Configuration.Log);
+   }
 
    /// <summary>
    /// Gets the identity value of the last inserted record.
@@ -298,7 +307,7 @@ public partial class Database : IDisposable {
    /// command and this one, or else you might get the wrong value.
    /// </remarks>
 
-   public virtual object
+   public virtual object?
    LastInsertId() {
 
       var sql = this.Configuration.LastInsertIdCommand;
@@ -413,8 +422,6 @@ public partial class Database : IDisposable {
    bool
    IsQuotedIdentifier(string identifier) {
 
-      ArgumentNullException.ThrowIfNull(identifier);
-
       var quotePrefix = this.Configuration.QuotePrefix;
       var quoteSuffix = this.Configuration.QuoteSuffix;
 
@@ -431,9 +438,7 @@ public partial class Database : IDisposable {
       Trace(command, this.Configuration.Log, affectedRecords, error);
 
    internal static void
-   Trace(IDbCommand command, TextWriter log, int? affectedRecords = null, bool error = false) {
-
-      ArgumentNullException.ThrowIfNull(command);
+   Trace(IDbCommand command, TextWriter? log, int? affectedRecords = null, bool error = false) {
 
       if (log is not null) {
 
@@ -495,7 +500,7 @@ public partial class Database : IDisposable {
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    public override bool
-   Equals(object obj) => base.Equals(obj);
+   Equals(object? obj) => base.Equals(obj);
 
    /// <exclude/>
 
@@ -512,7 +517,7 @@ public partial class Database : IDisposable {
    /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public override string
+   public override string?
    ToString() => base.ToString();
 
    sealed class ConnectionHolder : IDisposable {
@@ -526,8 +531,6 @@ public partial class Database : IDisposable {
       public
       ConnectionHolder(IDbConnection conn) {
 
-         ArgumentNullException.ThrowIfNull(conn);
-
          _conn = conn;
          _prevStateWasClosed = (conn.State == ConnectionState.Closed);
 
@@ -539,8 +542,7 @@ public partial class Database : IDisposable {
       public void
       Dispose() {
 
-         if (_conn is not null
-            && _prevStateWasClosed
+         if (_prevStateWasClosed
             && _conn.State != ConnectionState.Closed) {
 
             _conn.Close();
@@ -556,13 +558,10 @@ public partial class Database : IDisposable {
       readonly IDisposable
       _connHolder;
 
-      readonly IDbTransaction
-      _txAdo;
+      readonly IDbTransaction?
+      _tx;
 
-      readonly bool
-      _txBeganHere;
-
-      public IDbConnection
+      public IDbConnection?
       Connection { get; }
 
       public IsolationLevel
@@ -571,24 +570,17 @@ public partial class Database : IDisposable {
       public
       WrappedTransaction(Database db, IsolationLevel isolationLevel) {
 
-         ArgumentNullException.ThrowIfNull(db);
-
          _db = db;
-         _txAdo = _db.Transaction;
+         _connHolder = _db.EnsureConnectionOpen();
 
          this.Connection = _db.Connection;
          this.IsolationLevel = isolationLevel;
 
-         _connHolder = _db.EnsureConnectionOpen();
-
          try {
 
-            if (_txAdo is null) {
-
-               _db.Transaction = _db.Connection.BeginTransaction(isolationLevel);
-               _txAdo = _db.Transaction;
+            if (_db.Transaction is null) {
+               _db.Transaction = (_tx = _db.Connection.BeginTransaction(isolationLevel));
                _db.Configuration.Log?.WriteLine("-- TRANSACTION STARTED");
-               _txBeganHere = true;
             }
 
          } catch {
@@ -601,10 +593,10 @@ public partial class Database : IDisposable {
       public void
       Commit() {
 
-         if (_txBeganHere) {
+         if (_tx is not null) {
 
             try {
-               _txAdo.Commit();
+               _tx.Commit();
                _db.Configuration.Log?.WriteLine("-- TRANSACTION COMMITED");
 
             } finally {
@@ -616,10 +608,10 @@ public partial class Database : IDisposable {
       public void
       Rollback() {
 
-         if (_txBeganHere) {
+         if (_tx is not null) {
 
             try {
-               _txAdo.Rollback();
+               _tx.Rollback();
                _db.Configuration.Log?.WriteLine("-- TRANSACTION ROLLED BACK");
 
             } finally {
@@ -636,9 +628,9 @@ public partial class Database : IDisposable {
 
          try {
 
-            if (_txBeganHere) {
+            if (_tx is not null) {
                try {
-                  _txAdo.Dispose();
+                  _tx.Dispose();
                } finally {
                   RemoveTxFromDatabase();
                }
@@ -652,9 +644,9 @@ public partial class Database : IDisposable {
       void
       RemoveTxFromDatabase() {
 
-         if (_db.Transaction is not null
-            && Object.ReferenceEquals(_db.Transaction, _txAdo)) {
+         Debug.Assert(_tx is not null);
 
+         if (Object.ReferenceEquals(_tx, _db.Transaction)) {
             _db.Transaction = null;
          }
       }
@@ -671,17 +663,17 @@ public sealed partial class DatabaseConfiguration {
    static readonly Func<DbCommandBuilder, int, string>
    _getParameterNameI = (Func<DbCommandBuilder, int, string>)
       Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, int, string>), typeof(DbCommandBuilder)
-         .GetMethod("GetParameterName", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [typeof(int)], null));
+         .GetMethod("GetParameterName", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [typeof(int)], null)!);
 
    static readonly Func<DbCommandBuilder, string, string>
    _getParameterNameS = (Func<DbCommandBuilder, string, string>)
       Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, string, string>), typeof(DbCommandBuilder)
-         .GetMethod("GetParameterName", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [typeof(string)], null));
+         .GetMethod("GetParameterName", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [typeof(string)], null)!);
 
    static readonly Func<DbCommandBuilder, int, string>
    _getParameterPlaceholder = (Func<DbCommandBuilder, int, string>)
       Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, int, string>), typeof(DbCommandBuilder)
-         .GetMethod("GetParameterPlaceholder", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [typeof(int)], null));
+         .GetMethod("GetParameterPlaceholder", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [typeof(int)], null)!);
 
    /// <summary>
    /// Gets or sets the beginning character or characters to use when specifying database objects (for example, tables or columns)
@@ -724,7 +716,7 @@ public sealed partial class DatabaseConfiguration {
    /// Specifies the destination to write the SQL query or command. 
    /// </summary>
 
-   public TextWriter
+   public TextWriter?
    Log { get; set; }
 
    /// <summary>
@@ -738,9 +730,7 @@ public sealed partial class DatabaseConfiguration {
    SqlDialect { get; set; }
 
    internal
-   DatabaseConfiguration(string providerInvariantName, Func<DbCommandBuilder> cbFn = null) {
-
-      ArgumentNullException.ThrowIfNull(providerInvariantName);
+   DatabaseConfiguration(string providerInvariantName, Func<DbCommandBuilder?>? cbFn = null) {
 
       switch (providerInvariantName) {
          case "System.Data.SqlClient":
@@ -860,16 +850,15 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IEn
    Current => _current;
 
    object
-   IEnumerator.Current => Current;
+   IEnumerator.Current => Current!;
 
+#pragma warning disable CS8618
    public
    MappingEnumerable(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter? logger) {
-
-      ArgumentNullException.ThrowIfNull(command);
-      ArgumentNullException.ThrowIfNull(mapper);
+#pragma warning restore CS8618
 
       var conn = command.Connection
-         ?? throw new ArgumentException("command.Connection cannot be null", nameof(command));
+         ?? throw new ArgumentException("command.Connection cannot be null.", nameof(command));
 
       _prevStateWasClosed = (conn.State == ConnectionState.Closed);
 
@@ -954,20 +943,17 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IEn
    PossiblyOpenConnection() {
 
       if (_prevStateWasClosed) {
-         _command.Connection.Open();
+         _command.Connection?.Open();
       }
    }
 
    void
    PossiblyCloseConnection() {
 
-      if (_prevStateWasClosed) {
+      if (_prevStateWasClosed
+         && _command.Connection is { State: not ConnectionState.Closed } conn) {
 
-         var conn = _command.Connection;
-
-         if (conn.State != ConnectionState.Closed) {
-            conn.Close();
-         }
+         conn.Close();
       }
    }
 }
