@@ -734,6 +734,7 @@ public sealed partial class DatabaseConfiguration {
 
       switch (providerInvariantName) {
          case "System.Data.SqlClient":
+            this.LastInsertIdCommand = "SELECT SCOPE_IDENTITY()";
             this.SqlDialect = SqlDialect.TSql;
             break;
 
