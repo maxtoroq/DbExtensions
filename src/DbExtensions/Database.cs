@@ -754,21 +754,9 @@ public sealed partial class DatabaseConfiguration {
             break;
 
          default:
-
-            if (providerInvariantName == "System.Data.SqlServerCe"
-               || providerInvariantName.StartsWith("System.Data.SqlServerCe.")) {
-
-               this.SqlDialect = SqlDialect.TSql;
-
-            } else {
-
-               var cb = cbFn?.Invoke();
-
-               if (cb is not null) {
-                  Initialize(cb);
-               }
+            if (cbFn?.Invoke() is { } cb) {
+               Initialize(cb);
             }
-
             break;
       }
    }
