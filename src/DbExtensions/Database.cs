@@ -710,7 +710,7 @@ public sealed partial class DatabaseConfiguration {
    /// </summary>
 
    public string
-   LastInsertIdCommand { get; set; } = "SELECT @@identity";
+   LastInsertIdCommand { get; set; } = "SELECT @@IDENTITY";
 
    /// <summary>
    /// Specifies the destination to write the SQL query or command. 
