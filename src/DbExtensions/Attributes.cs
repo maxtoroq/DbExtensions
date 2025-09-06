@@ -19,10 +19,12 @@ using System;
 
 namespace DbExtensions;
 
+#nullable enable
+
 [AttributeUsage(AttributeTargets.Class)]
 sealed class DatabaseAttribute : Attribute {
 
-   public string
+   public string?
    Name { get; set; }
 }
 
@@ -37,7 +39,7 @@ public sealed class TableAttribute : Attribute {
    /// Gets or sets the name of the table or view.
    /// </summary>
 
-   public string
+   public string?
    Name { get; set; }
 }
 
@@ -58,31 +60,31 @@ public sealed class ColumnAttribute : Attribute, IDataAttribute {
    /// Gets or sets the name of a column.
    /// </summary>
 
-   public string
+   public string?
    Name { get; set; }
 
    /// <summary>
    /// Gets or sets a private storage field to hold the value from a column.
    /// </summary>
 
-   string
+   string?
    IDataAttribute.Storage { get; set; }
 
    /// <summary>
    /// Gets or sets the type of the database column.
    /// </summary>
 
-   internal string
+   internal string?
    DbType { get; set; }
 
    /// <summary>
    /// Gets or sets the type to convert this member to before sending to the database.
    /// </summary>
 
-   public Type
+   public Type?
    ConvertTo { get; set; }
 
-   internal string
+   internal string?
    Expression { get; set; }
 
    /// <summary>
@@ -187,28 +189,28 @@ public sealed class AssociationAttribute : Attribute, IDataAttribute {
    /// Gets or sets the name of a constraint.
    /// </summary>
 
-   public string
+   public string?
    Name { get; set; }
 
    /// <summary>
    /// Gets or sets a private storage field to hold the value for the association property.
    /// </summary>
 
-   string
+   string?
    IDataAttribute.Storage { get; set; }
 
    /// <summary>
    /// Gets or sets members of this entity class to represent the key values on this side of the association.
    /// </summary>
 
-   public string
+   public string?
    ThisKey { get; set; }
 
    /// <summary>
    /// Gets or sets one or more members of the target entity class as key values on the other side of the association.
    /// </summary>
 
-   public string
+   public string?
    OtherKey { get; set; }
 
    /// <summary>
@@ -226,7 +228,7 @@ public sealed class AssociationAttribute : Attribute, IDataAttribute {
    internal bool
    IsForeignKey { get; set; }
 
-   internal string
+   internal string?
    DeleteRule { get; set; }
 
    internal bool
@@ -238,9 +240,9 @@ public sealed class AssociationAttribute : Attribute, IDataAttribute {
 /// For example, 
 /// 
 ///     [Table(Name = "People")]
-///     [InheritanceMapping(Code = "P", Type = typeof(Person), IsDefault=true)]
-///     [InheritanceMapping(Code = "C", Type = typeof(Customer))]
-///     [InheritanceMapping(Code = "E", Type = typeof(Employee))]
+///     [InheritanceMapping("P", typeof(Person), IsDefault=true)]
+///     [InheritanceMapping("C", typeof(Customer))]
+///     [InheritanceMapping("E", typeof(Employee))]
 ///     class Person { ... }
 ///     
 /// </summary>
@@ -253,14 +255,14 @@ sealed class InheritanceMappingAttribute : Attribute {
    /// </summary>
 
    public object
-   Code { get; set; }
+   Code { get; }
 
    /// <summary>
    /// Type to instantiate when Key is matched.
    /// </summary>
 
    public Type
-   Type { get; set; }
+   Type { get; }
 
    /// <summary>
    /// If discriminator value in store column is unrecognized then instantiate this type.
@@ -268,14 +270,24 @@ sealed class InheritanceMappingAttribute : Attribute {
 
    public bool
    IsDefault { get; set; }
+
+   public
+   InheritanceMappingAttribute(object code, Type type) {
+
+      ArgumentNullException.ThrowIfNull(code);
+      ArgumentNullException.ThrowIfNull(type);
+
+      this.Code = code;
+      this.Type = type;
+   }
 }
 
 interface IDataAttribute {
 
-   string
+   string?
    Name { get; set; }
 
-   string
+   string?
    Storage { get; set; }
 }
 
@@ -291,16 +303,16 @@ public sealed class ComplexPropertyAttribute : Attribute {
    /// The default is the property name.
    /// </summary>
 
-   public string
+   public string?
    Name { get; set; }
 
    /// <summary>
    /// The separator to use between the base name and the complex property's columns.
    /// The default is null, which means the separator is taken from <see cref="DatabaseConfiguration.DefaultComplexPropertySeparator"/>.
-   /// To use no separator and override the default configuration, use an empty <see cref="string"/>.
+   /// To use no separator and override the default configuration, use an empty <see cref="String"/>.
    /// </summary>
 
-   public string
+   public string?
    Separator { get; set; }
 
    /// <summary>

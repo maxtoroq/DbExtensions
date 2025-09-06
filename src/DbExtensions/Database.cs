@@ -109,6 +109,7 @@ public partial class Database : IDisposable {
    Database(IDbConnection connection, string providerInvariantName) {
 
       ArgumentNullException.ThrowIfNull(connection);
+      ArgumentNullException.ThrowIfNull(providerInvariantName);
 
       this.Connection = connection;
 
@@ -729,8 +730,10 @@ public sealed partial class DatabaseConfiguration {
    internal SqlDialect
    SqlDialect { get; set; }
 
+#pragma warning disable CS8618
    internal
    DatabaseConfiguration(string providerInvariantName, Func<DbCommandBuilder?>? cbFn = null) {
+#pragma warning restore CS8618
 
       switch (providerInvariantName) {
          case "System.Data.SqlClient":

@@ -26,12 +26,13 @@ namespace DbExtensions;
 
 using Metadata;
 
+#nullable enable
+
 partial class Database {
 
    static readonly MethodInfo
    _tableMethod = typeof(Database)
-      .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-      .Single(m => m.Name == nameof(Table) && m.ContainsGenericParameters && m.GetParameters().Length == 0);
+      .GetMethod(nameof(Table), 1, Type.EmptyTypes)!;
 
    static readonly MappingSource
    _mappingSource = new AttributeMappingSource();
@@ -82,19 +83,23 @@ partial class Database {
    /// <returns>The <see cref="SqlTable"/> instance for <paramref name="entityType"/>.</returns>
 
    public SqlTable
-   Table(Type entityType) =>
-      Table(this.Configuration.GetMetaType(entityType));
+   Table(Type entityType) {
+
+      ArgumentNullException.ThrowIfNull(entityType);
+
+      return Table(this.Configuration.GetMetaType(entityType));
+   }
 
    internal SqlTable
    Table(MetaType metaType) {
 
-      SqlTable table;
+      SqlTable? table;
 
       if (!_tables.TryGetValue(metaType, out table)) {
 
          var genericTable = (ISqlTable)_tableMethod
             .MakeGenericMethod(metaType.Type)
-            .Invoke(this, null);
+            .Invoke(this, null)!;
 
          table = new SqlTable(this, metaType, genericTable);
          _tables.Add(metaType, table);
@@ -108,20 +113,16 @@ partial class Database {
    /// <seealso cref="SqlTable.Add(Object)" qualifyHint="true"/>
 
    public void
-   Add(object entity) {
-
-      ArgumentNullException.ThrowIfNull(entity);
-
+   Add(object entity) =>
       Table(entity.GetType())
          .Add(entity);
-   }
 
    /// <inheritdoc cref="SqlSet&lt;TEntity>.Find(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
    /// <typeparam name="TEntity">The type of the entity.</typeparam>
    /// <remarks>This method is a shortcut for <c>db.Table&lt;TEntity>().Find(id)</c>.</remarks>
    /// <seealso cref="SqlSet&lt;TEntity>.Find(Object)" qualifyHint="true"/>
 
-   public TEntity
+   public TEntity?
    Find<TEntity>(object id) where TEntity : class =>
       Table<TEntity>().Find(id);
 
@@ -130,14 +131,10 @@ partial class Database {
    /// <remarks>This method is a shortcut for <c>db.Table(entityType).Find(id)</c>.</remarks>
    /// <seealso cref="SqlSet.Find(Object)" qualifyHint="true"/>
 
-   public object
-   Find(Type entityType, object id) {
-
-      ArgumentNullException.ThrowIfNull(entityType);
-
-      return Table(entityType)
+   public object?
+   Find(Type entityType, object id) =>
+      Table(entityType)
          .Find(id);
-   }
 
    /// <inheritdoc cref="SqlSet.Contains(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
    /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Contains(entity)</c>.</remarks>
@@ -193,7 +190,7 @@ partial class Database {
    /// <seealso cref="SqlTable.Update(Object, Object)" qualifyHint="true"/>
 
    public void
-   Update(object entity, object originalId) {
+   Update(object entity, object? originalId) {
 
       ArgumentNullException.ThrowIfNull(entity);
 
@@ -228,20 +225,16 @@ partial class Database {
    /// <seealso cref="SqlTable.RemoveKey(Object)" qualifyHint="true"/>
 
    public void
-   RemoveKey(Type entityType, object id) {
-
-      ArgumentNullException.ThrowIfNull(entityType);
-
+   RemoveKey(Type entityType, object id) =>
       Table(entityType)
          .RemoveKey(id);
-   }
 
    internal string
    BuildPredicateFragment(
          object entity,
          IEnumerable<MetaDataMember> predicateMembers,
-         ICollection<object> parametersBuffer,
-         Func<MetaDataMember, object> getValueFn = null) {
+         ICollection<object?> parametersBuffer,
+         Func<MetaDataMember, object>? getValueFn = null) {
 
       var predicateValues = predicateMembers.Select(m =>
          new KeyValuePair<string, object>(
@@ -254,7 +247,7 @@ partial class Database {
    }
 
    internal string
-   BuildPredicateFragment(IEnumerable<KeyValuePair<string, object>> predicateValues, ICollection<object> parametersBuffer) {
+   BuildPredicateFragment(IEnumerable<KeyValuePair<string, object>> predicateValues, ICollection<object?> parametersBuffer) {
 
       //if (predicateValues is null || predicateValues.Count == 0) throw new ArgumentException("predicateValues cannot be empty", nameof(predicateValues));
       ArgumentNullException.ThrowIfNull(parametersBuffer);
@@ -284,7 +277,7 @@ partial class Database {
    }
 
    internal string
-   SelectBody(MetaType metaType, IEnumerable<MetaDataMember> selectMembers, string tableAlias) {
+   SelectBody(MetaType metaType, IEnumerable<MetaDataMember>? selectMembers, string? tableAlias) {
 
       selectMembers ??= metaType.PersistentDataMembers.Where(m => !m.IsAssociation);
 
@@ -323,7 +316,7 @@ partial class Database {
    }
 
    internal string
-   FromBody(MetaType metaType, string tableAlias) {
+   FromBody(MetaType metaType, string? tableAlias) {
 
       if (metaType.Table is null) throw new InvalidOperationException("metaType.Table cannot be null.");
 
@@ -374,7 +367,7 @@ partial class DatabaseConfiguration {
    /// is specified on <see cref="ComplexPropertyAttribute.Separator"/>.
    /// </summary>
 
-   public string
+   public string?
    DefaultComplexPropertySeparator { get; set; }
 
    internal MetaTableConfiguration
@@ -498,7 +491,7 @@ public sealed class SqlTable : SqlSet, ISqlTable {
    /// <inheritdoc cref="SqlTable&lt;TEntity>.Update(TEntity, Object)"/>
 
    public void
-   Update(object entity, object originalId) =>
+   Update(object entity, object? originalId) =>
       _table.Update(entity, originalId);
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.UpdateRange(IEnumerable&lt;TEntity>)"/>
@@ -597,7 +590,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       var idMember = _metaType.DBGeneratedIdentityMember;
 
       var syncMembers = _metaType.PersistentDataMembers
-         .Where(m => (m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
+         .Where(m => m.AutoSync is AutoSync.Always or AutoSync.OnInsert
             && m != idMember)
          .ToArray();
 
@@ -745,7 +738,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       }
 
       var syncMembers = _metaType.PersistentDataMembers
-         .Where(m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnInsert)
+         .Where(m => m.AutoSync is AutoSync.Always or AutoSync.OnInsert)
          .ToArray();
 
       var batch = syncMembers.Length == 0
@@ -753,7 +746,9 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       if (batch) {
 
-         var batchInsert = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildInsertStatementForEntity(e)));
+         var batchInsert = SqlBuilder.JoinSql(
+            ";" + Environment.NewLine,
+            entities.Select(e => this.CommandBuilder.BuildInsertStatementForEntity(e)));
 
          using (var tx = _db.EnsureInTransaction()) {
 
@@ -793,14 +788,14 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    /// <remarks>This overload is helpful when the entity uses an assigned primary key.</remarks>
 
    public void
-   Update(TEntity entity, object originalId) {
+   Update(TEntity entity, object? originalId) {
 
       ArgumentNullException.ThrowIfNull(entity);
 
       var updateSql = this.CommandBuilder.BuildUpdateStatementForEntity(entity, originalId);
 
       var syncMembers = _metaType.PersistentDataMembers
-         .Where(m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate)
+         .Where(m => m.AutoSync is AutoSync.Always or AutoSync.OnUpdate)
          .ToArray();
 
       using (_db.EnsureConnectionOpen()) {
@@ -851,7 +846,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       EnsureEntityType();
 
       var syncMembers = _metaType.PersistentDataMembers
-         .Where(m => m.AutoSync == AutoSync.Always || m.AutoSync == AutoSync.OnUpdate)
+         .Where(m => m.AutoSync is AutoSync.Always or AutoSync.OnUpdate)
          .ToArray();
 
       var batch = syncMembers.Length == 0
@@ -859,7 +854,9 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       if (batch) {
 
-         var batchUpdate = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildUpdateStatementForEntity(e)));
+         var batchUpdate = SqlBuilder.JoinSql(
+            ";" + Environment.NewLine,
+            entities.Select(e => this.CommandBuilder.BuildUpdateStatementForEntity(e)));
 
          _db.Execute(batchUpdate, affect: entities.Length, exact: true);
 
@@ -902,6 +899,8 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
    public void
    RemoveKey(object id) {
+
+      ArgumentNullException.ThrowIfNull(id);
 
       var deleteSql = this.CommandBuilder.BuildDeleteStatementForKey(id);
 
@@ -987,7 +986,9 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       } else if (batch) {
 
-         var batchDelete = SqlBuilder.JoinSql(";" + Environment.NewLine, entities.Select(e => this.CommandBuilder.BuildDeleteStatementForEntity(e)));
+         var batchDelete = SqlBuilder.JoinSql(
+            ";" + Environment.NewLine,
+            entities.Select(e => this.CommandBuilder.BuildDeleteStatementForEntity(e)));
 
          _db.Execute(batchDelete, affect: entities.Length, exact: usingVersion);
 
@@ -1014,7 +1015,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       Refresh(entity, null);
 
    void
-   Refresh(TEntity entity, IEnumerable<MetaDataMember> refreshMembers) {
+   Refresh(TEntity entity, IEnumerable<MetaDataMember>? refreshMembers) {
 
       ArgumentNullException.ThrowIfNull(entity);
 
@@ -1027,7 +1028,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       var entityObj = (object)entity;
 
-      _ = _db.Map<object>(query, r => {
+      _ = _db.Map<object?>(query, r => {
          mapper.PocoLoad(entityObj, r);
          return null;
 
@@ -1065,7 +1066,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       Update((TEntity)entity);
 
    void
-   ISqlTable.Update(object entity, object originalId) =>
+   ISqlTable.Update(object entity, object? originalId) =>
       Update((TEntity)entity, originalId);
 
    void
@@ -1145,7 +1146,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    /// <returns>The SELECT query for the current table.</returns>
 
    public SqlBuilder
-   BuildSelectClause(string tableAlias) =>
+   BuildSelectClause(string? tableAlias) =>
       BuildSelectClause(null, tableAlias);
 
    /// <summary>
@@ -1158,7 +1159,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    /// <returns>The SELECT query.</returns>
 
    SqlBuilder
-   BuildSelectClause(IEnumerable<MetaDataMember> selectMembers, string tableAlias) =>
+   BuildSelectClause(IEnumerable<MetaDataMember>? selectMembers, string? tableAlias) =>
       new SqlBuilder()
          .SELECT(_db.SelectBody(_metaType, selectMembers, tableAlias));
 
@@ -1170,7 +1171,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
    public SqlBuilder
    BuildSelectStatement() =>
-      BuildSelectStatement((string)null);
+      BuildSelectStatement(default(string));
 
    /// <summary>
    /// Creates and returns a SELECT query for the current table
@@ -1181,11 +1182,11 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    /// <returns>The SELECT query for the current table.</returns>
 
    public SqlBuilder
-   BuildSelectStatement(string tableAlias) =>
+   BuildSelectStatement(string? tableAlias) =>
       BuildSelectStatement(null, tableAlias);
 
    internal SqlBuilder
-   BuildSelectStatement(IEnumerable<MetaDataMember> selectMembers, string tableAlias = null) =>
+   BuildSelectStatement(IEnumerable<MetaDataMember>? selectMembers, string? tableAlias = null) =>
       BuildSelectClause(selectMembers, tableAlias)
          .FROM(_db.FromBody(_metaType, tableAlias));
 
@@ -1276,7 +1277,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    /// <remarks>This overload is helpful when the entity uses an assigned primary key.</remarks>
 
    public SqlBuilder
-   BuildUpdateStatementForEntity(TEntity entity, object originalId) {
+   BuildUpdateStatementForEntity(TEntity entity, object? originalId) {
 
       ArgumentNullException.ThrowIfNull(entity);
 
@@ -1380,6 +1381,8 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    public SqlBuilder
    BuildDeleteStatementForKey(object id) {
 
+      ArgumentNullException.ThrowIfNull(id);
+
       EnsureEntityType();
 
       if (_metaType.IdentityMembers.Count > 1) {
@@ -1411,7 +1414,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    public override bool
-   Equals(object obj) => base.Equals(obj);
+   Equals(object? obj) => base.Equals(obj);
 
    /// <exclude/>
 
@@ -1428,7 +1431,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public override string
+   public override string?
    ToString() => base.ToString();
 }
 
@@ -1489,6 +1492,8 @@ partial class SqlSet {
    public bool
    ContainsKey(object id) {
 
+      ArgumentNullException.ThrowIfNull(id);
+
       var metaType = EnsureEntityType(maxIdMembers: 1);
       var idMember = metaType.IdentityMembers[0];
 
@@ -1506,7 +1511,7 @@ partial class SqlSet {
 
       var metaType = predicateMembers[0].DeclaringType;
 
-      var predicateParams = new List<object>(predicateMembers.Length);
+      var predicateParams = new List<object?>(predicateMembers.Length);
 
       var fragment = new SqlFragment(_db.BuildPredicateFragment(predicateValues, predicateParams), predicateParams);
 
@@ -1525,7 +1530,7 @@ partial class SqlSet {
    /// </returns>
    /// <exception cref="System.InvalidOperationException">This method can only be used on sets where the result type is an annotated class.</exception>
 
-   public object
+   public object?
    Find(object id) =>
       FindImpl(id).SingleOrDefault();
 
@@ -1541,7 +1546,7 @@ partial class SqlSet {
          new(idMember.MappedName, idMember.ConvertValueForDatabase(id))
       };
 
-      var parameters = new List<object>(predicateValues.Length);
+      var parameters = new List<object?>(predicateValues.Length);
       var fragment = new SqlFragment(_db.BuildPredicateFragment(predicateValues, parameters), parameters);
 
       return Where(fragment);
@@ -1583,12 +1588,14 @@ partial class SqlSet {
          void fromAppend(SqlBuilder sql, string alias) =>
             sql.FROM(source.GetDefiningQuery(), db.QuoteIdentifier(alias));
 
-         MetaAssociation manyAssoc;
+         MetaAssociation? manyAssoc;
          int manyIndex;
 
          var query = BuildJoinedQuery(parts, metaType, source._db, selectBuild, fromAppend, out manyAssoc, out manyIndex);
 
-         var newSet = (query is null) ? source.Clone() : source.CreateSet(query);
+         var newSet = (query is null) ?
+            source.Clone()
+            : source.CreateSet(query);
 
          if (manyAssoc is not null) {
             AddManyInclude(newSet, parts, path, manyAssoc, manyIndex);
@@ -1597,11 +1604,11 @@ partial class SqlSet {
          return newSet;
       }
 
-      static SqlBuilder
+      static SqlBuilder?
       BuildJoinedQuery(
             string[] path, MetaType metaType, Database db,
             Func<string, SqlBuilder> selectBuild, Action<SqlBuilder, string> fromAppend,
-            out MetaAssociation manyAssoc, out int manyIndex) {
+            out MetaAssociation? manyAssoc, out int manyIndex) {
 
          manyAssoc = null;
          manyIndex = -1;
@@ -1717,7 +1724,7 @@ partial class SqlSet {
             void fromAppend(SqlBuilder sql, string alias) =>
                sql.FROM(db.QuoteIdentifier(metaType.Table.TableName) + " " + alias);
 
-            MetaAssociation manyInManyAssoc;
+            MetaAssociation? manyInManyAssoc;
             int manyInManyIndex;
 
             var manyQuery = BuildJoinedQuery(manyInclude, metaType, db, selectBuild, fromAppend, out manyInManyAssoc, out manyInManyIndex);
@@ -1726,7 +1733,7 @@ partial class SqlSet {
                throw new ArgumentException($"One-to-many associations can only be specified once in an include path ('{originalPath}').", nameof(path));
             }
 
-            manySource = db.From(manyQuery, metaType.Type);
+            manySource = db.From(manyQuery!, metaType.Type);
          }
 
          set.ManyIncludes ??= new Dictionary<string[], CollectionLoader>();
@@ -1743,15 +1750,14 @@ partial class SqlSet {
          var predicateValues = association.OtherKey.Select((p, i) =>
             new KeyValuePair<string, object>(p.MappedName, association.ThisKey[i].GetValueForDatabase(container)));
 
-         var parameters = new List<object>(association.OtherKey.Count);
+         var parameters = new List<object?>(association.OtherKey.Count);
          var whereFragment = new SqlFragment(set._db.BuildPredicateFragment(predicateValues, parameters), parameters);
 
          var children = set.Where(whereFragment)
             .AsEnumerable();
 
          var otherMember = association.OtherMember;
-         var setOtherMember = otherMember is not null
-            && !otherMember.Association.IsMany;
+         var setOtherMember = otherMember is { Association.IsMany: false };
 
          foreach (var child in children) {
 
@@ -1779,11 +1785,11 @@ partial class SqlSet<TResult> {
 
    public bool
    Contains(TResult entity) =>
-      base.Contains(entity);
+      base.Contains(entity!);
 
    /// <inheritdoc cref="SqlSet.Find(Object)"/>
 
-   public new TResult
+   public new TResult?
    Find(object id) =>
       ((SqlSet<TResult>)FindImpl(id)).SingleOrDefault();
 
@@ -1831,7 +1837,7 @@ interface ISqlTable {
    Update(object entity);
 
    void
-   Update(object entity, object originalId);
+   Update(object entity, object? originalId);
 
    void
    UpdateRange(IEnumerable<object> entities);
