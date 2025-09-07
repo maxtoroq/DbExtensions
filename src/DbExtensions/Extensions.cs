@@ -17,6 +17,8 @@ using System.Data;
 
 namespace DbExtensions;
 
+#nullable enable
+
 /// <summary>
 /// Provides extension methods for common ADO.NET objects.
 /// </summary>
@@ -336,7 +338,7 @@ public static class Extensions {
    /// </summary>
    /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
 
-   public static String
+   public static String?
    GetStringOrNull(this IDataRecord record, string name) =>
       GetStringOrNull(record, record.GetOrdinal(name));
 
@@ -345,7 +347,7 @@ public static class Extensions {
    /// </summary>
    /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
 
-   public static String
+   public static String?
    GetStringOrNull(this IDataRecord record, int i) =>
       (record.IsDBNull(i)) ? default(String) : record.GetString(i);
 
@@ -354,7 +356,7 @@ public static class Extensions {
    /// </summary>
    /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
 
-   public static Object
+   public static Object?
    GetValueOrNull(this IDataRecord record, string name) =>
       GetValueOrNull(record, record.GetOrdinal(name));
 
@@ -365,7 +367,7 @@ public static class Extensions {
    /// <param name="i">The zero-based column ordinal.</param>
    /// <returns>The value of the column.</returns>
 
-   public static Object
+   public static Object?
    GetValueOrNull(this IDataRecord record, int i) =>
       (record.IsDBNull(i)) ? null : record.GetValue(i);
 }
