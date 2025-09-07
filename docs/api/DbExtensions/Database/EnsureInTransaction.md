@@ -27,7 +27,7 @@ public IDbTransaction EnsureInTransaction()
 
 Remarks
 -------
-This method returns a virtual transaction that wraps an existing or new transaction. By calling [Commit()][4] on the returned object, this object will then call [Commit()][4] on the wrapped transaction if the transaction was just created, or do nothing if it was previously created. 
+This method returns a virtual transaction that wraps an existing or new transaction. By calling [Commit()][4] on the returned object, this object will then call [Commit()][5] on the wrapped transaction if the transaction was just created, or do nothing if it was previously created. 
 
 Calls to this method can be nested, like in the following example:
 
@@ -60,12 +60,13 @@ See Also
 --------
 
 #### Reference
-[Database Class][5]  
+[Database Class][6]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: EnsureInTransaction_1.md
 [3]: https://learn.microsoft.com/dotnet/api/system.data.idbtransaction
 [4]: https://learn.microsoft.com/dotnet/api/system.data.idbtransaction.commit
-[5]: README.md
+[5]: https://learn.microsoft.com/dotnet/api/system.data.common.dbtransaction.commit
+[6]: README.md
 [Public method]: ../../icons/pubmethod.svg "Public method"

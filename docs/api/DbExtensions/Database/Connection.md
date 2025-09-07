@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public IDbConnection Connection { get; }
+public DbConnection Connection { get; }
 ```
 
 #### Property Value
-[IDbConnection][2]
+[DbConnection][2]
 
 See Also
 --------
@@ -23,5 +23,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://learn.microsoft.com/dotnet/api/system.data.idbconnection
+[2]: https://learn.microsoft.com/dotnet/api/system.data.common.dbconnection
 [3]: README.md

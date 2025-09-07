@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public Type ConvertTo { get; set; }
+public Type? ConvertTo { get; set; }
 ```
 
 #### Property Value

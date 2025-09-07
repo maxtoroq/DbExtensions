@@ -34,7 +34,7 @@ Specifies the isolation level for the transaction. This parameter is ignored whe
 
 Remarks
 -------
-This method returns a virtual transaction that wraps an existing or new transaction. By calling [Commit()][5] on the returned object, this object will then call [Commit()][5] on the wrapped transaction if the transaction was just created, or do nothing if it was previously created. 
+This method returns a virtual transaction that wraps an existing or new transaction. By calling [Commit()][5] on the returned object, this object will then call [Commit()][6] on the wrapped transaction if the transaction was just created, or do nothing if it was previously created. 
 
 Calls to this method can be nested, like in the following example:
 
@@ -67,7 +67,7 @@ See Also
 --------
 
 #### Reference
-[Database Class][6]  
+[Database Class][7]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
@@ -75,5 +75,6 @@ See Also
 [3]: https://learn.microsoft.com/dotnet/api/system.data.isolationlevel
 [4]: https://learn.microsoft.com/dotnet/api/system.data.idbtransaction
 [5]: https://learn.microsoft.com/dotnet/api/system.data.idbtransaction.commit
-[6]: README.md
+[6]: https://learn.microsoft.com/dotnet/api/system.data.common.dbtransaction.commit
+[7]: README.md
 [Public method]: ../../icons/pubmethod.svg "Public method"

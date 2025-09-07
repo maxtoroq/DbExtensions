@@ -9,11 +9,11 @@ Syntax
 ------
 
 ```csharp
-public IDbTransaction Transaction { get; set; }
+public DbTransaction? Transaction { get; set; }
 ```
 
 #### Property Value
-[IDbTransaction][2]
+[DbTransaction][2]
 
 See Also
 --------
@@ -23,5 +23,5 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://learn.microsoft.com/dotnet/api/system.data.idbtransaction
+[2]: https://learn.microsoft.com/dotnet/api/system.data.common.dbtransaction
 [3]: README.md

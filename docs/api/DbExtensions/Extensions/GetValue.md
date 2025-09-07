@@ -10,15 +10,15 @@ Syntax
 
 ```csharp
 public static Object GetValue(
-	this IDataRecord record,
+	this DbDataReader reader,
 	string name
 )
 ```
 
 #### Parameters
 
-##### *record*  [IDataRecord][2]
-The data record.
+##### *reader*  [DbDataReader][2]
+The data reader.
 
 ##### *name*  [String][3]
 The name of the column to find.
@@ -27,7 +27,7 @@ The name of the column to find.
 [Object][4]  
 The value of the column.
 #### Usage Note
-In Visual Basic and C#, you can call this method as an instance method on any object of type [IDataRecord][2]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][5] or [Extension Methods (C# Programming Guide)][6].
+In Visual Basic and C#, you can call this method as an instance method on any object of type [DbDataReader][2]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][5] or [Extension Methods (C# Programming Guide)][6].
 
 See Also
 --------
@@ -37,7 +37,7 @@ See Also
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: https://learn.microsoft.com/dotnet/api/system.data.idatarecord
+[2]: https://learn.microsoft.com/dotnet/api/system.data.common.dbdatareader
 [3]: https://learn.microsoft.com/dotnet/api/system.string
 [4]: https://learn.microsoft.com/dotnet/api/system.object
 [5]: https://docs.microsoft.com/dotnet/visual-basic/programming-guide/language-features/procedures/extension-methods

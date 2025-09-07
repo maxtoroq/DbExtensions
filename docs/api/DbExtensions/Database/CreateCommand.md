@@ -1,6 +1,6 @@
 Database.CreateCommand Method
 =============================
-Creates and returns an [IDbCommand][1] object from the specified *sqlBuilder*.
+Creates and returns a [DbCommand][1] object from the specified *sqlBuilder*.
   
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public virtual IDbCommand CreateCommand(
+public virtual DbCommand CreateCommand(
 	SqlBuilder sqlBuilder
 )
 ```
@@ -20,8 +20,8 @@ public virtual IDbCommand CreateCommand(
 The [SqlBuilder][3] that provides the command's text and parameters.
 
 #### Return Value
-[IDbCommand][1]  
- A new [IDbCommand][1] object whose [CommandText][4] property is initialized with the *sqlBuilder*'s string representation, and whose [Parameters][5] property is initialized with the values from the [ParameterValues][6] property of the *sqlBuilder* parameter.
+[DbCommand][1]  
+ A new [DbCommand][1] object with its [CommandText][4] property initialized with the *sqlBuilder*'s string representation, and its [Parameters][5] property is initialized with the values from the [ParameterValues][6] property of the *sqlBuilder* parameter.
 
 See Also
 --------
@@ -30,10 +30,10 @@ See Also
 [Database Class][7]  
 [DbExtensions Namespace][2]  
 
-[1]: https://learn.microsoft.com/dotnet/api/system.data.idbcommand
+[1]: https://learn.microsoft.com/dotnet/api/system.data.common.dbcommand
 [2]: ../README.md
 [3]: ../SqlBuilder/README.md
-[4]: https://learn.microsoft.com/dotnet/api/system.data.idbcommand.commandtext
-[5]: https://learn.microsoft.com/dotnet/api/system.data.idbcommand.parameters
+[4]: https://learn.microsoft.com/dotnet/api/system.data.common.dbcommand.commandtext
+[5]: https://learn.microsoft.com/dotnet/api/system.data.common.dbcommand.parameters
 [6]: ../SqlBuilder/ParameterValues.md
 [7]: README.md

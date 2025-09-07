@@ -20,7 +20,7 @@ Syntax
 ```csharp
 public SqlBuilder BuildUpdateStatementForEntity(
 	TEntity entity,
-	Object originalId
+	Object? originalId
 )
 ```
 

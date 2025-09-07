@@ -1,5 +1,5 @@
-Extensions.GetNullableChar(IDataRecord, String) Method
-======================================================
+Extensions.GetNullableChar(DbDataReader, String) Method
+=======================================================
 Gets the value of the specified column as a [Nullable&lt;T>][1] of [Char][2].
   
 **Namespace:** [DbExtensions][3]  
@@ -8,10 +8,10 @@ Gets the value of the specified column as a [Nullable&lt;T>][1] of [Char][2].
 Overloads
 ---------
 
-|                            | Name                                     | Description                                                                   |
-| -------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------- |
-| ![Public Extension Method] | [GetNullableChar(IDataRecord, Int32)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Char][2]. |
-| ![Public Extension Method] | **GetNullableChar(IDataRecord, String)** | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Char][2]. |
+|                            | Name                                      | Description                                                                   |
+| -------------------------- | ----------------------------------------- | ----------------------------------------------------------------------------- |
+| ![Public Extension Method] | [GetNullableChar(DbDataReader, Int32)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Char][2]. |
+| ![Public Extension Method] | **GetNullableChar(DbDataReader, String)** | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Char][2]. |
 
 
 Syntax
@@ -19,15 +19,15 @@ Syntax
 
 ```csharp
 public static char? GetNullableChar(
-	this IDataRecord record,
+	this DbDataReader reader,
 	string name
 )
 ```
 
 #### Parameters
 
-##### *record*  [IDataRecord][5]
-The data record.
+##### *reader*  [DbDataReader][5]
+The data reader.
 
 ##### *name*  [String][6]
 The name of the column to find.
@@ -36,7 +36,7 @@ The name of the column to find.
 [Nullable][1]&lt;[Char][2]>  
 The value of the column.
 #### Usage Note
-In Visual Basic and C#, you can call this method as an instance method on any object of type [IDataRecord][5]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][7] or [Extension Methods (C# Programming Guide)][8].
+In Visual Basic and C#, you can call this method as an instance method on any object of type [DbDataReader][5]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][7] or [Extension Methods (C# Programming Guide)][8].
 
 See Also
 --------
@@ -49,7 +49,7 @@ See Also
 [2]: https://learn.microsoft.com/dotnet/api/system.char
 [3]: ../README.md
 [4]: GetNullableChar.md
-[5]: https://learn.microsoft.com/dotnet/api/system.data.idatarecord
+[5]: https://learn.microsoft.com/dotnet/api/system.data.common.dbdatareader
 [6]: https://learn.microsoft.com/dotnet/api/system.string
 [7]: https://docs.microsoft.com/dotnet/visual-basic/programming-guide/language-features/procedures/extension-methods
 [8]: https://docs.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods

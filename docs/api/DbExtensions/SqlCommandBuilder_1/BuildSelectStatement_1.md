@@ -19,7 +19,7 @@ Syntax
 
 ```csharp
 public SqlBuilder BuildSelectStatement(
-	string tableAlias
+	string? tableAlias
 )
 ```
 

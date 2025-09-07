@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public string DefaultComplexPropertySeparator { get; set; }
+public string? DefaultComplexPropertySeparator { get; set; }
 ```
 
 #### Property Value

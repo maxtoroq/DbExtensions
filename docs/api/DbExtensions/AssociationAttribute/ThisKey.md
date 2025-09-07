@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public string ThisKey { get; set; }
+public string? ThisKey { get; set; }
 ```
 
 #### Property Value

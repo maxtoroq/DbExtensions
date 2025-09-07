@@ -22,7 +22,7 @@ See Also
 [DatabaseConfiguration Class][5]  
 [DbExtensions Namespace][2]  
 
-[1]: https://learn.microsoft.com/dotnet/api/system.data.idataparameter.parametername
+[1]: https://learn.microsoft.com/dotnet/api/system.data.common.dbparameter.parametername
 [2]: ../README.md
 [3]: https://learn.microsoft.com/dotnet/api/system.func-2
 [4]: https://learn.microsoft.com/dotnet/api/system.string

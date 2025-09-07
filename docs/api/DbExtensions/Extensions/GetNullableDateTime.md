@@ -1,5 +1,5 @@
-Extensions.GetNullableDateTime(IDataRecord, Int32) Method
-=========================================================
+Extensions.GetNullableDateTime(DbDataReader, Int32) Method
+==========================================================
 Gets the value of the specified column as a [Nullable&lt;T>][1] of [DateTime][2].
   
 **Namespace:** [DbExtensions][3]  
@@ -8,10 +8,10 @@ Gets the value of the specified column as a [Nullable&lt;T>][1] of [DateTime][2]
 Overloads
 ---------
 
-|                            | Name                                          | Description                                                                       |
-| -------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------- |
-| ![Public Extension Method] | **GetNullableDateTime(IDataRecord, Int32)**   | Gets the value of the specified column as a [Nullable&lt;T>][1] of [DateTime][2]. |
-| ![Public Extension Method] | [GetNullableDateTime(IDataRecord, String)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [DateTime][2]. |
+|                            | Name                                           | Description                                                                       |
+| -------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------- |
+| ![Public Extension Method] | **GetNullableDateTime(DbDataReader, Int32)**   | Gets the value of the specified column as a [Nullable&lt;T>][1] of [DateTime][2]. |
+| ![Public Extension Method] | [GetNullableDateTime(DbDataReader, String)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [DateTime][2]. |
 
 
 Syntax
@@ -19,15 +19,15 @@ Syntax
 
 ```csharp
 public static DateTime? GetNullableDateTime(
-	this IDataRecord record,
+	this DbDataReader reader,
 	int i
 )
 ```
 
 #### Parameters
 
-##### *record*  [IDataRecord][5]
-The data record.
+##### *reader*  [DbDataReader][5]
+The data reader.
 
 ##### *i*  [Int32][6]
 The zero-based column ordinal.
@@ -36,7 +36,7 @@ The zero-based column ordinal.
 [Nullable][1]&lt;[DateTime][2]>  
 The value of the column.
 #### Usage Note
-In Visual Basic and C#, you can call this method as an instance method on any object of type [IDataRecord][5]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][7] or [Extension Methods (C# Programming Guide)][8].
+In Visual Basic and C#, you can call this method as an instance method on any object of type [DbDataReader][5]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][7] or [Extension Methods (C# Programming Guide)][8].
 
 See Also
 --------
@@ -49,7 +49,7 @@ See Also
 [2]: https://learn.microsoft.com/dotnet/api/system.datetime
 [3]: ../README.md
 [4]: GetNullableDateTime_1.md
-[5]: https://learn.microsoft.com/dotnet/api/system.data.idatarecord
+[5]: https://learn.microsoft.com/dotnet/api/system.data.common.dbdatareader
 [6]: https://learn.microsoft.com/dotnet/api/system.int32
 [7]: https://docs.microsoft.com/dotnet/visual-basic/programming-guide/language-features/procedures/extension-methods
 [8]: https://docs.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods

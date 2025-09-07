@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public virtual Object LastInsertId()
+public virtual Object? LastInsertId()
 ```
 
 #### Return Value

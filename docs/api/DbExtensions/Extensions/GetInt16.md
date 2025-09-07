@@ -10,15 +10,15 @@ Syntax
 
 ```csharp
 public static short GetInt16(
-	this IDataRecord record,
+	this DbDataReader reader,
 	string name
 )
 ```
 
 #### Parameters
 
-##### *record*  [IDataRecord][3]
-The data record.
+##### *reader*  [DbDataReader][3]
+The data reader.
 
 ##### *name*  [String][4]
 The name of the column to find.
@@ -27,7 +27,7 @@ The name of the column to find.
 [Int16][1]  
 The value of the column.
 #### Usage Note
-In Visual Basic and C#, you can call this method as an instance method on any object of type [IDataRecord][3]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][5] or [Extension Methods (C# Programming Guide)][6].
+In Visual Basic and C#, you can call this method as an instance method on any object of type [DbDataReader][3]. When you use instance method syntax to call this method, omit the first parameter. For more information, see [Extension Methods (Visual Basic)][5] or [Extension Methods (C# Programming Guide)][6].
 
 See Also
 --------
@@ -38,7 +38,7 @@ See Also
 
 [1]: https://learn.microsoft.com/dotnet/api/system.int16
 [2]: ../README.md
-[3]: https://learn.microsoft.com/dotnet/api/system.data.idatarecord
+[3]: https://learn.microsoft.com/dotnet/api/system.data.common.dbdatareader
 [4]: https://learn.microsoft.com/dotnet/api/system.string
 [5]: https://docs.microsoft.com/dotnet/visual-basic/programming-guide/language-features/procedures/extension-methods
 [6]: https://docs.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods

@@ -18,7 +18,7 @@ Syntax
 ------
 
 ```csharp
-public Object Find(
+public Object? Find(
 	Type entityType,
 	Object id
 )

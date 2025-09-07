@@ -20,7 +20,7 @@ Syntax
 ```csharp
 public void Update(
 	Object entity,
-	Object originalId
+	Object? originalId
 )
 ```
 

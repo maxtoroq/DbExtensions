@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public Object Find(
+public Object? Find(
 	Object id
 )
 ```

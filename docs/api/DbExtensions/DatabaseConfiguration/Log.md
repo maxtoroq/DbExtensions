@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public TextWriter Log { get; set; }
+public TextWriter? Log { get; set; }
 ```
 
 #### Property Value
