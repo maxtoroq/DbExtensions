@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -28,9 +29,10 @@ using System.Text;
 
 namespace DbExtensions;
 
-using MetaAccessor = Metadata.MetaAccessor;
-using MetaAssociation = Metadata.MetaAssociation;
+using Metadata;
 using InterpolatedString = InterpolatedStringHandlerArgumentAttribute;
+
+#nullable enable
 
 partial class Database {
 
@@ -44,6 +46,8 @@ partial class Database {
 
    public IEnumerable<TResult>
    Map<TResult>([InterpolatedString] SqlBuilder query) {
+
+      ArgumentNullException.ThrowIfNull(query);
 
       var mapper = CreatePocoMapper(typeof(TResult));
 
@@ -62,6 +66,9 @@ partial class Database {
    public IEnumerable<object>
    Map([InterpolatedString] SqlBuilder query, Type resultType) {
 
+      ArgumentNullException.ThrowIfNull(query);
+      ArgumentNullException.ThrowIfNull(resultType);
+
       var mapper = CreatePocoMapper(resultType);
 
       return Map(query, mapper.PocoMap);
@@ -78,10 +85,10 @@ partial class Database {
 
 partial class SqlSet {
 
-   Dictionary<string[], CollectionLoader>
+   Dictionary<string[], CollectionLoader>?
    _manyIncludes;
 
-   private Dictionary<string[], CollectionLoader>
+   private Dictionary<string[], CollectionLoader>?
    ManyIncludes {
       get => _manyIncludes;
       set {
@@ -107,6 +114,8 @@ partial class SqlSet {
 
    IEnumerable
    PocoMap(bool singleResult) {
+
+      Debug.Assert(this.ResultType is not null);
 
       var mapper = _db.CreatePocoMapper(this.ResultType);
       mapper.SingleResult = singleResult;
@@ -143,13 +152,13 @@ sealed class PocoMapper : Mapper {
    readonly Type
    _type;
 
-   Func<IDataRecord, MappingContext, object>
+   Func<IDataRecord, MappingContext, object>?
    _compiledMapFn;
 
-   Action<IDataRecord, MappingContext, object>
+   Action<IDataRecord, MappingContext, object>?
    _compiledLoadFn;
 
-   public Dictionary<string[], CollectionLoader>
+   public Dictionary<string[], CollectionLoader>?
    ManyIncludes { get; set; }
 
    protected override bool
@@ -157,9 +166,6 @@ sealed class PocoMapper : Mapper {
 
    public
    PocoMapper(Type type) {
-
-      ArgumentNullException.ThrowIfNull(type);
-
       _type = type;
    }
 
@@ -230,7 +236,7 @@ sealed class PocoMapper : Mapper {
       return new CacheKey(type, names);
    }
 
-   internal Dictionary<int, List<PocoCollection>>
+   internal Dictionary<int, List<PocoCollection>>?
    GetManyLoaders() {
 
       if (this.ManyIncludes is null or { Count: 0 }) {
@@ -250,7 +256,7 @@ sealed class PocoMapper : Mapper {
                PocoNode.RootNodeHash
                : String.Join('.', path, 0, path.Length - 1).GetHashCode();
 
-            List<PocoCollection> containerCols;
+            List<PocoCollection>? containerCols;
 
             if (!collectionNodes.TryGetValue(containerHash, out containerCols)) {
                containerCols = new();
@@ -268,7 +274,7 @@ sealed class PocoMapper : Mapper {
    CreateRootNode() =>
       new PocoNode(_type, default, isComplex: true);
 
-   protected override Node
+   protected override Node?
    CreateSimpleProperty(Node container, string propertyName, int columnOrdinal) {
 
       var pocoContainer = (PocoNode)container;
@@ -281,7 +287,7 @@ sealed class PocoMapper : Mapper {
       return new PocoNode(property, pocoContainer, columnOrdinal);
    }
 
-   protected override Node
+   protected override Node?
    CreateComplexProperty(Node container, string propertyName) {
 
       var pocoContainer = (PocoNode)container;
@@ -302,7 +308,7 @@ sealed class PocoMapper : Mapper {
    CreateParameterNode(ParameterInfo paramInfo) =>
       new PocoNode(paramInfo, isComplex: true);
 
-   static PropertyInfo
+   static PropertyInfo?
    GetProperty(Type declaringType, string propertyName) {
 
       var property = declaringType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -312,7 +318,7 @@ sealed class PocoMapper : Mapper {
       }
 
       if (!property.CanWrite) {
-         throw new InvalidOperationException($"'{property.ReflectedType.FullName}' property '{property.Name}' doesn't have a setter.");
+         throw new InvalidOperationException($"'{property.ReflectedType!.FullName}' property '{property.Name}' doesn't have a setter.");
       }
 
       return property;
@@ -325,10 +331,7 @@ sealed class PocoMapper : Mapper {
 
 partial class MappingContext {
 
-   public HashSet<Node>
-   ConvertingNodes = new(ReferenceEqualityComparer.Instance);
-
-   public Dictionary<int, List<PocoCollection>>
+   public Dictionary<int, List<PocoCollection>>?
    ManyLoaders;
 
    public void
@@ -353,13 +356,13 @@ partial class MappingContext {
    }
 }
 
-sealed class CollectionLoader {
+sealed class CollectionLoader(Func<object, IEnumerable> load, MetaAssociation association) {
 
-   public Func<object, IEnumerable>
-   Load;
+   public readonly Func<object, IEnumerable>
+   Load = load;
 
-   public MetaAssociation
-   Association;
+   public readonly MetaAssociation
+   Association = association;
 }
 
 sealed partial class PocoNode : Node {
@@ -373,7 +376,7 @@ sealed partial class PocoNode : Node {
    internal const int
    RootNodeHash = 0;
 
-   private PocoNode
+   private PocoNode?
    Container { get; }
 
    private Type
@@ -386,15 +389,15 @@ sealed partial class PocoNode : Node {
    ColumnOrdinal { get; }
 
    public override string
-   TypeName => UnderlyingType.FullName;
+   TypeName => UnderlyingType.FullName!;
 
    public override bool
    IsComplex { get; }
 
-   private PropertyInfo
+   private PropertyInfo?
    Property { get; }
 
-   public override string
+   public override string?
    PropertyName => Property?.Name;
 
    public int
@@ -402,7 +405,7 @@ sealed partial class PocoNode : Node {
       _propertyHash ??= (Property is null ? RootNodeHash
          : GetPropertyPath().GetHashCode());
 
-   public ParameterInfo
+   public ParameterInfo?
    Parameter { get; }
 
    public bool
@@ -437,18 +440,18 @@ sealed partial class PocoNode : Node {
 
    internal static CollectionAccessor
    GetCollectionAccessor(PropertyInfo property) =>
-      (CollectionAccessor)_accessorCache.GetOrAdd(property, static p => CollectionAccessor.Create(p.ReflectedType, p));
+      (CollectionAccessor)_accessorCache.GetOrAdd(property, static p => CollectionAccessor.Create(p.ReflectedType!, p));
 
    public override object
    Create(IDataRecord record, MappingContext context) =>
       throw new NotImplementedException();
 
-   protected override object
+   protected override object?
    Get(object instance) =>
       throw new NotImplementedException();
 
    protected override void
-   Set(object instance, object value, MappingContext context) =>
+   Set(object instance, object? value, MappingContext context) =>
       throw new NotImplementedException();
 
    public override ConstructorInfo[]
@@ -462,14 +465,12 @@ sealed partial class PocoNode : Node {
          return String.Empty;
       }
 
-      var path = this.PropertyName;
+      var path = this.PropertyName!;
       var container = this.Container;
 
-      while (container is not null
-         && container.PropertyName is { } containerName) {
+      while (container is { PropertyName: { } containerName }) {
 
          path = containerName + "." + path;
-
          container = container.Container;
       }
 
@@ -489,7 +490,7 @@ sealed partial class PocoNode : Node {
       }
 
       if (this.Property != null) {
-         return this.Property.DeclaringType.ToString() + ":" + this.PropertyName.ToString();
+         return this.Property.DeclaringType!.ToString() + ":" + this.PropertyName!.ToString();
       }
 
       return this.Type.Name;
@@ -504,13 +505,13 @@ sealed class PocoCollection {
    readonly PropertyInfo
    _property;
 
-   CollectionAccessor
+   CollectionAccessor?
    _accessor;
 
-   Type
+   Type?
    _concreteType;
 
-   Func<object[], object>
+   Func<object>?
    _factory;
 
    private CollectionAccessor
@@ -530,7 +531,7 @@ sealed class PocoCollection {
       }
    }
 
-   private Func<object[], object>
+   private Func<object>
    Factory => _factory
       ??= ObjectFactory.GetFactory(ConcreteType);
 
@@ -557,7 +558,7 @@ sealed class PocoCollection {
       var collection = this.Accessor.GetBoxedValue(instance);
 
       if (collection is null) {
-         collection = this.Factory.Invoke(default);
+         collection = this.Factory.Invoke();
          this.Accessor.SetBoxedValue(ref instance, collection);
       }
 
@@ -581,7 +582,7 @@ abstract class CollectionAccessor : MetaAccessor {
    public static CollectionAccessor
    Create(Type objectType, PropertyInfo pi) {
 
-      var propAccessor = Metadata.PropertyAccessor.Create(objectType, pi, null);
+      var propAccessor = PropertyAccessor.Create(objectType, pi, null);
 
       var colType = pi.PropertyType;
       var elementType = GetElementType(colType);
@@ -597,7 +598,7 @@ abstract class CollectionAccessor : MetaAccessor {
          BindingFlags.Instance | BindingFlags.NonPublic,
          null,
          [propAccessor, addFn],
-         null);
+         null)!;
    }
 
    static Type
@@ -625,7 +626,7 @@ abstract class CollectionAccessor : MetaAccessor {
 
 sealed class CollectionAccessor<TContainer, TCollection, TElement> : CollectionAccessor {
 
-   readonly Metadata.MetaAccessor<TContainer, TCollection>
+   readonly MetaAccessor<TContainer, TCollection>
    _propAccessor;
 
    readonly Action<TCollection, TElement>
@@ -639,7 +640,7 @@ sealed class CollectionAccessor<TContainer, TCollection, TElement> : CollectionA
 
    internal
    CollectionAccessor(
-         Metadata.MetaAccessor<TContainer, TCollection> propAccessor,
+         MetaAccessor<TContainer, TCollection> propAccessor,
          Action<TCollection, TElement> addFn) {
 
       _propAccessor = propAccessor;
@@ -671,49 +672,25 @@ sealed class CollectionAccessor<TContainer, TCollection, TElement> : CollectionA
 
       var TCol = (TCollection)collection;
       AddElement(ref TCol, (TElement)element);
-      collection = TCol;
+      collection = TCol!;
    }
 }
 
 static class ObjectFactory {
 
-   static readonly ConcurrentDictionary<object, Func<object[], object>>
+   static readonly ConcurrentDictionary<Type, Func<object>>
    _factoryCache = new(ReferenceEqualityComparer.Instance);
 
-   public static Func<object[], object>
+   public static Func<object>
    GetFactory(Type type) =>
-      _factoryCache.GetOrAdd(type, static t => CreateFactory((Type)t));
+      _factoryCache.GetOrAdd(type, static t => CreateFactory(t));
 
-   static Func<object[], object>
+   static Func<object>
    CreateFactory(Type type) {
 
-      var argsExpr = Expression.Parameter(typeof(object[]));
       var newExpr = Expression.New(type);
       var castExpr = Expression.Convert(newExpr, typeof(object));
-      var lambdaExpr = Expression.Lambda<Func<object[], object>>(castExpr, argsExpr);
-
-      return lambdaExpr.Compile();
-   }
-
-   public static Func<object[], object>
-   GetFactory(ConstructorInfo ctor) =>
-      _factoryCache.GetOrAdd(ctor, static c => CreateFactory((ConstructorInfo)c));
-
-   static Func<object[], object>
-   CreateFactory(ConstructorInfo ctor) {
-
-      var parameters = ctor.GetParameters();
-      var argsExpr = Expression.Parameter(typeof(object[]));
-      var args = new Expression[parameters.Length];
-
-      for (var i = 0; i < parameters.Length; i++) {
-         var argsIndexExpr = Expression.ArrayIndex(argsExpr, Expression.Constant(i));
-         args[i] = Expression.Convert(argsIndexExpr, parameters[i].ParameterType);
-      }
-
-      var newExpr = Expression.New(ctor, args);
-      var castExpr = Expression.Convert(newExpr, typeof(object));
-      var lambdaExpr = Expression.Lambda<Func<object[], object>>(castExpr, argsExpr);
+      var lambdaExpr = Expression.Lambda<Func<object>>(castExpr);
 
       return lambdaExpr.Compile();
    }
@@ -721,10 +698,10 @@ static class ObjectFactory {
 
 partial class PocoNode {
 
-   ColumnAttribute
+   ColumnAttribute?
    _columnAttribute;
 
-   private ColumnAttribute
+   private ColumnAttribute?
    ColumnAttribute => _columnAttribute
       ??= this.Property?.GetCustomAttribute<ColumnAttribute>();
 
@@ -883,7 +860,7 @@ partial class PocoNode {
             vars[i] = paramNode.GenerateExpressionNullable(buffer, recordParam, contextParam);
          }
 
-         var newExpr = Expression.New(this.Constructor, vars);
+         var newExpr = Expression.New(this.Constructor!, vars);
          buffer.Add(Expression.Assign(varExpr, newExpr));
 
          statements.Add(Expression.Block(vars, buffer));
@@ -910,7 +887,7 @@ partial class PocoNode {
 
          var prop = (PocoNode)this.Properties[i];
 
-         var memberExpr = Expression.Property(targetExpr, prop.Property);
+         var memberExpr = Expression.Property(targetExpr, prop.Property!);
 
          if (!prop.IsComplex
             || prop.HasConstructorParameters) {
@@ -1078,46 +1055,46 @@ partial class PocoNode {
 
       public static readonly MethodInfo
       ConvertChangeTypeMethod = typeof(Convert)
-         .GetMethod(nameof(Convert.ChangeType), BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(object), typeof(Type), typeof(IFormatProvider) }, null);
+         .GetMethod(nameof(Convert.ChangeType), BindingFlags.Public | BindingFlags.Static, null, [typeof(object), typeof(Type), typeof(IFormatProvider)], null)!;
 
       public static readonly MethodInfo
       EnumParseOpenMethod = typeof(Enum)
-         .GetMethod(nameof(Enum.Parse), 1, BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string) }, null);
+         .GetMethod(nameof(Enum.Parse), 1, BindingFlags.Public | BindingFlags.Static, null, [typeof(string)], null)!;
 
       public static readonly MethodInfo
       GetFieldTypeMethod = typeof(IDataRecord)
-         .GetMethod(nameof(IDataRecord.GetFieldType));
+         .GetMethod(nameof(IDataRecord.GetFieldType))!;
 
       public static readonly MethodInfo
       GetFieldValueOpenMethod = typeof(DbDataReader)
-         .GetMethod(nameof(DbDataReader.GetFieldValue));
+         .GetMethod(nameof(DbDataReader.GetFieldValue))!;
 
       public static readonly PropertyInfo
       InvariantCultureProperty = typeof(CultureInfo)
-         .GetProperty(nameof(CultureInfo.InvariantCulture));
+         .GetProperty(nameof(CultureInfo.InvariantCulture))!;
 
       public static readonly MethodInfo
       IsDbNullMethod = typeof(IDataRecord)
-         .GetMethod(nameof(IDataRecord.IsDBNull));
+         .GetMethod(nameof(IDataRecord.IsDBNull))!;
 
       public static readonly MethodInfo
       LoadManyMethod = typeof(MappingContext)
-         .GetMethod(nameof(MappingContext.LoadMany));
+         .GetMethod(nameof(MappingContext.LoadMany))!;
 
       public static readonly Dictionary<TypeCode, MethodInfo>
       RecordGetMethods = new() {
-         {  TypeCode.Boolean, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetBoolean)) },
-         {  TypeCode.Byte, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetByte)) },
-         {  TypeCode.Char, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetChar)) },
-         {  TypeCode.DateTime, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetDateTime)) },
-         {  TypeCode.Decimal, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetDecimal)) },
-         {  TypeCode.Double, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetDouble)) },
-         {  TypeCode.Int16, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetInt16)) },
-         {  TypeCode.Int32, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetInt32)) },
-         {  TypeCode.Int64, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetInt64)) },
-         {  TypeCode.Object, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetValue)) },
-         {  TypeCode.Single, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetFloat)) },
-         {  TypeCode.String, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetString)) },
+         {  TypeCode.Boolean, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetBoolean))! },
+         {  TypeCode.Byte, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetByte))! },
+         {  TypeCode.Char, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetChar))! },
+         {  TypeCode.DateTime, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetDateTime))! },
+         {  TypeCode.Decimal, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetDecimal))! },
+         {  TypeCode.Double, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetDouble))! },
+         {  TypeCode.Int16, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetInt16))! },
+         {  TypeCode.Int32, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetInt32))! },
+         {  TypeCode.Int64, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetInt64))! },
+         {  TypeCode.Object, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetValue))! },
+         {  TypeCode.Single, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetFloat))! },
+         {  TypeCode.String, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetString))! },
       };
    }
 }

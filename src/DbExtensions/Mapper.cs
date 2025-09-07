@@ -23,18 +23,20 @@ using System.Text;
 
 namespace DbExtensions;
 
+#nullable enable
+
 abstract partial class Mapper {
 
    internal static readonly char
    _pathSeparator = '$';
 
-   Node
+   Node?
    _rootNode;
 
-   MappingContext
+   MappingContext?
    _mappingContext;
 
-   public TextWriter
+   public TextWriter?
    Log { get; set; }
 
    public bool
@@ -75,16 +77,15 @@ abstract partial class Mapper {
           let propertyInfo = new { ColumnOrdinal = i, PropertyName = property }
           group propertyInfo by new { depth = path.Length - 1, parent, assoc } into t
           orderby t.Key.depth, t.Key.parent, t.Key.assoc
-          select new MapGroup {
-             Depth = t.Key.depth,
-             Name = t.Key.assoc,
-             Parent = t.Key.parent,
-             Properties = t.ToDictionary(p => p.ColumnOrdinal, p => p.PropertyName)
-          })
+          select new MapGroup(
+             t.Key.depth,
+             t.Key.assoc,
+             t.Key.parent,
+             t.ToDictionary(p => p.ColumnOrdinal, p => p.PropertyName)))
          .ToArray();
 
       var topGroup = groups.Where(m => m.Depth == 0).SingleOrDefault()
-         ?? new MapGroup { Name = String.Empty, Parent = String.Empty, Properties = new Dictionary<int, string>() };
+         ?? new MapGroup(0, String.Empty, String.Empty, new Dictionary<int, string>());
 
       ReadMapping(record, groups, topGroup, rootNode);
    }
@@ -176,7 +177,7 @@ abstract partial class Mapper {
             } else {
 
                paramNode = CreateParameterNode(param);
-               ReadMapping(record, groups, mapParam.Group, paramNode);
+               ReadMapping(record, groups, mapParam.Group!, paramNode);
             }
 
             if (!instance.ConstructorParameters.TryAdd(paramIndex, paramNode)) {
@@ -200,7 +201,7 @@ abstract partial class Mapper {
 
                var paramIndex = (uint)param.Position;
 
-               if (unmapped.TryGetValue(param.Name, out var columnOrdinal)) {
+               if (unmapped.TryGetValue(param.Name!, out var columnOrdinal)) {
 
                   var paramNode = CreateParameterNode(columnOrdinal, param);
 
@@ -227,7 +228,7 @@ abstract partial class Mapper {
                   continue;
                }
 
-               if (unmappedGroups.TryGetValue(param.Name, out var group)) {
+               if (unmappedGroups.TryGetValue(param.Name!, out var group)) {
 
                   var paramNode = CreateParameterNode(param);
                   ReadMapping(record, groups, group, paramNode);
@@ -319,10 +320,10 @@ abstract partial class Mapper {
    protected abstract Node
    CreateRootNode();
 
-   protected abstract Node
+   protected abstract Node?
    CreateSimpleProperty(Node container, string propertyName, int columnOrdinal);
 
-   protected abstract Node
+   protected abstract Node?
    CreateComplexProperty(Node container, string propertyName);
 
    protected abstract Node
@@ -351,19 +352,19 @@ abstract partial class Mapper {
       return constructors[0];
    }
 
-   sealed class MapGroup {
+   sealed class MapGroup(int depth, string name, string parent, Dictionary<int, string> properties) {
 
-      public string
-      Name;
+      public readonly int
+      Depth = depth;
 
-      public int
-      Depth;
+      public readonly string
+      Name = name;
 
-      public string
-      Parent;
+      public readonly string
+      Parent = parent;
 
-      public Dictionary<int, string>
-      Properties;
+      public readonly Dictionary<int, string>
+      Properties = properties;
    }
 
    readonly struct MapParam {
@@ -371,7 +372,7 @@ abstract partial class Mapper {
       public readonly int?
       ColumnOrdinal;
 
-      public readonly MapGroup
+      public readonly MapGroup?
       Group;
 
       public
@@ -392,7 +393,7 @@ abstract partial class Mapper {
 
 sealed partial class MappingContext {
 
-   public TextWriter
+   public TextWriter?
    Log;
 
    public bool
@@ -401,16 +402,16 @@ sealed partial class MappingContext {
 
 abstract class Node {
 
-   Dictionary<uint, Node>
+   Dictionary<uint, Node>?
    _constructorParameters;
 
-   List<Node>
+   List<Node>?
    _properties;
 
    public abstract bool
    IsComplex { get; }
 
-   public abstract string
+   public abstract string?
    PropertyName { get; }
 
    public abstract int
@@ -419,7 +420,7 @@ abstract class Node {
    public abstract string
    TypeName { get; }
 
-   public ConstructorInfo
+   public ConstructorInfo?
    Constructor { get; internal set; }
 
    public Dictionary<uint, Node>
@@ -438,7 +439,7 @@ abstract class Node {
    HasProperties =>
       _properties?.Count > 0;
 
-   public object
+   public object?
    Map(IDataRecord record, MappingContext context) {
 
       if (this.IsComplex) {
@@ -448,7 +449,7 @@ abstract class Node {
       return MapSimple(record, context);
    }
 
-   protected object
+   protected object?
    MapComplex(IDataRecord record, MappingContext context) {
 
       if (AllColumnsNull(record)) {
@@ -478,7 +479,7 @@ abstract class Node {
       return record.IsDBNull(this.ColumnOrdinal);
    }
 
-   protected object
+   protected object?
    MapSimple(IDataRecord record, MappingContext context) {
 
       var isNull = record.IsDBNull(this.ColumnOrdinal);
@@ -521,11 +522,11 @@ abstract class Node {
       Set(instance, value, context);
    }
 
-   protected abstract object
+   protected abstract object?
    Get(object instance);
 
    protected abstract void
-   Set(object instance, object value, MappingContext context);
+   Set(object instance, object? value, MappingContext context);
 
    public abstract ConstructorInfo[]
    GetConstructors(BindingFlags bindingAttr);

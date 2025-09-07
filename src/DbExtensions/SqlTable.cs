@@ -1738,10 +1738,9 @@ partial class SqlSet {
 
          set.ManyIncludes ??= new Dictionary<string[], CollectionLoader>();
 
-         set.ManyIncludes.Add(manyPath, new CollectionLoader {
-            Load = c => GetMany(c, manyAssoc, manySource),
-            Association = manyAssoc,
-         });
+         set.ManyIncludes.Add(manyPath, new CollectionLoader(
+            c => GetMany(c, manyAssoc, manySource),
+            manyAssoc));
       }
 
       static IEnumerable

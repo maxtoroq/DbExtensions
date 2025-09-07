@@ -24,6 +24,8 @@ namespace DbExtensions;
 
 using InterpolatedString = InterpolatedStringHandlerArgumentAttribute;
 
+#nullable enable
+
 partial class Database {
 
    /// <summary>
@@ -35,6 +37,8 @@ partial class Database {
 
    public IEnumerable<dynamic>
    Map([InterpolatedString] SqlBuilder query) {
+
+      ArgumentNullException.ThrowIfNull(query);
 
       var mapper = CreateDynamicMapper();
 
@@ -90,12 +94,12 @@ sealed class DynamicMapper : Mapper {
 sealed class DynamicNode : Node {
 
    static readonly string
-   _typeName = typeof(ExpandoObject).FullName;
+   _typeName = typeof(ExpandoObject).FullName!;
 
    public override bool
    IsComplex { get; }
 
-   public override string
+   public override string?
    PropertyName { get; }
 
    public override int
@@ -131,12 +135,12 @@ sealed class DynamicNode : Node {
    Create(IDataRecord record, MappingContext context) =>
       new ExpandoObject();
 
-   protected override object
+   protected override object?
    Get(object instance) {
 
-      var dictionary = (IDictionary<string, object>)instance;
+      var dictionary = (IDictionary<string, object?>)instance;
 
-      if (dictionary.TryGetValue(this.PropertyName, out var value)) {
+      if (dictionary.TryGetValue(this.PropertyName!, out var value)) {
          return value;
       }
 
@@ -144,8 +148,8 @@ sealed class DynamicNode : Node {
    }
 
    protected override void
-   Set(object instance, object value, MappingContext context) {
-      ((IDictionary<string, object>)instance)[this.PropertyName] = value;
+   Set(object instance, object? value, MappingContext context) {
+      ((IDictionary<string, object?>)instance)[this.PropertyName!] = value;
    }
 
    public override ConstructorInfo[]
