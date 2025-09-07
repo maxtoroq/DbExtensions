@@ -16,7 +16,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -173,7 +173,7 @@ partial class Database {
    /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
 
    public SqlSet<TResult>
-   From<TResult>([InterpolatedString] SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper) {
+   From<TResult>([InterpolatedString] SqlBuilder definingQuery, Func<DbDataReader, TResult> mapper) {
 
       ArgumentNullException.ThrowIfNull(definingQuery);
       ArgumentNullException.ThrowIfNull(mapper);
@@ -479,7 +479,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       new SqlSet(this, fromSelect, resultType, buffer);
 
    private protected SqlSet<TResult>
-   CreateSet<TResult>(SqlBuilder superQuery, Func<IDataRecord, TResult>? mapper = null, SqlBuffer? buffer = null) =>
+   CreateSet<TResult>(SqlBuilder superQuery, Func<DbDataReader, TResult>? mapper = null, SqlBuffer? buffer = null) =>
       new SqlSet<TResult>(this, superQuery, mapper, buffer);
 
    private protected SqlSet<TResult>
@@ -528,7 +528,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
          var query = GetDefiningQuery(ignoreBuffer: ignoreBuffer);
 
-         set = CreateSet<TResult>(query, default(Func<IDataRecord, TResult>), buffer);
+         set = CreateSet<TResult>(query, default(Func<DbDataReader, TResult>), buffer);
       }
 
       return set;
@@ -865,7 +865,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <returns>A new <see cref="SqlSet&lt;TResult>"/>.</returns>
 
    public SqlSet<TResult>
-   Select<TResult>(string columnList, Func<IDataRecord, TResult> mapper) {
+   Select<TResult>(string columnList, Func<DbDataReader, TResult> mapper) {
 
       ArgumentNullException.ThrowIfNull(mapper);
       ArgumentNullException.ThrowIfNull(columnList);
@@ -873,10 +873,10 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       return CreateSet<TResult>(GetDefiningQuery(select: new SqlFragment(columnList)), mapper);
    }
 
-   /// <inheritdoc cref="Select&lt;TResult>(String, Func&lt;IDataRecord, TResult>)"/>
+   /// <inheritdoc cref="Select&lt;TResult>(String, Func&lt;DbDataReader, TResult>)"/>
 
    public SqlSet<TResult>
-   Select<TResult>([InterpolatedString] ref SqlFragmentHandler columnList, Func<IDataRecord, TResult> mapper) {
+   Select<TResult>([InterpolatedString] ref SqlFragmentHandler columnList, Func<DbDataReader, TResult> mapper) {
 
       ArgumentNullException.ThrowIfNull(mapper);
 
@@ -1169,7 +1169,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
 public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult> {
 
-   readonly Func<IDataRecord, TResult>?
+   readonly Func<DbDataReader, TResult>?
    _explicitMapper;
 
    internal
@@ -1177,7 +1177,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
       : base(definingQuery, typeof(TResult), db) { }
 
    internal
-   SqlSet(SqlBuilder definingQuery, Func<IDataRecord, TResult> mapper, Database db)
+   SqlSet(SqlBuilder definingQuery, Func<DbDataReader, TResult> mapper, Database db)
       : base(definingQuery, typeof(TResult), db) {
 
       _explicitMapper = mapper;
@@ -1207,7 +1207,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    // These two SHOULD pass TResult to base ctor
 
    internal
-   SqlSet(SqlSet set, SqlBuilder superQuery, Func<IDataRecord, TResult>? mapper, SqlBuffer? buffer)
+   SqlSet(SqlSet set, SqlBuilder superQuery, Func<DbDataReader, TResult>? mapper, SqlBuffer? buffer)
       : base(set, superQuery, typeof(TResult), buffer) {
 
       if (mapper is not null) {
@@ -1496,13 +1496,13 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    Select<TResult>(string columnList);
 
    SqlSet<TResult>
-   Select<TResult>(string columnList, Func<IDataRecord, TResult> mapper);
+   Select<TResult>(string columnList, Func<DbDataReader, TResult> mapper);
 
    SqlSet<TResult>
    Select<TResult>(ref SqlSet.SqlFragmentHandler columnList);
 
    SqlSet<TResult>
-   Select<TResult>(ref SqlSet.SqlFragmentHandler columnList, Func<IDataRecord, TResult> mapper);
+   Select<TResult>(ref SqlSet.SqlFragmentHandler columnList, Func<DbDataReader, TResult> mapper);
 
    SqlSet
    Select(string columnList);

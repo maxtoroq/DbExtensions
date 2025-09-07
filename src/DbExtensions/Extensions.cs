@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using System;
-using System.Data;
+using System.Data.Common;
 
 namespace DbExtensions;
 
@@ -28,346 +28,346 @@ public static class Extensions {
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Boolean"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Boolean
-   GetBoolean(this IDataRecord record, string name) =>
-      record.GetBoolean(record.GetOrdinal(name));
+   GetBoolean(this DbDataReader reader, string name) =>
+      reader.GetBoolean(reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Byte"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Byte
-   GetByte(this IDataRecord record, string name) =>
-      record.GetByte(record.GetOrdinal(name));
+   GetByte(this DbDataReader reader, string name) =>
+      reader.GetByte(reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Char"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Char
-   GetChar(this IDataRecord record, string name) =>
-      record.GetChar(record.GetOrdinal(name));
+   GetChar(this DbDataReader reader, string name) =>
+      reader.GetChar(reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="DateTime"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static DateTime
-   GetDateTime(this IDataRecord record, string name) =>
-      record.GetDateTime(record.GetOrdinal(name));
+   GetDateTime(this DbDataReader reader, string name) =>
+      reader.GetDateTime(reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Decimal"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Decimal
-   GetDecimal(this IDataRecord record, string name) =>
-      record.GetDecimal(record.GetOrdinal(name));
+   GetDecimal(this DbDataReader reader, string name) =>
+      reader.GetDecimal(reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Double"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Double
-   GetDouble(this IDataRecord record, string name) =>
-      record.GetDouble(record.GetOrdinal(name));
+   GetDouble(this DbDataReader reader, string name) =>
+      reader.GetDouble(reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Single"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Single
-   GetFloat(this IDataRecord record, string name) =>
-      record.GetFloat(record.GetOrdinal(name));
+   GetFloat(this DbDataReader reader, string name) =>
+      reader.GetFloat(reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as an <see cref="Int16"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Int16
-   GetInt16(this IDataRecord record, string name) =>
-      record.GetInt16(record.GetOrdinal(name));
+   GetInt16(this DbDataReader reader, string name) =>
+      reader.GetInt16(reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as an <see cref="Int32"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Int32
-   GetInt32(this IDataRecord record, string name) =>
-      record.GetInt32(record.GetOrdinal(name));
+   GetInt32(this DbDataReader reader, string name) =>
+      reader.GetInt32(reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as an <see cref="Int64"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Int64
-   GetInt64(this IDataRecord record, string name) =>
-      record.GetInt64(record.GetOrdinal(name));
+   GetInt64(this DbDataReader reader, string name) =>
+      reader.GetInt64(reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="String"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static String
-   GetString(this IDataRecord record, string name) =>
-      record.GetString(record.GetOrdinal(name));
+   GetString(this DbDataReader reader, string name) =>
+      reader.GetString(reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column.
    /// </summary>
-   /// <param name="record">The data record.</param>
+   /// <param name="reader">The data reader.</param>
    /// <param name="name">The name of the column to find.</param>
    /// <returns>The value of the column.</returns>
 
    public static Object
-   GetValue(this IDataRecord record, string name) =>
-      record.GetValue(record.GetOrdinal(name));
+   GetValue(this DbDataReader reader, string name) =>
+      reader.GetValue(reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Boolean&gt;"/> of <see cref="Boolean"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Boolean?
-   GetNullableBoolean(this IDataRecord record, string name) =>
-      GetNullableBoolean(record, record.GetOrdinal(name));
+   GetNullableBoolean(this DbDataReader reader, string name) =>
+      GetNullableBoolean(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Boolean&gt;"/> of <see cref="Boolean"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
+   /// <inheritdoc cref="GetValueOrNull(DbDataReader, Int32)"/>
 
    public static Boolean?
-   GetNullableBoolean(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? default(Boolean?) : record.GetBoolean(i);
+   GetNullableBoolean(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? default(Boolean?) : reader.GetBoolean(i);
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Byte&gt;"/> of <see cref="Byte"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Byte?
-   GetNullableByte(this IDataRecord record, string name) =>
-      GetNullableByte(record, record.GetOrdinal(name));
+   GetNullableByte(this DbDataReader reader, string name) =>
+      GetNullableByte(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Byte&gt;"/> of <see cref="Byte"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
+   /// <inheritdoc cref="GetValueOrNull(DbDataReader, Int32)"/>
 
    public static Byte?
-   GetNullableByte(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? default(Byte?) : record.GetByte(i);
+   GetNullableByte(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? default(Byte?) : reader.GetByte(i);
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Char&gt;"/> of <see cref="Char"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Char?
-   GetNullableChar(this IDataRecord record, string name) =>
-      GetNullableChar(record, record.GetOrdinal(name));
+   GetNullableChar(this DbDataReader reader, string name) =>
+      GetNullableChar(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Char&gt;"/> of <see cref="Char"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
+   /// <inheritdoc cref="GetValueOrNull(DbDataReader, Int32)"/>
 
    public static Char?
-   GetNullableChar(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? default(Char?) : record.GetChar(i);
+   GetNullableChar(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? default(Char?) : reader.GetChar(i);
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;DateTime&gt;"/> of <see cref="DateTime"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static DateTime?
-   GetNullableDateTime(this IDataRecord record, string name) =>
-      GetNullableDateTime(record, record.GetOrdinal(name));
+   GetNullableDateTime(this DbDataReader reader, string name) =>
+      GetNullableDateTime(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;DateTime&gt;"/> of <see cref="DateTime"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
+   /// <inheritdoc cref="GetValueOrNull(DbDataReader, Int32)"/>
 
    public static DateTime?
-   GetNullableDateTime(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? default(DateTime?) : record.GetDateTime(i);
+   GetNullableDateTime(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? default(DateTime?) : reader.GetDateTime(i);
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Decimal&gt;"/> of <see cref="Decimal"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Decimal?
-   GetNullableDecimal(this IDataRecord record, string name) =>
-      GetNullableDecimal(record, record.GetOrdinal(name));
+   GetNullableDecimal(this DbDataReader reader, string name) =>
+      GetNullableDecimal(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Decimal&gt;"/> of <see cref="Decimal"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
+   /// <inheritdoc cref="GetValueOrNull(DbDataReader, Int32)"/>
 
    public static Decimal?
-   GetNullableDecimal(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? default(Decimal?) : record.GetDecimal(i);
+   GetNullableDecimal(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? default(Decimal?) : reader.GetDecimal(i);
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Double&gt;"/> of <see cref="Double"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Double?
-   GetNullableDouble(this IDataRecord record, string name) =>
-      GetNullableDouble(record, record.GetOrdinal(name));
+   GetNullableDouble(this DbDataReader reader, string name) =>
+      GetNullableDouble(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Double&gt;"/> of <see cref="Double"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
+   /// <inheritdoc cref="GetValueOrNull(DbDataReader, Int32)"/>
 
    public static Double?
-   GetNullableDouble(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? default(Double?) : record.GetDouble(i);
+   GetNullableDouble(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? default(Double?) : reader.GetDouble(i);
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Single&gt;"/> of <see cref="Single"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Single?
-   GetNullableFloat(this IDataRecord record, string name) =>
-      GetNullableFloat(record, record.GetOrdinal(name));
+   GetNullableFloat(this DbDataReader reader, string name) =>
+      GetNullableFloat(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Single&gt;"/> of <see cref="Single"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
+   /// <inheritdoc cref="GetValueOrNull(DbDataReader, Int32)"/>
 
    public static Single?
-   GetNullableFloat(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? default(Single?) : record.GetFloat(i);
+   GetNullableFloat(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? default(Single?) : reader.GetFloat(i);
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Guid&gt;"/> of <see cref="Guid"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Guid?
-   GetNullableGuid(this IDataRecord record, string name) =>
-      GetNullableGuid(record, record.GetOrdinal(name));
+   GetNullableGuid(this DbDataReader reader, string name) =>
+      GetNullableGuid(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Guid&gt;"/> of <see cref="Guid"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
+   /// <inheritdoc cref="GetValueOrNull(DbDataReader, Int32)"/>
 
    public static Guid?
-   GetNullableGuid(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? default(Guid?) : record.GetGuid(i);
+   GetNullableGuid(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? default(Guid?) : reader.GetGuid(i);
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Int16&gt;"/> of <see cref="Int16"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Int16?
-   GetNullableInt16(this IDataRecord record, string name) =>
-      GetNullableInt16(record, record.GetOrdinal(name));
+   GetNullableInt16(this DbDataReader reader, string name) =>
+      GetNullableInt16(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Int16&gt;"/> of <see cref="Int16"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
+   /// <inheritdoc cref="GetValueOrNull(DbDataReader, Int32)"/>
 
    public static Int16?
-   GetNullableInt16(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? default(Int16?) : record.GetInt16(i);
+   GetNullableInt16(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? default(Int16?) : reader.GetInt16(i);
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Int32&gt;"/> of <see cref="Int32"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Int32?
-   GetNullableInt32(this IDataRecord record, string name) =>
-      GetNullableInt32(record, record.GetOrdinal(name));
+   GetNullableInt32(this DbDataReader reader, string name) =>
+      GetNullableInt32(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Int32&gt;"/> of <see cref="Int32"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
+   /// <inheritdoc cref="GetValueOrNull(DbDataReader, Int32)"/>
 
    public static Int32?
-   GetNullableInt32(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? default(Int32?) : record.GetInt32(i);
+   GetNullableInt32(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? default(Int32?) : reader.GetInt32(i);
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Int64&gt;"/> of <see cref="Int64"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Int64?
-   GetNullableInt64(this IDataRecord record, string name) =>
-      GetNullableInt64(record, record.GetOrdinal(name));
+   GetNullableInt64(this DbDataReader reader, string name) =>
+      GetNullableInt64(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="Nullable&lt;Int64&gt;"/> of <see cref="Int64"/>.
    /// </summary>
-   /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
+   /// <inheritdoc cref="GetValueOrNull(DbDataReader, Int32)"/>
 
    public static Int64?
-   GetNullableInt64(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? default(Int64?) : record.GetInt64(i);
+   GetNullableInt64(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? default(Int64?) : reader.GetInt64(i);
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="String"/>, or null (Nothing in Visual Basic).
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static String?
-   GetStringOrNull(this IDataRecord record, string name) =>
-      GetStringOrNull(record, record.GetOrdinal(name));
+   GetStringOrNull(this DbDataReader reader, string name) =>
+      GetStringOrNull(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as a <see cref="String"/>, or null (Nothing in Visual Basic).
    /// </summary>
-   /// <inheritdoc cref="GetValueOrNull(IDataRecord, Int32)"/>
+   /// <inheritdoc cref="GetValueOrNull(DbDataReader, Int32)"/>
 
    public static String?
-   GetStringOrNull(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? default(String) : record.GetString(i);
+   GetStringOrNull(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? default(String) : reader.GetString(i);
 
    /// <summary>
    /// Gets the value of the specified column as an <see cref="Object"/>, or null (Nothing in Visual Basic).
    /// </summary>
-   /// <inheritdoc cref="GetValue(IDataRecord, String)"/>
+   /// <inheritdoc cref="GetValue(DbDataReader, String)"/>
 
    public static Object?
-   GetValueOrNull(this IDataRecord record, string name) =>
-      GetValueOrNull(record, record.GetOrdinal(name));
+   GetValueOrNull(this DbDataReader reader, string name) =>
+      GetValueOrNull(reader, reader.GetOrdinal(name));
 
    /// <summary>
    /// Gets the value of the specified column as an <see cref="Object"/>, or null (Nothing in Visual Basic).
    /// </summary>
-   /// <param name="record">The data record.</param>
+   /// <param name="reader">The data reader.</param>
    /// <param name="i">The zero-based column ordinal.</param>
    /// <returns>The value of the column.</returns>
 
    public static Object?
-   GetValueOrNull(this IDataRecord record, int i) =>
-      (record.IsDBNull(i)) ? null : record.GetValue(i);
+   GetValueOrNull(this DbDataReader reader, int i) =>
+      (reader.IsDBNull(i)) ? null : reader.GetValue(i);
 }

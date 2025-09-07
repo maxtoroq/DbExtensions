@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Moq;
+using Moq.Protected;
 
 namespace DbExtensions.Tests;
 
@@ -18,7 +21,7 @@ static class TestUtil {
    static Mock<Database>
    MockDatabaseImpl(string providerInvariantName) {
 
-      var mockConn = new Mock<IDbConnection>();
+      var mockConn = new Mock<DbConnection>();
 
       var mockDb = new Mock<Database>(mockConn.Object, providerInvariantName) {
          CallBase = true
@@ -43,15 +46,22 @@ static class TestUtil {
    }
 
    public static void
-   SetupReader(Mock<Database> mockDb, IDataReader reader, string commandText = null) {
+   SetupReader(Mock<Database> mockDb, DbDataReader reader, string commandText = null) {
 
       mockDb.Setup(db => db.CreateCommand(It.IsAny<SqlBuilder>()))
          .Returns(() => {
-            var command = new Mock<IDbCommand>();
-            command.SetupProperty(cmd => cmd.Connection, mockDb.Object.Connection);
-            command.SetupProperty(cmd => cmd.CommandText, commandText);
-            command.Setup(cmd => cmd.ExecuteReader())
-               .Returns(() => reader);
+
+            var command = new Mock<DbCommand>();
+            command.SetupProperty(p => p.CommandText, commandText);
+
+            var commandProt = command.Protected();
+
+            commandProt.Setup<DbConnection>("DbConnection")
+               .Returns(mockDb.Object.Connection);
+
+            commandProt.Setup<DbDataReader>("ExecuteDbDataReader", It.IsAny<CommandBehavior>())
+               .Returns(reader);
+
             return command.Object;
          });
    }
@@ -80,7 +90,7 @@ static class TestUtil {
       String.Equals(Regex.Replace(set.ToString(), "dbex_set[0-9]+", "_"), query.ToString(), StringComparison.Ordinal);
 }
 
-class TestDataReader : IDataReader {
+class TestDataReader : DbDataReader {
 
    readonly KeyValuePair<string, object>[][]
    _data;
@@ -91,104 +101,101 @@ class TestDataReader : IDataReader {
    int
    _rowIndex;
 
-   public object
+   public override object
    this[int i] => _row[i].Value;
 
-   public object
+   public override object
    this[string name] => _row[GetOrdinal(name)].Value;
 
-   public int
+   public override int
    Depth => throw new NotImplementedException();
 
-   public bool
+   public override int
+   FieldCount => _row.Length;
+
+   public override bool
+   HasRows => _data.Length > 0;
+
+   public override bool
    IsClosed => false;
 
-   public int
+   public override int
    RecordsAffected => -1;
-
-   public int
-   FieldCount => _row.Length;
 
    public
    TestDataReader(params KeyValuePair<string, object>[][] data) {
       _data = data;
    }
 
-   public void
-   Close() { }
+   public override IEnumerator
+   GetEnumerator() =>
+      throw new NotImplementedException();
 
-   public void
-   Dispose() { }
-
-   public bool
+   public override bool
    GetBoolean(int i) =>
       (bool)this[i];
 
-   public byte
+   public override byte
    GetByte(int i) =>
       (byte)this[i];
 
-   public long
+   public override long
    GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length) =>
       throw new NotImplementedException();
 
-   public char
+   public override char
    GetChar(int i) =>
       (char)this[i];
 
-   public long
+   public override long
    GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length) =>
       throw new NotImplementedException();
 
-   public IDataReader
-   GetData(int i) =>
-      throw new NotImplementedException();
-
-   public string
+   public override string
    GetDataTypeName(int i) =>
       throw new NotImplementedException();
 
-   public DateTime
+   public override DateTime
    GetDateTime(int i) =>
       (DateTime)this[i];
 
-   public decimal
+   public override decimal
    GetDecimal(int i) =>
       (decimal)this[i];
 
-   public double
+   public override double
    GetDouble(int i) =>
       (double)this[i];
 
-   public Type
+   public override Type
    GetFieldType(int i) =>
       throw new NotImplementedException();
 
-   public float
+   public override float
    GetFloat(int i) =>
       (float)this[i];
 
-   public Guid
+   public override Guid
    GetGuid(int i) =>
       (Guid)this[i];
 
-   public short
+   public override short
    GetInt16(int i) =>
       (short)this[i];
 
-   public int
+   public override int
    GetInt32(int i) =>
       (int)this[i];
 
-   public long
+   public override long
    GetInt64(int i) =>
       (long)this[i];
 
-   public string
+   public override string
    GetName(int i) =>
       _row[i].Key;
 
-   public int
+   public override int
    GetOrdinal(string name) =>
       _row.Select((p, i) => new { p, i })
          .Where(p => p.p.Key == name)
@@ -196,31 +203,27 @@ class TestDataReader : IDataReader {
          .DefaultIfEmpty(-1)
          .First();
 
-   public DataTable
-   GetSchemaTable() =>
-      throw new NotImplementedException();
-
-   public string
+   public override string
    GetString(int i) =>
       (string)this[i];
 
-   public object
+   public override object
    GetValue(int i) =>
       this[i];
 
-   public int
+   public override int
    GetValues(object[] values) =>
       throw new NotImplementedException();
 
-   public bool
+   public override bool
    IsDBNull(int i) =>
       this[i] is null;
 
-   public bool
+   public override bool
    NextResult() =>
       throw new NotImplementedException();
 
-   public bool
+   public override bool
    Read() {
 
       if (_data.Length > _rowIndex) {
@@ -230,11 +233,5 @@ class TestDataReader : IDataReader {
       }
 
       return false;
-   }
-
-   public void
-   Reset() {
-      _row = null;
-      _rowIndex = 0;
    }
 }

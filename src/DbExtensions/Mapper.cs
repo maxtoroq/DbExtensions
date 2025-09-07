@@ -14,7 +14,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -65,7 +65,7 @@ abstract partial class Mapper {
    Mapper() { }
 
    void
-   ReadMapping(IDataRecord record, Node rootNode) {
+   ReadMapping(DbDataReader record, Node rootNode) {
 
       var groups =
          (from i in Enumerable.Range(0, record.FieldCount)
@@ -91,7 +91,7 @@ abstract partial class Mapper {
    }
 
    void
-   ReadMapping(IDataRecord record, MapGroup[] groups, MapGroup currentGroup, Node instance) {
+   ReadMapping(DbDataReader record, MapGroup[] groups, MapGroup currentGroup, Node instance) {
 
       var constructorParameters = new Dictionary<uint, MapParam>();
       var unmapped = new Dictionary<string, int>();
@@ -251,7 +251,7 @@ abstract partial class Mapper {
 
    [DoesNotReturn]
    static void
-   ThrowDuplicateConstructorArgument(uint paramIndex, int? columnOrdinal, IDataRecord record) {
+   ThrowDuplicateConstructorArgument(uint paramIndex, int? columnOrdinal, DbDataReader record) {
 
       var message = new StringBuilder();
       message.Append($"Already specified a positional argument {paramIndex}");
@@ -267,7 +267,7 @@ abstract partial class Mapper {
 
    [DoesNotReturn]
    static void
-   ThrowDuplicateConstructorArgument(ParameterInfo param, int? columnOrdinal, IDataRecord record) {
+   ThrowDuplicateConstructorArgument(ParameterInfo param, int? columnOrdinal, DbDataReader record) {
 
       var message = new StringBuilder();
       message.Append($"Already specified an argument for parameter '{param.Name}'");
@@ -282,7 +282,7 @@ abstract partial class Mapper {
    }
 
    public object
-   Map(IDataRecord record) {
+   Map(DbDataReader record) {
 
       var node = GetRootNode(record);
       var context = this.MappingContext;
@@ -294,14 +294,14 @@ abstract partial class Mapper {
    }
 
    public void
-   Load(object instance, IDataRecord record) {
+   Load(object instance, DbDataReader record) {
 
       var node = GetRootNode(record);
       node.Load(instance, record, this.MappingContext);
    }
 
    private protected Node
-   GetRootNode(IDataRecord record) {
+   GetRootNode(DbDataReader record) {
 
       if (_rootNode is null) {
 
@@ -440,7 +440,7 @@ abstract class Node {
       _properties?.Count > 0;
 
    public object?
-   Map(IDataRecord record, MappingContext context) {
+   Map(DbDataReader record, MappingContext context) {
 
       if (this.IsComplex) {
          return MapComplex(record, context);
@@ -450,7 +450,7 @@ abstract class Node {
    }
 
    protected object?
-   MapComplex(IDataRecord record, MappingContext context) {
+   MapComplex(DbDataReader record, MappingContext context) {
 
       if (AllColumnsNull(record)) {
          return null;
@@ -463,7 +463,7 @@ abstract class Node {
    }
 
    bool
-   AllColumnsNull(IDataRecord record) {
+   AllColumnsNull(DbDataReader record) {
 
       if (this.IsComplex) {
 
@@ -480,7 +480,7 @@ abstract class Node {
    }
 
    protected object?
-   MapSimple(IDataRecord record, MappingContext context) {
+   MapSimple(DbDataReader record, MappingContext context) {
 
       var isNull = record.IsDBNull(this.ColumnOrdinal);
       var value = (isNull) ? null : record.GetValue(this.ColumnOrdinal);
@@ -489,10 +489,10 @@ abstract class Node {
    }
 
    public abstract object
-   Create(IDataRecord record, MappingContext context);
+   Create(DbDataReader record, MappingContext context);
 
    public void
-   Load(object instance, IDataRecord record, MappingContext context) {
+   Load(object instance, DbDataReader record, MappingContext context) {
 
       for (int i = 0; i < this.Properties.Count; i++) {
 
@@ -516,7 +516,7 @@ abstract class Node {
    }
 
    void
-   Read(object instance, IDataRecord record, MappingContext context) {
+   Read(object instance, DbDataReader record, MappingContext context) {
 
       var value = Map(record, context);
       Set(instance, value, context);

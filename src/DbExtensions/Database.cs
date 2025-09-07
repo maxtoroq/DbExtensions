@@ -24,7 +24,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using IsolationLevel = System.Data.IsolationLevel;
 
 namespace DbExtensions;
 
@@ -45,14 +44,14 @@ public partial class Database : IDisposable {
    /// Gets the connection to associate with new commands.
    /// </summary>
 
-   public IDbConnection
+   public DbConnection
    Connection { get; }
 
    /// <summary>
    /// Gets or sets a transaction to associate with new commands.
    /// </summary>		
 
-   public IDbTransaction?
+   public DbTransaction?
    Transaction { get; set; }
 
    /// <summary>
@@ -96,7 +95,7 @@ public partial class Database : IDisposable {
    /// <param name="connection">The connection.</param>
 
    public
-   Database(IDbConnection connection) {
+   Database(DbConnection connection) {
 
       ArgumentNullException.ThrowIfNull(connection);
 
@@ -106,7 +105,7 @@ public partial class Database : IDisposable {
    }
 
    internal // Used by tests
-   Database(IDbConnection connection, string providerInvariantName) {
+   Database(DbConnection connection, string providerInvariantName) {
 
       ArgumentNullException.ThrowIfNull(connection);
       ArgumentNullException.ThrowIfNull(providerInvariantName);
@@ -136,8 +135,7 @@ public partial class Database : IDisposable {
    DbCommandBuilder?
    CreateCommandBuilder(string providerInvariantName) {
 
-      var factory = ((this.Connection is DbConnection dbConn) ?
-         DbProviderFactories.GetFactory(dbConn) : null)
+      var factory = DbProviderFactories.GetFactory(this.Connection)
          ?? DbProviderFactories.GetFactory(providerInvariantName);
 
       return factory.CreateCommandBuilder();
@@ -175,7 +173,7 @@ public partial class Database : IDisposable {
    /// <remarks>
    /// This method returns a virtual transaction that wraps an existing or new transaction.
    /// By calling <see cref="IDbTransaction.Commit()"/> on the returned object, this object
-   /// will then call <see cref="IDbTransaction.Commit()"/> on the wrapped transaction if the
+   /// will then call <see cref="DbTransaction.Commit()"/> on the wrapped transaction if the
    /// transaction was just created, or do nothing if it was previously created.
    /// <para>
    /// Calls to this method can be nested, like in the following example:
@@ -287,11 +285,11 @@ public partial class Database : IDisposable {
    /// </summary>
    /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
    /// <param name="query">The query.</param>
-   /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="IDataRecord"/> object.</param>
+   /// <param name="mapper">The delegate for creating <typeparamref name="TResult"/> objects from an <see cref="DbDataReader"/> object.</param>
    /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
 
    public IEnumerable<TResult>
-   Map<TResult>([InterpolatedString] SqlBuilder query, Func<IDataRecord, TResult> mapper) {
+   Map<TResult>([InterpolatedString] SqlBuilder query, Func<DbDataReader, TResult> mapper) {
 
       ArgumentNullException.ThrowIfNull(query);
       ArgumentNullException.ThrowIfNull(mapper);
@@ -326,16 +324,16 @@ public partial class Database : IDisposable {
    }
 
    /// <summary>
-   /// Creates and returns an <see cref="IDbCommand"/> object from the specified <paramref name="sqlBuilder"/>.
+   /// Creates and returns a <see cref="DbCommand"/> object from the specified <paramref name="sqlBuilder"/>.
    /// </summary>
    /// <param name="sqlBuilder">The <see cref="SqlBuilder"/> that provides the command's text and parameters.</param>
    /// <returns>
-   /// A new <see cref="IDbCommand"/> object whose <see cref="IDbCommand.CommandText"/> property
-   /// is initialized with the <paramref name="sqlBuilder"/>'s string representation, and whose <see cref="IDbCommand.Parameters"/>
+   /// A new <see cref="DbCommand"/> object with its <see cref="DbCommand.CommandText"/> property
+   /// initialized with the <paramref name="sqlBuilder"/>'s string representation, and its <see cref="DbCommand.Parameters"/>
    /// property is initialized with the values from the <see cref="SqlBuilder.ParameterValues"/> property of the <paramref name="sqlBuilder"/> parameter.
    /// </returns>
 
-   public virtual IDbCommand
+   public virtual DbCommand
    CreateCommand([InterpolatedString] SqlBuilder sqlBuilder) {
 
       ArgumentNullException.ThrowIfNull(sqlBuilder);
@@ -364,7 +362,7 @@ public partial class Database : IDisposable {
 
          var paramValue = parameters[i];
 
-         var dbParam = paramValue as IDataParameter;
+         var dbParam = paramValue as DbParameter;
 
          if (dbParam is null) {
             dbParam = command.CreateParameter();
@@ -435,11 +433,11 @@ public partial class Database : IDisposable {
    }
 
    internal void
-   Trace(IDbCommand command, int? affectedRecords = null, bool error = false) =>
+   Trace(DbCommand command, int? affectedRecords = null, bool error = false) =>
       Trace(command, this.Configuration.Log, affectedRecords, error);
 
    internal static void
-   Trace(IDbCommand command, TextWriter? log, int? affectedRecords = null, bool error = false) {
+   Trace(DbCommand command, TextWriter? log, int? affectedRecords = null, bool error = false) {
 
       if (log is not null) {
 
@@ -453,7 +451,7 @@ public partial class Database : IDisposable {
 
          for (int i = 0; i < command.Parameters.Count; i++) {
 
-            var param = command.Parameters[i] as IDbDataParameter;
+            var param = command.Parameters[i];
 
             if (param is not null) {
                log.WriteLine(String.Create(log.FormatProvider, $"-- {param.ParameterName}: {param.Direction} {param.DbType} (Size = {param.Size}) [{param.Value}]"));
@@ -523,14 +521,14 @@ public partial class Database : IDisposable {
 
    sealed class ConnectionHolder : IDisposable {
 
-      readonly IDbConnection
+      readonly DbConnection
       _conn;
 
       readonly bool
       _prevStateWasClosed;
 
       public
-      ConnectionHolder(IDbConnection conn) {
+      ConnectionHolder(DbConnection conn) {
 
          _conn = conn;
          _prevStateWasClosed = (conn.State == ConnectionState.Closed);
@@ -556,26 +554,31 @@ public partial class Database : IDisposable {
       readonly Database
       _db;
 
+      readonly IsolationLevel
+      _isolationLevel;
+
+      readonly DbConnection
+      _conn;
+
       readonly IDisposable
       _connHolder;
 
-      readonly IDbTransaction?
+      readonly DbTransaction?
       _tx;
 
-      public IDbConnection?
-      Connection { get; }
+      IDbConnection?
+      IDbTransaction.Connection => _conn;
 
-      public IsolationLevel
-      IsolationLevel { get; }
+      IsolationLevel
+      IDbTransaction.IsolationLevel => _isolationLevel;
 
       public
       WrappedTransaction(Database db, IsolationLevel isolationLevel) {
 
          _db = db;
+         _isolationLevel = isolationLevel;
+         _conn = _db.Connection;
          _connHolder = _db.EnsureConnectionOpen();
-
-         this.Connection = _db.Connection;
-         this.IsolationLevel = isolationLevel;
 
          try {
 
@@ -693,7 +696,7 @@ public sealed partial class DatabaseConfiguration {
    QuoteSuffix { get; set; } = "]";
 
    /// <summary>
-   /// Specifies a function that prepares a parameter name to be used on <see cref="IDataParameter.ParameterName"/>.
+   /// Specifies a function that prepares a parameter name to be used on <see cref="DbParameter.ParameterName"/>.
    /// </summary>
 
    public Func<string, string>
@@ -817,10 +820,10 @@ public class ChangeConflictException : Exception {
 
 sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IEnumerator<TResult>, IEnumerator, IDisposable {
 
-   readonly IDbCommand
+   readonly DbCommand
    _command;
 
-   readonly Func<IDataRecord, TResult>
+   readonly Func<DbDataReader, TResult>
    _mapper;
 
    readonly TextWriter?
@@ -832,7 +835,7 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IEn
    bool
    _used;
 
-   IDataReader?
+   DbDataReader?
    _reader;
 
    TResult
@@ -846,7 +849,7 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IEn
 
 #pragma warning disable CS8618
    public
-   MappingEnumerable(IDbCommand command, Func<IDataRecord, TResult> mapper, TextWriter? logger) {
+   MappingEnumerable(DbCommand command, Func<DbDataReader, TResult> mapper, TextWriter? logger) {
 #pragma warning restore CS8618
 
       var conn = command.Connection

@@ -17,7 +17,6 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Globalization;
@@ -143,19 +142,19 @@ partial class Mapper {
 
 sealed class PocoMapper : Mapper {
 
-   static readonly ConcurrentDictionary<CacheKey, Func<IDataRecord, MappingContext, object>>
+   static readonly ConcurrentDictionary<CacheKey, Func<DbDataReader, MappingContext, object>>
    _compiledMapCache = new();
 
-   static readonly ConcurrentDictionary<CacheKey, Action<IDataRecord, MappingContext, object>>
+   static readonly ConcurrentDictionary<CacheKey, Action<DbDataReader, MappingContext, object>>
    _compiledLoadCache = new();
 
    readonly Type
    _type;
 
-   Func<IDataRecord, MappingContext, object>?
+   Func<DbDataReader, MappingContext, object>?
    _compiledMapFn;
 
-   Action<IDataRecord, MappingContext, object>?
+   Action<DbDataReader, MappingContext, object>?
    _compiledLoadFn;
 
    public Dictionary<string[], CollectionLoader>?
@@ -170,13 +169,13 @@ sealed class PocoMapper : Mapper {
    }
 
    public object
-   PocoMap(IDataRecord record) {
+   PocoMap(DbDataReader record) {
 
       if (_compiledMapFn is null) {
 
          var arg = new CacheArg(this, record);
 
-         static Func<IDataRecord, MappingContext, object> fnFactory(CacheKey k, CacheArg arg) =>
+         static Func<DbDataReader, MappingContext, object> fnFactory(CacheKey k, CacheArg arg) =>
             ((PocoNode)arg.Mapper.GetRootNode(arg.Record)).CompileMap();
 
          _compiledMapFn = (record.FieldCount > 0) ?
@@ -190,13 +189,13 @@ sealed class PocoMapper : Mapper {
    }
 
    public void
-   PocoLoad(object instance, IDataRecord record) {
+   PocoLoad(object instance, DbDataReader record) {
 
       if (_compiledLoadFn is null) {
 
          var arg = new CacheArg(this, record);
 
-         static Action<IDataRecord, MappingContext, object> fnFactory(CacheKey k, CacheArg arg) =>
+         static Action<DbDataReader, MappingContext, object> fnFactory(CacheKey k, CacheArg arg) =>
             ((PocoNode)arg.Mapper.GetRootNode(arg.Record)).CompileLoad();
 
          _compiledLoadFn = (record.FieldCount > 0) ?
@@ -208,7 +207,7 @@ sealed class PocoMapper : Mapper {
    }
 
    static CacheKey
-   BuildCacheKey(Type type, IDataRecord record) {
+   BuildCacheKey(Type type, DbDataReader record) {
 
       var fieldCount = record.FieldCount;
       string names;
@@ -326,7 +325,7 @@ sealed class PocoMapper : Mapper {
 
    readonly record struct CacheKey(Type Type, string Names);
 
-   readonly record struct CacheArg(PocoMapper Mapper, IDataRecord Record);
+   readonly record struct CacheArg(PocoMapper Mapper, DbDataReader Record);
 }
 
 partial class MappingContext {
@@ -335,7 +334,7 @@ partial class MappingContext {
    ManyLoaders;
 
    public void
-   LoadMany(int nodeHash, object instance, IDataRecord record) {
+   LoadMany(int nodeHash, object instance, DbDataReader record) {
 
       if (this.ManyLoaders?.TryGetValue(nodeHash, out var colLoaders) == true
          && colLoaders.Count > 0) {
@@ -345,8 +344,7 @@ partial class MappingContext {
             // we close the data reader to allow for collections to be loaded
             // using the same connection (for providers that do not support MARS)
 
-            var reader = record as IDataReader;
-            reader?.Close();
+            record.Close();
          }
 
          foreach (var col in colLoaders) {
@@ -443,7 +441,7 @@ sealed partial class PocoNode : Node {
       (CollectionAccessor)_accessorCache.GetOrAdd(property, static p => CollectionAccessor.Create(p.ReflectedType!, p));
 
    public override object
-   Create(IDataRecord record, MappingContext context) =>
+   Create(DbDataReader record, MappingContext context) =>
       throw new NotImplementedException();
 
    protected override object?
@@ -705,17 +703,17 @@ partial class PocoNode {
    ColumnAttribute => _columnAttribute
       ??= this.Property?.GetCustomAttribute<ColumnAttribute>();
 
-   internal Func<IDataRecord, MappingContext, object>
+   internal Func<DbDataReader, MappingContext, object>
    CompileMap() {
 
-      var recordParam = Expression.Parameter(typeof(IDataRecord));
+      var recordParam = Expression.Parameter(typeof(DbDataReader));
       var contextParam = Expression.Parameter(typeof(MappingContext));
 
       var statements = new List<Expression>();
       var varExpr = GenerateExpressionComplex(statements, recordParam, contextParam);
       statements.Add(Expression.Convert(varExpr, typeof(object)));
 
-      var lambda = Expression.Lambda<Func<IDataRecord, MappingContext, object>>(
+      var lambda = Expression.Lambda<Func<DbDataReader, MappingContext, object>>(
          Expression.Block([varExpr], statements),
          recordParam,
          contextParam);
@@ -723,10 +721,10 @@ partial class PocoNode {
       return lambda.Compile();
    }
 
-   internal Action<IDataRecord, MappingContext, object>
+   internal Action<DbDataReader, MappingContext, object>
    CompileLoad() {
 
-      var recordParam = Expression.Parameter(typeof(IDataRecord));
+      var recordParam = Expression.Parameter(typeof(DbDataReader));
       var contextParam = Expression.Parameter(typeof(MappingContext));
       var instanceParam = Expression.Parameter(typeof(object));
       var varExpr = Expression.Variable(this.Type);
@@ -737,7 +735,7 @@ partial class PocoNode {
 
       GenerateLoad(varExpr, statements, recordParam, contextParam);
 
-      var lambda = Expression.Lambda<Action<IDataRecord, MappingContext, object>>(
+      var lambda = Expression.Lambda<Action<DbDataReader, MappingContext, object>>(
          Expression.Block([varExpr], statements),
          recordParam,
          contextParam,
@@ -969,7 +967,7 @@ partial class PocoNode {
       } else {
 
          valueExpr = Expression.Call(
-            Expression.Convert(recordParam, typeof(DbDataReader)),
+            recordParam,
             References.GetFieldValueOpenMethod.MakeGenericMethod(columnType),
             ordinalExpr);
       }
@@ -1062,8 +1060,8 @@ partial class PocoNode {
          .GetMethod(nameof(Enum.Parse), 1, BindingFlags.Public | BindingFlags.Static, null, [typeof(string)], null)!;
 
       public static readonly MethodInfo
-      GetFieldTypeMethod = typeof(IDataRecord)
-         .GetMethod(nameof(IDataRecord.GetFieldType))!;
+      GetFieldTypeMethod = typeof(DbDataReader)
+         .GetMethod(nameof(DbDataReader.GetFieldType))!;
 
       public static readonly MethodInfo
       GetFieldValueOpenMethod = typeof(DbDataReader)
@@ -1074,8 +1072,8 @@ partial class PocoNode {
          .GetProperty(nameof(CultureInfo.InvariantCulture))!;
 
       public static readonly MethodInfo
-      IsDbNullMethod = typeof(IDataRecord)
-         .GetMethod(nameof(IDataRecord.IsDBNull))!;
+      IsDbNullMethod = typeof(DbDataReader)
+         .GetMethod(nameof(DbDataReader.IsDBNull))!;
 
       public static readonly MethodInfo
       LoadManyMethod = typeof(MappingContext)
@@ -1083,18 +1081,18 @@ partial class PocoNode {
 
       public static readonly Dictionary<TypeCode, MethodInfo>
       RecordGetMethods = new() {
-         {  TypeCode.Boolean, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetBoolean))! },
-         {  TypeCode.Byte, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetByte))! },
-         {  TypeCode.Char, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetChar))! },
-         {  TypeCode.DateTime, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetDateTime))! },
-         {  TypeCode.Decimal, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetDecimal))! },
-         {  TypeCode.Double, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetDouble))! },
-         {  TypeCode.Int16, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetInt16))! },
-         {  TypeCode.Int32, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetInt32))! },
-         {  TypeCode.Int64, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetInt64))! },
-         {  TypeCode.Object, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetValue))! },
-         {  TypeCode.Single, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetFloat))! },
-         {  TypeCode.String, typeof(IDataRecord).GetMethod(nameof(IDataRecord.GetString))! },
+         {  TypeCode.Boolean, typeof(DbDataReader).GetMethod(nameof(DbDataReader.GetBoolean))! },
+         {  TypeCode.Byte, typeof(DbDataReader).GetMethod(nameof(DbDataReader.GetByte))! },
+         {  TypeCode.Char, typeof(DbDataReader).GetMethod(nameof(DbDataReader.GetChar))! },
+         {  TypeCode.DateTime, typeof(DbDataReader).GetMethod(nameof(DbDataReader.GetDateTime))! },
+         {  TypeCode.Decimal, typeof(DbDataReader).GetMethod(nameof(DbDataReader.GetDecimal))! },
+         {  TypeCode.Double, typeof(DbDataReader).GetMethod(nameof(DbDataReader.GetDouble))! },
+         {  TypeCode.Int16, typeof(DbDataReader).GetMethod(nameof(DbDataReader.GetInt16))! },
+         {  TypeCode.Int32, typeof(DbDataReader).GetMethod(nameof(DbDataReader.GetInt32))! },
+         {  TypeCode.Int64, typeof(DbDataReader).GetMethod(nameof(DbDataReader.GetInt64))! },
+         {  TypeCode.Object, typeof(DbDataReader).GetMethod(nameof(DbDataReader.GetValue))! },
+         {  TypeCode.Single, typeof(DbDataReader).GetMethod(nameof(DbDataReader.GetFloat))! },
+         {  TypeCode.String, typeof(DbDataReader).GetMethod(nameof(DbDataReader.GetString))! },
       };
    }
 }

@@ -15,7 +15,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Dynamic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -132,7 +132,7 @@ sealed class DynamicNode : Node {
    }
 
    public override object
-   Create(IDataRecord record, MappingContext context) =>
+   Create(DbDataReader record, MappingContext context) =>
       new ExpandoObject();
 
    protected override object?
