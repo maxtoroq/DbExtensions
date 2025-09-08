@@ -737,7 +737,7 @@ public sealed partial class DatabaseConfiguration {
 #pragma warning restore CS8618
 
       switch (providerInvariantName) {
-         case "System.Data.SqlClient":
+         case "Microsoft.Data.SqlClient":
             this.LastInsertIdCommand = "SELECT SCOPE_IDENTITY()";
             this.SqlDialect = SqlDialect.TSql;
             break;
