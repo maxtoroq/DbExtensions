@@ -406,8 +406,8 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       } else if (hasTake) {
 
-         var selectBuilder = new SqlBuilder()
-            .SELECT($"TOP({takeBuffer!.Value}) *");
+         var selectBuilder = new SqlBuilder("TOP() *".Length, 1)
+            .Append($"TOP({takeBuffer!.Value}) *");
 
          var query = GetDefiningQuery(ignoreBuffer: true, super: true, select: selectBuilder);
 
