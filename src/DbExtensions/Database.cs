@@ -234,49 +234,47 @@ public partial class Database : IDisposable {
 
       var command = CreateCommand(nonQuery);
 
-      using (EnsureConnectionOpen()) {
-         using (var tx = (affect > -1 ? EnsureInTransaction() : null)) {
+      using var conn = EnsureConnectionOpen();
+      using var tx = (affect > -1 ? EnsureInTransaction() : null);
 
-            int affectedRecords;
+      int affectedRecords;
 
-            try {
-               affectedRecords = command.ExecuteNonQuery();
-            } catch {
+      try {
+         affectedRecords = command.ExecuteNonQuery();
+      } catch {
 
-               Trace(command, error: true);
-               throw;
-            }
+         Trace(command, error: true);
+         throw;
+      }
 
-            Trace(command, affectedRecords);
+      Trace(command, affectedRecords);
 
-            if (tx is not null
-               && affectedRecords != affect) {
+      if (tx is not null
+         && affectedRecords != affect) {
 
-               var errorMessage = default(string);
+         var errorMessage = default(string);
 
-               if (exact) {
+         if (exact) {
 
-                  errorMessage = String.Create(
-                     CultureInfo.InvariantCulture,
-                     $"The number of affected records should be {affect}, the actual number is {affectedRecords}.");
+            errorMessage = String.Create(
+               CultureInfo.InvariantCulture,
+               $"The number of affected records should be {affect}, the actual number is {affectedRecords}.");
 
-               } else if (affectedRecords > affect) {
+         } else if (affectedRecords > affect) {
 
-                  errorMessage = String.Create(
-                     CultureInfo.InvariantCulture,
-                     $"The number of affected records should be {affect} or lower, the actual number is {affectedRecords}.");
-               }
+            errorMessage = String.Create(
+               CultureInfo.InvariantCulture,
+               $"The number of affected records should be {affect} or lower, the actual number is {affectedRecords}.");
+         }
 
-               if (errorMessage is not null) {
-                  throw new ChangeConflictException(errorMessage);
-               }
-            }
-
-            tx?.Commit();
-
-            return affectedRecords;
+         if (errorMessage is not null) {
+            throw new ChangeConflictException(errorMessage);
          }
       }
+
+      tx?.Commit();
+
+      return affectedRecords;
    }
 
    /// <summary>
