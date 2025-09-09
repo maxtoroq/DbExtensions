@@ -235,7 +235,14 @@ public partial class Database : IDisposable {
       var command = CreateCommand(nonQuery);
 
       using var conn = EnsureConnectionOpen();
-      using var tx = (affect > -1 ? EnsureInTransaction() : null);
+      using var tx = (affect > -1) ? (WrappedTransaction)EnsureInTransaction() : null;
+
+      if (tx?.Started == true) {
+
+         Debug.Assert(command.Transaction is null);
+
+         command.Transaction = this.Transaction;
+      }
 
       int affectedRecords;
 
@@ -247,34 +254,34 @@ public partial class Database : IDisposable {
          throw;
       }
 
+      OnExecuted(command, affect, exact, tx, affectedRecords);
+
+      tx?.Commit();
+
+      return affectedRecords;
+   }
+
+   void
+   OnExecuted(DbCommand command, int affect, bool exact, IDbTransaction? tx, int affectedRecords) {
+
       Trace(command, affectedRecords);
 
       if (tx is not null
          && affectedRecords != affect) {
 
-         var errorMessage = default(string);
-
          if (exact) {
 
-            errorMessage = String.Create(
+            throw new ChangeConflictException(String.Create(
                CultureInfo.InvariantCulture,
-               $"The number of affected records should be {affect}, the actual number is {affectedRecords}.");
+               $"The number of affected records should be {affect}, the actual number is {affectedRecords}."));
 
          } else if (affectedRecords > affect) {
 
-            errorMessage = String.Create(
+            throw new ChangeConflictException(String.Create(
                CultureInfo.InvariantCulture,
-               $"The number of affected records should be {affect} or lower, the actual number is {affectedRecords}.");
-         }
-
-         if (errorMessage is not null) {
-            throw new ChangeConflictException(errorMessage);
+               $"The number of affected records should be {affect} or lower, the actual number is {affectedRecords}."));
          }
       }
-
-      tx?.Commit();
-
-      return affectedRecords;
    }
 
    /// <summary>
@@ -569,6 +576,9 @@ public partial class Database : IDisposable {
 
       IsolationLevel
       IDbTransaction.IsolationLevel => _isolationLevel;
+
+      public bool
+      Started => _tx is not null;
 
       public
       WrappedTransaction(Database db, IsolationLevel isolationLevel) {
