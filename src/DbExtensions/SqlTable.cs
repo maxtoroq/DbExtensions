@@ -585,22 +585,49 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
       ArgumentNullException.ThrowIfNull(entity);
 
-      var insertSql = this.CommandBuilder.BuildInsertStatementForEntity(entity);
-
       var idMember = _metaType.DBGeneratedIdentityMember;
+
+      var outputIdMember = idMember is not null
+         && _db.Configuration.SqlDialect is SqlDialect.TSql;
 
       var syncMembers = _metaType.PersistentDataMembers
          .Where(m => m.AutoSync is AutoSync.Always or AutoSync.OnInsert
             && m != idMember)
          .ToArray();
 
+      var insertSql = this.CommandBuilder.BuildInsertStatementForEntity(entity, outputIdMember);
+      var id = default(object);
+
       using (var tx = _db.EnsureInTransaction()) {
 
-         _db.Execute(insertSql, affect: 1, exact: true);
+         if (outputIdMember) {
+
+            // this block emulates Database.Execute()
+
+            var cmd = _db.CreateCommand(insertSql);
+
+            try {
+               id = cmd.ExecuteScalar();
+
+            } catch {
+
+               _db.Trace(cmd, error: true);
+               throw;
+            }
+
+            _db.Trace(cmd);
+
+         } else {
+
+            _db.Execute(insertSql, affect: 1, exact: true);
+
+            if (idMember is not null) {
+               id = _db.LastInsertId();
+            }
+         }
 
          if (idMember is not null) {
 
-            var id = _db.LastInsertId();
             var convertedId = Convert.ChangeType(id, idMember.Type, CultureInfo.InvariantCulture);
             var entityObj = (object)entity;
 
@@ -1201,7 +1228,11 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    /// <returns>The INSERT command for <paramref name="entity"/>.</returns>
 
    public SqlBuilder
-   BuildInsertStatementForEntity(TEntity entity) {
+   BuildInsertStatementForEntity(TEntity entity) =>
+      BuildInsertStatementForEntity(entity, false);
+
+   internal SqlBuilder
+   BuildInsertStatementForEntity(TEntity entity, bool outputIdMember) {
 
       ArgumentNullException.ThrowIfNull(entity);
 
@@ -1229,7 +1260,16 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
          sb.Append(QuoteIdentifier(insertingMembers[i].MappedName));
       }
 
-      sb.AppendLine(")")
+      sb.Append(')');
+
+      if (outputIdMember
+         && _metaType.DBGeneratedIdentityMember is { } idMember) {
+
+         sb.AppendLine()
+            .Append("OUTPUT INSERTED." + QuoteIdentifier(idMember.MappedName));
+      }
+
+      sb.AppendLine()
          .Append("VALUES (");
 
       for (int i = 0; i < insertingMembers.Length; i++) {
