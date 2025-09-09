@@ -30,7 +30,7 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Use_Multipart_Identifier() {
 
-         var db = MockDatabase("System.Data.SqlClient");
+         var db = MockDatabase("Microsoft.Data.SqlClient");
 
          SqlSet set = db.Table<SqlTable.Model2.Product>();
 

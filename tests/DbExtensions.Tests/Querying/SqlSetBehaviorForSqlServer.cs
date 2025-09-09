@@ -7,7 +7,7 @@ namespace DbExtensions.Tests.Querying {
    [TestFixture]
    public class SqlSetBehaviorForSqlServer {
 
-      readonly Database db = MockDatabase("System.Data.SqlClient");
+      readonly Database db = MockDatabase("Microsoft.Data.SqlClient");
 
       [Test]
       public void Use_Parameter_On_Skip() {
