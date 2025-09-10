@@ -1239,7 +1239,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
       return new SqlSet<TResult>(this, fromSelect, buffer);
    }
 
-   private protected override IEnumerable
+   private protected override IEnumerable<TResult>
    Map(bool singleResult) {
 
       if (_explicitMapper is not null) {
@@ -1249,7 +1249,11 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
          return _db.Map(query, _explicitMapper);
       }
 
-      return base.Map(singleResult).Cast<TResult>();
+#if DBEX_NO_POCO
+      throw new InvalidOperationException("Cannot enumerate this set.");
+#else
+      return PocoMapTyped(singleResult);
+#endif
    }
 
    // ISqlSet<SqlSet<TResult>,TResult> Members
@@ -1265,7 +1269,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
 
    IEnumerable<TResult>
    AsEnumerable(bool singleResult) =>
-      (IEnumerable<TResult>)Map(singleResult);
+      Map(singleResult);
 
    /// <summary>
    /// Casts the elements of the set to the specified type.

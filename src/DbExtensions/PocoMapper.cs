@@ -114,13 +114,32 @@ partial class SqlSet {
    IEnumerable
    PocoMap(bool singleResult) {
 
+      var mapper = CreatePocoMapper(singleResult);
+
+      return _db.Map(GetDefiningQuery(clone: false), mapper.PocoMap);
+   }
+
+   private protected PocoMapper
+   CreatePocoMapper(bool singleResult) {
+
       Debug.Assert(this.ResultType is not null);
 
       var mapper = _db.CreatePocoMapper(this.ResultType);
       mapper.SingleResult = singleResult;
       mapper.ManyIncludes = this.ManyIncludes;
 
-      return _db.Map(GetDefiningQuery(clone: false), mapper.PocoMap);
+      return mapper;
+   }
+}
+
+partial class SqlSet<TResult> {
+
+   IEnumerable<TResult>
+   PocoMapTyped(bool singleResult) {
+
+      var mapper = CreatePocoMapper(singleResult);
+
+      return _db.Map(GetDefiningQuery(clone: false), r => (TResult)mapper.PocoMap(r));
    }
 }
 
