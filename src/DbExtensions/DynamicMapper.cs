@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Dynamic;
@@ -56,13 +55,13 @@ partial class Database {
 
 partial class SqlSet {
 
-   IEnumerable
-   DynamicMap(bool singleResult) {
+   DynamicMapper
+   CreateDynamicMapper(bool singleResult) {
 
       var mapper = _db.CreateDynamicMapper();
       mapper.SingleResult = singleResult;
 
-      return _db.Map(GetDefiningQuery(clone: false), mapper.Map);
+      return mapper;
    }
 }
 

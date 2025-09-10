@@ -537,19 +537,25 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    private protected virtual IEnumerable
    Map(bool singleResult) {
 
+      var query = GetDefiningQuery(clone: false);
+
       if (this.ResultType is not null) {
 #if DBEX_NO_POCO
          throw new InvalidOperationException("Cannot enumerate this set.");
 #else
-         return PocoMap(singleResult);
+         var mapper = CreatePocoMapper(singleResult);
+
+         return _db.Map(query, mapper.PocoMap);
+#endif
+      } else {
+#if DBEX_NO_DYN
+         throw new InvalidOperationException("Cannot enumerate this set unless you specify a result type.");
+#else
+         var mapper = CreateDynamicMapper(singleResult);
+
+         return _db.Map(query, mapper.Map);
 #endif
       }
-
-#if DBEX_NO_DYN
-      throw new InvalidOperationException("Cannot enumerate this set unless you specify a result type.");
-#else
-      return DynamicMap(singleResult);
-#endif
    }
 
    // ISqlSet<SqlSet,object> Members
@@ -1242,18 +1248,19 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    private protected override IEnumerable<TResult>
    Map(bool singleResult) {
 
+      var query = GetDefiningQuery(clone: false);
+
       if (_explicitMapper is not null) {
-
-         var query = GetDefiningQuery(clone: false);
-
          return _db.Map(query, _explicitMapper);
-      }
-
+      } else {
 #if DBEX_NO_POCO
-      throw new InvalidOperationException("Cannot enumerate this set.");
+         throw new InvalidOperationException("Cannot enumerate this set.");
 #else
-      return PocoMapTyped(singleResult);
+         var mapper = CreatePocoMapper(singleResult);
+
+         return _db.Map(query, r => (TResult)mapper.PocoMap(r));
 #endif
+      }
    }
 
    // ISqlSet<SqlSet<TResult>,TResult> Members
