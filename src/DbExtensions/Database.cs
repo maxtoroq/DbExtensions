@@ -159,8 +159,17 @@ public partial class Database : IDisposable {
    /// </example>
 
    public IDisposable
-   EnsureConnectionOpen() =>
-      new ConnectionHolder(this.Connection);
+   EnsureConnectionOpen() {
+
+      var conn = this.Connection;
+      var wasClosed = (conn.State == ConnectionState.Closed);
+
+      if (wasClosed) {
+         conn.Open();
+      }
+
+      return new WrappedConnection((wasClosed) ? conn : null);
+   }
 
    /// <summary>
    /// Returns a virtual transaction that you can use to ensure a code block is always executed in 
@@ -214,8 +223,26 @@ public partial class Database : IDisposable {
    /// </param>
 
    public IDbTransaction
-   EnsureInTransaction(IsolationLevel isolationLevel) =>
-      new WrappedTransaction(this, isolationLevel);
+   EnsureInTransaction(IsolationLevel isolationLevel) {
+
+      var connHolder = EnsureConnectionOpen();
+      var tx = default(DbTransaction);
+
+      try {
+
+         if (this.Transaction is null) {
+            this.Transaction = (tx = this.Connection.BeginTransaction(isolationLevel));
+            this.Configuration.Log?.WriteLine("-- TRANSACTION STARTED");
+         }
+
+      } catch {
+
+         connHolder.Dispose();
+         throw;
+      }
+
+      return new WrappedTransaction(this, tx, isolationLevel, connHolder);
+   }
 
    /// <summary>
    /// Executes the <paramref name="nonQuery"/> command. Optionally uses a transaction and validates
@@ -524,32 +551,13 @@ public partial class Database : IDisposable {
    public override string?
    ToString() => base.ToString();
 
-   sealed class ConnectionHolder : IDisposable {
-
-      readonly DbConnection
-      _conn;
-
-      readonly bool
-      _prevStateWasClosed;
-
-      public
-      ConnectionHolder(DbConnection conn) {
-
-         _conn = conn;
-         _prevStateWasClosed = (conn.State == ConnectionState.Closed);
-
-         if (_prevStateWasClosed) {
-            _conn.Open();
-         }
-      }
+   sealed class WrappedConnection(DbConnection? conn) : IDisposable {
 
       public void
       Dispose() {
 
-         if (_prevStateWasClosed
-            && _conn.State != ConnectionState.Closed) {
-
-            _conn.Close();
+         if (conn is { State: not ConnectionState.Closed }) {
+            conn.Close();
          }
       }
    }
@@ -559,20 +567,17 @@ public partial class Database : IDisposable {
       readonly Database
       _db;
 
+      readonly DbTransaction?
+      _tx;
+
       readonly IsolationLevel
       _isolationLevel;
-
-      readonly DbConnection
-      _conn;
 
       readonly IDisposable
       _connHolder;
 
-      readonly DbTransaction?
-      _tx;
-
       IDbConnection?
-      IDbTransaction.Connection => _conn;
+      IDbTransaction.Connection => _db.Connection;
 
       IsolationLevel
       IDbTransaction.IsolationLevel => _isolationLevel;
@@ -581,25 +586,11 @@ public partial class Database : IDisposable {
       Started => _tx is not null;
 
       public
-      WrappedTransaction(Database db, IsolationLevel isolationLevel) {
-
+      WrappedTransaction(Database db, DbTransaction? tx, IsolationLevel isolationLevel, IDisposable connHolder) {
          _db = db;
+         _tx = tx;
          _isolationLevel = isolationLevel;
-         _conn = _db.Connection;
-         _connHolder = _db.EnsureConnectionOpen();
-
-         try {
-
-            if (_db.Transaction is null) {
-               _db.Transaction = (_tx = _db.Connection.BeginTransaction(isolationLevel));
-               _db.Configuration.Log?.WriteLine("-- TRANSACTION STARTED");
-            }
-
-         } catch {
-
-            _connHolder.Dispose();
-            throw;
-         }
+         _connHolder = connHolder;
       }
 
       public void
