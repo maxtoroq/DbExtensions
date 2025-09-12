@@ -1,6 +1,6 @@
 SqlBuilder._ElseIf Method
 =========================
-Appends *handler* to the current clause if *condition* is true and an antecedent call to [_If(Boolean, ConditionalInterpolatedStringHandler)][1] or **_ElseIf(Boolean, ConditionalElseInterpolatedStringHandler)** used a false condition.
+Appends *handler* to the current clause if *condition* is true and an antecedent call to [_If(Boolean, ConditionalStringHandler)][1] or **_ElseIf(Boolean, ConditionalElseStringHandler)** used a false condition.
   
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
@@ -11,7 +11,7 @@ Syntax
 ```csharp
 public SqlBuilder _ElseIf(
 	bool condition,
-	ref ConditionalElseInterpolatedStringHandler handler
+	ref ConditionalElseStringHandler handler
 )
 ```
 
@@ -20,7 +20,7 @@ public SqlBuilder _ElseIf(
 ##### *condition*  [Boolean][3]
 true to append *handler* to the current clause; otherwise, false.
 
-##### *handler*  ConditionalElseInterpolatedStringHandler
+##### *handler*  ConditionalElseStringHandler
 The interpolated string that represents the body of the current clause.
 
 #### Return Value

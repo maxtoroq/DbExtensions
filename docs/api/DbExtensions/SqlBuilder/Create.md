@@ -1,5 +1,5 @@
-SqlBuilder.Create(SqlBuilder.AppendInterpolatedStringHandler) Method
-====================================================================
+SqlBuilder.Create(SqlBuilder.AppendStringHandler) Method
+========================================================
 Initializes a new instance of the [SqlBuilder][1] class using the provided interpolated string.
   
 **Namespace:** [DbExtensions][2]  
@@ -8,10 +8,10 @@ Initializes a new instance of the [SqlBuilder][1] class using the provided inter
 Overloads
 ---------
 
-|                                  | Name                                        | Description                                                                                     |
-| -------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | **Create(AppendInterpolatedStringHandler)** | Initializes a new instance of the [SqlBuilder][1] class using the provided interpolated string. |
-| ![Public method]![Static member] | [Create(String)][3]                         | Initializes a new instance of the [SqlBuilder][1] class using the provided text.                |
+|                                  | Name                            | Description                                                                                     |
+| -------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | **Create(AppendStringHandler)** | Initializes a new instance of the [SqlBuilder][1] class using the provided interpolated string. |
+| ![Public method]![Static member] | [Create(String)][3]             | Initializes a new instance of the [SqlBuilder][1] class using the provided text.                |
 
 
 Syntax
@@ -19,13 +19,13 @@ Syntax
 
 ```csharp
 public static SqlBuilder Create(
-	ref AppendInterpolatedStringHandler handler
+	ref AppendStringHandler handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  AppendInterpolatedStringHandler
+##### *handler*  AppendStringHandler
 The interpolated string.
 
 #### Return Value

@@ -1,5 +1,5 @@
-SqlBuilder.INSERT_INTO(SqlInterpolatedStringHandler&lt;SqlClause.INSERT_INTO>) Method
-=====================================================================================
+SqlBuilder.INSERT_INTO(SqlBuilder.ClauseStringHandler&lt;SqlClause.INSERT_INTO>) Method
+=======================================================================================
 Appends the INSERT INTO clause using the provided interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,10 +8,10 @@ Appends the INSERT INTO clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                                    | Description                                                                      |
-| ---------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| ![Public method] | **INSERT_INTO(SqlInterpolatedStringHandler&lt;SqlClause.INSERT_INTO>)** | Appends the INSERT INTO clause using the provided interpolated string *handler*. |
-| ![Public method] | [INSERT_INTO(String)][2]                                                | Appends the INSERT INTO clause using the provided *text*.                        |
+|                  | Name                                                                      | Description                                                                      |
+| ---------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| ![Public method] | **INSERT_INTO(SqlBuilder.ClauseStringHandler&lt;SqlClause.INSERT_INTO>)** | Appends the INSERT INTO clause using the provided interpolated string *handler*. |
+| ![Public method] | [INSERT_INTO(String)][2]                                                  | Appends the INSERT INTO clause using the provided *text*.                        |
 
 
 Syntax
@@ -19,13 +19,13 @@ Syntax
 
 ```csharp
 public SqlBuilder INSERT_INTO(
-	ref SqlInterpolatedStringHandler<SqlClause.INSERT_INTO> handler
+	ref ClauseStringHandler<SqlClause.INSERT_INTO> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.INSERT_INTO][3]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.INSERT_INTO][3]>
 The interpolated string that represents the body of the INSERT INTO clause.
 
 #### Return Value

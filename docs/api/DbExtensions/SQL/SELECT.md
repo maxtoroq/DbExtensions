@@ -1,5 +1,5 @@
-SQL.SELECT(SqlInterpolatedStringHandler&lt;SqlClause.SELECT>) Method
-====================================================================
+SQL.SELECT(SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>) Method
+======================================================================
 Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided string interpolated *handler*.
   
 **Namespace:** [DbExtensions][2]  
@@ -8,10 +8,10 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT cl
 Overloads
 ---------
 
-|                                  | Name                                                          | Description                                                                                                                            |
-| -------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | **SELECT(SqlInterpolatedStringHandler&lt;SqlClause.SELECT>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | [SELECT(String)][3]                                           | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *text*.                        |
+|                                  | Name                                                            | Description                                                                                                                            |
+| -------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | **SELECT(SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided string interpolated *handler*. |
+| ![Public method]![Static member] | [SELECT(String)][3]                                             | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *text*.                        |
 
 
 Syntax
@@ -19,18 +19,18 @@ Syntax
 
 ```csharp
 public static SqlBuilder SELECT(
-	ref SqlInterpolatedStringHandler<SqlClause.SELECT> handler
+	ref ClauseStringHandler<SqlClause.SELECT> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.SELECT][4]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.SELECT][4]>
 The body of the SELECT clause.
 
 #### Return Value
 [SqlBuilder][1]  
- A new [SqlBuilder][1] after calling [SELECT(SqlInterpolatedStringHandler&lt;SqlClause.SELECT>)][5].
+ A new [SqlBuilder][1] after calling [SELECT(SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>)][5].
 
 See Also
 --------

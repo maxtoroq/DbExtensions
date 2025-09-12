@@ -1,6 +1,6 @@
 SqlBuilder.SELECT Method
 ========================
-Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1].
+Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1].
   
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
@@ -8,11 +8,11 @@ Sets SELECT as the next clause, to be used by subsequent calls to clause continu
 Overloads
 ---------
 
-|                  | Name                                                           | Description                                                                                                                                                     |
-| ---------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **SELECT()**                                                   | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
-| ![Public method] | [SELECT(SqlInterpolatedStringHandler&lt;SqlClause.SELECT>)][3] | Appends the SELECT clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [SELECT(String)][4]                                            | Appends the SELECT clause using the provided *text*.                                                                                                            |
+|                  | Name                                                             | Description                                                                                                                                         |
+| ---------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | **SELECT()**                                                     | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| ![Public method] | [SELECT(SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>)][3] | Appends the SELECT clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | [SELECT(String)][4]                                              | Appends the SELECT clause using the provided *text*.                                                                                                |
 
 
 Syntax

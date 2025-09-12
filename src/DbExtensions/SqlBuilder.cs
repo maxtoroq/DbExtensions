@@ -81,7 +81,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Gets or sets the next SQL clause. Used by clause continuation methods,
-   /// such as <see cref="_(String)"/> and <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_(String)"/> and <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
 
    public SqlClause?
@@ -192,7 +192,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <param name="handler">The interpolated string.</param>
 
    public static SqlBuilder
-   Create([InterpolatedString] ref AppendInterpolatedStringHandler handler) =>
+   Create([InterpolatedString] ref AppendStringHandler handler) =>
       handler.Builder;
 
    /// <summary>
@@ -315,7 +315,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   AppendClause<TClause>([InterpolatedString("")] ref SqlInterpolatedStringHandler<TClause> handler) where TClause : SqlClause, new() =>
+   AppendClause<TClause>([InterpolatedString("")] ref ClauseStringHandler<TClause> handler) where TClause : SqlClause, new() =>
       this;
 
    /// <summary>
@@ -438,7 +438,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   Append([InterpolatedString("")] ref AppendInterpolatedStringHandler handler) =>
+   Append([InterpolatedString("")] ref AppendStringHandler handler) =>
       this;
 
    /// <summary>
@@ -625,7 +625,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    [CLSCompliant(false)]
    public SqlBuilder
-   _([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.Current> handler) =>
+   _([InterpolatedString("")] ref ClauseStringHandler<SqlClause.Current> handler) =>
       this;
 
    /// <summary>
@@ -648,7 +648,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    [CLSCompliant(false)]
    public SqlBuilder
-   _If(bool condition, [InterpolatedString("", nameof(condition))] ref ConditionalInterpolatedStringHandler handler) {
+   _If(bool condition, [InterpolatedString("", nameof(condition))] ref ConditionalStringHandler handler) {
 
       _ifCondition = condition;
 
@@ -657,14 +657,14 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Appends <paramref name="handler"/> to the current clause if <paramref name="condition"/> is true
-   /// and an antecedent call to <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>
-   /// or <see cref="_ElseIf(Boolean, ref ConditionalElseInterpolatedStringHandler)"/> used a false condition.
+   /// and an antecedent call to <see cref="_If(Boolean, ref ConditionalStringHandler)"/>
+   /// or <see cref="_ElseIf(Boolean, ref ConditionalElseStringHandler)"/> used a false condition.
    /// </summary>
-   /// <inheritdoc cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)" path="*[not(self::summary)]"/>
+   /// <inheritdoc cref="_If(Boolean, ref ConditionalStringHandler)" path="*[not(self::summary)]"/>
 
    [CLSCompliant(false)]
    public SqlBuilder
-   _ElseIf(bool condition, [InterpolatedString("", nameof(condition))] ref ConditionalElseInterpolatedStringHandler handler) {
+   _ElseIf(bool condition, [InterpolatedString("", nameof(condition))] ref ConditionalElseStringHandler handler) {
 
       if (this.ElseOK) {
          _ifCondition = condition;
@@ -675,8 +675,8 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Appends <paramref name="handler"/> to the current clause if an antecedent call to
-   /// <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>
-   /// or <see cref="_ElseIf(Boolean, ref ConditionalElseInterpolatedStringHandler)"/> used a
+   /// <see cref="_If(Boolean, ref ConditionalStringHandler)"/>
+   /// or <see cref="_ElseIf(Boolean, ref ConditionalElseStringHandler)"/> used a
    /// false condition
    /// </summary>
    /// <param name="handler">The interpolated string that represents the body of the current clause.</param>
@@ -684,7 +684,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    [CLSCompliant(false)]
    public SqlBuilder
-   _Else([InterpolatedString("")] ref ConditionalElseInterpolatedStringHandler handler) =>
+   _Else([InterpolatedString("")] ref ConditionalElseStringHandler handler) =>
       this;
 #pragma warning restore IDE1006
 
@@ -695,7 +695,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   WITH([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.WITH> handler) =>
+   WITH([InterpolatedString("")] ref ClauseStringHandler<SqlClause.WITH> handler) =>
       this;
 
    /// <summary>
@@ -734,7 +734,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -749,7 +749,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   SELECT([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.SELECT> handler) =>
+   SELECT([InterpolatedString("")] ref ClauseStringHandler<SqlClause.SELECT> handler) =>
       this;
 
    /// <summary>
@@ -764,7 +764,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets FROM as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -779,7 +779,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   FROM([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.FROM> handler) =>
+   FROM([InterpolatedString("")] ref ClauseStringHandler<SqlClause.FROM> handler) =>
       this;
 
    /// <summary>
@@ -818,7 +818,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -833,7 +833,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   JOIN([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.JOIN> handler) =>
+   JOIN([InterpolatedString("")] ref ClauseStringHandler<SqlClause.JOIN> handler) =>
       this;
 
    /// <summary>
@@ -848,7 +848,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -863,7 +863,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   LEFT_JOIN([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.LEFT_JOIN> handler) =>
+   LEFT_JOIN([InterpolatedString("")] ref ClauseStringHandler<SqlClause.LEFT_JOIN> handler) =>
       this;
 
    /// <summary>
@@ -878,7 +878,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -893,7 +893,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   RIGHT_JOIN([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.RIGHT_JOIN> handler) =>
+   RIGHT_JOIN([InterpolatedString("")] ref ClauseStringHandler<SqlClause.RIGHT_JOIN> handler) =>
       this;
 
    /// <summary>
@@ -908,7 +908,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets INNER JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -923,7 +923,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   INNER_JOIN([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.INNER_JOIN> handler) =>
+   INNER_JOIN([InterpolatedString("")] ref ClauseStringHandler<SqlClause.INNER_JOIN> handler) =>
       this;
 
    /// <summary>
@@ -938,7 +938,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets CROSS JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -953,7 +953,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   CROSS_JOIN([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.CROSS_JOIN> handler) =>
+   CROSS_JOIN([InterpolatedString("")] ref ClauseStringHandler<SqlClause.CROSS_JOIN> handler) =>
       this;
 
    /// <summary>
@@ -968,7 +968,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -983,7 +983,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   WHERE([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.WHERE> handler) =>
+   WHERE([InterpolatedString("")] ref ClauseStringHandler<SqlClause.WHERE> handler) =>
       this;
 
    /// <summary>
@@ -998,7 +998,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -1013,7 +1013,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   GROUP_BY([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.GROUP_BY> handler) =>
+   GROUP_BY([InterpolatedString("")] ref ClauseStringHandler<SqlClause.GROUP_BY> handler) =>
       this;
 
    /// <summary>
@@ -1028,7 +1028,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -1043,7 +1043,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   HAVING([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.HAVING> handler) =>
+   HAVING([InterpolatedString("")] ref ClauseStringHandler<SqlClause.HAVING> handler) =>
       this;
 
    /// <summary>
@@ -1058,7 +1058,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -1073,7 +1073,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   ORDER_BY([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.ORDER_BY> handler) =>
+   ORDER_BY([InterpolatedString("")] ref ClauseStringHandler<SqlClause.ORDER_BY> handler) =>
       this;
 
    /// <summary>
@@ -1088,7 +1088,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -1103,7 +1103,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   LIMIT([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.LIMIT> handler) =>
+   LIMIT([InterpolatedString("")] ref ClauseStringHandler<SqlClause.LIMIT> handler) =>
       this;
 
    /// <summary>
@@ -1138,7 +1138,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    /// <summary>
    /// Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods,
-   /// such as <see cref="_If(Boolean, ref ConditionalInterpolatedStringHandler)"/>.
+   /// such as <see cref="_If(Boolean, ref ConditionalStringHandler)"/>.
    /// </summary>
    /// <returns>A reference to this instance after the operation has completed.</returns>
 
@@ -1153,7 +1153,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   OFFSET([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.OFFSET> handler) =>
+   OFFSET([InterpolatedString("")] ref ClauseStringHandler<SqlClause.OFFSET> handler) =>
       this;
 
    /// <summary>
@@ -1202,7 +1202,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   INSERT_INTO([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.INSERT_INTO> handler) =>
+   INSERT_INTO([InterpolatedString("")] ref ClauseStringHandler<SqlClause.INSERT_INTO> handler) =>
       this;
 
    /// <summary>
@@ -1222,7 +1222,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   DELETE_FROM([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.DELETE_FROM> handler) =>
+   DELETE_FROM([InterpolatedString("")] ref ClauseStringHandler<SqlClause.DELETE_FROM> handler) =>
       this;
 
    /// <summary>
@@ -1242,7 +1242,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   UPDATE([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.UPDATE> handler) =>
+   UPDATE([InterpolatedString("")] ref ClauseStringHandler<SqlClause.UPDATE> handler) =>
       this;
 
    /// <summary>
@@ -1262,7 +1262,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   SET([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.SET> handler) =>
+   SET([InterpolatedString("")] ref ClauseStringHandler<SqlClause.SET> handler) =>
       this;
 
    /// <summary>
@@ -1282,7 +1282,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   VALUES([InterpolatedString("")] ref SqlInterpolatedStringHandler<SqlClause.VALUES> handler) =>
+   VALUES([InterpolatedString("")] ref ClauseStringHandler<SqlClause.VALUES> handler) =>
       this;
 
    /// <summary>
@@ -1327,7 +1327,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    [InterpolatedStringHandler]
-   public struct AppendInterpolatedStringHandler {
+   public struct AppendStringHandler {
 
       internal SqlBuilder
       Builder { get; }
@@ -1335,7 +1335,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
       /// <exclude/>
 
       public
-      AppendInterpolatedStringHandler(int literalLength, int formattedCount) {
+      AppendStringHandler(int literalLength, int formattedCount) {
 
          // This constructor is used for Create(ref AppendInterpolatedStringHandler).
          // Capacity used is consistent with Create(String).
@@ -1348,7 +1348,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
       /// <exclude/>
 
       public
-      AppendInterpolatedStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder) {
+      AppendStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder) {
 
          ArgumentNullException.ThrowIfNull(sqlBuilder);
 
@@ -1372,7 +1372,47 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    [InterpolatedStringHandler]
-   public struct ConditionalInterpolatedStringHandler {
+   public struct ClauseStringHandler<TClause> where TClause : SqlClause, new() {
+
+      internal SqlBuilder
+      Builder { get; }
+
+      /// <exclude/>
+
+      public
+      ClauseStringHandler(int literalLength, int formattedCount)
+         : this(literalLength, formattedCount, new()) { }
+
+      /// <exclude/>
+
+      public
+      ClauseStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder) {
+
+         ArgumentNullException.ThrowIfNull(sqlBuilder);
+
+         this.Builder = sqlBuilder;
+
+         sqlBuilder.AppendClause<TClause>();
+      }
+
+      /// <exclude/>
+
+      public void
+      AppendLiteral(string value) =>
+         this.Builder.Buffer.Append(value);
+
+      /// <exclude/>
+
+      public void
+      AppendFormatted(object? value, int alignment = 0, string? format = null) =>
+         this.Builder.AppendPlaceholder(value, format);
+   }
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   [InterpolatedStringHandler]
+   public struct ConditionalStringHandler {
 
       readonly SqlBuilder
       _sqlBuilder;
@@ -1380,7 +1420,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
       /// <exclude/>
 
       public
-      ConditionalInterpolatedStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder, bool condition, out bool shouldAppend) {
+      ConditionalStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder, bool condition, out bool shouldAppend) {
 
          ArgumentNullException.ThrowIfNull(sqlBuilder);
 
@@ -1410,7 +1450,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    [InterpolatedStringHandler]
-   public struct ConditionalElseInterpolatedStringHandler {
+   public struct ConditionalElseStringHandler {
 
       readonly SqlBuilder
       _sqlBuilder;
@@ -1418,13 +1458,13 @@ public sealed partial class SqlBuilder : ISqlFragment {
       /// <exclude/>
 
       public
-      ConditionalElseInterpolatedStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder, out bool shouldAppend)
+      ConditionalElseStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder, out bool shouldAppend)
          : this(literalLength, formattedCount, sqlBuilder, true, out shouldAppend) { }
 
       /// <exclude/>
 
       public
-      ConditionalElseInterpolatedStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder, bool condition, out bool shouldAppend) {
+      ConditionalElseStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder, bool condition, out bool shouldAppend) {
 
          ArgumentNullException.ThrowIfNull(sqlBuilder);
 
@@ -1467,11 +1507,11 @@ public static partial class SQL {
    /// </summary>
    /// <param name="handler">The body of the WITH clause.</param>
    /// <returns>
-   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(ref SqlInterpolatedStringHandler&lt;SqlClause.WITH>)"/>.
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.WITH(ref SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>)"/>.
    /// </returns>
 
    public static SqlBuilder
-   WITH([InterpolatedString] ref SqlInterpolatedStringHandler<SqlClause.WITH> handler) =>
+   WITH([InterpolatedString] ref SqlBuilder.ClauseStringHandler<SqlClause.WITH> handler) =>
       handler.Builder;
 
    /// <summary>
@@ -1513,11 +1553,11 @@ public static partial class SQL {
    /// </summary>
    /// <param name="handler">The body of the SELECT clause.</param>
    /// <returns>
-   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.SELECT(ref SqlInterpolatedStringHandler&lt;SqlClause.SELECT>)"/>.
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.SELECT(ref SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>)"/>.
    /// </returns>
 
    public static SqlBuilder
-   SELECT([InterpolatedString] ref SqlInterpolatedStringHandler<SqlClause.SELECT> handler) =>
+   SELECT([InterpolatedString] ref SqlBuilder.ClauseStringHandler<SqlClause.SELECT> handler) =>
       handler.Builder;
 
    /// <summary>
@@ -1539,11 +1579,11 @@ public static partial class SQL {
    /// </summary>
    /// <param name="handler">The body of the INSERT INTO clause.</param>
    /// <returns>
-   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.INSERT_INTO(ref SqlInterpolatedStringHandler&lt;SqlClause.INSERT_INTO>)"/>.
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.INSERT_INTO(ref SqlBuilder.ClauseStringHandler&lt;SqlClause.INSERT_INTO>)"/>.
    /// </returns>
 
    public static SqlBuilder
-   INSERT_INTO([InterpolatedString] ref SqlInterpolatedStringHandler<SqlClause.INSERT_INTO> handler) =>
+   INSERT_INTO([InterpolatedString] ref SqlBuilder.ClauseStringHandler<SqlClause.INSERT_INTO> handler) =>
       handler.Builder;
 
    /// <summary>
@@ -1565,11 +1605,11 @@ public static partial class SQL {
    /// </summary>
    /// <param name="handler">The body of the UPDATE clause.</param>
    /// <returns>
-   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.UPDATE(ref SqlInterpolatedStringHandler&lt;SqlClause.UPDATE>)"/>.
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.UPDATE(ref SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>)"/>.
    /// </returns>
 
    public static SqlBuilder
-   UPDATE([InterpolatedString] ref SqlInterpolatedStringHandler<SqlClause.UPDATE> handler) =>
+   UPDATE([InterpolatedString] ref SqlBuilder.ClauseStringHandler<SqlClause.UPDATE> handler) =>
       handler.Builder;
 
    /// <summary>
@@ -1591,11 +1631,11 @@ public static partial class SQL {
    /// </summary>
    /// <param name="handler">The body of the DELETE FROM clause.</param>
    /// <returns>
-   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.DELETE_FROM(ref SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>)"/>.
+   /// A new <see cref="SqlBuilder"/> after calling <see cref="SqlBuilder.DELETE_FROM(ref SqlBuilder.ClauseStringHandler&lt;SqlClause.DELETE_FROM>)"/>.
    /// </returns>
 
    public static SqlBuilder
-   DELETE_FROM([InterpolatedString] ref SqlInterpolatedStringHandler<SqlClause.DELETE_FROM> handler) =>
+   DELETE_FROM([InterpolatedString] ref SqlBuilder.ClauseStringHandler<SqlClause.DELETE_FROM> handler) =>
       handler.Builder;
 
    /// <summary>
@@ -1626,46 +1666,6 @@ public static partial class SQL {
    public static new bool
    ReferenceEquals(object? objectA, object? objectB) =>
       Object.ReferenceEquals(objectA, objectB);
-}
-
-/// <exclude/>
-
-[EditorBrowsable(EditorBrowsableState.Never)]
-[InterpolatedStringHandler]
-public struct SqlInterpolatedStringHandler<TClause> where TClause : SqlClause, new() {
-
-   internal SqlBuilder
-   Builder { get; }
-
-   /// <exclude/>
-
-   public
-   SqlInterpolatedStringHandler(int literalLength, int formattedCount)
-      : this(literalLength, formattedCount, new()) { }
-
-   /// <exclude/>
-
-   public
-   SqlInterpolatedStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder) {
-
-      ArgumentNullException.ThrowIfNull(sqlBuilder);
-
-      this.Builder = sqlBuilder;
-
-      sqlBuilder.AppendClause<TClause>();
-   }
-
-   /// <exclude/>
-
-   public void
-   AppendLiteral(string value) =>
-      this.Builder.Buffer.Append(value);
-
-   /// <exclude/>
-
-   public void
-   AppendFormatted(object? value, int alignment = 0, string? format = null) =>
-      this.Builder.AppendPlaceholder(value, format);
 }
 
 /// <summary>

@@ -8,10 +8,10 @@ Filters the set based on a predicate.
 Overloads
 ---------
 
-|                  | Name                           | Description                           |
-| ---------------- | ------------------------------ | ------------------------------------- |
-| ![Public method] | [Where(SqlFragmentHandler)][2] | Filters the set based on a predicate. |
-| ![Public method] | **Where(String)**              | Filters the set based on a predicate. |
+|                  | Name                              | Description                           |
+| ---------------- | --------------------------------- | ------------------------------------- |
+| ![Public method] | [Where(OperatorStringHandler)][2] | Filters the set based on a predicate. |
+| ![Public method] | **Where(String)**                 | Filters the set based on a predicate. |
 
 
 Syntax

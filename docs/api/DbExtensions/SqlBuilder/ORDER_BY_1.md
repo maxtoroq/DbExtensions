@@ -1,5 +1,5 @@
-SqlBuilder.ORDER_BY(SqlInterpolatedStringHandler&lt;SqlClause.ORDER_BY>) Method
-===============================================================================
+SqlBuilder.ORDER_BY(SqlBuilder.ClauseStringHandler&lt;SqlClause.ORDER_BY>) Method
+=================================================================================
 Appends the ORDER BY clause using the provided interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,11 +8,11 @@ Appends the ORDER BY clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                              | Description                                                                                                                                                       |
-| ---------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [ORDER_BY()][2]                                                   | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | **ORDER_BY(SqlInterpolatedStringHandler&lt;SqlClause.ORDER_BY>)** | Appends the ORDER BY clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [ORDER_BY(String)][4]                                             | Appends the ORDER BY clause using the provided *text*.                                                                                                            |
+|                  | Name                                                                | Description                                                                                                                                           |
+| ---------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [ORDER_BY()][2]                                                     | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| ![Public method] | **ORDER_BY(SqlBuilder.ClauseStringHandler&lt;SqlClause.ORDER_BY>)** | Appends the ORDER BY clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | [ORDER_BY(String)][4]                                               | Appends the ORDER BY clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -20,13 +20,13 @@ Syntax
 
 ```csharp
 public SqlBuilder ORDER_BY(
-	ref SqlInterpolatedStringHandler<SqlClause.ORDER_BY> handler
+	ref ClauseStringHandler<SqlClause.ORDER_BY> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.ORDER_BY][5]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.ORDER_BY][5]>
 The interpolated string that represents the body of the ORDER BY clause.
 
 #### Return Value

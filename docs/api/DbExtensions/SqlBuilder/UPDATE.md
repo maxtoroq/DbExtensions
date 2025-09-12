@@ -1,5 +1,5 @@
-SqlBuilder.UPDATE(SqlInterpolatedStringHandler&lt;SqlClause.UPDATE>) Method
-===========================================================================
+SqlBuilder.UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>) Method
+=============================================================================
 Appends the UPDATE clause using the provided interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,10 +8,10 @@ Appends the UPDATE clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                          | Description                                                                 |
-| ---------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| ![Public method] | **UPDATE(SqlInterpolatedStringHandler&lt;SqlClause.UPDATE>)** | Appends the UPDATE clause using the provided interpolated string *handler*. |
-| ![Public method] | [UPDATE(String)][2]                                           | Appends the UPDATE clause using the provided *text*.                        |
+|                  | Name                                                            | Description                                                                 |
+| ---------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| ![Public method] | **UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>)** | Appends the UPDATE clause using the provided interpolated string *handler*. |
+| ![Public method] | [UPDATE(String)][2]                                             | Appends the UPDATE clause using the provided *text*.                        |
 
 
 Syntax
@@ -19,13 +19,13 @@ Syntax
 
 ```csharp
 public SqlBuilder UPDATE(
-	ref SqlInterpolatedStringHandler<SqlClause.UPDATE> handler
+	ref ClauseStringHandler<SqlClause.UPDATE> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.UPDATE][3]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.UPDATE][3]>
 The interpolated string that represents the body of the UPDATE clause.
 
 #### Return Value

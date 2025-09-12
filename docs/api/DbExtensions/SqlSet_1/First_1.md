@@ -1,5 +1,5 @@
-SqlSet&lt;TResult>.First(SqlSet.SqlFragmentHandler) Method
-==========================================================
+SqlSet&lt;TResult>.First(SqlSet.OperatorStringHandler) Method
+=============================================================
 Returns the first element in the set that satisfies a specified condition.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,11 +8,11 @@ Returns the first element in the set that satisfies a specified condition.
 Overloads
 ---------
 
-|                  | Name                          | Description                                                                |
-| ---------------- | ----------------------------- | -------------------------------------------------------------------------- |
-| ![Public method] | [First()][2]                  | Returns the first element of the set.                                      |
-| ![Public method] | **First(SqlFragmentHandler)** | Returns the first element in the set that satisfies a specified condition. |
-| ![Public method] | [First(String)][3]            | Returns the first element in the set that satisfies a specified condition. |
+|                  | Name                             | Description                                                                |
+| ---------------- | -------------------------------- | -------------------------------------------------------------------------- |
+| ![Public method] | [First()][2]                     | Returns the first element of the set.                                      |
+| ![Public method] | **First(OperatorStringHandler)** | Returns the first element in the set that satisfies a specified condition. |
+| ![Public method] | [First(String)][3]               | Returns the first element in the set that satisfies a specified condition. |
 
 
 Syntax
@@ -20,13 +20,13 @@ Syntax
 
 ```csharp
 public TResult First(
-	ref SqlFragmentHandler predicate
+	ref OperatorStringHandler predicate
 )
 ```
 
 #### Parameters
 
-##### *predicate*  SqlFragmentHandler
+##### *predicate*  OperatorStringHandler
 A SQL expression to test each row for a condition.
 
 #### Return Value

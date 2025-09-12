@@ -8,11 +8,11 @@ Returns the first element of the set.
 Overloads
 ---------
 
-|                  | Name                           | Description                                                                |
-| ---------------- | ------------------------------ | -------------------------------------------------------------------------- |
-| ![Public method] | **First()**                    | Returns the first element of the set.                                      |
-| ![Public method] | [First(SqlFragmentHandler)][2] | Returns the first element in the set that satisfies a specified condition. |
-| ![Public method] | [First(String)][3]             | Returns the first element in the set that satisfies a specified condition. |
+|                  | Name                              | Description                                                                |
+| ---------------- | --------------------------------- | -------------------------------------------------------------------------- |
+| ![Public method] | **First()**                       | Returns the first element of the set.                                      |
+| ![Public method] | [First(OperatorStringHandler)][2] | Returns the first element in the set that satisfies a specified condition. |
+| ![Public method] | [First(String)][3]                | Returns the first element in the set that satisfies a specified condition. |
 
 
 Syntax

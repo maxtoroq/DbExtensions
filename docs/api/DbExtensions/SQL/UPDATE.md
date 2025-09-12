@@ -1,5 +1,5 @@
-SQL.UPDATE(SqlInterpolatedStringHandler&lt;SqlClause.UPDATE>) Method
-====================================================================
+SQL.UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>) Method
+======================================================================
 Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided string interpolated *handler*.
   
 **Namespace:** [DbExtensions][2]  
@@ -8,10 +8,10 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE cl
 Overloads
 ---------
 
-|                                  | Name                                                          | Description                                                                                                                            |
-| -------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | **UPDATE(SqlInterpolatedStringHandler&lt;SqlClause.UPDATE>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | [UPDATE(String)][3]                                           | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *text*.                        |
+|                                  | Name                                                            | Description                                                                                                                            |
+| -------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | **UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided string interpolated *handler*. |
+| ![Public method]![Static member] | [UPDATE(String)][3]                                             | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *text*.                        |
 
 
 Syntax
@@ -19,18 +19,18 @@ Syntax
 
 ```csharp
 public static SqlBuilder UPDATE(
-	ref SqlInterpolatedStringHandler<SqlClause.UPDATE> handler
+	ref ClauseStringHandler<SqlClause.UPDATE> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.UPDATE][4]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.UPDATE][4]>
 The body of the UPDATE clause.
 
 #### Return Value
 [SqlBuilder][1]  
- A new [SqlBuilder][1] after calling [UPDATE(SqlInterpolatedStringHandler&lt;SqlClause.UPDATE>)][5].
+ A new [SqlBuilder][1] after calling [UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>)][5].
 
 See Also
 --------

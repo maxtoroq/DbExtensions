@@ -1,6 +1,6 @@
 SqlBuilder.ORDER_BY Method
 ==========================
-Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1].
+Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1].
   
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
@@ -8,11 +8,11 @@ Sets ORDER BY as the next clause, to be used by subsequent calls to clause conti
 Overloads
 ---------
 
-|                  | Name                                                               | Description                                                                                                                                                       |
-| ---------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **ORDER_BY()**                                                     | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
-| ![Public method] | [ORDER_BY(SqlInterpolatedStringHandler&lt;SqlClause.ORDER_BY>)][3] | Appends the ORDER BY clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [ORDER_BY(String)][4]                                              | Appends the ORDER BY clause using the provided *text*.                                                                                                            |
+|                  | Name                                                                 | Description                                                                                                                                           |
+| ---------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | **ORDER_BY()**                                                       | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| ![Public method] | [ORDER_BY(SqlBuilder.ClauseStringHandler&lt;SqlClause.ORDER_BY>)][3] | Appends the ORDER BY clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | [ORDER_BY(String)][4]                                                | Appends the ORDER BY clause using the provided *text*.                                                                                                |
 
 
 Syntax

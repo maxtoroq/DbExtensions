@@ -1,5 +1,5 @@
-SqlSet.LongCount(SqlSet.SqlFragmentHandler) Method
-==================================================
+SqlSet.LongCount(SqlSet.OperatorStringHandler) Method
+=====================================================
 Returns an [Int64][1] that represents how many elements in the set satisfy a condition.
   
 **Namespace:** [DbExtensions][2]  
@@ -8,11 +8,11 @@ Returns an [Int64][1] that represents how many elements in the set satisfy a con
 Overloads
 ---------
 
-|                  | Name                              | Description                                                                             |
-| ---------------- | --------------------------------- | --------------------------------------------------------------------------------------- |
-| ![Public method] | [LongCount()][3]                  | Returns an [Int64][1] that represents the total number of elements in the set.          |
-| ![Public method] | **LongCount(SqlFragmentHandler)** | Returns an [Int64][1] that represents how many elements in the set satisfy a condition. |
-| ![Public method] | [LongCount(String)][4]            | Returns an [Int64][1] that represents how many elements in the set satisfy a condition. |
+|                  | Name                                 | Description                                                                             |
+| ---------------- | ------------------------------------ | --------------------------------------------------------------------------------------- |
+| ![Public method] | [LongCount()][3]                     | Returns an [Int64][1] that represents the total number of elements in the set.          |
+| ![Public method] | **LongCount(OperatorStringHandler)** | Returns an [Int64][1] that represents how many elements in the set satisfy a condition. |
+| ![Public method] | [LongCount(String)][4]               | Returns an [Int64][1] that represents how many elements in the set satisfy a condition. |
 
 
 Syntax
@@ -20,13 +20,13 @@ Syntax
 
 ```csharp
 public long LongCount(
-	ref SqlFragmentHandler predicate
+	ref OperatorStringHandler predicate
 )
 ```
 
 #### Parameters
 
-##### *predicate*  SqlFragmentHandler
+##### *predicate*  OperatorStringHandler
 A SQL expression to test each row for a condition.
 
 #### Return Value

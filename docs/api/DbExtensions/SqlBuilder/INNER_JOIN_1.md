@@ -1,5 +1,5 @@
-SqlBuilder.INNER_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.INNER_JOIN>) Method
-===================================================================================
+SqlBuilder.INNER_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.INNER_JOIN>) Method
+=====================================================================================
 Appends the INNER JOIN clause using the provided interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,11 +8,11 @@ Appends the INNER JOIN clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                                  | Description                                                                                                                                                         |
-| ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [INNER_JOIN()][2]                                                     | Sets INNER JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | **INNER_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.INNER_JOIN>)** | Appends the INNER JOIN clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [INNER_JOIN(String)][4]                                               | Appends the INNER JOIN clause using the provided *text*.                                                                                                            |
+|                  | Name                                                                    | Description                                                                                                                                             |
+| ---------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [INNER_JOIN()][2]                                                       | Sets INNER JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| ![Public method] | **INNER_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.INNER_JOIN>)** | Appends the INNER JOIN clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | [INNER_JOIN(String)][4]                                                 | Appends the INNER JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -20,13 +20,13 @@ Syntax
 
 ```csharp
 public SqlBuilder INNER_JOIN(
-	ref SqlInterpolatedStringHandler<SqlClause.INNER_JOIN> handler
+	ref ClauseStringHandler<SqlClause.INNER_JOIN> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.INNER_JOIN][5]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.INNER_JOIN][5]>
 The interpolated string that represents the body of the INNER JOIN clause.
 
 #### Return Value

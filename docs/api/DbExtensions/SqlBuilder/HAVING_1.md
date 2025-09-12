@@ -1,5 +1,5 @@
-SqlBuilder.HAVING(SqlInterpolatedStringHandler&lt;SqlClause.HAVING>) Method
-===========================================================================
+SqlBuilder.HAVING(SqlBuilder.ClauseStringHandler&lt;SqlClause.HAVING>) Method
+=============================================================================
 Appends the HAVING clause using the provided interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,11 +8,11 @@ Appends the HAVING clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                          | Description                                                                                                                                                     |
-| ---------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [HAVING()][2]                                                 | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | **HAVING(SqlInterpolatedStringHandler&lt;SqlClause.HAVING>)** | Appends the HAVING clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [HAVING(String)][4]                                           | Appends the HAVING clause using the provided *text*.                                                                                                            |
+|                  | Name                                                            | Description                                                                                                                                         |
+| ---------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [HAVING()][2]                                                   | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| ![Public method] | **HAVING(SqlBuilder.ClauseStringHandler&lt;SqlClause.HAVING>)** | Appends the HAVING clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | [HAVING(String)][4]                                             | Appends the HAVING clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -20,13 +20,13 @@ Syntax
 
 ```csharp
 public SqlBuilder HAVING(
-	ref SqlInterpolatedStringHandler<SqlClause.HAVING> handler
+	ref ClauseStringHandler<SqlClause.HAVING> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.HAVING][5]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.HAVING][5]>
 The interpolated string that represents the body of the HAVING clause.
 
 #### Return Value

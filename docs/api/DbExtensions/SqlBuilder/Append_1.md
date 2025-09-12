@@ -1,5 +1,5 @@
-SqlBuilder.Append(SqlBuilder.AppendInterpolatedStringHandler) Method
-====================================================================
+SqlBuilder.Append(SqlBuilder.AppendStringHandler) Method
+========================================================
 Appends the interpolated string *handler* to this instance.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,11 +8,11 @@ Appends the interpolated string *handler* to this instance.
 Overloads
 ---------
 
-|                  | Name                                        | Description                                                 |
-| ---------------- | ------------------------------------------- | ----------------------------------------------------------- |
-| ![Public method] | **Append(AppendInterpolatedStringHandler)** | Appends the interpolated string *handler* to this instance. |
-| ![Public method] | [Append(SqlBuilder)][2]                     | Appends *sql* to this instance.                             |
-| ![Public method] | [Append(String)][3]                         | Appends *text* to this instance.                            |
+|                  | Name                            | Description                                                 |
+| ---------------- | ------------------------------- | ----------------------------------------------------------- |
+| ![Public method] | **Append(AppendStringHandler)** | Appends the interpolated string *handler* to this instance. |
+| ![Public method] | [Append(SqlBuilder)][2]         | Appends *sql* to this instance.                             |
+| ![Public method] | [Append(String)][3]             | Appends *text* to this instance.                            |
 
 
 Syntax
@@ -20,13 +20,13 @@ Syntax
 
 ```csharp
 public SqlBuilder Append(
-	ref AppendInterpolatedStringHandler handler
+	ref AppendStringHandler handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  AppendInterpolatedStringHandler
+##### *handler*  AppendStringHandler
 The interpolated string.
 
 #### Return Value

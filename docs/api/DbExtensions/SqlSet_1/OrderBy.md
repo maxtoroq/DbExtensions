@@ -1,5 +1,5 @@
-SqlSet&lt;TResult>.OrderBy(SqlSet.SqlFragmentHandler) Method
-============================================================
+SqlSet&lt;TResult>.OrderBy(SqlSet.OperatorStringHandler) Method
+===============================================================
 Sorts the elements of the set according to the *columnList*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,10 +8,10 @@ Sorts the elements of the set according to the *columnList*.
 Overloads
 ---------
 
-|                  | Name                            | Description                                                  |
-| ---------------- | ------------------------------- | ------------------------------------------------------------ |
-| ![Public method] | **OrderBy(SqlFragmentHandler)** | Sorts the elements of the set according to the *columnList*. |
-| ![Public method] | [OrderBy(String)][2]            | Sorts the elements of the set according to the *columnList*. |
+|                  | Name                               | Description                                                  |
+| ---------------- | ---------------------------------- | ------------------------------------------------------------ |
+| ![Public method] | **OrderBy(OperatorStringHandler)** | Sorts the elements of the set according to the *columnList*. |
+| ![Public method] | [OrderBy(String)][2]               | Sorts the elements of the set according to the *columnList*. |
 
 
 Syntax
@@ -19,13 +19,13 @@ Syntax
 
 ```csharp
 public SqlSet<TResult> OrderBy(
-	ref SqlFragmentHandler columnList
+	ref OperatorStringHandler columnList
 )
 ```
 
 #### Parameters
 
-##### *columnList*  SqlFragmentHandler
+##### *columnList*  OperatorStringHandler
 The list of columns to base the sort on.
 
 #### Return Value

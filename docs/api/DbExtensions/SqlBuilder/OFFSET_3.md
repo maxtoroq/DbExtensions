@@ -8,12 +8,12 @@ Appends the OFFSET clause using the provided *text*.
 Overloads
 ---------
 
-|                  | Name                                                           | Description                                                                                                                                                     |
-| ---------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [OFFSET()][2]                                                  | Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | [OFFSET(Int32)][4]                                             | Appends the OFFSET clause using the provided *startIndex* parameter.                                                                                            |
-| ![Public method] | [OFFSET(SqlInterpolatedStringHandler&lt;SqlClause.OFFSET>)][5] | Appends the OFFSET clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | **OFFSET(String)**                                             | Appends the OFFSET clause using the provided *text*.                                                                                                            |
+|                  | Name                                                             | Description                                                                                                                                         |
+| ---------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [OFFSET()][2]                                                    | Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| ![Public method] | [OFFSET(SqlBuilder.ClauseStringHandler&lt;SqlClause.OFFSET>)][4] | Appends the OFFSET clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | [OFFSET(Int32)][5]                                               | Appends the OFFSET clause using the provided *startIndex* parameter.                                                                                |
+| ![Public method] | **OFFSET(String)**                                               | Appends the OFFSET clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -44,8 +44,8 @@ See Also
 [1]: ../README.md
 [2]: OFFSET.md
 [3]: _If.md
-[4]: OFFSET_2.md
-[5]: OFFSET_1.md
+[4]: OFFSET_1.md
+[5]: OFFSET_2.md
 [6]: https://learn.microsoft.com/dotnet/api/system.string
 [7]: README.md
 [Public method]: ../../icons/pubmethod.svg "Public method"

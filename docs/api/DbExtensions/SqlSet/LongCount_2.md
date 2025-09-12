@@ -8,11 +8,11 @@ Returns an [Int64][1] that represents how many elements in the set satisfy a con
 Overloads
 ---------
 
-|                  | Name                               | Description                                                                             |
-| ---------------- | ---------------------------------- | --------------------------------------------------------------------------------------- |
-| ![Public method] | [LongCount()][3]                   | Returns an [Int64][1] that represents the total number of elements in the set.          |
-| ![Public method] | [LongCount(SqlFragmentHandler)][4] | Returns an [Int64][1] that represents how many elements in the set satisfy a condition. |
-| ![Public method] | **LongCount(String)**              | Returns an [Int64][1] that represents how many elements in the set satisfy a condition. |
+|                  | Name                                  | Description                                                                             |
+| ---------------- | ------------------------------------- | --------------------------------------------------------------------------------------- |
+| ![Public method] | [LongCount()][3]                      | Returns an [Int64][1] that represents the total number of elements in the set.          |
+| ![Public method] | [LongCount(OperatorStringHandler)][4] | Returns an [Int64][1] that represents how many elements in the set satisfy a condition. |
+| ![Public method] | **LongCount(String)**                 | Returns an [Int64][1] that represents how many elements in the set satisfy a condition. |
 
 
 Syntax

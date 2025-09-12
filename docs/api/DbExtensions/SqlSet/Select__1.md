@@ -1,5 +1,5 @@
-SqlSet.Select&lt;TResult>(SqlSet.SqlFragmentHandler) Method
-===========================================================
+SqlSet.Select&lt;TResult>(SqlSet.OperatorStringHandler) Method
+==============================================================
 Projects each element of the set into a new form.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,16 +8,16 @@ Projects each element of the set into a new form.
 Overloads
 ---------
 
-|                  | Name                                                                        | Description                                       |
-| ---------------- | --------------------------------------------------------------------------- | ------------------------------------------------- |
-| ![Public method] | [Select(SqlFragmentHandler)][2]                                             | Projects each element of the set into a new form. |
-| ![Public method] | [Select(String)][3]                                                         | Projects each element of the set into a new form. |
-| ![Public method] | [Select(SqlFragmentHandler, Type)][4]                                       | Projects each element of the set into a new form. |
-| ![Public method] | [Select(String, Type)][5]                                                   | Projects each element of the set into a new form. |
-| ![Public method] | **Select&lt;TResult>(SqlFragmentHandler)**                                  | Projects each element of the set into a new form. |
-| ![Public method] | [Select&lt;TResult>(String)][6]                                             | Projects each element of the set into a new form. |
-| ![Public method] | [Select&lt;TResult>(SqlFragmentHandler, Func&lt;DbDataReader, TResult>)][7] | Projects each element of the set into a new form. |
-| ![Public method] | [Select&lt;TResult>(String, Func&lt;DbDataReader, TResult>)][8]             | Projects each element of the set into a new form. |
+|                  | Name                                                                           | Description                                       |
+| ---------------- | ------------------------------------------------------------------------------ | ------------------------------------------------- |
+| ![Public method] | [Select(OperatorStringHandler)][2]                                             | Projects each element of the set into a new form. |
+| ![Public method] | [Select(String)][3]                                                            | Projects each element of the set into a new form. |
+| ![Public method] | [Select(OperatorStringHandler, Type)][4]                                       | Projects each element of the set into a new form. |
+| ![Public method] | [Select(String, Type)][5]                                                      | Projects each element of the set into a new form. |
+| ![Public method] | **Select&lt;TResult>(OperatorStringHandler)**                                  | Projects each element of the set into a new form. |
+| ![Public method] | [Select&lt;TResult>(String)][6]                                                | Projects each element of the set into a new form. |
+| ![Public method] | [Select&lt;TResult>(OperatorStringHandler, Func&lt;DbDataReader, TResult>)][7] | Projects each element of the set into a new form. |
+| ![Public method] | [Select&lt;TResult>(String, Func&lt;DbDataReader, TResult>)][8]                | Projects each element of the set into a new form. |
 
 
 Syntax
@@ -25,14 +25,14 @@ Syntax
 
 ```csharp
 public SqlSet<TResult> Select<TResult>(
-	ref SqlFragmentHandler columnList
+	ref OperatorStringHandler columnList
 )
 
 ```
 
 #### Parameters
 
-##### *columnList*  SqlFragmentHandler
+##### *columnList*  OperatorStringHandler
 The list of columns that maps to properties on TResult.
 
 #### Type Parameters

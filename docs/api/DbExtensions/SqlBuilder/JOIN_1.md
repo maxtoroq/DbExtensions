@@ -1,5 +1,5 @@
-SqlBuilder.JOIN(SqlInterpolatedStringHandler&lt;SqlClause.JOIN>) Method
-=======================================================================
+SqlBuilder.JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.JOIN>) Method
+=========================================================================
 Appends the JOIN clause using the provided interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,11 +8,11 @@ Appends the JOIN clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                      | Description                                                                                                                                                   |
-| ---------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [JOIN()][2]                                               | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | **JOIN(SqlInterpolatedStringHandler&lt;SqlClause.JOIN>)** | Appends the JOIN clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [JOIN(String)][4]                                         | Appends the JOIN clause using the provided *text*.                                                                                                            |
+|                  | Name                                                        | Description                                                                                                                                       |
+| ---------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [JOIN()][2]                                                 | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| ![Public method] | **JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.JOIN>)** | Appends the JOIN clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | [JOIN(String)][4]                                           | Appends the JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -20,13 +20,13 @@ Syntax
 
 ```csharp
 public SqlBuilder JOIN(
-	ref SqlInterpolatedStringHandler<SqlClause.JOIN> handler
+	ref ClauseStringHandler<SqlClause.JOIN> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.JOIN][5]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.JOIN][5]>
 The interpolated string that represents the body of the JOIN clause.
 
 #### Return Value

@@ -8,11 +8,11 @@ The single element of the set.
 Overloads
 ---------
 
-|                  | Name                            | Description                                                                                                                             |
-| ---------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **Single()**                    | The single element of the set.                                                                                                          |
-| ![Public method] | [Single(SqlFragmentHandler)][2] | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
-| ![Public method] | [Single(String)][3]             | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+|                  | Name                               | Description                                                                                                                             |
+| ---------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | **Single()**                       | The single element of the set.                                                                                                          |
+| ![Public method] | [Single(OperatorStringHandler)][2] | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+| ![Public method] | [Single(String)][3]                | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
 
 
 Syntax

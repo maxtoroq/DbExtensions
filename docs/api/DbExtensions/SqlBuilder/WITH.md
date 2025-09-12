@@ -1,5 +1,5 @@
-SqlBuilder.WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>) Method
-=======================================================================
+SqlBuilder.WITH(SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>) Method
+=========================================================================
 Appends the WITH clause using the provided interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,12 +8,12 @@ Appends the WITH clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                      | Description                                                                        |
-| ---------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| ![Public method] | **WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>)** | Appends the WITH clause using the provided interpolated string *handler*.          |
-| ![Public method] | [WITH(String)][2]                                         | Appends the WITH clause using the provided *text*.                                 |
-| ![Public method] | [WITH(String, SqlBuilder)][3]                             | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
-| ![Public method] | [WITH(String, SqlSet)][4]                                 | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
+|                  | Name                                                        | Description                                                                        |
+| ---------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| ![Public method] | **WITH(SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>)** | Appends the WITH clause using the provided interpolated string *handler*.          |
+| ![Public method] | [WITH(String)][2]                                           | Appends the WITH clause using the provided *text*.                                 |
+| ![Public method] | [WITH(String, SqlBuilder)][3]                               | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
+| ![Public method] | [WITH(String, SqlSet)][4]                                   | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
 
 
 Syntax
@@ -21,13 +21,13 @@ Syntax
 
 ```csharp
 public SqlBuilder WITH(
-	ref SqlInterpolatedStringHandler<SqlClause.WITH> handler
+	ref ClauseStringHandler<SqlClause.WITH> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.WITH][5]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.WITH][5]>
 The interpolated string that represents the body of the WITH clause.
 
 #### Return Value

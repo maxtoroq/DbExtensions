@@ -1,5 +1,5 @@
-SqlSet.Any(SqlSet.SqlFragmentHandler) Method
-============================================
+SqlSet.Any(SqlSet.OperatorStringHandler) Method
+===============================================
 Determines whether any element of the set satisfies a condition.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,11 +8,11 @@ Determines whether any element of the set satisfies a condition.
 Overloads
 ---------
 
-|                  | Name                        | Description                                                      |
-| ---------------- | --------------------------- | ---------------------------------------------------------------- |
-| ![Public method] | [Any()][2]                  | Determines whether the set contains any elements.                |
-| ![Public method] | **Any(SqlFragmentHandler)** | Determines whether any element of the set satisfies a condition. |
-| ![Public method] | [Any(String)][3]            | Determines whether any element of the set satisfies a condition. |
+|                  | Name                           | Description                                                      |
+| ---------------- | ------------------------------ | ---------------------------------------------------------------- |
+| ![Public method] | [Any()][2]                     | Determines whether the set contains any elements.                |
+| ![Public method] | **Any(OperatorStringHandler)** | Determines whether any element of the set satisfies a condition. |
+| ![Public method] | [Any(String)][3]               | Determines whether any element of the set satisfies a condition. |
 
 
 Syntax
@@ -20,13 +20,13 @@ Syntax
 
 ```csharp
 public bool Any(
-	ref SqlFragmentHandler predicate
+	ref OperatorStringHandler predicate
 )
 ```
 
 #### Parameters
 
-##### *predicate*  SqlFragmentHandler
+##### *predicate*  OperatorStringHandler
 A SQL expression to test each row for a condition.
 
 #### Return Value

@@ -1,5 +1,5 @@
-SqlBuilder.SET(SqlInterpolatedStringHandler&lt;SqlClause.SET>) Method
-=====================================================================
+SqlBuilder.SET(SqlBuilder.ClauseStringHandler&lt;SqlClause.SET>) Method
+=======================================================================
 Appends the SET clause using the provided interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,10 +8,10 @@ Appends the SET clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                    | Description                                                              |
-| ---------------- | ------------------------------------------------------- | ------------------------------------------------------------------------ |
-| ![Public method] | **SET(SqlInterpolatedStringHandler&lt;SqlClause.SET>)** | Appends the SET clause using the provided interpolated string *handler*. |
-| ![Public method] | [SET(String)][2]                                        | Appends the SET clause using the provided *text*.                        |
+|                  | Name                                                      | Description                                                              |
+| ---------------- | --------------------------------------------------------- | ------------------------------------------------------------------------ |
+| ![Public method] | **SET(SqlBuilder.ClauseStringHandler&lt;SqlClause.SET>)** | Appends the SET clause using the provided interpolated string *handler*. |
+| ![Public method] | [SET(String)][2]                                          | Appends the SET clause using the provided *text*.                        |
 
 
 Syntax
@@ -19,13 +19,13 @@ Syntax
 
 ```csharp
 public SqlBuilder SET(
-	ref SqlInterpolatedStringHandler<SqlClause.SET> handler
+	ref ClauseStringHandler<SqlClause.SET> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.SET][3]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.SET][3]>
 The interpolated string that represents the body of the SET clause.
 
 #### Return Value

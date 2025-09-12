@@ -577,7 +577,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="All(String)"/>
 
    public bool
-   All([InterpolatedString] ref SqlFragmentHandler predicate) {
+   All([InterpolatedString] ref OperatorStringHandler predicate) {
 
       var builder = predicate.Fragment;
       builder.Buffer.Insert(0, "NOT (");
@@ -614,7 +614,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="Any(String)"/>
 
    public bool
-   Any([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   Any([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).Any();
 
    /// <summary>
@@ -704,7 +704,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="Count(String)"/>
 
    public int
-   Count([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   Count([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).Count();
 
    /// <summary>
@@ -731,7 +731,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="First(String)"/>
 
    public object
-   First([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   First([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).First();
 
    /// <summary>
@@ -759,7 +759,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="FirstOrDefault(String)"/>
 
    public object?
-   FirstOrDefault([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   FirstOrDefault([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).FirstOrDefault();
 
    /// <summary>
@@ -802,7 +802,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="LongCount(String)"/>
 
    public long
-   LongCount([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   LongCount([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).LongCount();
 
    /// <summary>
@@ -822,7 +822,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="OrderBy(String)"/>
 
    public SqlSet
-   OrderBy([InterpolatedString] ref SqlFragmentHandler columnList) =>
+   OrderBy([InterpolatedString] ref OperatorStringHandler columnList) =>
       OrderBy(columnList.Fragment);
 
    SqlSet
@@ -859,7 +859,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="Select&lt;TResult>(String)"/>
 
    public SqlSet<TResult>
-   Select<TResult>([InterpolatedString] ref SqlFragmentHandler columnList) =>
+   Select<TResult>([InterpolatedString] ref OperatorStringHandler columnList) =>
       CreateSet<TResult>(GetDefiningQuery(select: columnList.Fragment));
 
    /// <summary>
@@ -882,7 +882,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="Select&lt;TResult>(String, Func&lt;DbDataReader, TResult>)"/>
 
    public SqlSet<TResult>
-   Select<TResult>([InterpolatedString] ref SqlFragmentHandler columnList, Func<DbDataReader, TResult> mapper) {
+   Select<TResult>([InterpolatedString] ref OperatorStringHandler columnList, Func<DbDataReader, TResult> mapper) {
 
       ArgumentNullException.ThrowIfNull(mapper);
 
@@ -908,7 +908,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="Select(String, Type)"/>
 
    public SqlSet
-   Select([InterpolatedString] ref SqlFragmentHandler columnList, Type resultType) {
+   Select([InterpolatedString] ref OperatorStringHandler columnList, Type resultType) {
 
       ArgumentNullException.ThrowIfNull(resultType);
 
@@ -932,7 +932,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="Select(String)"/>
 
    public SqlSet
-   Select([InterpolatedString] ref SqlFragmentHandler columnList) =>
+   Select([InterpolatedString] ref OperatorStringHandler columnList) =>
       CreateSet(GetDefiningQuery(select: columnList.Fragment));
 
    /// <summary>
@@ -959,7 +959,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="Single(String)"/>
 
    public object
-   Single([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   Single([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).Single();
 
    /// <summary>
@@ -985,7 +985,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="SingleOrDefault(String)"/>
 
    public object?
-   SingleOrDefault([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   SingleOrDefault([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).SingleOrDefault();
 
    /// <summary>
@@ -1065,7 +1065,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <inheritdoc cref="Where(String)"/>
 
    public SqlSet
-   Where([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   Where([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(predicate.Fragment);
 
    SqlSet
@@ -1137,7 +1137,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    [InterpolatedStringHandler]
-   public struct SqlFragmentHandler {
+   public struct OperatorStringHandler {
 
       readonly SqlBuilder
       _builder;
@@ -1148,7 +1148,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       /// <exclude/>
 
       public
-      SqlFragmentHandler(int literalLength, int formattedCount) {
+      OperatorStringHandler(int literalLength, int formattedCount) {
          _builder = new SqlBuilder(literalLength, formattedCount);
       }
 
@@ -1307,10 +1307,10 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    First(string predicate) =>
       Where(predicate).First();
 
-   /// <inheritdoc cref="SqlSet.First(ref SqlFragmentHandler)"/>
+   /// <inheritdoc cref="SqlSet.First(ref OperatorStringHandler)"/>
 
    public new TResult
-   First([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   First([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).First();
 
    /// <inheritdoc cref="SqlSet.FirstOrDefault()"/>
@@ -1325,10 +1325,10 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    FirstOrDefault(string predicate) =>
       Where(predicate).FirstOrDefault();
 
-   /// <inheritdoc cref="SqlSet.FirstOrDefault(ref SqlFragmentHandler)"/>
+   /// <inheritdoc cref="SqlSet.FirstOrDefault(ref OperatorStringHandler)"/>
 
    public new TResult?
-   FirstOrDefault([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   FirstOrDefault([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).FirstOrDefault();
 
    /// <summary>
@@ -1347,11 +1347,11 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    OrderBy(string columnList) =>
       (SqlSet<TResult>)base.OrderBy(columnList);
 
-   /// <inheritdoc cref="SqlSet.OrderBy(ref SqlFragmentHandler)"/>
+   /// <inheritdoc cref="SqlSet.OrderBy(ref OperatorStringHandler)"/>
    /// <returns>A new <see cref="SqlSet&lt;TResult>"/> whose elements are sorted according to <paramref name="columnList"/>.</returns>
 
    public new SqlSet<TResult>
-   OrderBy([InterpolatedString] ref SqlFragmentHandler columnList) =>
+   OrderBy([InterpolatedString] ref OperatorStringHandler columnList) =>
       (SqlSet<TResult>)base.OrderBy(ref columnList);
 
    /// <inheritdoc cref="SqlSet.Single()"/>
@@ -1366,10 +1366,10 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    Single(string predicate) =>
       Where(predicate).Single();
 
-   /// <inheritdoc cref="SqlSet.Single(ref SqlFragmentHandler)"/>
+   /// <inheritdoc cref="SqlSet.Single(ref OperatorStringHandler)"/>
 
    public new TResult
-   Single([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   Single([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).Single();
 
    /// <inheritdoc cref="SqlSet.SingleOrDefault()"/>
@@ -1384,10 +1384,10 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    SingleOrDefault(string predicate) =>
       Where(predicate).SingleOrDefault();
 
-   /// <inheritdoc cref="SqlSet.SingleOrDefault(ref SqlFragmentHandler)"/>
+   /// <inheritdoc cref="SqlSet.SingleOrDefault(ref OperatorStringHandler)"/>
 
    public new TResult?
-   SingleOrDefault([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   SingleOrDefault([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).SingleOrDefault();
 
    /// <inheritdoc cref="SqlSet.Skip(Int32)"/>
@@ -1424,11 +1424,11 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    Where(string predicate) =>
       (SqlSet<TResult>)base.Where(predicate);
 
-   /// <inheritdoc cref="SqlSet.Where(ref SqlFragmentHandler)"/>
+   /// <inheritdoc cref="SqlSet.Where(ref OperatorStringHandler)"/>
    /// <returns>A new <see cref="SqlSet&lt;TResult>"/> that contains elements from the current set that satisfy the condition.</returns>
 
    public new SqlSet<TResult>
-   Where([InterpolatedString] ref SqlFragmentHandler predicate) =>
+   Where([InterpolatedString] ref OperatorStringHandler predicate) =>
       (SqlSet<TResult>)base.Where(ref predicate);
 }
 
@@ -1438,7 +1438,7 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    All(string predicate);
 
    bool
-   All(ref SqlSet.SqlFragmentHandler predicate);
+   All(ref SqlSet.OperatorStringHandler predicate);
 
    bool
    Any();
@@ -1447,7 +1447,7 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    Any(string predicate);
 
    bool
-   Any(ref SqlSet.SqlFragmentHandler predicate);
+   Any(ref SqlSet.OperatorStringHandler predicate);
 
    IEnumerable<TSource>
    AsEnumerable();
@@ -1465,7 +1465,7 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    Count(string predicate);
 
    int
-   Count(ref SqlSet.SqlFragmentHandler predicate);
+   Count(ref SqlSet.OperatorStringHandler predicate);
 
    TSource
    First();
@@ -1474,7 +1474,7 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    First(string predicate);
 
    TSource
-   First(ref SqlSet.SqlFragmentHandler predicate);
+   First(ref SqlSet.OperatorStringHandler predicate);
 
    TSource?
    FirstOrDefault();
@@ -1483,7 +1483,7 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    FirstOrDefault(string predicate);
 
    TSource?
-   FirstOrDefault(ref SqlSet.SqlFragmentHandler predicate);
+   FirstOrDefault(ref SqlSet.OperatorStringHandler predicate);
 
    IEnumerator<TSource>
    GetEnumerator();
@@ -1495,13 +1495,13 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    LongCount(string predicate);
 
    long
-   LongCount(ref SqlSet.SqlFragmentHandler predicate);
+   LongCount(ref SqlSet.OperatorStringHandler predicate);
 
    TSqlSet
    OrderBy(string columnList);
 
    TSqlSet
-   OrderBy(ref SqlSet.SqlFragmentHandler columnList);
+   OrderBy(ref SqlSet.OperatorStringHandler columnList);
 
    SqlSet<TResult>
    Select<TResult>(string columnList);
@@ -1510,10 +1510,10 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    Select<TResult>(string columnList, Func<DbDataReader, TResult> mapper);
 
    SqlSet<TResult>
-   Select<TResult>(ref SqlSet.SqlFragmentHandler columnList);
+   Select<TResult>(ref SqlSet.OperatorStringHandler columnList);
 
    SqlSet<TResult>
-   Select<TResult>(ref SqlSet.SqlFragmentHandler columnList, Func<DbDataReader, TResult> mapper);
+   Select<TResult>(ref SqlSet.OperatorStringHandler columnList, Func<DbDataReader, TResult> mapper);
 
    SqlSet
    Select(string columnList);
@@ -1522,10 +1522,10 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    Select(string columnList, Type resultType);
 
    SqlSet
-   Select(ref SqlSet.SqlFragmentHandler columnList);
+   Select(ref SqlSet.OperatorStringHandler columnList);
 
    SqlSet
-   Select(ref SqlSet.SqlFragmentHandler columnList, Type resultType);
+   Select(ref SqlSet.OperatorStringHandler columnList, Type resultType);
 
    TSource
    Single();
@@ -1534,7 +1534,7 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    Single(string predicate);
 
    TSource
-   Single(ref SqlSet.SqlFragmentHandler predicate);
+   Single(ref SqlSet.OperatorStringHandler predicate);
 
    TSource?
    SingleOrDefault();
@@ -1543,7 +1543,7 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    SingleOrDefault(string predicate);
 
    TSource?
-   SingleOrDefault(ref SqlSet.SqlFragmentHandler predicate);
+   SingleOrDefault(ref SqlSet.OperatorStringHandler predicate);
 
    TSqlSet
    Skip(int count);
@@ -1561,5 +1561,5 @@ interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    Where(string predicate);
 
    TSqlSet
-   Where(ref SqlSet.SqlFragmentHandler predicate);
+   Where(ref SqlSet.OperatorStringHandler predicate);
 }

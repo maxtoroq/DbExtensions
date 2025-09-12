@@ -1,5 +1,5 @@
-SqlBuilder.GROUP_BY(SqlInterpolatedStringHandler&lt;SqlClause.GROUP_BY>) Method
-===============================================================================
+SqlBuilder.GROUP_BY(SqlBuilder.ClauseStringHandler&lt;SqlClause.GROUP_BY>) Method
+=================================================================================
 Appends the GROUP BY clause using the provided interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,11 +8,11 @@ Appends the GROUP BY clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                              | Description                                                                                                                                                       |
-| ---------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [GROUP_BY()][2]                                                   | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | **GROUP_BY(SqlInterpolatedStringHandler&lt;SqlClause.GROUP_BY>)** | Appends the GROUP BY clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [GROUP_BY(String)][4]                                             | Appends the GROUP BY clause using the provided *text*.                                                                                                            |
+|                  | Name                                                                | Description                                                                                                                                           |
+| ---------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [GROUP_BY()][2]                                                     | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| ![Public method] | **GROUP_BY(SqlBuilder.ClauseStringHandler&lt;SqlClause.GROUP_BY>)** | Appends the GROUP BY clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | [GROUP_BY(String)][4]                                               | Appends the GROUP BY clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -20,13 +20,13 @@ Syntax
 
 ```csharp
 public SqlBuilder GROUP_BY(
-	ref SqlInterpolatedStringHandler<SqlClause.GROUP_BY> handler
+	ref ClauseStringHandler<SqlClause.GROUP_BY> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.GROUP_BY][5]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.GROUP_BY][5]>
 The interpolated string that represents the body of the GROUP BY clause.
 
 #### Return Value

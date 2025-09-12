@@ -1,5 +1,5 @@
-SqlBuilder.VALUES(SqlInterpolatedStringHandler&lt;SqlClause.VALUES>) Method
-===========================================================================
+SqlBuilder.VALUES(SqlBuilder.ClauseStringHandler&lt;SqlClause.VALUES>) Method
+=============================================================================
 Appends the VALUES clause using the provided interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,10 +8,10 @@ Appends the VALUES clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                          | Description                                                                 |
-| ---------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| ![Public method] | [VALUES(Object[])][2]                                         | Appends the VALUES clause using the provided parameters.                    |
-| ![Public method] | **VALUES(SqlInterpolatedStringHandler&lt;SqlClause.VALUES>)** | Appends the VALUES clause using the provided interpolated string *handler*. |
+|                  | Name                                                            | Description                                                                 |
+| ---------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| ![Public method] | **VALUES(SqlBuilder.ClauseStringHandler&lt;SqlClause.VALUES>)** | Appends the VALUES clause using the provided interpolated string *handler*. |
+| ![Public method] | [VALUES(Object[])][2]                                           | Appends the VALUES clause using the provided parameters.                    |
 
 
 Syntax
@@ -19,13 +19,13 @@ Syntax
 
 ```csharp
 public SqlBuilder VALUES(
-	ref SqlInterpolatedStringHandler<SqlClause.VALUES> handler
+	ref ClauseStringHandler<SqlClause.VALUES> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.VALUES][3]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.VALUES][3]>
 The interpolated string that represents the body of the VALUES clause.
 
 #### Return Value

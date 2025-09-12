@@ -1,6 +1,6 @@
 SqlBuilder.WHERE Method
 =======================
-Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1].
+Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1].
   
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
@@ -8,11 +8,11 @@ Sets WHERE as the next clause, to be used by subsequent calls to clause continua
 Overloads
 ---------
 
-|                  | Name                                                         | Description                                                                                                                                                    |
-| ---------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **WHERE()**                                                  | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
-| ![Public method] | [WHERE(SqlInterpolatedStringHandler&lt;SqlClause.WHERE>)][3] | Appends the WHERE clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [WHERE(String)][4]                                           | Appends the WHERE clause using the provided *text*.                                                                                                            |
+|                  | Name                                                           | Description                                                                                                                                        |
+| ---------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | **WHERE()**                                                    | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| ![Public method] | [WHERE(SqlBuilder.ClauseStringHandler&lt;SqlClause.WHERE>)][3] | Appends the WHERE clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | [WHERE(String)][4]                                             | Appends the WHERE clause using the provided *text*.                                                                                                |
 
 
 Syntax

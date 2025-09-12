@@ -1,5 +1,5 @@
-SqlSet.All(SqlSet.SqlFragmentHandler) Method
-============================================
+SqlSet.All(SqlSet.OperatorStringHandler) Method
+===============================================
 Determines whether all elements of the set satisfy a condition.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,10 +8,10 @@ Determines whether all elements of the set satisfy a condition.
 Overloads
 ---------
 
-|                  | Name                        | Description                                                     |
-| ---------------- | --------------------------- | --------------------------------------------------------------- |
-| ![Public method] | **All(SqlFragmentHandler)** | Determines whether all elements of the set satisfy a condition. |
-| ![Public method] | [All(String)][2]            | Determines whether all elements of the set satisfy a condition. |
+|                  | Name                           | Description                                                     |
+| ---------------- | ------------------------------ | --------------------------------------------------------------- |
+| ![Public method] | **All(OperatorStringHandler)** | Determines whether all elements of the set satisfy a condition. |
+| ![Public method] | [All(String)][2]               | Determines whether all elements of the set satisfy a condition. |
 
 
 Syntax
@@ -19,13 +19,13 @@ Syntax
 
 ```csharp
 public bool All(
-	ref SqlFragmentHandler predicate
+	ref OperatorStringHandler predicate
 )
 ```
 
 #### Parameters
 
-##### *predicate*  SqlFragmentHandler
+##### *predicate*  OperatorStringHandler
 A SQL expression to test each row for a condition.
 
 #### Return Value

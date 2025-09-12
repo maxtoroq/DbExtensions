@@ -11,7 +11,7 @@ Syntax
 ```csharp
 public SqlBuilder _If(
 	bool condition,
-	ref ConditionalInterpolatedStringHandler handler
+	ref ConditionalStringHandler handler
 )
 ```
 
@@ -20,7 +20,7 @@ public SqlBuilder _If(
 ##### *condition*  [Boolean][2]
 true to append *handler* to the current clause; otherwise, false.
 
-##### *handler*  ConditionalInterpolatedStringHandler
+##### *handler*  ConditionalStringHandler
 The interpolated string that represents the body of the current clause.
 
 #### Return Value

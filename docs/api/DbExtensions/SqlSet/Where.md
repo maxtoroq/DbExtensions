@@ -1,5 +1,5 @@
-SqlSet.Where(SqlSet.SqlFragmentHandler) Method
-==============================================
+SqlSet.Where(SqlSet.OperatorStringHandler) Method
+=================================================
 Filters the set based on a predicate.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,10 +8,10 @@ Filters the set based on a predicate.
 Overloads
 ---------
 
-|                  | Name                          | Description                           |
-| ---------------- | ----------------------------- | ------------------------------------- |
-| ![Public method] | **Where(SqlFragmentHandler)** | Filters the set based on a predicate. |
-| ![Public method] | [Where(String)][2]            | Filters the set based on a predicate. |
+|                  | Name                             | Description                           |
+| ---------------- | -------------------------------- | ------------------------------------- |
+| ![Public method] | **Where(OperatorStringHandler)** | Filters the set based on a predicate. |
+| ![Public method] | [Where(String)][2]               | Filters the set based on a predicate. |
 
 
 Syntax
@@ -19,13 +19,13 @@ Syntax
 
 ```csharp
 public SqlSet Where(
-	ref SqlFragmentHandler predicate
+	ref OperatorStringHandler predicate
 )
 ```
 
 #### Parameters
 
-##### *predicate*  SqlFragmentHandler
+##### *predicate*  OperatorStringHandler
 A SQL expression to test each row for a condition.
 
 #### Return Value

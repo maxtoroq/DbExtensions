@@ -8,10 +8,10 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT IN
 Overloads
 ---------
 
-|                                  | Name                                                                     | Description                                                                                                                                 |
-| -------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | [INSERT_INTO(SqlInterpolatedStringHandler&lt;SqlClause.INSERT_INTO>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | **INSERT_INTO(String)**                                                  | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided *text*.                        |
+|                                  | Name                                                                       | Description                                                                                                                                 |
+| -------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | [INSERT_INTO(SqlBuilder.ClauseStringHandler&lt;SqlClause.INSERT_INTO>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided string interpolated *handler*. |
+| ![Public method]![Static member] | **INSERT_INTO(String)**                                                    | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided *text*.                        |
 
 
 Syntax

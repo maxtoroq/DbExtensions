@@ -1,5 +1,5 @@
-SqlBuilder.RIGHT_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.RIGHT_JOIN>) Method
-===================================================================================
+SqlBuilder.RIGHT_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.RIGHT_JOIN>) Method
+=====================================================================================
 Appends the RIGHT JOIN clause using the provided interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,11 +8,11 @@ Appends the RIGHT JOIN clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                                  | Description                                                                                                                                                         |
-| ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [RIGHT_JOIN()][2]                                                     | Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | **RIGHT_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.RIGHT_JOIN>)** | Appends the RIGHT JOIN clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [RIGHT_JOIN(String)][4]                                               | Appends the RIGHT JOIN clause using the provided *text*.                                                                                                            |
+|                  | Name                                                                    | Description                                                                                                                                             |
+| ---------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [RIGHT_JOIN()][2]                                                       | Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| ![Public method] | **RIGHT_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.RIGHT_JOIN>)** | Appends the RIGHT JOIN clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | [RIGHT_JOIN(String)][4]                                                 | Appends the RIGHT JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -20,13 +20,13 @@ Syntax
 
 ```csharp
 public SqlBuilder RIGHT_JOIN(
-	ref SqlInterpolatedStringHandler<SqlClause.RIGHT_JOIN> handler
+	ref ClauseStringHandler<SqlClause.RIGHT_JOIN> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.RIGHT_JOIN][5]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.RIGHT_JOIN][5]>
 The interpolated string that represents the body of the RIGHT JOIN clause.
 
 #### Return Value

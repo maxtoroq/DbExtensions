@@ -8,11 +8,11 @@ Returns the only element of the set that satisfies a specified condition or a de
 Overloads
 ---------
 
-|                  | Name                                     | Description                                                                                                                                                                                              |
-| ---------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [SingleOrDefault()][2]                   | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.                                               |
-| ![Public method] | [SingleOrDefault(SqlFragmentHandler)][3] | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
-| ![Public method] | **SingleOrDefault(String)**              | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
+|                  | Name                                        | Description                                                                                                                                                                                              |
+| ---------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [SingleOrDefault()][2]                      | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.                                               |
+| ![Public method] | [SingleOrDefault(OperatorStringHandler)][3] | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
+| ![Public method] | **SingleOrDefault(String)**                 | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
 
 
 Syntax

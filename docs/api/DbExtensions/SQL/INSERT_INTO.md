@@ -1,5 +1,5 @@
-SQL.INSERT_INTO(SqlInterpolatedStringHandler&lt;SqlClause.INSERT_INTO>) Method
-==============================================================================
+SQL.INSERT_INTO(SqlBuilder.ClauseStringHandler&lt;SqlClause.INSERT_INTO>) Method
+================================================================================
 Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided string interpolated *handler*.
   
 **Namespace:** [DbExtensions][2]  
@@ -8,10 +8,10 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT IN
 Overloads
 ---------
 
-|                                  | Name                                                                    | Description                                                                                                                                 |
-| -------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | **INSERT_INTO(SqlInterpolatedStringHandler&lt;SqlClause.INSERT_INTO>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | [INSERT_INTO(String)][3]                                                | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided *text*.                        |
+|                                  | Name                                                                      | Description                                                                                                                                 |
+| -------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | **INSERT_INTO(SqlBuilder.ClauseStringHandler&lt;SqlClause.INSERT_INTO>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided string interpolated *handler*. |
+| ![Public method]![Static member] | [INSERT_INTO(String)][3]                                                  | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided *text*.                        |
 
 
 Syntax
@@ -19,18 +19,18 @@ Syntax
 
 ```csharp
 public static SqlBuilder INSERT_INTO(
-	ref SqlInterpolatedStringHandler<SqlClause.INSERT_INTO> handler
+	ref ClauseStringHandler<SqlClause.INSERT_INTO> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.INSERT_INTO][4]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.INSERT_INTO][4]>
 The body of the INSERT INTO clause.
 
 #### Return Value
 [SqlBuilder][1]  
- A new [SqlBuilder][1] after calling [INSERT_INTO(SqlInterpolatedStringHandler&lt;SqlClause.INSERT_INTO>)][5].
+ A new [SqlBuilder][1] after calling [INSERT_INTO(SqlBuilder.ClauseStringHandler&lt;SqlClause.INSERT_INTO>)][5].
 
 See Also
 --------

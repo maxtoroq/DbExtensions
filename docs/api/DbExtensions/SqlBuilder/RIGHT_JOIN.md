@@ -1,6 +1,6 @@
 SqlBuilder.RIGHT_JOIN Method
 ============================
-Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1].
+Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1].
   
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
@@ -8,11 +8,11 @@ Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause con
 Overloads
 ---------
 
-|                  | Name                                                                   | Description                                                                                                                                                         |
-| ---------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **RIGHT_JOIN()**                                                       | Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][1]. |
-| ![Public method] | [RIGHT_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.RIGHT_JOIN>)][3] | Appends the RIGHT JOIN clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [RIGHT_JOIN(String)][4]                                                | Appends the RIGHT JOIN clause using the provided *text*.                                                                                                            |
+|                  | Name                                                                     | Description                                                                                                                                             |
+| ---------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | **RIGHT_JOIN()**                                                         | Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| ![Public method] | [RIGHT_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.RIGHT_JOIN>)][3] | Appends the RIGHT JOIN clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | [RIGHT_JOIN(String)][4]                                                  | Appends the RIGHT JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax

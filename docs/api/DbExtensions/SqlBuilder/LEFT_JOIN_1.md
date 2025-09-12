@@ -1,5 +1,5 @@
-SqlBuilder.LEFT_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.LEFT_JOIN>) Method
-=================================================================================
+SqlBuilder.LEFT_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.LEFT_JOIN>) Method
+===================================================================================
 Appends the LEFT JOIN clause using the provided interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,11 +8,11 @@ Appends the LEFT JOIN clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                                | Description                                                                                                                                                        |
-| ---------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method] | [LEFT_JOIN()][2]                                                    | Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | **LEFT_JOIN(SqlInterpolatedStringHandler&lt;SqlClause.LEFT_JOIN>)** | Appends the LEFT JOIN clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | [LEFT_JOIN(String)][4]                                              | Appends the LEFT JOIN clause using the provided *text*.                                                                                                            |
+|                  | Name                                                                  | Description                                                                                                                                            |
+| ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ![Public method] | [LEFT_JOIN()][2]                                                      | Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| ![Public method] | **LEFT_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.LEFT_JOIN>)** | Appends the LEFT JOIN clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | [LEFT_JOIN(String)][4]                                                | Appends the LEFT JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -20,13 +20,13 @@ Syntax
 
 ```csharp
 public SqlBuilder LEFT_JOIN(
-	ref SqlInterpolatedStringHandler<SqlClause.LEFT_JOIN> handler
+	ref ClauseStringHandler<SqlClause.LEFT_JOIN> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.LEFT_JOIN][5]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.LEFT_JOIN][5]>
 The interpolated string that represents the body of the LEFT JOIN clause.
 
 #### Return Value

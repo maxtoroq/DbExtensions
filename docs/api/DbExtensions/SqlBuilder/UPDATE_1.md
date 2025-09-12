@@ -8,10 +8,10 @@ Appends the UPDATE clause using the provided *text*.
 Overloads
 ---------
 
-|                  | Name                                                           | Description                                                                 |
-| ---------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| ![Public method] | [UPDATE(SqlInterpolatedStringHandler&lt;SqlClause.UPDATE>)][2] | Appends the UPDATE clause using the provided interpolated string *handler*. |
-| ![Public method] | **UPDATE(String)**                                             | Appends the UPDATE clause using the provided *text*.                        |
+|                  | Name                                                             | Description                                                                 |
+| ---------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| ![Public method] | [UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>)][2] | Appends the UPDATE clause using the provided interpolated string *handler*. |
+| ![Public method] | **UPDATE(String)**                                               | Appends the UPDATE clause using the provided *text*.                        |
 
 
 Syntax

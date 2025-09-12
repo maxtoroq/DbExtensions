@@ -8,10 +8,10 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE cl
 Overloads
 ---------
 
-|                                  | Name                                                           | Description                                                                                                                            |
-| -------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | [UPDATE(SqlInterpolatedStringHandler&lt;SqlClause.UPDATE>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | **UPDATE(String)**                                             | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *text*.                        |
+|                                  | Name                                                             | Description                                                                                                                            |
+| -------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | [UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided string interpolated *handler*. |
+| ![Public method]![Static member] | **UPDATE(String)**                                               | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *text*.                        |
 
 
 Syntax

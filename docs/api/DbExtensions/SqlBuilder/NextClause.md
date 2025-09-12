@@ -1,6 +1,6 @@
 SqlBuilder.NextClause Property
 ==============================
-Gets or sets the next SQL clause. Used by clause continuation methods, such as [_(String)][1] and [_If(Boolean, ConditionalInterpolatedStringHandler)][2].
+Gets or sets the next SQL clause. Used by clause continuation methods, such as [_(String)][1] and [_If(Boolean, ConditionalStringHandler)][2].
   
 **Namespace:** [DbExtensions][3]  
 **Assembly:** DbExtensions.dll

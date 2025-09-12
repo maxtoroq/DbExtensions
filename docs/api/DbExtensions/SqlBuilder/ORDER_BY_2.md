@@ -8,11 +8,11 @@ Appends the ORDER BY clause using the provided *text*.
 Overloads
 ---------
 
-|                  | Name                                                               | Description                                                                                                                                                       |
-| ---------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [ORDER_BY()][2]                                                    | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalInterpolatedStringHandler)][3]. |
-| ![Public method] | [ORDER_BY(SqlInterpolatedStringHandler&lt;SqlClause.ORDER_BY>)][4] | Appends the ORDER BY clause using the provided interpolated string *handler*.                                                                                     |
-| ![Public method] | **ORDER_BY(String)**                                               | Appends the ORDER BY clause using the provided *text*.                                                                                                            |
+|                  | Name                                                                 | Description                                                                                                                                           |
+| ---------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [ORDER_BY()][2]                                                      | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| ![Public method] | [ORDER_BY(SqlBuilder.ClauseStringHandler&lt;SqlClause.ORDER_BY>)][4] | Appends the ORDER BY clause using the provided interpolated string *handler*.                                                                         |
+| ![Public method] | **ORDER_BY(String)**                                                 | Appends the ORDER BY clause using the provided *text*.                                                                                                |
 
 
 Syntax

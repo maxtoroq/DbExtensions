@@ -1,5 +1,5 @@
-SQL.WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>) Method
-================================================================
+SQL.WITH(SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>) Method
+==================================================================
 Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided string interpolated *handler*.
   
 **Namespace:** [DbExtensions][2]  
@@ -8,12 +8,12 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clau
 Overloads
 ---------
 
-|                                  | Name                                                      | Description                                                                                                                          |
-| -------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method]![Static member] | **WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | [WITH(String)][3]                                         | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *text*.                        |
-| ![Public method]![Static member] | [WITH(String, SqlBuilder)][4]                             | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.        |
-| ![Public method]![Static member] | [WITH(String, SqlSet)][5]                                 | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.        |
+|                                  | Name                                                        | Description                                                                                                                          |
+| -------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| ![Public method]![Static member] | **WITH(SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided string interpolated *handler*. |
+| ![Public method]![Static member] | [WITH(String)][3]                                           | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *text*.                        |
+| ![Public method]![Static member] | [WITH(String, SqlBuilder)][4]                               | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.        |
+| ![Public method]![Static member] | [WITH(String, SqlSet)][5]                                   | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.        |
 
 
 Syntax
@@ -21,18 +21,18 @@ Syntax
 
 ```csharp
 public static SqlBuilder WITH(
-	ref SqlInterpolatedStringHandler<SqlClause.WITH> handler
+	ref ClauseStringHandler<SqlClause.WITH> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.WITH][6]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.WITH][6]>
 The body of the WITH clause.
 
 #### Return Value
 [SqlBuilder][1]  
- A new [SqlBuilder][1] after calling [WITH(SqlInterpolatedStringHandler&lt;SqlClause.WITH>)][7].
+ A new [SqlBuilder][1] after calling [WITH(SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>)][7].
 
 See Also
 --------

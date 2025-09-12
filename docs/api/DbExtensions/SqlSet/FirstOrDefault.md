@@ -8,11 +8,11 @@ Returns the first element of the set, or a default value if the set contains no 
 Overloads
 ---------
 
-|                  | Name                                    | Description                                                                                                     |
-| ---------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **FirstOrDefault()**                    | Returns the first element of the set, or a default value if the set contains no elements.                       |
-| ![Public method] | [FirstOrDefault(SqlFragmentHandler)][2] | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
-| ![Public method] | [FirstOrDefault(String)][3]             | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
+|                  | Name                                       | Description                                                                                                     |
+| ---------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | **FirstOrDefault()**                       | Returns the first element of the set, or a default value if the set contains no elements.                       |
+| ![Public method] | [FirstOrDefault(OperatorStringHandler)][2] | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
+| ![Public method] | [FirstOrDefault(String)][3]                | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
 
 
 Syntax

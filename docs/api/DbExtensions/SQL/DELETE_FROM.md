@@ -1,5 +1,5 @@
-SQL.DELETE_FROM(SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>) Method
-==============================================================================
+SQL.DELETE_FROM(SqlBuilder.ClauseStringHandler&lt;SqlClause.DELETE_FROM>) Method
+================================================================================
 Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided string interpolated *handler*.
   
 **Namespace:** [DbExtensions][2]  
@@ -8,10 +8,10 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FR
 Overloads
 ---------
 
-|                                  | Name                                                                    | Description                                                                                                                                 |
-| -------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | **DELETE_FROM(SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | [DELETE_FROM(String)][3]                                                | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *text*.                        |
+|                                  | Name                                                                      | Description                                                                                                                                 |
+| -------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method]![Static member] | **DELETE_FROM(SqlBuilder.ClauseStringHandler&lt;SqlClause.DELETE_FROM>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided string interpolated *handler*. |
+| ![Public method]![Static member] | [DELETE_FROM(String)][3]                                                  | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *text*.                        |
 
 
 Syntax
@@ -19,18 +19,18 @@ Syntax
 
 ```csharp
 public static SqlBuilder DELETE_FROM(
-	ref SqlInterpolatedStringHandler<SqlClause.DELETE_FROM> handler
+	ref ClauseStringHandler<SqlClause.DELETE_FROM> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;[SqlClause.DELETE_FROM][4]>
+##### *handler*  ClauseStringHandler&lt;[SqlClause.DELETE_FROM][4]>
 The body of the DELETE FROM clause.
 
 #### Return Value
 [SqlBuilder][1]  
- A new [SqlBuilder][1] after calling [DELETE_FROM(SqlInterpolatedStringHandler&lt;SqlClause.DELETE_FROM>)][5].
+ A new [SqlBuilder][1] after calling [DELETE_FROM(SqlBuilder.ClauseStringHandler&lt;SqlClause.DELETE_FROM>)][5].
 
 See Also
 --------

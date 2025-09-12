@@ -1,5 +1,5 @@
-SqlBuilder.AppendClause&lt;TClause>(SqlInterpolatedStringHandler&lt;TClause>) Method
-====================================================================================
+SqlBuilder.AppendClause&lt;TClause>(SqlBuilder.ClauseStringHandler&lt;TClause>) Method
+======================================================================================
 Appends the SQL clause identified by TClause and appends the interpolated string *handler*.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,13 +8,13 @@ Appends the SQL clause identified by TClause and appends the interpolated string
 Overloads
 ---------
 
-|                  | Name                                                                   | Description                                                                                 |
-| ---------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| ![Public method] | [AppendClause(SqlClause)][2]                                           | Appends the SQL *clause*.                                                                   |
-| ![Public method] | [AppendClause(SqlClause, String)][3]                                   | Appends the SQL *clause* and the provided *text*.                                           |
-| ![Public method] | [AppendClause&lt;TClause>()][4]                                        | Appends the SQL clause identified by TClause.                                               |
-| ![Public method] | **AppendClause&lt;TClause>(SqlInterpolatedStringHandler&lt;TClause>)** | Appends the SQL clause identified by TClause and appends the interpolated string *handler*. |
-| ![Public method] | [AppendClause&lt;TClause>(String)][5]                                  | Appends the SQL clause identified by TClause and appends the *text*.                        |
+|                  | Name                                                                     | Description                                                                                 |
+| ---------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| ![Public method] | [AppendClause(SqlClause)][2]                                             | Appends the SQL *clause*.                                                                   |
+| ![Public method] | [AppendClause(SqlClause, String)][3]                                     | Appends the SQL *clause* and the provided *text*.                                           |
+| ![Public method] | [AppendClause&lt;TClause>()][4]                                          | Appends the SQL clause identified by TClause.                                               |
+| ![Public method] | **AppendClause&lt;TClause>(SqlBuilder.ClauseStringHandler&lt;TClause>)** | Appends the SQL clause identified by TClause and appends the interpolated string *handler*. |
+| ![Public method] | [AppendClause&lt;TClause>(String)][5]                                    | Appends the SQL clause identified by TClause and appends the *text*.                        |
 
 
 Syntax
@@ -22,7 +22,7 @@ Syntax
 
 ```csharp
 public SqlBuilder AppendClause<TClause>(
-	ref SqlInterpolatedStringHandler<TClause> handler
+	ref ClauseStringHandler<TClause> handler
 )
 where TClause : new(), SqlClause
 
@@ -30,7 +30,7 @@ where TClause : new(), SqlClause
 
 #### Parameters
 
-##### *handler*  SqlInterpolatedStringHandler&lt;**TClause**>
+##### *handler*  ClauseStringHandler&lt;**TClause**>
 The interpolated string to append.
 
 #### Type Parameters

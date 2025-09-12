@@ -1,5 +1,5 @@
-SqlSet&lt;TResult>.Single(SqlSet.SqlFragmentHandler) Method
-===========================================================
+SqlSet&lt;TResult>.Single(SqlSet.OperatorStringHandler) Method
+==============================================================
 Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,11 +8,11 @@ Returns the only element of the set that satisfies a specified condition, and th
 Overloads
 ---------
 
-|                  | Name                           | Description                                                                                                                             |
-| ---------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [Single()][2]                  | The single element of the set.                                                                                                          |
-| ![Public method] | **Single(SqlFragmentHandler)** | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
-| ![Public method] | [Single(String)][3]            | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+|                  | Name                              | Description                                                                                                                             |
+| ---------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Public method] | [Single()][2]                     | The single element of the set.                                                                                                          |
+| ![Public method] | **Single(OperatorStringHandler)** | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+| ![Public method] | [Single(String)][3]               | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
 
 
 Syntax
@@ -20,13 +20,13 @@ Syntax
 
 ```csharp
 public TResult Single(
-	ref SqlFragmentHandler predicate
+	ref OperatorStringHandler predicate
 )
 ```
 
 #### Parameters
 
-##### *predicate*  SqlFragmentHandler
+##### *predicate*  OperatorStringHandler
 A SQL expression to test each row for a condition.
 
 #### Return Value
