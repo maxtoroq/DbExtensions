@@ -1278,17 +1278,13 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
    AsEnumerable(bool singleResult) =>
       Map(singleResult);
 
-   /// <summary>
-   /// Casts the elements of the set to the specified type.
-   /// </summary>
-   /// <typeparam name="T">The type to cast the elements of the set to.</typeparam>
-   /// <returns>A new <see cref="SqlSet&lt;T>"/> that contains each element of the current set cast to the specified type.</returns>
+   /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    public new SqlSet<T>
    Cast<T>() => base.Cast<T>();
 
-   /// <inheritdoc cref="SqlSet.Cast(Type)"/>
+   /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    public new SqlSet

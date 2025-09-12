@@ -443,7 +443,7 @@ public sealed class SqlTable : SqlSet, ISqlTable {
       return (SqlTable<TEntity>)_table;
    }
 
-   /// <inheritdoc cref="SqlSet.Cast(Type)"/>
+   /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    public new SqlSet

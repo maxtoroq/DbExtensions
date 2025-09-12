@@ -54,8 +54,8 @@ Methods
 | ![Public method] | [Any(OperatorStringHandler)][16]                                                | Determines whether any element of the set satisfies a condition. <br/>(Inherited from [SqlSet][4])                                                                                                                                                     |
 | ![Public method] | [Any(String)][17]                                                               | Determines whether any element of the set satisfies a condition. <br/>(Inherited from [SqlSet][4])                                                                                                                                                     |
 | ![Public method] | [AsEnumerable][18]                                                              | Gets all TResult objects in the set. The query is deferred-executed. <br/>(Inherited from [SqlSet&lt;TResult>][1])                                                                                                                                     |
-| ![Public method] | [Cast(Type)][19]                                                                | Casts the elements of the set to the specified type. <br/>(Inherited from [SqlSet&lt;TResult>][1])                                                                                                                                                     |
-| ![Public method] | [Cast&lt;T>()][20]                                                              | Casts the elements of the set to the specified type. <br/>(Inherited from [SqlSet&lt;TResult>][1])                                                                                                                                                     |
+| ![Public method] | [Cast(Type)][19]                                                                | Casts the elements of the set to the specified type. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                 |
+| ![Public method] | [Cast&lt;TResult>()][20]                                                        | Casts the elements of the set to the specified type. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                 |
 | ![Public method] | [Contains(Object)][21]                                                          | Checks the existance of the *entity*, using the primary key value. <br/>(Inherited from [SqlSet&lt;TResult>][1])                                                                                                                                       |
 | ![Public method] | [Contains(TResult)][22]                                                         | Checks the existance of the *entity*, using the primary key value. <br/>(Inherited from [SqlSet&lt;TResult>][1])                                                                                                                                       |
 | ![Public method] | [ContainsKey][23]                                                               | Checks the existance of an entity whose primary matches the *id* parameter. <br/>(Inherited from [SqlSet][4])                                                                                                                                          |
@@ -131,8 +131,8 @@ See Also
 [16]: ../SqlSet/Any_1.md
 [17]: ../SqlSet/Any_2.md
 [18]: ../SqlSet_1/AsEnumerable.md
-[19]: ../SqlSet_1/Cast.md
-[20]: ../SqlSet_1/Cast__1.md
+[19]: ../SqlSet/Cast.md
+[20]: ../SqlSet/Cast__1.md
 [21]: ../SqlSet_1/Contains.md
 [22]: ../SqlSet_1/Contains_1.md
 [23]: ../SqlSet/ContainsKey.md
