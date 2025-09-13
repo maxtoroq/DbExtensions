@@ -9,7 +9,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{e4c3bd2c-c9c8-4484-bc16-0d4a5f6dfcd3}</ProjectGuid>
-    <SHFBSchemaVersion>1.9.9.0</SHFBSchemaVersion>
+    <SHFBSchemaVersion>2017.9.26.0</SHFBSchemaVersion>
     <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual
          Studio adds them anyway -->
     <AssemblyName>Documentation</AssemblyName>
@@ -46,7 +46,7 @@
     <MaximumGroupParts>2</MaximumGroupParts>
     <NamespaceGrouping>False</NamespaceGrouping>
     <RootNamespaceTitle>DbExtensions Namespaces</RootNamespaceTitle>
-    <VisibleItems>InheritedMembers, Protected, SealedProtected</VisibleItems>
+    <VisibleItems>InheritedMembers, Protected, SealedProtected, NonBrowsable</VisibleItems>
     <ComponentConfigurations>
       <ComponentConfig id="IntelliSense Component" enabled="True" xmlns="">
         <component id="IntelliSense Component">

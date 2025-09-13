@@ -1,5 +1,5 @@
-SqlSet&lt;TResult>.Contains(Object) Method
-==========================================
+SqlSet&lt;TResult>.Contains(TResult) Method
+===========================================
 Checks the existance of the *entity*, using the primary key value.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,10 +8,10 @@ Checks the existance of the *entity*, using the primary key value.
 Overloads
 ---------
 
-|                  | Name                   | Description                                                        |
-| ---------------- | ---------------------- | ------------------------------------------------------------------ |
-| ![Public method] | **Contains(Object)**   | Checks the existance of the *entity*, using the primary key value. |
-| ![Public method] | [Contains(TResult)][2] | Checks the existance of the *entity*, using the primary key value. |
+|                  | Name                  | Description                                                        |
+| ---------------- | --------------------- | ------------------------------------------------------------------ |
+| ![Public method] | [Contains(Object)][2] | Checks the existance of the *entity*, using the primary key value. |
+| ![Public method] | **Contains(TResult)** | Checks the existance of the *entity*, using the primary key value. |
 
 
 Syntax
@@ -19,13 +19,13 @@ Syntax
 
 ```csharp
 public bool Contains(
-	Object entity
+	TResult entity
 )
 ```
 
 #### Parameters
 
-##### *entity*  [Object][3]
+##### *entity*  [TResult][3]
 The entity whose existance is to be checked.
 
 #### Return Value
@@ -44,13 +44,12 @@ See Also
 --------
 
 #### Reference
-[SqlSet&lt;TResult> Class][6]  
+[SqlSet&lt;TResult> Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: Contains_1.md
-[3]: https://learn.microsoft.com/dotnet/api/system.object
+[2]: ../SqlSet/Contains.md
+[3]: README.md
 [4]: https://learn.microsoft.com/dotnet/api/system.boolean
 [5]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
-[6]: README.md
 [Public method]: ../../icons/pubmethod.svg "Public method"
