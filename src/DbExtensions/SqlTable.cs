@@ -656,13 +656,8 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    void
    InsertOneToOne(TEntity entity) {
 
-      var oneToOne = _metaType.Associations
-         .Where(a => !a.IsMany && a.ThisKeyIsPrimaryKey && a.OtherKeyIsPrimaryKey)
-         .ToArray();
-
-      for (int i = 0; i < oneToOne.Length; i++) {
-
-         var assoc = oneToOne[i];
+      foreach (var assoc in _metaType.Associations
+            .Where(a => !a.IsMany && a.ThisKeyIsPrimaryKey && a.OtherKeyIsPrimaryKey)) {
 
          var child = assoc.ThisMember.MemberAccessor.GetBoxedValue(entity);
 
@@ -689,11 +684,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    void
    InsertOneToMany(TEntity entity) {
 
-      var oneToMany = _metaType.Associations.Where(a => a.IsMany).ToArray();
-
-      for (int i = 0; i < oneToMany.Length; i++) {
-
-         var assoc = oneToMany[i];
+      foreach (var assoc in _metaType.Associations.Where(a => a.IsMany)) {
 
          var many = ((IEnumerable<object>)assoc.ThisMember.MemberAccessor.GetBoxedValue(entity) ?? [])
             .Where(o => o is not null)
@@ -703,9 +694,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
             continue;
          }
 
-         for (int j = 0; j < many.Length; j++) {
-
-            var child = many[j];
+         foreach (var child in many) {
 
             for (int k = 0; k < assoc.ThisKey.Count; k++) {
 
@@ -713,20 +702,17 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
                var otherKey = assoc.OtherKey[k];
 
                var thisKeyVal = thisKey.MemberAccessor.GetBoxedValue(entity);
+               var c = child;
 
-               otherKey.MemberAccessor.SetBoxedValue(ref child, thisKeyVal);
+               otherKey.MemberAccessor.SetBoxedValue(ref c, thisKeyVal);
             }
          }
 
-         var otherTable = _db.Table(assoc.OtherType);
-
+         var otherTable = (ISqlTable)_db.Table(assoc.OtherType);
          otherTable.AddRange(many);
 
-         for (int j = 0; j < many.Length; j++) {
-
-            var child = many[j];
-
-            ((ISqlTable)otherTable).AddDescendants(child);
+         foreach (var child in many) {
+            otherTable.AddDescendants(child);
          }
       }
    }
@@ -781,8 +767,8 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
             _db.Execute(batchInsert, affect: entities.Length, exact: true);
 
-            for (int i = 0; i < entities.Length; i++) {
-               InsertDescendants(entities[i]);
+            foreach (var e in entities) {
+               InsertDescendants(e);
             }
 
             tx.Commit();
@@ -792,8 +778,8 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
          using (var tx = _db.EnsureInTransaction()) {
 
-            for (int i = 0; i < entities.Length; i++) {
-               Add(entities[i]);
+            foreach (var e in entities) {
+               Add(e);
             }
 
             tx.Commit();
@@ -891,8 +877,8 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
          using (var tx = _db.EnsureInTransaction()) {
 
-            for (int i = 0; i < entities.Length; i++) {
-               Update(entities[i]);
+            foreach (var e in entities) {
+               Update(e);
             }
 
             tx.Commit();
@@ -1023,8 +1009,8 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
 
          using (var tx = _db.EnsureInTransaction()) {
 
-            for (int i = 0; i < entities.Length; i++) {
-               Remove(entities[i]);
+            foreach (var e in entities) {
+               Remove(e);
             }
 
             tx.Commit();
