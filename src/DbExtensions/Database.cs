@@ -18,12 +18,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DbExtensions;
 
@@ -172,6 +173,39 @@ public partial class Database : IDisposable {
    }
 
    /// <summary>
+   /// Opens <see cref="Connection"/> (if it's not open) and returns an <see cref="IAsyncDisposable"/> object
+   /// you can use to close it (if it wasn't open).
+   /// </summary>
+   /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
+   /// <returns>An <see cref="IAsyncDisposable"/> object to close the connection.</returns>
+   /// <remarks>
+   /// Use this method with the <c>using</c> statement in C# or Visual Basic to ensure that a block of code
+   /// is always executed with an open connection.
+   /// </remarks>
+   /// <example>
+   /// <code>
+   /// await using (await db.EnsureConnectionOpenAsync()) {
+   ///   // Execute commands.
+   /// }
+   /// </code>
+   /// </example>
+
+   public async ValueTask<IAsyncDisposable>
+   EnsureConnectionOpenAsync(CancellationToken cancellationToken = default) {
+
+      var conn = this.Connection;
+      var wasClosed = (conn.State == ConnectionState.Closed);
+
+      if (wasClosed) {
+
+         await conn.OpenAsync(cancellationToken)
+            .ConfigureAwait(false);
+      }
+
+      return new WrappedConnection((wasClosed) ? conn : null);
+   }
+
+   /// <summary>
    /// Returns a virtual transaction that you can use to ensure a code block is always executed in 
    /// a transaction, new or existing.
    /// </summary>
@@ -181,9 +215,11 @@ public partial class Database : IDisposable {
    /// </returns>
    /// <remarks>
    /// This method returns a virtual transaction that wraps an existing or new transaction.
-   /// By calling <see cref="IDbTransaction.Commit()"/> on the returned object, this object
+   /// By calling <see cref="DbTransaction.Commit()"/> on the returned object, this object
    /// will then call <see cref="DbTransaction.Commit()"/> on the wrapped transaction if the
    /// transaction was just created, or do nothing if it was previously created.
+   /// </remarks>
+   /// <example>
    /// <para>
    /// Calls to this method can be nested, like in the following example:
    /// </para>
@@ -210,9 +246,9 @@ public partial class Database : IDisposable {
    ///    }
    /// }
    /// </code>
-   /// </remarks>
+   /// </example>
 
-   public IDbTransaction
+   public DbTransaction
    EnsureInTransaction() =>
       EnsureInTransaction(IsolationLevel.Unspecified);
 
@@ -222,16 +258,16 @@ public partial class Database : IDisposable {
    /// an existing transaction.
    /// </param>
 
-   public IDbTransaction
+   public DbTransaction
    EnsureInTransaction(IsolationLevel isolationLevel) {
 
-      var connHolder = EnsureConnectionOpen();
-      var tx = default(DbTransaction);
+      var connHolder = (WrappedConnection)EnsureConnectionOpen();
+      var newTx = default(DbTransaction);
 
       try {
 
          if (this.Transaction is null) {
-            this.Transaction = (tx = this.Connection.BeginTransaction(isolationLevel));
+            this.Transaction = (newTx = this.Connection.BeginTransaction(isolationLevel));
             this.Configuration.Log?.WriteLine("-- TRANSACTION STARTED");
          }
 
@@ -241,7 +277,80 @@ public partial class Database : IDisposable {
          throw;
       }
 
-      return new WrappedTransaction(this, tx, isolationLevel, connHolder);
+      if (newTx != null) {
+         return new WrappedTransaction(this, newTx, connHolder);
+      }
+
+      return new NoOpTransaction(this.Connection, isolationLevel, connHolder);
+   }
+
+   /// <inheritdoc cref="EnsureInTransaction()" path="*[not(self::example)]"/>
+   /// <inheritdoc cref="EnsureConnectionOpenAsync" path="param"/>
+   /// <example>
+   /// <para>
+   /// Calls to this method can be nested, like in the following example:
+   /// </para>
+   /// <code>
+   /// async Task DoSomething() {
+   /// 
+   ///    await using (var tx = await this.db.EnsureInTransactionAsync()) {
+   ///       
+   ///       // Execute commands
+   /// 
+   ///       await DoSomethingElse();
+   /// 
+   ///       await tx.CommitAsync();
+   ///    }
+   /// }
+   /// 
+   /// async Task DoSomethingElse() {
+   ///    
+   ///    await using (var tx = await this.db.EnsureInTransactionAsync()) {
+   ///       
+   ///       // Execute commands
+   /// 
+   ///       await tx.CommitAsync();
+   ///    }
+   /// }
+   /// </code>
+   /// </example>
+
+   public ValueTask<DbTransaction>
+   EnsureInTransactionAsync(CancellationToken cancellationToken = default) =>
+      EnsureInTransactionAsync(IsolationLevel.Unspecified, cancellationToken);
+
+   /// <inheritdoc cref="EnsureInTransactionAsync(CancellationToken)"/>
+   /// <inheritdoc cref="EnsureInTransaction(IsolationLevel)" path="param"/>
+
+   public async ValueTask<DbTransaction>
+   EnsureInTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default) {
+
+      var connHolder = (WrappedConnection)EnsureConnectionOpen();
+      var newTx = default(DbTransaction);
+
+      try {
+
+         if (this.Transaction is null) {
+
+            this.Transaction = (newTx = await this.Connection.BeginTransactionAsync(isolationLevel, cancellationToken)
+               .ConfigureAwait(false));
+
+            this.Configuration.Log?.WriteLine("-- TRANSACTION STARTED");
+         }
+
+      } catch {
+
+         await connHolder.DisposeAsync()
+            .ConfigureAwait(false);
+
+         throw;
+      }
+
+      if (newTx != null) {
+         return new WrappedTransaction(this, newTx, connHolder);
+      }
+
+      return new NoOpTransaction(this.Connection, isolationLevel, connHolder);
    }
 
    /// <summary>
@@ -260,16 +369,12 @@ public partial class Database : IDisposable {
       ArgumentNullException.ThrowIfNull(nonQuery);
 
       var command = CreateCommand(nonQuery);
+      var validateAffected = affect > -1;
 
       using var conn = EnsureConnectionOpen();
-      using var tx = (affect > -1) ? (WrappedTransaction)EnsureInTransaction() : null;
+      using var tx = (validateAffected) ? EnsureInTransaction() : null;
 
-      if (tx?.Started == true) {
-
-         Debug.Assert(command.Transaction is null);
-
-         command.Transaction = this.Transaction;
-      }
+      command.Transaction = this.Transaction;
 
       int affectedRecords;
 
@@ -281,19 +386,63 @@ public partial class Database : IDisposable {
          throw;
       }
 
-      OnExecuted(command, affect, exact, tx, affectedRecords);
+      OnExecuted(command, affect, exact, validateAffected, affectedRecords);
 
       tx?.Commit();
 
       return affectedRecords;
    }
 
+   /// <inheritdoc cref="Execute"/>
+   /// <inheritdoc cref="EnsureConnectionOpenAsync" path="param"/>
+
+   public async ValueTask<int>
+   ExecuteAsync([InterpolatedString] SqlBuilder nonQuery, int affect = -1, bool exact = false, CancellationToken cancellationToken = default) {
+
+      ArgumentNullException.ThrowIfNull(nonQuery);
+
+      var command = CreateCommand(nonQuery);
+      var validateAffected = affect > -1;
+
+      await using var conn = (await EnsureConnectionOpenAsync(cancellationToken)
+            .ConfigureAwait(false))
+         .ConfigureAwait(false);
+
+      var tx = (validateAffected) ?
+         await EnsureInTransactionAsync(cancellationToken).ConfigureAwait(false)
+         : new NoOpTransaction(this.Connection, IsolationLevel.Unspecified, new WrappedConnection(null));
+
+      await using var txDisp = tx.ConfigureAwait(false);
+
+      command.Transaction = this.Transaction;
+
+      int affectedRecords;
+
+      try {
+
+         affectedRecords = await command.ExecuteNonQueryAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+      } catch {
+
+         Trace(command, error: true);
+         throw;
+      }
+
+      OnExecuted(command, affect, exact, validateAffected, affectedRecords);
+
+      await tx.CommitAsync(cancellationToken)
+         .ConfigureAwait(false);
+
+      return affectedRecords;
+   }
+
    void
-   OnExecuted(DbCommand command, int affect, bool exact, IDbTransaction? tx, int affectedRecords) {
+   OnExecuted(DbCommand command, int affect, bool exact, bool validateAffected, int affectedRecords) {
 
       Trace(command, affectedRecords);
 
-      if (tx is not null
+      if (validateAffected
          && affectedRecords != affect) {
 
          if (exact) {
@@ -329,6 +478,17 @@ public partial class Database : IDisposable {
       return new MappingEnumerable<TResult>(CreateCommand(query), mapper, this.Configuration.Log);
    }
 
+   /// <inheritdoc cref="Map&lt;TResult>(SqlBuilder, Func&lt;DbDataReader, TResult>)"/>
+
+   public IAsyncEnumerable<TResult>
+   AsyncMap<TResult>([InterpolatedString] SqlBuilder query, Func<DbDataReader, TResult> mapper) {
+
+      ArgumentNullException.ThrowIfNull(query);
+      ArgumentNullException.ThrowIfNull(mapper);
+
+      return new AsyncMappingEnumerable<TResult>(CreateCommand(query), mapper, this.Configuration.Log);
+   }
+
    /// <summary>
    /// Gets the identity value of the last inserted record.
    /// </summary>
@@ -349,6 +509,27 @@ public partial class Database : IDisposable {
 
       var command = CreateCommand(new SqlBuilder(sql.Length, 0).Append(sql));
       var value = command.ExecuteScalar();
+
+      Trace(command);
+
+      return value;
+   }
+
+   /// <inheritdoc cref="LastInsertId"/>
+   /// <inheritdoc cref="EnsureConnectionOpenAsync" path="param"/>
+
+   public virtual async ValueTask<object?>
+   LastInsertIdAsync(CancellationToken cancellationToken = default) {
+
+      var sql = this.Configuration.LastInsertIdCommand;
+
+      if (String.IsNullOrEmpty(sql)) {
+         throw new InvalidOperationException("Configuration.LastInsertIdCommand cannot be null.");
+      }
+
+      var command = CreateCommand(new SqlBuilder(sql.Length, 0).Append(sql));
+      var value = await command.ExecuteScalarAsync(cancellationToken)
+         .ConfigureAwait(false);
 
       Trace(command);
 
@@ -551,107 +732,182 @@ public partial class Database : IDisposable {
    public override string?
    ToString() => base.ToString();
 
-   sealed class WrappedConnection(DbConnection? conn) : IDisposable {
+   sealed class WrappedConnection(DbConnection? previouslyClosedConn) : IDisposable, IAsyncDisposable {
 
       public void
       Dispose() {
 
-         if (conn is { State: not ConnectionState.Closed }) {
+         if (previouslyClosedConn is { State: not ConnectionState.Closed } conn) {
             conn.Close();
+         }
+      }
+
+      public async ValueTask
+      DisposeAsync() {
+
+         if (previouslyClosedConn is { State: not ConnectionState.Closed } conn) {
+
+            await conn.CloseAsync()
+               .ConfigureAwait(false);
          }
       }
    }
 
-   sealed class WrappedTransaction : IDbTransaction {
+   sealed class WrappedTransaction : DbTransaction {
 
       readonly Database
       _db;
 
-      readonly DbTransaction?
+      readonly DbTransaction
       _tx;
 
-      readonly IsolationLevel
-      _isolationLevel;
-
-      readonly IDisposable
+      readonly WrappedConnection
       _connHolder;
 
-      IDbConnection?
-      IDbTransaction.Connection => _db.Connection;
+      protected override DbConnection?
+      DbConnection => _tx.Connection;
 
-      IsolationLevel
-      IDbTransaction.IsolationLevel => _isolationLevel;
-
-      public bool
-      Started => _tx is not null;
+      public override IsolationLevel
+      IsolationLevel => _tx.IsolationLevel;
 
       public
-      WrappedTransaction(Database db, DbTransaction? tx, IsolationLevel isolationLevel, IDisposable connHolder) {
+      WrappedTransaction(Database db, DbTransaction tx, WrappedConnection connHolder) {
          _db = db;
          _tx = tx;
-         _isolationLevel = isolationLevel;
          _connHolder = connHolder;
       }
 
-      public void
+      public override void
       Commit() {
 
-         if (_tx is not null) {
+         try {
+            _tx.Commit();
+            _db.Configuration.Log?.WriteLine("-- TRANSACTION COMMITED");
 
-            try {
-               _tx.Commit();
-               _db.Configuration.Log?.WriteLine("-- TRANSACTION COMMITED");
-
-            } finally {
-               RemoveTxFromDatabase();
-            }
+         } finally {
+            RemoveTxFromDatabase();
          }
       }
 
-      public void
-      Rollback() {
-
-         if (_tx is not null) {
-
-            try {
-               _tx.Rollback();
-               _db.Configuration.Log?.WriteLine("-- TRANSACTION ROLLED BACK");
-
-            } finally {
-               RemoveTxFromDatabase();
-            }
-
-         } else {
-            throw new InvalidOperationException();
-         }
-      }
-
-      public void
-      Dispose() {
+      public override async Task
+      CommitAsync(CancellationToken cancellationToken = default) {
 
          try {
 
-            if (_tx is not null) {
+            await _tx.CommitAsync(cancellationToken)
+               .ConfigureAwait(false);
+
+            _db.Configuration.Log?.WriteLine("-- TRANSACTION COMMITED");
+
+         } finally {
+            RemoveTxFromDatabase();
+         }
+      }
+
+      public override void
+      Rollback() {
+
+         try {
+            _tx.Rollback();
+            _db.Configuration.Log?.WriteLine("-- TRANSACTION ROLLED BACK");
+
+         } finally {
+            RemoveTxFromDatabase();
+         }
+      }
+
+      public override async Task
+      RollbackAsync(CancellationToken cancellationToken = default) {
+
+         try {
+
+            await _tx.RollbackAsync(cancellationToken)
+               .ConfigureAwait(false);
+
+            _db.Configuration.Log?.WriteLine("-- TRANSACTION ROLLED BACK");
+
+         } finally {
+            RemoveTxFromDatabase();
+         }
+      }
+
+      protected override void
+      Dispose(bool disposing) {
+
+         if (disposing) {
+
+            try {
+
                try {
                   _tx.Dispose();
                } finally {
                   RemoveTxFromDatabase();
                }
+
+            } finally {
+               _connHolder.Dispose();
+            }
+         }
+      }
+
+      public override async ValueTask
+      DisposeAsync() {
+
+         try {
+
+            try {
+
+               await _tx.DisposeAsync()
+                  .ConfigureAwait(false);
+
+            } finally {
+               RemoveTxFromDatabase();
             }
 
          } finally {
-            _connHolder.Dispose();
+
+            await _connHolder.DisposeAsync()
+               .ConfigureAwait(false);
          }
       }
 
       void
       RemoveTxFromDatabase() {
 
-         Debug.Assert(_tx is not null);
-
          if (Object.ReferenceEquals(_tx, _db.Transaction)) {
             _db.Transaction = null;
          }
+      }
+   }
+
+   sealed class NoOpTransaction(DbConnection conn, IsolationLevel isolationLevel, WrappedConnection connHolder) : DbTransaction {
+
+      protected override DbConnection?
+      DbConnection => conn;
+
+      public override IsolationLevel
+      IsolationLevel => isolationLevel;
+
+      public override void
+      Commit() { }
+
+      public override void
+      Rollback() =>
+         throw new NotImplementedException();
+
+      protected override void
+      Dispose(bool disposing) {
+
+         if (disposing) {
+            connHolder.Dispose();
+         }
+      }
+
+      public override async ValueTask
+      DisposeAsync() {
+
+         await connHolder.DisposeAsync()
+            .ConfigureAwait(false);
       }
    }
 }
@@ -949,5 +1205,152 @@ sealed class MappingEnumerable<TResult> : IEnumerable<TResult>, IEnumerable, IEn
 
          conn.Close();
       }
+   }
+}
+
+sealed class AsyncMappingEnumerable<TResult> : IAsyncEnumerable<TResult>, IAsyncEnumerator<TResult> {
+
+   readonly DbCommand
+   _command;
+
+   readonly Func<DbDataReader, TResult>
+   _mapper;
+
+   readonly TextWriter?
+   _logger;
+
+   readonly bool
+   _prevStateWasClosed;
+
+   bool
+   _used;
+
+   CancellationToken
+   _cancellationToken;
+
+   DbDataReader?
+   _reader;
+
+   TResult
+   _current;
+
+   public TResult
+   Current => _current;
+
+#pragma warning disable CS8618
+   public
+   AsyncMappingEnumerable(DbCommand command, Func<DbDataReader, TResult> mapper, TextWriter? logger) {
+#pragma warning restore CS8618
+
+      var conn = command.Connection
+         ?? throw new ArgumentException("command.Connection cannot be null.", nameof(command));
+
+      _prevStateWasClosed = (conn.State == ConnectionState.Closed);
+
+      _command = command;
+      _mapper = mapper;
+      _logger = logger;
+   }
+
+   public IAsyncEnumerator<TResult>
+   GetAsyncEnumerator(CancellationToken cancellationToken = default) {
+
+      if (!_used) {
+         _cancellationToken = cancellationToken;
+         _used = true;
+         return this;
+      }
+
+      throw new InvalidOperationException("Cannot enumerate more than once.");
+   }
+
+   public async ValueTask<bool>
+   MoveNextAsync() {
+
+      if (_reader is null) {
+
+         await PossiblyOpenConnection()
+            .ConfigureAwait(false);
+
+         try {
+
+            _reader = await _command.ExecuteReaderAsync(_cancellationToken)
+               .ConfigureAwait(false);
+
+            Database.Trace(_command, _logger, _reader.RecordsAffected);
+
+         } catch {
+
+            try {
+               Database.Trace(_command, _logger, error: true);
+            } finally {
+
+               await PossiblyCloseConnection()
+                  .ConfigureAwait(false);
+            }
+
+            throw;
+         }
+      }
+
+      if (_reader.IsClosed) {
+         // see MappingContext.LoadMany()
+         return false;
+      }
+
+      try {
+
+         if (await _reader.ReadAsync(_cancellationToken).ConfigureAwait(false)) {
+            _current = _mapper.Invoke(_reader);
+            return true;
+         }
+
+      } catch {
+
+         await PossiblyCloseConnection()
+            .ConfigureAwait(false);
+
+         throw;
+      }
+
+      await PossiblyCloseConnection()
+         .ConfigureAwait(false);
+
+      return false;
+   }
+
+   async ValueTask
+   PossiblyOpenConnection() {
+
+      if (_prevStateWasClosed
+         && _command.Connection is { } conn) {
+
+         await conn.OpenAsync(_cancellationToken)
+            .ConfigureAwait(false);
+      }
+   }
+
+   async ValueTask
+   PossiblyCloseConnection() {
+
+      if (_prevStateWasClosed
+         && _command.Connection is { State: not ConnectionState.Closed } conn) {
+
+         await conn.CloseAsync()
+            .ConfigureAwait(false);
+      }
+   }
+
+   public async ValueTask
+   DisposeAsync() {
+
+      if (_reader is { } r) {
+
+         await r.DisposeAsync()
+            .ConfigureAwait(false);
+      }
+
+      await PossiblyCloseConnection()
+         .ConfigureAwait(false);
    }
 }

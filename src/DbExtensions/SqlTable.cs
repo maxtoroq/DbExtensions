@@ -113,9 +113,13 @@ partial class Database {
    /// <seealso cref="SqlTable.Add(Object)" qualifyHint="true"/>
 
    public void
-   Add(object entity) =>
+   Add(object entity) {
+
+      ArgumentNullException.ThrowIfNull(entity);
+
       Table(entity.GetType())
          .Add(entity);
+   }
 
    /// <inheritdoc cref="SqlSet&lt;TEntity>.Find(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
    /// <typeparam name="TEntity">The type of the entity.</typeparam>
@@ -336,7 +340,7 @@ partial class DatabaseConfiguration {
 /// </summary>
 
 [DebuggerDisplay($"{{{nameof(_metaType)}.{nameof(_metaType.Name)}}}")]
-public sealed class SqlTable : SqlSet, ISqlTable {
+public sealed partial class SqlTable : SqlSet, ISqlTable {
 
    // table is the SqlTable<TEntity> instance for metaType
    // SqlTable is only a wrapper on SqlTable<TEntity>
@@ -489,7 +493,7 @@ public sealed class SqlTable : SqlSet, ISqlTable {
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 
 [DebuggerDisplay($"{{{nameof(_metaType)}.{nameof(_metaType.Name)}}}")]
-public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity : class {
+public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity : class {
 
    readonly MetaType
    _metaType;
@@ -1011,12 +1015,8 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       AddRange((IEnumerable<TEntity>)entities);
 
    void
-   ISqlTable.AddRange(params object[] entities) {
-
-      ArgumentNullException.ThrowIfNull(entities);
-
-      AddRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
-   }
+   ISqlTable.AddRange(params object[] entities) =>
+      AddRange((TEntity[])entities);
 
    void
    ISqlTable.Update(object entity) =>
@@ -1031,12 +1031,8 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       UpdateRange((IEnumerable<TEntity>)entities);
 
    void
-   ISqlTable.UpdateRange(params object[] entities) {
-
-      ArgumentNullException.ThrowIfNull(entities);
-
-      UpdateRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
-   }
+   ISqlTable.UpdateRange(params object[] entities) =>
+      UpdateRange((TEntity[])entities);
 
    void
    ISqlTable.Remove(object entity) =>
@@ -1051,12 +1047,8 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
       RemoveRange((IEnumerable<TEntity>)entities);
 
    void
-   ISqlTable.RemoveRange(params object[] entities) {
-
-      ArgumentNullException.ThrowIfNull(entities);
-
-      RemoveRange(entities as TEntity[] ?? entities.Cast<TEntity>().ToArray());
-   }
+   ISqlTable.RemoveRange(params object[] entities) =>
+      RemoveRange((TEntity[])entities);
 
    void
    ISqlTable.Refresh(object entity) =>
@@ -1439,6 +1431,16 @@ partial class SqlSet {
 
       ArgumentNullException.ThrowIfNull(entity);
 
+      var (fragment, columnList) = ContainsEntityImplParams(entity);
+
+      return Where(fragment)
+         .Select(columnList)
+         .Any();
+   }
+
+   (ISqlFragment, string)
+   ContainsEntityImplParams(object entity) {
+
       var metaType = EnsureEntityType();
 
       var predicateMembers = metaType.PersistentDataMembers
@@ -1449,7 +1451,7 @@ partial class SqlSet {
          m => m.MappedName,
          m => m.GetValueForDatabase(entity));
 
-      return ContainsImpl(predicateMembers, predicateValues);
+      return ContainsImplParams(predicateMembers, predicateValues);
    }
 
    /// <summary>
@@ -1464,6 +1466,16 @@ partial class SqlSet {
 
       ArgumentNullException.ThrowIfNull(id);
 
+      var (fragment, columnList) = ContainsKeyImplParams(id);
+
+      return Where(fragment)
+         .Select(columnList)
+         .Any();
+   }
+
+   (ISqlFragment, string)
+   ContainsKeyImplParams(object id) {
+
       var metaType = EnsureEntityType(maxIdMembers: 1);
       var idMember = metaType.IdentityMembers[0];
 
@@ -1473,21 +1485,19 @@ partial class SqlSet {
          new(idMember.MappedName, idMember.ConvertValueForDatabase(id))
       };
 
-      return ContainsImpl(predicateMembers, predicateValues);
+      return ContainsImplParams(predicateMembers, predicateValues);
    }
 
-   bool
-   ContainsImpl(MetaDataMember[] predicateMembers, IEnumerable<KeyValuePair<string, object>> predicateValues) {
+   (ISqlFragment, string)
+   ContainsImplParams(MetaDataMember[] predicateMembers, IEnumerable<KeyValuePair<string, object>> predicateValues) {
 
       var metaType = predicateMembers[0].DeclaringType;
-
       var predicateParams = new List<object?>(predicateMembers.Length);
 
       var fragment = new SqlFragment(_db.BuildPredicateFragment(predicateValues, predicateParams), predicateParams);
+      var columnList = _db.SelectBody(metaType, predicateMembers, null);
 
-      return Where(fragment)
-         .Select(_db.SelectBody(metaType, predicateMembers, null))
-         .Any();
+      return (fragment, columnList);
    }
 
    /// <summary>
@@ -1770,7 +1780,7 @@ partial class SqlSet<TResult> {
       (SqlSet<TResult>)base.Include(path);
 }
 
-interface ISqlTable {
+partial interface ISqlTable {
 
    string
    Name { get; }

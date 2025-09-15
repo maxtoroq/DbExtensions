@@ -7,6 +7,8 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Moq;
 using Moq.Protected;
 
@@ -61,6 +63,9 @@ static class TestUtil {
 
             commandProt.Setup<DbDataReader>("ExecuteDbDataReader", It.IsAny<CommandBehavior>())
                .Returns(reader);
+
+            commandProt.Setup<Task<DbDataReader>>("ExecuteDbDataReaderAsync", It.IsAny<CommandBehavior>(), It.IsAny<CancellationToken>())
+               .Returns(Task.FromResult(reader));
 
             return command.Object;
          });

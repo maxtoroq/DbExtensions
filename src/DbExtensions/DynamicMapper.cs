@@ -44,6 +44,18 @@ partial class Database {
       return Map(query, r => (dynamic)mapper.Map(r));
    }
 
+   /// <inheritdoc cref="Map(SqlBuilder)"/>
+
+   public IAsyncEnumerable<dynamic>
+   AsyncMap([InterpolatedString] SqlBuilder query) {
+
+      ArgumentNullException.ThrowIfNull(query);
+
+      var mapper = CreateDynamicMapper();
+
+      return AsyncMap(query, r => (dynamic)mapper.Map(r));
+   }
+
    internal DynamicMapper
    CreateDynamicMapper() {
 

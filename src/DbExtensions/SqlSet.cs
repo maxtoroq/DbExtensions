@@ -558,7 +558,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       }
    }
 
-   // ISqlSet<SqlSet,object> Members
+   // ISqlSet Members
 
    /// <summary>
    /// Determines whether all elements of the set satisfy a condition.
@@ -594,11 +594,22 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    public bool
    Any() {
 
+      var (query, mapFn) = AnyImplParams();
+
+      return _db.Map(query, mapFn)
+         .SingleOrDefault();
+   }
+
+   (SqlBuilder, Func<DbDataReader, bool>)
+   AnyImplParams() {
+
       var query = new SqlBuilder()
          .SELECT($"(CASE WHEN EXISTS ({GetDefiningQuery(clone: false)}) THEN 1 ELSE 0 END)");
 
-      return _db.Map(query, r => Convert.ToInt32(r[0], CultureInfo.InvariantCulture) != 0)
-         .SingleOrDefault();
+      return (query, mapFn);
+
+      static bool mapFn(DbDataReader r) =>
+         Convert.ToInt32(r[0], CultureInfo.InvariantCulture) != 0;
    }
 
    /// <summary>
@@ -682,12 +693,10 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    public int
    Count() {
 
-      var query = new SqlBuilder()
-         .SELECT("COUNT(*)")
-         .FROM(GetDefiningQuery(clone: false), "dbex_count");
+      var (query, mapFn) = CountImplParams();
 
-      return _db.Map(query, r => (int?)Convert.ToInt32(r[0], CultureInfo.InvariantCulture))
-         .SingleOrDefault() ?? 0;
+      return _db.Map(query, mapFn)
+         .SingleOrDefault();
    }
 
    /// <summary>
@@ -706,6 +715,19 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    public int
    Count([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).Count();
+
+   (SqlBuilder, Func<DbDataReader, int>)
+   CountImplParams() {
+
+      var query = new SqlBuilder()
+         .SELECT("COUNT(*)")
+         .FROM(GetDefiningQuery(clone: false), "dbex_count");
+
+      return (query, mapFn);
+
+      static int mapFn(DbDataReader r) =>
+         Convert.ToInt32(!r.IsDBNull(0) ? r.GetValue(0) : null, CultureInfo.InvariantCulture);
+   }
 
    /// <summary>
    /// Returns the first element of the set.
@@ -780,12 +802,10 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    public long
    LongCount() {
 
-      var query = new SqlBuilder()
-         .SELECT("COUNT(*)")
-         .FROM(GetDefiningQuery(clone: false), "dbex_count");
+      var (query, mapFn) = LongCountImplParams();
 
-      return _db.Map(query, r => (long?)Convert.ToInt64(r[0], CultureInfo.InvariantCulture))
-         .SingleOrDefault() ?? 0L;
+      return _db.Map(query, mapFn)
+         .SingleOrDefault();
    }
 
    /// <summary>
@@ -804,6 +824,19 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    public long
    LongCount([InterpolatedString] ref OperatorStringHandler predicate) =>
       Where(ref predicate).LongCount();
+
+   (SqlBuilder, Func<DbDataReader, long>)
+   LongCountImplParams() {
+
+      var query = new SqlBuilder()
+         .SELECT("COUNT(*)")
+         .FROM(GetDefiningQuery(clone: false), "dbex_count");
+
+      return (query, mapFn);
+
+      static long mapFn(DbDataReader r) =>
+         Convert.ToInt64(!r.IsDBNull(0) ? r.GetValue(0) : null, CultureInfo.InvariantCulture);
+   }
 
    /// <summary>
    /// Sorts the elements of the set according to the <paramref name="columnList"/>.
@@ -1263,7 +1296,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
       }
    }
 
-   // ISqlSet<SqlSet<TResult>,TResult> Members
+   // ISqlSet Members
 
    /// <summary>
    /// Gets all <typeparamref name="TResult"/> objects in the set. The query is deferred-executed.
@@ -1432,7 +1465,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
       (SqlSet<TResult>)base.Where(ref predicate);
 }
 
-interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
+partial interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
 
    bool
    All(string predicate);

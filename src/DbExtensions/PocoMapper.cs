@@ -53,6 +53,18 @@ partial class Database {
       return Map(query, r => (TResult)mapper.PocoMap(r));
    }
 
+   /// <inheritdoc cref="Map&lt;TResult>(SqlBuilder)"/>
+
+   public IAsyncEnumerable<TResult>
+   AsyncMap<TResult>([InterpolatedString] SqlBuilder query) {
+
+      ArgumentNullException.ThrowIfNull(query);
+
+      var mapper = CreatePocoMapper(typeof(TResult));
+
+      return AsyncMap(query, r => (TResult)mapper.PocoMap(r));
+   }
+
    /// <summary>
    /// Maps the results of the <paramref name="query"/> to objects of type
    /// specified by the <paramref name="resultType"/> parameter.
@@ -71,6 +83,19 @@ partial class Database {
       var mapper = CreatePocoMapper(resultType);
 
       return Map(query, mapper.PocoMap);
+   }
+
+   /// <inheritdoc cref="Map(SqlBuilder, Type)"/>
+
+   public IAsyncEnumerable<object>
+   AsyncMap([InterpolatedString] SqlBuilder query, Type resultType) {
+
+      ArgumentNullException.ThrowIfNull(query);
+      ArgumentNullException.ThrowIfNull(resultType);
+
+      var mapper = CreatePocoMapper(resultType);
+
+      return AsyncMap(query, mapper.PocoMap);
    }
 
    internal PocoMapper
