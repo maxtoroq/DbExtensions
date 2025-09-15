@@ -1,18 +1,9 @@
-Database.Find&lt;TEntity>(Object) Method
-========================================
+Database.Find&lt;TEntity> Method
+================================
 Gets the entity whose primary key matches the *id* parameter.
   
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
-
-Overloads
----------
-
-|                  | Name                         | Description                                                   |
-| ---------------- | ---------------------------- | ------------------------------------------------------------- |
-| ![Public method] | [Find(Type, Object)][2]      | Gets the entity whose primary key matches the *id* parameter. |
-| ![Public method] | **Find&lt;TEntity>(Object)** | Gets the entity whose primary key matches the *id* parameter. |
-
 
 Syntax
 ------
@@ -27,7 +18,7 @@ where TEntity : class
 
 #### Parameters
 
-##### *id*  [Object][3]
+##### *id*  [Object][2]
 The primary key value.
 
 #### Type Parameters
@@ -47,13 +38,11 @@ See Also
 --------
 
 #### Reference
-[Database Class][4]  
+[Database Class][3]  
 [DbExtensions Namespace][1]  
-[SqlSet&lt;TResult>.Find(Object)][5]  
+[SqlSet&lt;TResult>.Find(Object)][4]  
 
 [1]: ../README.md
-[2]: Find.md
-[3]: https://learn.microsoft.com/dotnet/api/system.object
-[4]: README.md
-[5]: ../SqlSet_1/Find.md
-[Public method]: ../../icons/pubmethod.svg "Public method"
+[2]: https://learn.microsoft.com/dotnet/api/system.object
+[3]: README.md
+[4]: ../SqlSet_1/Find.md

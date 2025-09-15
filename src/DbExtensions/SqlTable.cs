@@ -126,52 +126,6 @@ partial class Database {
    Find<TEntity>(object id) where TEntity : class =>
       Table<TEntity>().Find(id);
 
-   /// <inheritdoc cref="SqlSet.Find(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
-   /// <param name="entityType">The type of the entity.</param>
-   /// <remarks>This method is a shortcut for <c>db.Table(entityType).Find(id)</c>.</remarks>
-   /// <seealso cref="SqlSet.Find(Object)" qualifyHint="true"/>
-
-   public object?
-   Find(Type entityType, object id) =>
-      Table(entityType)
-         .Find(id);
-
-   /// <inheritdoc cref="SqlSet.Contains(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
-   /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Contains(entity)</c>.</remarks>
-   /// <seealso cref="SqlSet.Contains(Object)" qualifyHint="true"/>
-
-   public bool
-   Contains(object entity) {
-
-      ArgumentNullException.ThrowIfNull(entity);
-
-      return Table(entity.GetType())
-         .Contains(entity);
-   }
-
-   /// <inheritdoc cref="SqlSet.ContainsKey(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
-   /// <typeparam name="TEntity">The type of the entity.</typeparam>
-   /// <remarks>This method is a shortcut for <c>db.Table&lt;TEntity>().ContainsKey(id)</c>.</remarks>
-   /// <seealso cref="SqlSet.ContainsKey(Object)" qualifyHint="true"/>
-
-   public bool
-   ContainsKey<TEntity>(object id) where TEntity : class =>
-      Table<TEntity>().ContainsKey(id);
-
-   /// <inheritdoc cref="SqlSet.ContainsKey(Object)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
-   /// <param name="entityType">The type of the entity.</param>
-   /// <remarks>This method is a shortcut for <c>db.Table(entityType).ContainsKey(id)</c>.</remarks>
-   /// <seealso cref="SqlSet.ContainsKey(Object)" qualifyHint="true"/>
-
-   public bool
-   ContainsKey(Type entityType, object id) {
-
-      ArgumentNullException.ThrowIfNull(entityType);
-
-      return Table(entityType)
-         .ContainsKey(id);
-   }
-
    /// <inheritdoc cref="SqlTable.Update(Object)"/>
    /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Update(entity)</c>.</remarks>
    /// <seealso cref="SqlTable.Update(Object)" qualifyHint="true"/>
@@ -218,16 +172,6 @@ partial class Database {
    public void
    RemoveKey<TEntity>(object id) where TEntity : class =>
       Table<TEntity>().RemoveKey(id);
-
-   /// <inheritdoc cref="SqlTable.RemoveKey(Object)"/>
-   /// <param name="entityType">The type of the entity.</param>
-   /// <remarks>This method is a shortcut for <c>db.Table(entityType).RemoveKey(id)</c>.</remarks>
-   /// <seealso cref="SqlTable.RemoveKey(Object)" qualifyHint="true"/>
-
-   public void
-   RemoveKey(Type entityType, object id) =>
-      Table(entityType)
-         .RemoveKey(id);
 
    internal string
    BuildPredicateFragment(

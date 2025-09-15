@@ -1,18 +1,9 @@
-Database.RemoveKey&lt;TEntity>(Object) Method
-=============================================
+Database.RemoveKey&lt;TEntity> Method
+=====================================
 Executes a DELETE command for the entity whose primary key matches the *id* parameter.
   
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
-
-Overloads
----------
-
-|                  | Name                              | Description                                                                            |
-| ---------------- | --------------------------------- | -------------------------------------------------------------------------------------- |
-| ![Public method] | [RemoveKey(Type, Object)][2]      | Executes a DELETE command for the entity whose primary key matches the *id* parameter. |
-| ![Public method] | **RemoveKey&lt;TEntity>(Object)** | Executes a DELETE command for the entity whose primary key matches the *id* parameter. |
-
 
 Syntax
 ------
@@ -27,7 +18,7 @@ where TEntity : class
 
 #### Parameters
 
-##### *id*  [Object][3]
+##### *id*  [Object][2]
 The primary key value.
 
 #### Type Parameters
@@ -44,13 +35,11 @@ See Also
 --------
 
 #### Reference
-[Database Class][4]  
+[Database Class][3]  
 [DbExtensions Namespace][1]  
-[SqlTable&lt;TEntity>.RemoveKey(Object)][5]  
+[SqlTable&lt;TEntity>.RemoveKey(Object)][4]  
 
 [1]: ../README.md
-[2]: RemoveKey.md
-[3]: https://learn.microsoft.com/dotnet/api/system.object
-[4]: README.md
-[5]: ../SqlTable_1/RemoveKey.md
-[Public method]: ../../icons/pubmethod.svg "Public method"
+[2]: https://learn.microsoft.com/dotnet/api/system.object
+[3]: README.md
+[4]: ../SqlTable_1/RemoveKey.md
