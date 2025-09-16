@@ -184,7 +184,8 @@ partial class Database {
 
 /// <summary>
 /// Represents an immutable, connected SQL query.
-/// This class cannot be instantiated, to get an instance use the <see cref="Database.From(string)"/> method.
+/// This class cannot be instantiated, to get an instance use one of the
+/// <see cref="Database.From(String)" qualifyHint="true" autoUpgrade="true"/> overloads.
 /// </summary>
 /// <remarks>For information on how to use SqlSet see <see href="http://maxtoroq.github.io/DbExtensions/docs/SqlSet.html">SqlSet Tutorial</see>.</remarks>
 
@@ -1201,7 +1202,8 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
 /// <summary>
 /// Represents an immutable, connected SQL query that maps to <typeparamref name="TResult"/> objects.
-/// This class cannot be instantiated, to get an instance use the <see cref="Database.From&lt;TResult>(string)"/> method.
+/// This class cannot be instantiated, to get an instance use one of the
+/// <see cref="Database.From&lt;TResult>(String)" qualifyHint="true"/> overloads.
 /// </summary>
 /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
 /// <inheritdoc path="remarks"/>

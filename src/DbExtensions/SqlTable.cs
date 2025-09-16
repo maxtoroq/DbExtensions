@@ -336,7 +336,7 @@ partial class DatabaseConfiguration {
 
 /// <summary>
 /// A non-generic version of <see cref="SqlTable&lt;TEntity>"/> which can be used when the type of the entity is not known at build time.
-/// This class cannot be instantiated, to get an instance use the <see cref="Database.Table(Type)"/> method.
+/// This class cannot be instantiated, to get an instance use the <see cref="Database.Table(Type)" qualifyHint="true"/> method.
 /// </summary>
 
 [DebuggerDisplay($"{{{nameof(_metaType)}.{nameof(_metaType.Name)}}}")]
@@ -488,7 +488,7 @@ public sealed partial class SqlTable : SqlSet, ISqlTable {
 /// <summary>
 /// A <see cref="SqlSet&lt;TEntity>"/> that provides CRUD (Create, Read, Update, Delete)
 /// operations for annotated classes. 
-/// This class cannot be instantiated, to get an instance use the <see cref="Database.Table&lt;TEntity>"/> method.
+/// This class cannot be instantiated, to get an instance use the <see cref="Database.Table&lt;TEntity>" qualifyHint="true"/> method.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 
@@ -1057,8 +1057,8 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
 /// <summary>
 /// Generates SQL commands for annotated classes.
-/// This class cannot be instantiated, to get an instance use the <see cref="SqlTable&lt;TEntity>.CommandBuilder"/>
-/// or <see cref="SqlTable.CommandBuilder"/> properties.
+/// This class cannot be instantiated, to get an instance use the <see cref="SqlTable&lt;TEntity>.CommandBuilder" qualifyHint="true"/>
+/// or <see cref="SqlTable.CommandBuilder" qualifyHint="true"/> properties.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity to generate commands for.</typeparam>
 

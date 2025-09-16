@@ -1,6 +1,6 @@
 SqlSet Class
 ============
-Represents an immutable, connected SQL query. This class cannot be instantiated, to get an instance use the [From(String)][1] method.
+Represents an immutable, connected SQL query. This class cannot be instantiated, to get an instance use one of the [Database.From][1] overloads.
 
 
 Inheritance Hierarchy
@@ -126,7 +126,7 @@ See Also
 #### Reference
 [DbExtensions Namespace][5]  
 
-[1]: ../Database/From_2.md
+[1]: ../Database/From.md
 [2]: https://learn.microsoft.com/dotnet/api/system.object
 [3]: ../SqlSet_1/README.md
 [4]: ../SqlTable/README.md
