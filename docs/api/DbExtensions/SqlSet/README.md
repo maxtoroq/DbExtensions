@@ -74,51 +74,52 @@ Methods
 | [FirstOrDefaultAsync(CancellationToken)][42]                                    | Returns the first element of the set, or a default value if the set contains no elements.                                                                                                                |
 | [FirstOrDefaultAsync(OperatorStringHandler, CancellationToken)][43]             | Returns the first element of the set that satisfies a condition or a default value if no such element is found.                                                                                          |
 | [FirstOrDefaultAsync(String, CancellationToken)][44]                            | Returns the first element of the set that satisfies a condition or a default value if no such element is found.                                                                                          |
-| [GetDefiningQuery][45]                                                          | Returns the SQL query that is the source of data for the set.                                                                                                                                            |
-| [GetEnumerator][46]                                                             | Returns an enumerator that iterates through the set.                                                                                                                                                     |
-| [Include][47]                                                                   | Specifies the related objects to include in the query results.                                                                                                                                           |
-| [LongCount()][48]                                                               | Returns an [Int64][49] that represents the total number of elements in the set.                                                                                                                          |
-| [LongCount(OperatorStringHandler)][50]                                          | Returns an [Int64][49] that represents how many elements in the set satisfy a condition.                                                                                                                 |
-| [LongCount(String)][51]                                                         | Returns an [Int64][49] that represents how many elements in the set satisfy a condition.                                                                                                                 |
-| [LongCountAsync(CancellationToken)][52]                                         | Returns an [Int64][49] that represents the total number of elements in the set.                                                                                                                          |
-| [LongCountAsync(OperatorStringHandler, CancellationToken)][53]                  | Returns an [Int64][49] that represents how many elements in the set satisfy a condition.                                                                                                                 |
-| [LongCountAsync(String, CancellationToken)][54]                                 | Returns an [Int64][49] that represents how many elements in the set satisfy a condition.                                                                                                                 |
-| [OrderBy(OperatorStringHandler)][55]                                            | Sorts the elements of the set according to the *columnList*.                                                                                                                                             |
-| [OrderBy(String)][56]                                                           | Sorts the elements of the set according to the *columnList*.                                                                                                                                             |
-| [Select(OperatorStringHandler)][57]                                             | Projects each element of the set into a new form.                                                                                                                                                        |
-| [Select(String)][58]                                                            | Projects each element of the set into a new form.                                                                                                                                                        |
-| [Select(OperatorStringHandler, Type)][59]                                       | Projects each element of the set into a new form.                                                                                                                                                        |
-| [Select(String, Type)][60]                                                      | Projects each element of the set into a new form.                                                                                                                                                        |
-| [Select&lt;TResult>(OperatorStringHandler)][61]                                 | Projects each element of the set into a new form.                                                                                                                                                        |
-| [Select&lt;TResult>(String)][62]                                                | Projects each element of the set into a new form.                                                                                                                                                        |
-| [Select&lt;TResult>(OperatorStringHandler, Func&lt;DbDataReader, TResult>)][63] | Projects each element of the set into a new form.                                                                                                                                                        |
-| [Select&lt;TResult>(String, Func&lt;DbDataReader, TResult>)][64]                | Projects each element of the set into a new form.                                                                                                                                                        |
-| [Single()][65]                                                                  | The single element of the set.                                                                                                                                                                           |
-| [Single(OperatorStringHandler)][66]                                             | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  |
-| [Single(String)][67]                                                            | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  |
-| [SingleAsync(CancellationToken)][68]                                            | The single element of the set.                                                                                                                                                                           |
-| [SingleAsync(OperatorStringHandler, CancellationToken)][69]                     | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  |
-| [SingleAsync(String, CancellationToken)][70]                                    | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  |
-| [SingleOrDefault()][71]                                                         | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.                                               |
-| [SingleOrDefault(OperatorStringHandler)][72]                                    | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
-| [SingleOrDefault(String)][73]                                                   | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
-| [SingleOrDefaultAsync(CancellationToken)][74]                                   | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.                                               |
-| [SingleOrDefaultAsync(OperatorStringHandler, CancellationToken)][75]            | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
-| [SingleOrDefaultAsync(String, CancellationToken)][76]                           | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
-| [Skip][77]                                                                      | Bypasses a specified number of elements in the set and then returns the remaining elements.                                                                                                              |
-| [Take][78]                                                                      | Returns a specified number of contiguous elements from the start of the set.                                                                                                                             |
-| [ToArray][79]                                                                   | Creates an array from the set.                                                                                                                                                                           |
-| [ToArrayAsync][80]                                                              | Creates an array from the set.                                                                                                                                                                           |
-| [ToList][81]                                                                    | Creates a List&lt;object> from the set.                                                                                                                                                                  |
-| [ToListAsync][82]                                                               | Creates a List&lt;object> from the set.                                                                                                                                                                  |
-| [ToString][83]                                                                  | Returns the SQL query of the set. <br/>(Overrides [Object.ToString()][84])                                                                                                                               |
-| [Where(OperatorStringHandler)][85]                                              | Filters the set based on a predicate.                                                                                                                                                                    |
-| [Where(String)][86]                                                             | Filters the set based on a predicate.                                                                                                                                                                    |
+| [GetAsyncEnumerator][45]                                                        | Returns an async enumerator that iterates through the set.                                                                                                                                               |
+| [GetDefiningQuery][46]                                                          | Returns the SQL query that is the source of data for the set.                                                                                                                                            |
+| [GetEnumerator][47]                                                             | Returns an enumerator that iterates through the set.                                                                                                                                                     |
+| [Include][48]                                                                   | Specifies the related objects to include in the query results.                                                                                                                                           |
+| [LongCount()][49]                                                               | Returns an [Int64][50] that represents the total number of elements in the set.                                                                                                                          |
+| [LongCount(OperatorStringHandler)][51]                                          | Returns an [Int64][50] that represents how many elements in the set satisfy a condition.                                                                                                                 |
+| [LongCount(String)][52]                                                         | Returns an [Int64][50] that represents how many elements in the set satisfy a condition.                                                                                                                 |
+| [LongCountAsync(CancellationToken)][53]                                         | Returns an [Int64][50] that represents the total number of elements in the set.                                                                                                                          |
+| [LongCountAsync(OperatorStringHandler, CancellationToken)][54]                  | Returns an [Int64][50] that represents how many elements in the set satisfy a condition.                                                                                                                 |
+| [LongCountAsync(String, CancellationToken)][55]                                 | Returns an [Int64][50] that represents how many elements in the set satisfy a condition.                                                                                                                 |
+| [OrderBy(OperatorStringHandler)][56]                                            | Sorts the elements of the set according to the *columnList*.                                                                                                                                             |
+| [OrderBy(String)][57]                                                           | Sorts the elements of the set according to the *columnList*.                                                                                                                                             |
+| [Select(OperatorStringHandler)][58]                                             | Projects each element of the set into a new form.                                                                                                                                                        |
+| [Select(String)][59]                                                            | Projects each element of the set into a new form.                                                                                                                                                        |
+| [Select(OperatorStringHandler, Type)][60]                                       | Projects each element of the set into a new form.                                                                                                                                                        |
+| [Select(String, Type)][61]                                                      | Projects each element of the set into a new form.                                                                                                                                                        |
+| [Select&lt;TResult>(OperatorStringHandler)][62]                                 | Projects each element of the set into a new form.                                                                                                                                                        |
+| [Select&lt;TResult>(String)][63]                                                | Projects each element of the set into a new form.                                                                                                                                                        |
+| [Select&lt;TResult>(OperatorStringHandler, Func&lt;DbDataReader, TResult>)][64] | Projects each element of the set into a new form.                                                                                                                                                        |
+| [Select&lt;TResult>(String, Func&lt;DbDataReader, TResult>)][65]                | Projects each element of the set into a new form.                                                                                                                                                        |
+| [Single()][66]                                                                  | The single element of the set.                                                                                                                                                                           |
+| [Single(OperatorStringHandler)][67]                                             | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  |
+| [Single(String)][68]                                                            | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  |
+| [SingleAsync(CancellationToken)][69]                                            | The single element of the set.                                                                                                                                                                           |
+| [SingleAsync(OperatorStringHandler, CancellationToken)][70]                     | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  |
+| [SingleAsync(String, CancellationToken)][71]                                    | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists.                                                                  |
+| [SingleOrDefault()][72]                                                         | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.                                               |
+| [SingleOrDefault(OperatorStringHandler)][73]                                    | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
+| [SingleOrDefault(String)][74]                                                   | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
+| [SingleOrDefaultAsync(CancellationToken)][75]                                   | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.                                               |
+| [SingleOrDefaultAsync(OperatorStringHandler, CancellationToken)][76]            | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
+| [SingleOrDefaultAsync(String, CancellationToken)][77]                           | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
+| [Skip][78]                                                                      | Bypasses a specified number of elements in the set and then returns the remaining elements.                                                                                                              |
+| [Take][79]                                                                      | Returns a specified number of contiguous elements from the start of the set.                                                                                                                             |
+| [ToArray][80]                                                                   | Creates an array from the set.                                                                                                                                                                           |
+| [ToArrayAsync][81]                                                              | Creates an array from the set.                                                                                                                                                                           |
+| [ToList][82]                                                                    | Creates a List&lt;object> from the set.                                                                                                                                                                  |
+| [ToListAsync][83]                                                               | Creates a List&lt;object> from the set.                                                                                                                                                                  |
+| [ToString][84]                                                                  | Returns the SQL query of the set. <br/>(Overrides [Object.ToString()][85])                                                                                                                               |
+| [Where(OperatorStringHandler)][86]                                              | Filters the set based on a predicate.                                                                                                                                                                    |
+| [Where(String)][87]                                                             | Filters the set based on a predicate.                                                                                                                                                                    |
 
 
 Remarks
 -------
-For information on how to use SqlSet see [SqlSet Tutorial][87].
+For information on how to use SqlSet see [SqlSet Tutorial][88].
 
 See Also
 --------
@@ -170,46 +171,47 @@ See Also
 [42]: FirstOrDefaultAsync_2.md
 [43]: FirstOrDefaultAsync.md
 [44]: FirstOrDefaultAsync_1.md
-[45]: GetDefiningQuery.md
-[46]: GetEnumerator.md
-[47]: Include.md
-[48]: LongCount.md
-[49]: https://learn.microsoft.com/dotnet/api/system.int64
-[50]: LongCount_1.md
-[51]: LongCount_2.md
-[52]: LongCountAsync_2.md
-[53]: LongCountAsync.md
-[54]: LongCountAsync_1.md
-[55]: OrderBy.md
-[56]: OrderBy_1.md
-[57]: Select.md
-[58]: Select_2.md
-[59]: Select_1.md
-[60]: Select_3.md
-[61]: Select__1.md
-[62]: Select__1_2.md
-[63]: Select__1_1.md
-[64]: Select__1_3.md
-[65]: Single.md
-[66]: Single_1.md
-[67]: Single_2.md
-[68]: SingleAsync_2.md
-[69]: SingleAsync.md
-[70]: SingleAsync_1.md
-[71]: SingleOrDefault.md
-[72]: SingleOrDefault_1.md
-[73]: SingleOrDefault_2.md
-[74]: SingleOrDefaultAsync_2.md
-[75]: SingleOrDefaultAsync.md
-[76]: SingleOrDefaultAsync_1.md
-[77]: Skip.md
-[78]: Take.md
-[79]: ToArray.md
-[80]: ToArrayAsync.md
-[81]: ToList.md
-[82]: ToListAsync.md
-[83]: ToString.md
-[84]: https://learn.microsoft.com/dotnet/api/system.object.tostring
-[85]: Where.md
-[86]: Where_1.md
-[87]: http://maxtoroq.github.io/DbExtensions/docs/SqlSet.html
+[45]: GetAsyncEnumerator.md
+[46]: GetDefiningQuery.md
+[47]: GetEnumerator.md
+[48]: Include.md
+[49]: LongCount.md
+[50]: https://learn.microsoft.com/dotnet/api/system.int64
+[51]: LongCount_1.md
+[52]: LongCount_2.md
+[53]: LongCountAsync_2.md
+[54]: LongCountAsync.md
+[55]: LongCountAsync_1.md
+[56]: OrderBy.md
+[57]: OrderBy_1.md
+[58]: Select.md
+[59]: Select_2.md
+[60]: Select_1.md
+[61]: Select_3.md
+[62]: Select__1.md
+[63]: Select__1_2.md
+[64]: Select__1_1.md
+[65]: Select__1_3.md
+[66]: Single.md
+[67]: Single_1.md
+[68]: Single_2.md
+[69]: SingleAsync_2.md
+[70]: SingleAsync.md
+[71]: SingleAsync_1.md
+[72]: SingleOrDefault.md
+[73]: SingleOrDefault_1.md
+[74]: SingleOrDefault_2.md
+[75]: SingleOrDefaultAsync_2.md
+[76]: SingleOrDefaultAsync.md
+[77]: SingleOrDefaultAsync_1.md
+[78]: Skip.md
+[79]: Take.md
+[80]: ToArray.md
+[81]: ToArrayAsync.md
+[82]: ToList.md
+[83]: ToListAsync.md
+[84]: ToString.md
+[85]: https://learn.microsoft.com/dotnet/api/system.object.tostring
+[86]: Where.md
+[87]: Where_1.md
+[88]: http://maxtoroq.github.io/DbExtensions/docs/SqlSet.html

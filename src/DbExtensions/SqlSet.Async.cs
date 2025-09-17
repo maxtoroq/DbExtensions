@@ -227,6 +227,16 @@ partial class SqlSet {
          .ConfigureAwait(false);
    }
 
+   /// <summary>
+   /// Returns an async enumerator that iterates through the set.
+   /// </summary>
+   /// <returns>A <see cref="IAsyncEnumerator&lt;Object>"/> for the set.</returns>
+   /// <inheritdoc cref="AnyAsync(CancellationToken)" path="param"/>
+
+   public IAsyncEnumerator<object>
+   GetAsyncEnumerator(CancellationToken cancellationToken = default) =>
+      AsAsyncEnumerable().GetAsyncEnumerator(cancellationToken);
+
    /// <inheritdoc cref="LongCount()"/>
    /// <inheritdoc cref="AnyAsync(CancellationToken)" path="param"/>
 
@@ -458,6 +468,16 @@ partial class SqlSet<TResult> {
          .ConfigureAwait(false);
    }
 
+   /// <summary>
+   /// Returns an async enumerator that iterates through the set.
+   /// </summary>
+   /// <returns>A <see cref="IAsyncEnumerator&lt;TResult>"/> for the set.</returns>
+   /// <inheritdoc cref="SqlSet.AnyAsync(CancellationToken)" path="param"/>
+
+   public new IAsyncEnumerator<TResult>
+   GetAsyncEnumerator(CancellationToken cancellationToken = default) =>
+      AsAsyncEnumerable().GetAsyncEnumerator(cancellationToken);
+
    /// <inheritdoc cref="SqlSet.SingleAsync(CancellationToken)"/>
 
    public new async ValueTask<TResult>
@@ -583,6 +603,9 @@ partial interface ISqlSet<TSqlSet, TSource> {
 
    ValueTask<TSource?>
    FirstOrDefaultAsync(SqlSet.OperatorStringHandler predicate, CancellationToken cancellationToken);
+
+   IAsyncEnumerator<TSource>
+   GetAsyncEnumerator(CancellationToken cancellationToken);
 
    ValueTask<long>
    LongCountAsync(CancellationToken cancellationToken);

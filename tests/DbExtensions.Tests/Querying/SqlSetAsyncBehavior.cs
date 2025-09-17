@@ -71,5 +71,28 @@ namespace DbExtensions.Tests.Querying {
          Assert.AreEqual(1, results.Count);
          Assert.AreEqual(data["a"], results[0]);
       }
+
+      [Test]
+      public async Task Async_ForEach_Enumerate() {
+
+         var data = new Dictionary<string, object> {
+            { "a", "a" }
+         };
+
+         var db = MockQuery(data);
+
+         SqlSet<string> set = db.From(SQL
+            .SELECT("NULL")
+            , r => r.GetString(0));
+
+         var results = new List<string>();
+
+         await foreach (var item in set) {
+            results.Add(item);
+         }
+
+         Assert.AreEqual(1, results.Count);
+         Assert.AreEqual(data["a"], results[0]);
+      }
    }
 }
