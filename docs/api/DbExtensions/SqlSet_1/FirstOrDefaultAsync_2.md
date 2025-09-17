@@ -8,11 +8,11 @@ Returns the first element of the set, or a default value if the set contains no 
 Overloads
 ---------
 
-|                  | Name                                                               | Description                                                                                                     |
-| ---------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **FirstOrDefaultAsync(CancellationToken)**                         | Returns the first element of the set, or a default value if the set contains no elements.                       |
-| ![Public method] | [FirstOrDefaultAsync(OperatorStringHandler, CancellationToken)][2] | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
-| ![Public method] | [FirstOrDefaultAsync(String, CancellationToken)][3]                | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
+| Name                                                               | Description                                                                                                     |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| **FirstOrDefaultAsync(CancellationToken)**                         | Returns the first element of the set, or a default value if the set contains no elements.                       |
+| [FirstOrDefaultAsync(OperatorStringHandler, CancellationToken)][2] | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
+| [FirstOrDefaultAsync(String, CancellationToken)][3]                | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
 
 
 Syntax
@@ -47,4 +47,3 @@ See Also
 [5]: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none
 [6]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1
 [7]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

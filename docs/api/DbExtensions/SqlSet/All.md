@@ -8,10 +8,10 @@ Determines whether all elements of the set satisfy a condition.
 Overloads
 ---------
 
-|                  | Name                           | Description                                                     |
-| ---------------- | ------------------------------ | --------------------------------------------------------------- |
-| ![Public method] | **All(OperatorStringHandler)** | Determines whether all elements of the set satisfy a condition. |
-| ![Public method] | [All(String)][2]               | Determines whether all elements of the set satisfy a condition. |
+| Name                           | Description                                                     |
+| ------------------------------ | --------------------------------------------------------------- |
+| **All(OperatorStringHandler)** | Determines whether all elements of the set satisfy a condition. |
+| [All(String)][2]               | Determines whether all elements of the set satisfy a condition. |
 
 
 Syntax
@@ -43,4 +43,3 @@ See Also
 [2]: All_1.md
 [3]: https://learn.microsoft.com/dotnet/api/system.boolean
 [4]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

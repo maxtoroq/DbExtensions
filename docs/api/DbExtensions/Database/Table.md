@@ -8,10 +8,10 @@ Returns the [SqlTable][1] instance for the specified *entityType*.
 Overloads
 ---------
 
-|                  | Name                     | Description                                                               |
-| ---------------- | ------------------------ | ------------------------------------------------------------------------- |
-| ![Public method] | **Table(Type)**          | Returns the [SqlTable][1] instance for the specified *entityType*.        |
-| ![Public method] | [Table&lt;TEntity>()][3] | Returns the [SqlTable&lt;TEntity>][4] instance for the specified TEntity. |
+| Name                     | Description                                                               |
+| ------------------------ | ------------------------------------------------------------------------- |
+| **Table(Type)**          | Returns the [SqlTable][1] instance for the specified *entityType*.        |
+| [Table&lt;TEntity>()][3] | Returns the [SqlTable&lt;TEntity>][4] instance for the specified TEntity. |
 
 
 Syntax
@@ -45,4 +45,3 @@ See Also
 [4]: ../SqlTable_1/README.md
 [5]: https://learn.microsoft.com/dotnet/api/system.type
 [6]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

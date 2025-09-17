@@ -8,10 +8,10 @@ Concatenates a specified separator [String][1] between each element of a specifi
 Overloads
 ---------
 
-|                                  | Name                                             | Description                                                                                                                                               |
-| -------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | **JoinSql(String, SqlBuilder[])**                | Concatenates a specified separator [String][1] between each element of a specified [SqlBuilder][2] array, yielding a single concatenated [SqlBuilder][2]. |
-| ![Public method]![Static member] | [JoinSql(String, IEnumerable&lt;SqlBuilder>)][4] | Concatenates the members of a constructed [IEnumerable&lt;T>][5] collection of type [SqlBuilder][2], using the specified *separator* between each member. |
+| Name                                             | Description                                                                                                                                               |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **JoinSql(String, SqlBuilder[])**                | Concatenates a specified separator [String][1] between each element of a specified [SqlBuilder][2] array, yielding a single concatenated [SqlBuilder][2]. |
+| [JoinSql(String, IEnumerable&lt;SqlBuilder>)][4] | Concatenates the members of a constructed [IEnumerable&lt;T>][5] collection of type [SqlBuilder][2], using the specified *separator* between each member. |
 
 
 Syntax
@@ -48,5 +48,3 @@ See Also
 [3]: ../README.md
 [4]: JoinSql_1.md
 [5]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
-[Public method]: ../../icons/pubmethod.svg "Public method"
-[Static member]: ../../icons/Static.gif "Static member"

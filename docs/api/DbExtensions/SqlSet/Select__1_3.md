@@ -8,16 +8,16 @@ Projects each element of the set into a new form.
 Overloads
 ---------
 
-|                  | Name                                                                           | Description                                       |
-| ---------------- | ------------------------------------------------------------------------------ | ------------------------------------------------- |
-| ![Public method] | [Select(OperatorStringHandler)][2]                                             | Projects each element of the set into a new form. |
-| ![Public method] | [Select(String)][3]                                                            | Projects each element of the set into a new form. |
-| ![Public method] | [Select(OperatorStringHandler, Type)][4]                                       | Projects each element of the set into a new form. |
-| ![Public method] | [Select(String, Type)][5]                                                      | Projects each element of the set into a new form. |
-| ![Public method] | [Select&lt;TResult>(OperatorStringHandler)][6]                                 | Projects each element of the set into a new form. |
-| ![Public method] | [Select&lt;TResult>(String)][7]                                                | Projects each element of the set into a new form. |
-| ![Public method] | [Select&lt;TResult>(OperatorStringHandler, Func&lt;DbDataReader, TResult>)][8] | Projects each element of the set into a new form. |
-| ![Public method] | **Select&lt;TResult>(String, Func&lt;DbDataReader, TResult>)**                 | Projects each element of the set into a new form. |
+| Name                                                                           | Description                                       |
+| ------------------------------------------------------------------------------ | ------------------------------------------------- |
+| [Select(OperatorStringHandler)][2]                                             | Projects each element of the set into a new form. |
+| [Select(String)][3]                                                            | Projects each element of the set into a new form. |
+| [Select(OperatorStringHandler, Type)][4]                                       | Projects each element of the set into a new form. |
+| [Select(String, Type)][5]                                                      | Projects each element of the set into a new form. |
+| [Select&lt;TResult>(OperatorStringHandler)][6]                                 | Projects each element of the set into a new form. |
+| [Select&lt;TResult>(String)][7]                                                | Projects each element of the set into a new form. |
+| [Select&lt;TResult>(OperatorStringHandler, Func&lt;DbDataReader, TResult>)][8] | Projects each element of the set into a new form. |
+| **Select&lt;TResult>(String, Func&lt;DbDataReader, TResult>)**                 | Projects each element of the set into a new form. |
 
 
 Syntax
@@ -68,4 +68,3 @@ See Also
 [11]: https://learn.microsoft.com/dotnet/api/system.data.common.dbdatareader
 [12]: ../SqlSet_1/README.md
 [13]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

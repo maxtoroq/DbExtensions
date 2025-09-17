@@ -8,11 +8,11 @@ Appends the SELECT clause using the provided *text*.
 Overloads
 ---------
 
-|                  | Name                                                             | Description                                                                                                                                         |
-| ---------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [SELECT()][2]                                                    | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| ![Public method] | [SELECT(SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>)][4] | Appends the SELECT clause using the provided interpolated string *handler*.                                                                         |
-| ![Public method] | **SELECT(String)**                                               | Appends the SELECT clause using the provided *text*.                                                                                                |
+| Name                                                             | Description                                                                                                                                         |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [SELECT()][2]                                                    | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [SELECT(SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>)][4] | Appends the SELECT clause using the provided interpolated string *handler*.                                                                         |
+| **SELECT(String)**                                               | Appends the SELECT clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -46,4 +46,3 @@ See Also
 [4]: SELECT_1.md
 [5]: https://learn.microsoft.com/dotnet/api/system.string
 [6]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

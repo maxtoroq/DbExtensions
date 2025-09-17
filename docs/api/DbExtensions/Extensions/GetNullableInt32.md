@@ -8,10 +8,10 @@ Gets the value of the specified column as a [Nullable&lt;T>][1] of [Int32][2].
 Overloads
 ---------
 
-|                            | Name                                        | Description                                                                    |
-| -------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------ |
-| ![Public Extension Method] | **GetNullableInt32(DbDataReader, Int32)**   | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Int32][2]. |
-| ![Public Extension Method] | [GetNullableInt32(DbDataReader, String)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Int32][2]. |
+| Name                                        | Description                                                                    |
+| ------------------------------------------- | ------------------------------------------------------------------------------ |
+| **GetNullableInt32(DbDataReader, Int32)**   | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Int32][2]. |
+| [GetNullableInt32(DbDataReader, String)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [Int32][2]. |
 
 
 Syntax
@@ -53,4 +53,3 @@ See Also
 [6]: https://docs.microsoft.com/dotnet/visual-basic/programming-guide/language-features/procedures/extension-methods
 [7]: https://docs.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
 [8]: README.md
-[Public Extension Method]: ../../icons/pubextension.svg "Public Extension Method"

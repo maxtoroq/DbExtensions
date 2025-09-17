@@ -8,11 +8,11 @@ The single element of the set.
 Overloads
 ---------
 
-|                  | Name                               | Description                                                                                                                             |
-| ---------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **Single()**                       | The single element of the set.                                                                                                          |
-| ![Public method] | [Single(OperatorStringHandler)][2] | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
-| ![Public method] | [Single(String)][3]                | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+| Name                               | Description                                                                                                                             |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **Single()**                       | The single element of the set.                                                                                                          |
+| [Single(OperatorStringHandler)][2] | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+| [Single(String)][3]                | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
 
 
 Syntax
@@ -46,4 +46,3 @@ See Also
 [3]: Single_2.md
 [4]: README.md
 [5]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
-[Public method]: ../../icons/pubmethod.svg "Public method"

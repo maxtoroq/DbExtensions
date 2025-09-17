@@ -8,10 +8,10 @@ Creates and returns a SELECT query for the current table that includes the SELEC
 Overloads
 ---------
 
-|                  | Name                          | Description                                                                                                                                                   |
-| ---------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [BuildSelectClause()][2]      | Creates and returns a SELECT query for the current table that includes the SELECT clause only.                                                                |
-| ![Public method] | **BuildSelectClause(String)** | Creates and returns a SELECT query for the current table that includes the SELECT clause only. All column names are qualified with the provided *tableAlias*. |
+| Name                          | Description                                                                                                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [BuildSelectClause()][2]      | Creates and returns a SELECT query for the current table that includes the SELECT clause only.                                                                |
+| **BuildSelectClause(String)** | Creates and returns a SELECT query for the current table that includes the SELECT clause only. All column names are qualified with the provided *tableAlias*. |
 
 
 Syntax
@@ -44,4 +44,3 @@ See Also
 [3]: https://learn.microsoft.com/dotnet/api/system.string
 [4]: ../SqlBuilder/README.md
 [5]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

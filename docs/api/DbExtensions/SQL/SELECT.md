@@ -8,10 +8,10 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT cl
 Overloads
 ---------
 
-|                                  | Name                                                            | Description                                                                                                                            |
-| -------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | **SELECT(SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | [SELECT(String)][3]                                             | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *text*.                        |
+| Name                                                            | Description                                                                                                                            |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **SELECT(SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided string interpolated *handler*. |
+| [SELECT(String)][3]                                             | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *text*.                        |
 
 
 Syntax
@@ -45,5 +45,3 @@ See Also
 [4]: ../SqlClause_SELECT/README.md
 [5]: ../SqlBuilder/SELECT_1.md
 [6]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"
-[Static member]: ../../icons/Static.gif "Static member"

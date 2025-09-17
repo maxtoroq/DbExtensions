@@ -30,7 +30,10 @@ try {
          rm ..\..\docs\api -Recurse
       }
 
-      sandcastle-md\src\sandcastle-md\bin\Debug\sandcastle-md.exe api\html ..\..\docs\api
+      sandcastle-md\src\sandcastle-md\bin\Debug\sandcastle-md.exe api\html ..\..\docs\api `
+        --remove-assembly-name `
+        --remove-assembly-version `
+        --exclude-icons
    }
 
 } finally {

@@ -8,11 +8,11 @@ Sets JOIN as the next clause, to be used by subsequent calls to clause continuat
 Overloads
 ---------
 
-|                  | Name                                                         | Description                                                                                                                                       |
-| ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **JOIN()**                                                   | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
-| ![Public method] | [JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.JOIN>)][3] | Appends the JOIN clause using the provided interpolated string *handler*.                                                                         |
-| ![Public method] | [JOIN(String)][4]                                            | Appends the JOIN clause using the provided *text*.                                                                                                |
+| Name                                                         | Description                                                                                                                                       |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **JOIN()**                                                   | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| [JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.JOIN>)][3] | Appends the JOIN clause using the provided interpolated string *handler*.                                                                         |
+| [JOIN(String)][4]                                            | Appends the JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -38,4 +38,3 @@ See Also
 [3]: JOIN_1.md
 [4]: JOIN_2.md
 [5]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

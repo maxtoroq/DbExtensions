@@ -8,10 +8,10 @@ Sets *clause* as the next SQL clause.
 Overloads
 ---------
 
-|                  | Name                             | Description                                                   |
-| ---------------- | -------------------------------- | ------------------------------------------------------------- |
-| ![Public method] | **SetNextClause(SqlClause)**     | Sets *clause* as the next SQL clause.                         |
-| ![Public method] | [SetNextClause&lt;TClause>()][2] | Sets the clause identified by TClause as the next SQL clause. |
+| Name                             | Description                                                   |
+| -------------------------------- | ------------------------------------------------------------- |
+| **SetNextClause(SqlClause)**     | Sets *clause* as the next SQL clause.                         |
+| [SetNextClause&lt;TClause>()][2] | Sets the clause identified by TClause as the next SQL clause. |
 
 
 Syntax
@@ -45,4 +45,3 @@ See Also
 [3]: ../SqlClause/README.md
 [4]: README.md
 [5]: NextClause.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

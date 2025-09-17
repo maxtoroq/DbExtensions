@@ -8,10 +8,10 @@ Executes DELETE commands for the specified *entities*.
 Overloads
 ---------
 
-|                  | Name                                                             | Description                                            |
-| ---------------- | ---------------------------------------------------------------- | ------------------------------------------------------ |
-| ![Public method] | **RemoveRangeAsync(Object[])**                                   | Executes DELETE commands for the specified *entities*. |
-| ![Public method] | [RemoveRangeAsync(IEnumerable&lt;Object>, CancellationToken)][2] | Executes DELETE commands for the specified *entities*. |
+| Name                                                             | Description                                            |
+| ---------------------------------------------------------------- | ------------------------------------------------------ |
+| **RemoveRangeAsync(Object[])**                                   | Executes DELETE commands for the specified *entities*. |
+| [RemoveRangeAsync(IEnumerable&lt;Object>, CancellationToken)][2] | Executes DELETE commands for the specified *entities*. |
 
 
 Syntax
@@ -43,4 +43,3 @@ See Also
 [3]: https://learn.microsoft.com/dotnet/api/system.object
 [4]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask
 [5]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

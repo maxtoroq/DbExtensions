@@ -8,11 +8,11 @@ Appends the WHERE clause using the provided *text*.
 Overloads
 ---------
 
-|                  | Name                                                           | Description                                                                                                                                        |
-| ---------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [WHERE()][2]                                                   | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| ![Public method] | [WHERE(SqlBuilder.ClauseStringHandler&lt;SqlClause.WHERE>)][4] | Appends the WHERE clause using the provided interpolated string *handler*.                                                                         |
-| ![Public method] | **WHERE(String)**                                              | Appends the WHERE clause using the provided *text*.                                                                                                |
+| Name                                                           | Description                                                                                                                                        |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [WHERE()][2]                                                   | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [WHERE(SqlBuilder.ClauseStringHandler&lt;SqlClause.WHERE>)][4] | Appends the WHERE clause using the provided interpolated string *handler*.                                                                         |
+| **WHERE(String)**                                              | Appends the WHERE clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -46,4 +46,3 @@ See Also
 [4]: WHERE_1.md
 [5]: https://learn.microsoft.com/dotnet/api/system.string
 [6]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

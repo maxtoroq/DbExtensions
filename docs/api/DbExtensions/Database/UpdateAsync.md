@@ -8,10 +8,10 @@ Executes an UPDATE command for the specified *entity*.
 Overloads
 ---------
 
-|                  | Name                                               | Description                                            |
-| ---------------- | -------------------------------------------------- | ------------------------------------------------------ |
-| ![Public method] | [UpdateAsync(Object, CancellationToken)][2]        | Executes an UPDATE command for the specified *entity*. |
-| ![Public method] | **UpdateAsync(Object, Object, CancellationToken)** | Executes an UPDATE command for the specified *entity*. |
+| Name                                               | Description                                            |
+| -------------------------------------------------- | ------------------------------------------------------ |
+| [UpdateAsync(Object, CancellationToken)][2]        | Executes an UPDATE command for the specified *entity*. |
+| **UpdateAsync(Object, Object, CancellationToken)** | Executes an UPDATE command for the specified *entity*. |
 
 
 Syntax
@@ -59,4 +59,3 @@ See Also
 [6]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask
 [7]: README.md
 [8]: ../SqlTable/UpdateAsync.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

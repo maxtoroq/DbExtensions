@@ -8,11 +8,11 @@ Returns an [Int64][1] that represents the total number of elements in the set.
 Overloads
 ---------
 
-|                  | Name                                                          | Description                                                                             |
-| ---------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| ![Public method] | **LongCountAsync(CancellationToken)**                         | Returns an [Int64][1] that represents the total number of elements in the set.          |
-| ![Public method] | [LongCountAsync(OperatorStringHandler, CancellationToken)][3] | Returns an [Int64][1] that represents how many elements in the set satisfy a condition. |
-| ![Public method] | [LongCountAsync(String, CancellationToken)][4]                | Returns an [Int64][1] that represents how many elements in the set satisfy a condition. |
+| Name                                                          | Description                                                                             |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| **LongCountAsync(CancellationToken)**                         | Returns an [Int64][1] that represents the total number of elements in the set.          |
+| [LongCountAsync(OperatorStringHandler, CancellationToken)][3] | Returns an [Int64][1] that represents how many elements in the set satisfy a condition. |
+| [LongCountAsync(String, CancellationToken)][4]                | Returns an [Int64][1] that represents how many elements in the set satisfy a condition. |
 
 
 Syntax
@@ -58,4 +58,3 @@ See Also
 [8]: https://learn.microsoft.com/dotnet/api/system.overflowexception
 [9]: https://learn.microsoft.com/dotnet/api/system.int64.maxvalue
 [10]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

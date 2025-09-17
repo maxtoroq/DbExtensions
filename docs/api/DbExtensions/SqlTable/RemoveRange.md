@@ -8,10 +8,10 @@ Executes DELETE commands for the specified *entities*.
 Overloads
 ---------
 
-|                  | Name                                    | Description                                            |
-| ---------------- | --------------------------------------- | ------------------------------------------------------ |
-| ![Public method] | **RemoveRange(IEnumerable&lt;Object>)** | Executes DELETE commands for the specified *entities*. |
-| ![Public method] | [RemoveRange(Object[])][2]              | Executes DELETE commands for the specified *entities*. |
+| Name                                    | Description                                            |
+| --------------------------------------- | ------------------------------------------------------ |
+| **RemoveRange(IEnumerable&lt;Object>)** | Executes DELETE commands for the specified *entities*. |
+| [RemoveRange(Object[])][2]              | Executes DELETE commands for the specified *entities*. |
 
 
 Syntax
@@ -41,4 +41,3 @@ See Also
 [3]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
 [4]: https://learn.microsoft.com/dotnet/api/system.object
 [5]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

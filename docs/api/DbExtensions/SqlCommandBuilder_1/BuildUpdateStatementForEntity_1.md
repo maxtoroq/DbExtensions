@@ -8,10 +8,10 @@ Creates and returns an UPDATE command for the specified *entity*.
 Overloads
 ---------
 
-|                  | Name                                               | Description                                                       |
-| ---------------- | -------------------------------------------------- | ----------------------------------------------------------------- |
-| ![Public method] | [BuildUpdateStatementForEntity(TEntity)][2]        | Creates and returns an UPDATE command for the specified *entity*. |
-| ![Public method] | **BuildUpdateStatementForEntity(TEntity, Object)** | Creates and returns an UPDATE command for the specified *entity*. |
+| Name                                               | Description                                                       |
+| -------------------------------------------------- | ----------------------------------------------------------------- |
+| [BuildUpdateStatementForEntity(TEntity)][2]        | Creates and returns an UPDATE command for the specified *entity*. |
+| **BuildUpdateStatementForEntity(TEntity, Object)** | Creates and returns an UPDATE command for the specified *entity*. |
 
 
 Syntax
@@ -52,4 +52,3 @@ See Also
 [3]: README.md
 [4]: https://learn.microsoft.com/dotnet/api/system.object
 [5]: ../SqlBuilder/README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

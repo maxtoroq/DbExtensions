@@ -8,10 +8,10 @@ Executes an UPDATE command for the specified *entity*.
 Overloads
 ---------
 
-|                  | Name                         | Description                                            |
-| ---------------- | ---------------------------- | ------------------------------------------------------ |
-| ![Public method] | **Update(TEntity)**          | Executes an UPDATE command for the specified *entity*. |
-| ![Public method] | [Update(TEntity, Object)][2] | Executes an UPDATE command for the specified *entity*. |
+| Name                         | Description                                            |
+| ---------------------------- | ------------------------------------------------------ |
+| **Update(TEntity)**          | Executes an UPDATE command for the specified *entity*. |
+| [Update(TEntity, Object)][2] | Executes an UPDATE command for the specified *entity*. |
 
 
 Syntax
@@ -39,4 +39,3 @@ See Also
 [1]: ../README.md
 [2]: Update_1.md
 [3]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -8,10 +8,10 @@ Recursively executes INSERT commands for the specified *entities* and all their 
 Overloads
 ---------
 
-|                  | Name                                   | Description                                                                                                              |
-| ---------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method] | [AddRange(IEnumerable&lt;TEntity>)][2] | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
-| ![Public method] | **AddRange(TEntity[])**                | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| Name                                   | Description                                                                                                              |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [AddRange(IEnumerable&lt;TEntity>)][2] | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| **AddRange(TEntity[])**                | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
 
 
 Syntax
@@ -39,4 +39,3 @@ See Also
 [1]: ../README.md
 [2]: AddRange.md
 [3]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

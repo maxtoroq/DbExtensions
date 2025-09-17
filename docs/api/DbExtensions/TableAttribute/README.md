@@ -25,17 +25,17 @@ The **TableAttribute** type exposes the following members.
 Constructors
 ------------
 
-|                  | Name                | Description                                                |
-| ---------------- | ------------------- | ---------------------------------------------------------- |
-| ![Public method] | [TableAttribute][4] | Initializes a new instance of the **TableAttribute** class |
+| Name                | Description                                                |
+| ------------------- | ---------------------------------------------------------- |
+| [TableAttribute][4] | Initializes a new instance of the **TableAttribute** class |
 
 
 Properties
 ----------
 
-|                    | Name      | Description                                 |
-| ------------------ | --------- | ------------------------------------------- |
-| ![Public property] | [Name][5] | Gets or sets the name of the table or view. |
+| Name      | Description                                 |
+| --------- | ------------------------------------------- |
+| [Name][5] | Gets or sets the name of the table or view. |
 
 
 See Also
@@ -49,5 +49,3 @@ See Also
 [3]: ../README.md
 [4]: _ctor.md
 [5]: Name.md
-[Public method]: ../../icons/pubmethod.svg "Public method"
-[Public property]: ../../icons/pubproperty.svg "Public property"

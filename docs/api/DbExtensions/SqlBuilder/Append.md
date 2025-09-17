@@ -8,11 +8,11 @@ Appends *sql* to this instance.
 Overloads
 ---------
 
-|                  | Name                             | Description                                                 |
-| ---------------- | -------------------------------- | ----------------------------------------------------------- |
-| ![Public method] | [Append(AppendStringHandler)][2] | Appends the interpolated string *handler* to this instance. |
-| ![Public method] | **Append(SqlBuilder)**           | Appends *sql* to this instance.                             |
-| ![Public method] | [Append(String)][3]              | Appends *text* to this instance.                            |
+| Name                             | Description                                                 |
+| -------------------------------- | ----------------------------------------------------------- |
+| [Append(AppendStringHandler)][2] | Appends the interpolated string *handler* to this instance. |
+| **Append(SqlBuilder)**           | Appends *sql* to this instance.                             |
+| [Append(String)][3]              | Appends *text* to this instance.                            |
 
 
 Syntax
@@ -44,4 +44,3 @@ See Also
 [2]: Append_1.md
 [3]: Append_2.md
 [4]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

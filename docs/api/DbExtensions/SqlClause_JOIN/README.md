@@ -25,18 +25,18 @@ The **SqlClause.JOIN** type exposes the following members.
 Constructors
 ------------
 
-|                  | Name                | Description      |
-| ---------------- | ------------------- | ---------------- |
-| ![Public method] | [SqlClause.JOIN][4] | The JOIN clause. |
+| Name                | Description      |
+| ------------------- | ---------------- |
+| [SqlClause.JOIN][4] | The JOIN clause. |
 
 
 Properties
 ----------
 
-|                    | Name           | Description                                                                  |
-| ------------------ | -------------- | ---------------------------------------------------------------------------- |
-| ![Public property] | [Name][5]      | The name of the clause.<br/>(Inherited from [SqlClause][2])                  |
-| ![Public property] | [Separator][6] | The string to use for consecutive calls.<br/>(Inherited from [SqlClause][2]) |
+| Name           | Description                                                                  |
+| -------------- | ---------------------------------------------------------------------------- |
+| [Name][5]      | The name of the clause.<br/>(Inherited from [SqlClause][2])                  |
+| [Separator][6] | The string to use for consecutive calls.<br/>(Inherited from [SqlClause][2]) |
 
 
 See Also
@@ -51,5 +51,3 @@ See Also
 [4]: _ctor.md
 [5]: ../SqlClause/Name.md
 [6]: ../SqlClause/Separator.md
-[Public method]: ../../icons/pubmethod.svg "Public method"
-[Public property]: ../../icons/pubproperty.svg "Public property"

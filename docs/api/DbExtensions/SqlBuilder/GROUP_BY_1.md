@@ -8,11 +8,11 @@ Appends the GROUP BY clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                                | Description                                                                                                                                           |
-| ---------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [GROUP_BY()][2]                                                     | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| ![Public method] | **GROUP_BY(SqlBuilder.ClauseStringHandler&lt;SqlClause.GROUP_BY>)** | Appends the GROUP BY clause using the provided interpolated string *handler*.                                                                         |
-| ![Public method] | [GROUP_BY(String)][4]                                               | Appends the GROUP BY clause using the provided *text*.                                                                                                |
+| Name                                                                | Description                                                                                                                                           |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [GROUP_BY()][2]                                                     | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| **GROUP_BY(SqlBuilder.ClauseStringHandler&lt;SqlClause.GROUP_BY>)** | Appends the GROUP BY clause using the provided interpolated string *handler*.                                                                         |
+| [GROUP_BY(String)][4]                                               | Appends the GROUP BY clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -46,4 +46,3 @@ See Also
 [4]: GROUP_BY_2.md
 [5]: ../SqlClause_GROUP_BY/README.md
 [6]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

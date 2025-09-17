@@ -24,46 +24,46 @@ The **Extensions** type exposes the following members.
 Methods
 -------
 
-|                            | Name                                            | Description                                                                                  |
-| -------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| ![Public Extension Method] | [GetBoolean][3]                                 | Gets the value of the specified column as a [Boolean][4].                                    |
-| ![Public Extension Method] | [GetByte][5]                                    | Gets the value of the specified column as a [Byte][6].                                       |
-| ![Public Extension Method] | [GetChar][7]                                    | Gets the value of the specified column as a [Char][8].                                       |
-| ![Public Extension Method] | [GetDateTime][9]                                | Gets the value of the specified column as a [DateTime][10].                                  |
-| ![Public Extension Method] | [GetDecimal][11]                                | Gets the value of the specified column as a [Decimal][12].                                   |
-| ![Public Extension Method] | [GetDouble][13]                                 | Gets the value of the specified column as a [Double][14].                                    |
-| ![Public Extension Method] | [GetFloat][15]                                  | Gets the value of the specified column as a [Single][16].                                    |
-| ![Public Extension Method] | [GetInt16][17]                                  | Gets the value of the specified column as an [Int16][18].                                    |
-| ![Public Extension Method] | [GetInt32][19]                                  | Gets the value of the specified column as an [Int32][20].                                    |
-| ![Public Extension Method] | [GetInt64][21]                                  | Gets the value of the specified column as an [Int64][22].                                    |
-| ![Public Extension Method] | [GetNullableBoolean(DbDataReader, Int32)][23]   | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Boolean][4].            |
-| ![Public Extension Method] | [GetNullableBoolean(DbDataReader, String)][25]  | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Boolean][4].            |
-| ![Public Extension Method] | [GetNullableByte(DbDataReader, Int32)][26]      | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Byte][6].               |
-| ![Public Extension Method] | [GetNullableByte(DbDataReader, String)][27]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Byte][6].               |
-| ![Public Extension Method] | [GetNullableChar(DbDataReader, Int32)][28]      | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Char][8].               |
-| ![Public Extension Method] | [GetNullableChar(DbDataReader, String)][29]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Char][8].               |
-| ![Public Extension Method] | [GetNullableDateTime(DbDataReader, Int32)][30]  | Gets the value of the specified column as a [Nullable&lt;T>][24] of [DateTime][10].          |
-| ![Public Extension Method] | [GetNullableDateTime(DbDataReader, String)][31] | Gets the value of the specified column as a [Nullable&lt;T>][24] of [DateTime][10].          |
-| ![Public Extension Method] | [GetNullableDecimal(DbDataReader, Int32)][32]   | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Decimal][12].           |
-| ![Public Extension Method] | [GetNullableDecimal(DbDataReader, String)][33]  | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Decimal][12].           |
-| ![Public Extension Method] | [GetNullableDouble(DbDataReader, Int32)][34]    | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Double][14].            |
-| ![Public Extension Method] | [GetNullableDouble(DbDataReader, String)][35]   | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Double][14].            |
-| ![Public Extension Method] | [GetNullableFloat(DbDataReader, Int32)][36]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Single][16].            |
-| ![Public Extension Method] | [GetNullableFloat(DbDataReader, String)][37]    | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Single][16].            |
-| ![Public Extension Method] | [GetNullableGuid(DbDataReader, Int32)][38]      | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Guid][39].              |
-| ![Public Extension Method] | [GetNullableGuid(DbDataReader, String)][40]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Guid][39].              |
-| ![Public Extension Method] | [GetNullableInt16(DbDataReader, Int32)][41]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Int16][18].             |
-| ![Public Extension Method] | [GetNullableInt16(DbDataReader, String)][42]    | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Int16][18].             |
-| ![Public Extension Method] | [GetNullableInt32(DbDataReader, Int32)][43]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Int32][20].             |
-| ![Public Extension Method] | [GetNullableInt32(DbDataReader, String)][44]    | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Int32][20].             |
-| ![Public Extension Method] | [GetNullableInt64(DbDataReader, Int32)][45]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Int64][22].             |
-| ![Public Extension Method] | [GetNullableInt64(DbDataReader, String)][46]    | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Int64][22].             |
-| ![Public Extension Method] | [GetString][47]                                 | Gets the value of the specified column as a [String][48].                                    |
-| ![Public Extension Method] | [GetStringOrNull(DbDataReader, Int32)][49]      | Gets the value of the specified column as a [String][48], or null (Nothing in Visual Basic). |
-| ![Public Extension Method] | [GetStringOrNull(DbDataReader, String)][50]     | Gets the value of the specified column as a [String][48], or null (Nothing in Visual Basic). |
-| ![Public Extension Method] | [GetValue][51]                                  | Gets the value of the specified column.                                                      |
-| ![Public Extension Method] | [GetValueOrNull(DbDataReader, Int32)][52]       | Gets the value of the specified column as an [Object][1], or null (Nothing in Visual Basic). |
-| ![Public Extension Method] | [GetValueOrNull(DbDataReader, String)][53]      | Gets the value of the specified column as an [Object][1], or null (Nothing in Visual Basic). |
+| Name                                            | Description                                                                                  |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| [GetBoolean][3]                                 | Gets the value of the specified column as a [Boolean][4].                                    |
+| [GetByte][5]                                    | Gets the value of the specified column as a [Byte][6].                                       |
+| [GetChar][7]                                    | Gets the value of the specified column as a [Char][8].                                       |
+| [GetDateTime][9]                                | Gets the value of the specified column as a [DateTime][10].                                  |
+| [GetDecimal][11]                                | Gets the value of the specified column as a [Decimal][12].                                   |
+| [GetDouble][13]                                 | Gets the value of the specified column as a [Double][14].                                    |
+| [GetFloat][15]                                  | Gets the value of the specified column as a [Single][16].                                    |
+| [GetInt16][17]                                  | Gets the value of the specified column as an [Int16][18].                                    |
+| [GetInt32][19]                                  | Gets the value of the specified column as an [Int32][20].                                    |
+| [GetInt64][21]                                  | Gets the value of the specified column as an [Int64][22].                                    |
+| [GetNullableBoolean(DbDataReader, Int32)][23]   | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Boolean][4].            |
+| [GetNullableBoolean(DbDataReader, String)][25]  | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Boolean][4].            |
+| [GetNullableByte(DbDataReader, Int32)][26]      | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Byte][6].               |
+| [GetNullableByte(DbDataReader, String)][27]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Byte][6].               |
+| [GetNullableChar(DbDataReader, Int32)][28]      | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Char][8].               |
+| [GetNullableChar(DbDataReader, String)][29]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Char][8].               |
+| [GetNullableDateTime(DbDataReader, Int32)][30]  | Gets the value of the specified column as a [Nullable&lt;T>][24] of [DateTime][10].          |
+| [GetNullableDateTime(DbDataReader, String)][31] | Gets the value of the specified column as a [Nullable&lt;T>][24] of [DateTime][10].          |
+| [GetNullableDecimal(DbDataReader, Int32)][32]   | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Decimal][12].           |
+| [GetNullableDecimal(DbDataReader, String)][33]  | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Decimal][12].           |
+| [GetNullableDouble(DbDataReader, Int32)][34]    | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Double][14].            |
+| [GetNullableDouble(DbDataReader, String)][35]   | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Double][14].            |
+| [GetNullableFloat(DbDataReader, Int32)][36]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Single][16].            |
+| [GetNullableFloat(DbDataReader, String)][37]    | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Single][16].            |
+| [GetNullableGuid(DbDataReader, Int32)][38]      | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Guid][39].              |
+| [GetNullableGuid(DbDataReader, String)][40]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Guid][39].              |
+| [GetNullableInt16(DbDataReader, Int32)][41]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Int16][18].             |
+| [GetNullableInt16(DbDataReader, String)][42]    | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Int16][18].             |
+| [GetNullableInt32(DbDataReader, Int32)][43]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Int32][20].             |
+| [GetNullableInt32(DbDataReader, String)][44]    | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Int32][20].             |
+| [GetNullableInt64(DbDataReader, Int32)][45]     | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Int64][22].             |
+| [GetNullableInt64(DbDataReader, String)][46]    | Gets the value of the specified column as a [Nullable&lt;T>][24] of [Int64][22].             |
+| [GetString][47]                                 | Gets the value of the specified column as a [String][48].                                    |
+| [GetStringOrNull(DbDataReader, Int32)][49]      | Gets the value of the specified column as a [String][48], or null (Nothing in Visual Basic). |
+| [GetStringOrNull(DbDataReader, String)][50]     | Gets the value of the specified column as a [String][48], or null (Nothing in Visual Basic). |
+| [GetValue][51]                                  | Gets the value of the specified column.                                                      |
+| [GetValueOrNull(DbDataReader, Int32)][52]       | Gets the value of the specified column as an [Object][1], or null (Nothing in Visual Basic). |
+| [GetValueOrNull(DbDataReader, String)][53]      | Gets the value of the specified column as an [Object][1], or null (Nothing in Visual Basic). |
 
 
 See Also
@@ -125,4 +125,3 @@ See Also
 [51]: GetValue.md
 [52]: GetValueOrNull.md
 [53]: GetValueOrNull_1.md
-[Public Extension Method]: ../../icons/pubextension.svg "Public Extension Method"

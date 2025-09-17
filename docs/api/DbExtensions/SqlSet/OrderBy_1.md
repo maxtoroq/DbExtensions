@@ -8,10 +8,10 @@ Sorts the elements of the set according to the *columnList*.
 Overloads
 ---------
 
-|                  | Name                                | Description                                                  |
-| ---------------- | ----------------------------------- | ------------------------------------------------------------ |
-| ![Public method] | [OrderBy(OperatorStringHandler)][2] | Sorts the elements of the set according to the *columnList*. |
-| ![Public method] | **OrderBy(String)**                 | Sorts the elements of the set according to the *columnList*. |
+| Name                                | Description                                                  |
+| ----------------------------------- | ------------------------------------------------------------ |
+| [OrderBy(OperatorStringHandler)][2] | Sorts the elements of the set according to the *columnList*. |
+| **OrderBy(String)**                 | Sorts the elements of the set according to the *columnList*. |
 
 
 Syntax
@@ -43,4 +43,3 @@ See Also
 [2]: OrderBy.md
 [3]: https://learn.microsoft.com/dotnet/api/system.string
 [4]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

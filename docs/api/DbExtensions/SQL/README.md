@@ -24,20 +24,20 @@ The **SQL** type exposes the following members.
 Methods
 -------
 
-|                                  | Name                                                                       | Description                                                                                                                                 |
-| -------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | [DELETE_FROM(SqlBuilder.ClauseStringHandler&lt;SqlClause.DELETE_FROM>)][4] | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | [DELETE_FROM(String)][5]                                                   | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *text*.                        |
-| ![Public method]![Static member] | [INSERT_INTO(SqlBuilder.ClauseStringHandler&lt;SqlClause.INSERT_INTO>)][6] | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | [INSERT_INTO(String)][7]                                                   | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided *text*.                        |
-| ![Public method]![Static member] | [SELECT(SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>)][8]           | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided string interpolated *handler*.      |
-| ![Public method]![Static member] | [SELECT(String)][9]                                                        | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *text*.                             |
-| ![Public method]![Static member] | [UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>)][10]          | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided string interpolated *handler*.      |
-| ![Public method]![Static member] | [UPDATE(String)][11]                                                       | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *text*.                             |
-| ![Public method]![Static member] | [WITH(SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>)][12]              | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided string interpolated *handler*.        |
-| ![Public method]![Static member] | [WITH(String)][13]                                                         | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *text*.                               |
-| ![Public method]![Static member] | [WITH(String, SqlBuilder)][14]                                             | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.               |
-| ![Public method]![Static member] | [WITH(String, SqlSet)][15]                                                 | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.               |
+| Name                                                                       | Description                                                                                                                                 |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| [DELETE_FROM(SqlBuilder.ClauseStringHandler&lt;SqlClause.DELETE_FROM>)][4] | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided string interpolated *handler*. |
+| [DELETE_FROM(String)][5]                                                   | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *text*.                        |
+| [INSERT_INTO(SqlBuilder.ClauseStringHandler&lt;SqlClause.INSERT_INTO>)][6] | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided string interpolated *handler*. |
+| [INSERT_INTO(String)][7]                                                   | Creates and returns a new [SqlBuilder][1] initialized by appending the INSERT INTO clause using the provided *text*.                        |
+| [SELECT(SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>)][8]           | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided string interpolated *handler*.      |
+| [SELECT(String)][9]                                                        | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *text*.                             |
+| [UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>)][10]          | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided string interpolated *handler*.      |
+| [UPDATE(String)][11]                                                       | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *text*.                             |
+| [WITH(SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>)][12]              | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided string interpolated *handler*.        |
+| [WITH(String)][13]                                                         | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *text*.                               |
+| [WITH(String, SqlBuilder)][14]                                             | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.               |
+| [WITH(String, SqlSet)][15]                                                 | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.               |
 
 
 See Also
@@ -61,5 +61,3 @@ See Also
 [13]: WITH_1.md
 [14]: WITH_2.md
 [15]: WITH_3.md
-[Public method]: ../../icons/pubmethod.svg "Public method"
-[Static member]: ../../icons/Static.gif "Static member"

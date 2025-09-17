@@ -8,10 +8,10 @@ Appends the UPDATE clause using the provided *text*.
 Overloads
 ---------
 
-|                  | Name                                                             | Description                                                                 |
-| ---------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| ![Public method] | [UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>)][2] | Appends the UPDATE clause using the provided interpolated string *handler*. |
-| ![Public method] | **UPDATE(String)**                                               | Appends the UPDATE clause using the provided *text*.                        |
+| Name                                                             | Description                                                                 |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>)][2] | Appends the UPDATE clause using the provided interpolated string *handler*. |
+| **UPDATE(String)**                                               | Appends the UPDATE clause using the provided *text*.                        |
 
 
 Syntax
@@ -43,4 +43,3 @@ See Also
 [2]: UPDATE.md
 [3]: https://learn.microsoft.com/dotnet/api/system.string
 [4]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

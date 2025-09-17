@@ -8,12 +8,12 @@ Maps the results of the *query* to TResult objects, using the provided *mapper* 
 Overloads
 ---------
 
-|                  | Name                                                            | Description                                                                                                                 |
-| ---------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [Map(SqlBuilder)][2]                                            | Maps the results of the *query* to dynamic objects. The query is deferred-executed.                                         |
-| ![Public method] | [Map(SqlBuilder, Type)][3]                                      | Maps the results of the *query* to objects of type specified by the *resultType* parameter. The query is deferred-executed. |
-| ![Public method] | [Map&lt;TResult>(SqlBuilder)][4]                                | Maps the results of the *query* to TResult objects. The query is deferred-executed.                                         |
-| ![Public method] | **Map&lt;TResult>(SqlBuilder, Func&lt;DbDataReader, TResult>)** | Maps the results of the *query* to TResult objects, using the provided *mapper* delegate.                                   |
+| Name                                                            | Description                                                                                                                 |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| [Map(SqlBuilder)][2]                                            | Maps the results of the *query* to dynamic objects. The query is deferred-executed.                                         |
+| [Map(SqlBuilder, Type)][3]                                      | Maps the results of the *query* to objects of type specified by the *resultType* parameter. The query is deferred-executed. |
+| [Map&lt;TResult>(SqlBuilder)][4]                                | Maps the results of the *query* to TResult objects. The query is deferred-executed.                                         |
+| **Map&lt;TResult>(SqlBuilder, Func&lt;DbDataReader, TResult>)** | Maps the results of the *query* to TResult objects, using the provided *mapper* delegate.                                   |
 
 
 Syntax
@@ -60,4 +60,3 @@ See Also
 [7]: https://learn.microsoft.com/dotnet/api/system.data.common.dbdatareader
 [8]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
 [9]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -8,11 +8,11 @@ Determines whether any element of the set satisfies a condition.
 Overloads
 ---------
 
-|                  | Name                            | Description                                                      |
-| ---------------- | ------------------------------- | ---------------------------------------------------------------- |
-| ![Public method] | [Any()][2]                      | Determines whether the set contains any elements.                |
-| ![Public method] | [Any(OperatorStringHandler)][3] | Determines whether any element of the set satisfies a condition. |
-| ![Public method] | **Any(String)**                 | Determines whether any element of the set satisfies a condition. |
+| Name                            | Description                                                      |
+| ------------------------------- | ---------------------------------------------------------------- |
+| [Any()][2]                      | Determines whether the set contains any elements.                |
+| [Any(OperatorStringHandler)][3] | Determines whether any element of the set satisfies a condition. |
+| **Any(String)**                 | Determines whether any element of the set satisfies a condition. |
 
 
 Syntax
@@ -46,4 +46,3 @@ See Also
 [4]: https://learn.microsoft.com/dotnet/api/system.string
 [5]: https://learn.microsoft.com/dotnet/api/system.boolean
 [6]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

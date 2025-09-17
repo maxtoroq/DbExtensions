@@ -8,10 +8,10 @@ Executes DELETE commands for the specified *entities*.
 Overloads
 ---------
 
-|                  | Name                                                             | Description                                            |
-| ---------------- | ---------------------------------------------------------------- | ------------------------------------------------------ |
-| ![Public method] | [RemoveRangeAsync(TEntity[])][2]                                 | Executes DELETE commands for the specified *entities*. |
-| ![Public method] | **RemoveRangeAsync(IEnumerable&lt;TEntity>, CancellationToken)** | Executes DELETE commands for the specified *entities*. |
+| Name                                                             | Description                                            |
+| ---------------------------------------------------------------- | ------------------------------------------------------ |
+| [RemoveRangeAsync(TEntity[])][2]                                 | Executes DELETE commands for the specified *entities*. |
+| **RemoveRangeAsync(IEnumerable&lt;TEntity>, CancellationToken)** | Executes DELETE commands for the specified *entities*. |
 
 
 Syntax
@@ -49,4 +49,3 @@ See Also
 [5]: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
 [6]: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none
 [7]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask
-[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -8,11 +8,11 @@ Appends the CROSS JOIN clause using the provided *text*.
 Overloads
 ---------
 
-|                  | Name                                                                     | Description                                                                                                                                             |
-| ---------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [CROSS_JOIN()][2]                                                        | Sets CROSS JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| ![Public method] | [CROSS_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.CROSS_JOIN>)][4] | Appends the CROSS JOIN clause using the provided interpolated string *handler*.                                                                         |
-| ![Public method] | **CROSS_JOIN(String)**                                                   | Appends the CROSS JOIN clause using the provided *text*.                                                                                                |
+| Name                                                                     | Description                                                                                                                                             |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [CROSS_JOIN()][2]                                                        | Sets CROSS JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [CROSS_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.CROSS_JOIN>)][4] | Appends the CROSS JOIN clause using the provided interpolated string *handler*.                                                                         |
+| **CROSS_JOIN(String)**                                                   | Appends the CROSS JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -46,4 +46,3 @@ See Also
 [4]: CROSS_JOIN_1.md
 [5]: https://learn.microsoft.com/dotnet/api/system.string
 [6]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

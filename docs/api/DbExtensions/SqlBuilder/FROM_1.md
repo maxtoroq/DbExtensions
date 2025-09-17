@@ -8,13 +8,13 @@ Appends the FROM clause using the provided *subQuery* as body named after *alias
 Overloads
 ---------
 
-|                  | Name                                                         | Description                                                                                                                                       |
-| ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [FROM()][2]                                                  | Sets FROM as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| ![Public method] | [FROM(SqlBuilder.ClauseStringHandler&lt;SqlClause.FROM>)][4] | Appends the FROM clause using the provided interpolated string *handler*.                                                                         |
-| ![Public method] | [FROM(String)][5]                                            | Appends the FROM clause using the provided *text*.                                                                                                |
-| ![Public method] | **FROM(SqlBuilder, String)**                                 | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                |
-| ![Public method] | [FROM(SqlSet, String)][6]                                    | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                |
+| Name                                                         | Description                                                                                                                                       |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [FROM()][2]                                                  | Sets FROM as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [FROM(SqlBuilder.ClauseStringHandler&lt;SqlClause.FROM>)][4] | Appends the FROM clause using the provided interpolated string *handler*.                                                                         |
+| [FROM(String)][5]                                            | Appends the FROM clause using the provided *text*.                                                                                                |
+| **FROM(SqlBuilder, String)**                                 | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                |
+| [FROM(SqlSet, String)][6]                                    | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                |
 
 
 Syntax
@@ -54,4 +54,3 @@ See Also
 [6]: FROM_3.md
 [7]: README.md
 [8]: https://learn.microsoft.com/dotnet/api/system.string
-[Public method]: ../../icons/pubmethod.svg "Public method"

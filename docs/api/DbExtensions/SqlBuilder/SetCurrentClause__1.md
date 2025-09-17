@@ -8,10 +8,10 @@ Sets the clause identified by TClause as the current SQL clause.
 Overloads
 ---------
 
-|                  | Name                               | Description                                                      |
-| ---------------- | ---------------------------------- | ---------------------------------------------------------------- |
-| ![Public method] | [SetCurrentClause(SqlClause)][2]   | Sets *clause* as the current SQL clause.                         |
-| ![Public method] | **SetCurrentClause&lt;TClause>()** | Sets the clause identified by TClause as the current SQL clause. |
+| Name                               | Description                                                      |
+| ---------------------------------- | ---------------------------------------------------------------- |
+| [SetCurrentClause(SqlClause)][2]   | Sets *clause* as the current SQL clause.                         |
+| **SetCurrentClause&lt;TClause>()** | Sets the clause identified by TClause as the current SQL clause. |
 
 
 Syntax
@@ -44,4 +44,3 @@ See Also
 [2]: SetCurrentClause.md
 [3]: README.md
 [4]: CurrentClause.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

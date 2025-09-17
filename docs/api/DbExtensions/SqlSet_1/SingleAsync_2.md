@@ -8,11 +8,11 @@ The single element of the set.
 Overloads
 ---------
 
-|                  | Name                                                       | Description                                                                                                                             |
-| ---------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **SingleAsync(CancellationToken)**                         | The single element of the set.                                                                                                          |
-| ![Public method] | [SingleAsync(OperatorStringHandler, CancellationToken)][2] | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
-| ![Public method] | [SingleAsync(String, CancellationToken)][3]                | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+| Name                                                       | Description                                                                                                                             |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **SingleAsync(CancellationToken)**                         | The single element of the set.                                                                                                          |
+| [SingleAsync(OperatorStringHandler, CancellationToken)][2] | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+| [SingleAsync(String, CancellationToken)][3]                | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
 
 
 Syntax
@@ -56,4 +56,3 @@ See Also
 [6]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1
 [7]: README.md
 [8]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
-[Public method]: ../../icons/pubmethod.svg "Public method"

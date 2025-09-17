@@ -8,11 +8,11 @@ Returns the only element of the set that satisfies a specified condition, and th
 Overloads
 ---------
 
-|                  | Name                               | Description                                                                                                                             |
-| ---------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [Single()][2]                      | The single element of the set.                                                                                                          |
-| ![Public method] | [Single(OperatorStringHandler)][3] | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
-| ![Public method] | **Single(String)**                 | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+| Name                               | Description                                                                                                                             |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| [Single()][2]                      | The single element of the set.                                                                                                          |
+| [Single(OperatorStringHandler)][3] | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+| **Single(String)**                 | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
 
 
 Syntax
@@ -55,4 +55,3 @@ See Also
 [5]: https://learn.microsoft.com/dotnet/api/system.object
 [6]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
 [7]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

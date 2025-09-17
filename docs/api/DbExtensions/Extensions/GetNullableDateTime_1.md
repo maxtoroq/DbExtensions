@@ -8,10 +8,10 @@ Gets the value of the specified column as a [Nullable&lt;T>][1] of [DateTime][2]
 Overloads
 ---------
 
-|                            | Name                                          | Description                                                                       |
-| -------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------- |
-| ![Public Extension Method] | [GetNullableDateTime(DbDataReader, Int32)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [DateTime][2]. |
-| ![Public Extension Method] | **GetNullableDateTime(DbDataReader, String)** | Gets the value of the specified column as a [Nullable&lt;T>][1] of [DateTime][2]. |
+| Name                                          | Description                                                                       |
+| --------------------------------------------- | --------------------------------------------------------------------------------- |
+| [GetNullableDateTime(DbDataReader, Int32)][4] | Gets the value of the specified column as a [Nullable&lt;T>][1] of [DateTime][2]. |
+| **GetNullableDateTime(DbDataReader, String)** | Gets the value of the specified column as a [Nullable&lt;T>][1] of [DateTime][2]. |
 
 
 Syntax
@@ -54,4 +54,3 @@ See Also
 [7]: https://docs.microsoft.com/dotnet/visual-basic/programming-guide/language-features/procedures/extension-methods
 [8]: https://docs.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
 [9]: README.md
-[Public Extension Method]: ../../icons/pubextension.svg "Public Extension Method"

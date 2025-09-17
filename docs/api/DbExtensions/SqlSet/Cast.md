@@ -8,10 +8,10 @@ Casts the elements of the set to the specified type.
 Overloads
 ---------
 
-|                  | Name                    | Description                                          |
-| ---------------- | ----------------------- | ---------------------------------------------------- |
-| ![Public method] | **Cast(Type)**          | Casts the elements of the set to the specified type. |
-| ![Public method] | [Cast&lt;TResult>()][2] | Casts the elements of the set to the specified type. |
+| Name                    | Description                                          |
+| ----------------------- | ---------------------------------------------------- |
+| **Cast(Type)**          | Casts the elements of the set to the specified type. |
+| [Cast&lt;TResult>()][2] | Casts the elements of the set to the specified type. |
 
 
 Syntax
@@ -43,4 +43,3 @@ See Also
 [2]: Cast__1.md
 [3]: https://learn.microsoft.com/dotnet/api/system.type
 [4]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

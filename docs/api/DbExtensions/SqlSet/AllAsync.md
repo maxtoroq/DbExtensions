@@ -8,10 +8,10 @@ Determines whether all elements of the set satisfy a condition.
 Overloads
 ---------
 
-|                  | Name                                                   | Description                                                     |
-| ---------------- | ------------------------------------------------------ | --------------------------------------------------------------- |
-| ![Public method] | **AllAsync(OperatorStringHandler, CancellationToken)** | Determines whether all elements of the set satisfy a condition. |
-| ![Public method] | [AllAsync(String, CancellationToken)][2]               | Determines whether all elements of the set satisfy a condition. |
+| Name                                                   | Description                                                     |
+| ------------------------------------------------------ | --------------------------------------------------------------- |
+| **AllAsync(OperatorStringHandler, CancellationToken)** | Determines whether all elements of the set satisfy a condition. |
+| [AllAsync(String, CancellationToken)][2]               | Determines whether all elements of the set satisfy a condition. |
 
 
 Syntax
@@ -50,4 +50,3 @@ See Also
 [5]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1
 [6]: https://learn.microsoft.com/dotnet/api/system.boolean
 [7]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -8,11 +8,11 @@ Appends the ORDER BY clause using the provided *text*.
 Overloads
 ---------
 
-|                  | Name                                                                 | Description                                                                                                                                           |
-| ---------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [ORDER_BY()][2]                                                      | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| ![Public method] | [ORDER_BY(SqlBuilder.ClauseStringHandler&lt;SqlClause.ORDER_BY>)][4] | Appends the ORDER BY clause using the provided interpolated string *handler*.                                                                         |
-| ![Public method] | **ORDER_BY(String)**                                                 | Appends the ORDER BY clause using the provided *text*.                                                                                                |
+| Name                                                                 | Description                                                                                                                                           |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [ORDER_BY()][2]                                                      | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [ORDER_BY(SqlBuilder.ClauseStringHandler&lt;SqlClause.ORDER_BY>)][4] | Appends the ORDER BY clause using the provided interpolated string *handler*.                                                                         |
+| **ORDER_BY(String)**                                                 | Appends the ORDER BY clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -46,4 +46,3 @@ See Also
 [4]: ORDER_BY_1.md
 [5]: https://learn.microsoft.com/dotnet/api/system.string
 [6]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -8,10 +8,10 @@ Checks the existance of the *entity*, using the primary key value.
 Overloads
 ---------
 
-|                  | Name                  | Description                                                        |
-| ---------------- | --------------------- | ------------------------------------------------------------------ |
-| ![Public method] | [Contains(Object)][2] | Checks the existance of the *entity*, using the primary key value. |
-| ![Public method] | **Contains(TResult)** | Checks the existance of the *entity*, using the primary key value. |
+| Name                  | Description                                                        |
+| --------------------- | ------------------------------------------------------------------ |
+| [Contains(Object)][2] | Checks the existance of the *entity*, using the primary key value. |
+| **Contains(TResult)** | Checks the existance of the *entity*, using the primary key value. |
 
 
 Syntax
@@ -52,4 +52,3 @@ See Also
 [3]: README.md
 [4]: https://learn.microsoft.com/dotnet/api/system.boolean
 [5]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
-[Public method]: ../../icons/pubmethod.svg "Public method"

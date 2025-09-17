@@ -8,12 +8,12 @@ Appends the LIMIT clause using the provided *maxRecords* parameter.
 Overloads
 ---------
 
-|                  | Name                                                           | Description                                                                                                                                        |
-| ---------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [LIMIT()][2]                                                   | Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| ![Public method] | [LIMIT(SqlBuilder.ClauseStringHandler&lt;SqlClause.LIMIT>)][4] | Appends the LIMIT clause using the provided interpolated string *handler*.                                                                         |
-| ![Public method] | **LIMIT(Int32)**                                               | Appends the LIMIT clause using the provided *maxRecords* parameter.                                                                                |
-| ![Public method] | [LIMIT(String)][5]                                             | Appends the LIMIT clause using the provided *text*.                                                                                                |
+| Name                                                           | Description                                                                                                                                        |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [LIMIT()][2]                                                   | Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [LIMIT(SqlBuilder.ClauseStringHandler&lt;SqlClause.LIMIT>)][4] | Appends the LIMIT clause using the provided interpolated string *handler*.                                                                         |
+| **LIMIT(Int32)**                                               | Appends the LIMIT clause using the provided *maxRecords* parameter.                                                                                |
+| [LIMIT(String)][5]                                             | Appends the LIMIT clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -48,4 +48,3 @@ See Also
 [5]: LIMIT_3.md
 [6]: https://learn.microsoft.com/dotnet/api/system.int32
 [7]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

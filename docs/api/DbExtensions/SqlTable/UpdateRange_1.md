@@ -8,10 +8,10 @@ Executes UPDATE commands for the specified *entities*.
 Overloads
 ---------
 
-|                  | Name                                     | Description                                            |
-| ---------------- | ---------------------------------------- | ------------------------------------------------------ |
-| ![Public method] | [UpdateRange(IEnumerable&lt;Object>)][2] | Executes UPDATE commands for the specified *entities*. |
-| ![Public method] | **UpdateRange(Object[])**                | Executes UPDATE commands for the specified *entities*. |
+| Name                                     | Description                                            |
+| ---------------------------------------- | ------------------------------------------------------ |
+| [UpdateRange(IEnumerable&lt;Object>)][2] | Executes UPDATE commands for the specified *entities*. |
+| **UpdateRange(Object[])**                | Executes UPDATE commands for the specified *entities*. |
 
 
 Syntax
@@ -40,4 +40,3 @@ See Also
 [2]: UpdateRange.md
 [3]: https://learn.microsoft.com/dotnet/api/system.object
 [4]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -25,22 +25,22 @@ The **ColumnAttribute** type exposes the following members.
 Constructors
 ------------
 
-|                  | Name                 | Description                                                 |
-| ---------------- | -------------------- | ----------------------------------------------------------- |
-| ![Public method] | [ColumnAttribute][4] | Initializes a new instance of the **ColumnAttribute** class |
+| Name                 | Description                                                 |
+| -------------------- | ----------------------------------------------------------- |
+| [ColumnAttribute][4] | Initializes a new instance of the **ColumnAttribute** class |
 
 
 Properties
 ----------
 
-|                    | Name               | Description                                                                                                     |
-| ------------------ | ------------------ | --------------------------------------------------------------------------------------------------------------- |
-| ![Public property] | [AutoSync][5]      | Gets or sets the [AutoSync][6] enumeration.                                                                     |
-| ![Public property] | [ConvertTo][7]     | Gets or sets the type to convert this member to before sending to the database.                                 |
-| ![Public property] | [IsDbGenerated][8] | Gets or sets whether a column contains values that the database auto-generates.                                 |
-| ![Public property] | [IsPrimaryKey][9]  | Gets or sets whether this class member represents a column that is part or all of the primary key of the table. |
-| ![Public property] | [IsVersion][10]    | Gets or sets whether the column type of the member is a database timestamp or version number.                   |
-| ![Public property] | [Name][11]         | Gets or sets the name of a column.                                                                              |
+| Name               | Description                                                                                                     |
+| ------------------ | --------------------------------------------------------------------------------------------------------------- |
+| [AutoSync][5]      | Gets or sets the [AutoSync][6] enumeration.                                                                     |
+| [ConvertTo][7]     | Gets or sets the type to convert this member to before sending to the database.                                 |
+| [IsDbGenerated][8] | Gets or sets whether a column contains values that the database auto-generates.                                 |
+| [IsPrimaryKey][9]  | Gets or sets whether this class member represents a column that is part or all of the primary key of the table. |
+| [IsVersion][10]    | Gets or sets whether the column type of the member is a database timestamp or version number.                   |
+| [Name][11]         | Gets or sets the name of a column.                                                                              |
 
 
 See Also
@@ -60,5 +60,3 @@ See Also
 [9]: IsPrimaryKey.md
 [10]: IsVersion.md
 [11]: Name.md
-[Public method]: ../../icons/pubmethod.svg "Public method"
-[Public property]: ../../icons/pubproperty.svg "Public property"

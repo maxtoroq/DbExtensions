@@ -8,10 +8,10 @@ Appends the DELETE FROM clause using the provided *text*.
 Overloads
 ---------
 
-|                  | Name                                                                       | Description                                                                      |
-| ---------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| ![Public method] | [DELETE_FROM(SqlBuilder.ClauseStringHandler&lt;SqlClause.DELETE_FROM>)][2] | Appends the DELETE FROM clause using the provided interpolated string *handler*. |
-| ![Public method] | **DELETE_FROM(String)**                                                    | Appends the DELETE FROM clause using the provided *text*.                        |
+| Name                                                                       | Description                                                                      |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| [DELETE_FROM(SqlBuilder.ClauseStringHandler&lt;SqlClause.DELETE_FROM>)][2] | Appends the DELETE FROM clause using the provided interpolated string *handler*. |
+| **DELETE_FROM(String)**                                                    | Appends the DELETE FROM clause using the provided *text*.                        |
 
 
 Syntax
@@ -43,4 +43,3 @@ See Also
 [2]: DELETE_FROM.md
 [3]: https://learn.microsoft.com/dotnet/api/system.string
 [4]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

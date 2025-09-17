@@ -8,10 +8,10 @@ Recursively executes INSERT commands for the specified *entities* and all their 
 Overloads
 ---------
 
-|                  | Name                                                          | Description                                                                                                              |
-| ---------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method] | [AddRangeAsync(TEntity[])][2]                                 | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
-| ![Public method] | **AddRangeAsync(IEnumerable&lt;TEntity>, CancellationToken)** | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| Name                                                          | Description                                                                                                              |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [AddRangeAsync(TEntity[])][2]                                 | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| **AddRangeAsync(IEnumerable&lt;TEntity>, CancellationToken)** | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
 
 
 Syntax
@@ -49,4 +49,3 @@ See Also
 [5]: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
 [6]: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none
 [7]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask
-[Public method]: ../../icons/pubmethod.svg "Public method"

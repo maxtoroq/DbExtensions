@@ -8,11 +8,11 @@ Returns the only element of the set that satisfies a specified condition, and th
 Overloads
 ---------
 
-|                  | Name                                                       | Description                                                                                                                             |
-| ---------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [SingleAsync(CancellationToken)][2]                        | The single element of the set.                                                                                                          |
-| ![Public method] | [SingleAsync(OperatorStringHandler, CancellationToken)][3] | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
-| ![Public method] | **SingleAsync(String, CancellationToken)**                 | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+| Name                                                       | Description                                                                                                                             |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| [SingleAsync(CancellationToken)][2]                        | The single element of the set.                                                                                                          |
+| [SingleAsync(OperatorStringHandler, CancellationToken)][3] | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
+| **SingleAsync(String, CancellationToken)**                 | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. |
 
 
 Syntax
@@ -61,4 +61,3 @@ See Also
 [7]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1
 [8]: README.md
 [9]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
-[Public method]: ../../icons/pubmethod.svg "Public method"

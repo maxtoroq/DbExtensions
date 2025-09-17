@@ -8,11 +8,11 @@ Determines whether any element of the set satisfies a condition.
 Overloads
 ---------
 
-|                  | Name                                                   | Description                                                      |
-| ---------------- | ------------------------------------------------------ | ---------------------------------------------------------------- |
-| ![Public method] | [AnyAsync(CancellationToken)][2]                       | Determines whether the set contains any elements.                |
-| ![Public method] | **AnyAsync(OperatorStringHandler, CancellationToken)** | Determines whether any element of the set satisfies a condition. |
-| ![Public method] | [AnyAsync(String, CancellationToken)][3]               | Determines whether any element of the set satisfies a condition. |
+| Name                                                   | Description                                                      |
+| ------------------------------------------------------ | ---------------------------------------------------------------- |
+| [AnyAsync(CancellationToken)][2]                       | Determines whether the set contains any elements.                |
+| **AnyAsync(OperatorStringHandler, CancellationToken)** | Determines whether any element of the set satisfies a condition. |
+| [AnyAsync(String, CancellationToken)][3]               | Determines whether any element of the set satisfies a condition. |
 
 
 Syntax
@@ -52,4 +52,3 @@ See Also
 [6]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1
 [7]: https://learn.microsoft.com/dotnet/api/system.boolean
 [8]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

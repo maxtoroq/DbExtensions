@@ -8,10 +8,10 @@ Initializes a new instance of the [Database][1] class using the provided connect
 Overloads
 ---------
 
-|                  | Name                          | Description                                                                                                               |
-| ---------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **Database(DbConnection)**    | Initializes a new instance of the [Database][1] class using the provided connection.                                      |
-| ![Public method] | [Database(String, String)][3] | Initializes a new instance of the [Database][1] class using the provided connection string and provider's invariant name. |
+| Name                          | Description                                                                                                               |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Database(DbConnection)**    | Initializes a new instance of the [Database][1] class using the provided connection.                                      |
+| [Database(String, String)][3] | Initializes a new instance of the [Database][1] class using the provided connection string and provider's invariant name. |
 
 
 Syntax
@@ -40,4 +40,3 @@ See Also
 [2]: ../README.md
 [3]: _ctor_1.md
 [4]: https://learn.microsoft.com/dotnet/api/system.data.common.dbconnection
-[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -24,26 +24,26 @@ The **SqlClause** type exposes the following members.
 Constructors
 ------------
 
-|                     | Name           | Description                                                       |
-| ------------------- | -------------- | ----------------------------------------------------------------- |
-| ![Protected method] | [SqlClause][5] | Provides information about a SQL clause. Used by [SqlBuilder][1]. |
+| Name           | Description                                                       |
+| -------------- | ----------------------------------------------------------------- |
+| [SqlClause][5] | Provides information about a SQL clause. Used by [SqlBuilder][1]. |
 
 
 Properties
 ----------
 
-|                    | Name           | Description                              |
-| ------------------ | -------------- | ---------------------------------------- |
-| ![Public property] | [Name][6]      | The name of the clause.                  |
-| ![Public property] | [Separator][7] | The string to use for consecutive calls. |
+| Name           | Description                              |
+| -------------- | ---------------------------------------- |
+| [Name][6]      | The name of the clause.                  |
+| [Separator][7] | The string to use for consecutive calls. |
 
 
 Methods
 -------
 
-|                                  | Name                      | Description                                                    |
-| -------------------------------- | ------------------------- | -------------------------------------------------------------- |
-| ![Public method]![Static member] | [Instance&lt;TClause>][8] | Gets a singleton instance of the clause identified by TClause. |
+| Name                      | Description                                                    |
+| ------------------------- | -------------------------------------------------------------- |
+| [Instance&lt;TClause>][8] | Gets a singleton instance of the clause identified by TClause. |
 
 
 See Also
@@ -108,7 +108,3 @@ Inheritance Hierarchy (Continued)
 [27]: ../SqlClause_VALUES/README.md
 [28]: ../SqlClause_WHERE/README.md
 [29]: ../SqlClause_WITH/README.md
-[Protected method]: ../../icons/protmethod.svg "Protected method"
-[Public property]: ../../icons/pubproperty.svg "Public property"
-[Public method]: ../../icons/pubmethod.svg "Public method"
-[Static member]: ../../icons/Static.gif "Static member"

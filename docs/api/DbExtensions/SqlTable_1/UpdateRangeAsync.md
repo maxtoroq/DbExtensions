@@ -8,10 +8,10 @@ Executes UPDATE commands for the specified *entities*.
 Overloads
 ---------
 
-|                  | Name                                                             | Description                                            |
-| ---------------- | ---------------------------------------------------------------- | ------------------------------------------------------ |
-| ![Public method] | [UpdateRangeAsync(TEntity[])][2]                                 | Executes UPDATE commands for the specified *entities*. |
-| ![Public method] | **UpdateRangeAsync(IEnumerable&lt;TEntity>, CancellationToken)** | Executes UPDATE commands for the specified *entities*. |
+| Name                                                             | Description                                            |
+| ---------------------------------------------------------------- | ------------------------------------------------------ |
+| [UpdateRangeAsync(TEntity[])][2]                                 | Executes UPDATE commands for the specified *entities*. |
+| **UpdateRangeAsync(IEnumerable&lt;TEntity>, CancellationToken)** | Executes UPDATE commands for the specified *entities*. |
 
 
 Syntax
@@ -49,4 +49,3 @@ See Also
 [5]: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
 [6]: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none
 [7]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask
-[Public method]: ../../icons/pubmethod.svg "Public method"

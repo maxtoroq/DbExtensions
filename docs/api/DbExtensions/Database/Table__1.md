@@ -8,10 +8,10 @@ Returns the [SqlTable&lt;TEntity>][1] instance for the specified TEntity.
 Overloads
 ---------
 
-|                  | Name                    | Description                                                               |
-| ---------------- | ----------------------- | ------------------------------------------------------------------------- |
-| ![Public method] | [Table(Type)][3]        | Returns the [SqlTable][4] instance for the specified *entityType*.        |
-| ![Public method] | **Table&lt;TEntity>()** | Returns the [SqlTable&lt;TEntity>][1] instance for the specified TEntity. |
+| Name                    | Description                                                               |
+| ----------------------- | ------------------------------------------------------------------------- |
+| [Table(Type)][3]        | Returns the [SqlTable][4] instance for the specified *entityType*.        |
+| **Table&lt;TEntity>()** | Returns the [SqlTable&lt;TEntity>][1] instance for the specified TEntity. |
 
 
 Syntax
@@ -44,4 +44,3 @@ See Also
 [3]: Table.md
 [4]: ../SqlTable/README.md
 [5]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

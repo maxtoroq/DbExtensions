@@ -8,11 +8,11 @@ Returns the first element of the set that satisfies a condition or a default val
 Overloads
 ---------
 
-|                  | Name                                       | Description                                                                                                     |
-| ---------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | [FirstOrDefault()][2]                      | Returns the first element of the set, or a default value if the set contains no elements.                       |
-| ![Public method] | [FirstOrDefault(OperatorStringHandler)][3] | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
-| ![Public method] | **FirstOrDefault(String)**                 | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
+| Name                                       | Description                                                                                                     |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| [FirstOrDefault()][2]                      | Returns the first element of the set, or a default value if the set contains no elements.                       |
+| [FirstOrDefault(OperatorStringHandler)][3] | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
+| **FirstOrDefault(String)**                 | Returns the first element of the set that satisfies a condition or a default value if no such element is found. |
 
 
 Syntax
@@ -46,4 +46,3 @@ See Also
 [4]: https://learn.microsoft.com/dotnet/api/system.string
 [5]: https://learn.microsoft.com/dotnet/api/system.object
 [6]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -8,12 +8,12 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clau
 Overloads
 ---------
 
-|                                  | Name                                                        | Description                                                                                                                          |
-| -------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method]![Static member] | **WITH(SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided string interpolated *handler*. |
-| ![Public method]![Static member] | [WITH(String)][3]                                           | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *text*.                        |
-| ![Public method]![Static member] | [WITH(String, SqlBuilder)][4]                               | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.        |
-| ![Public method]![Static member] | [WITH(String, SqlSet)][5]                                   | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.        |
+| Name                                                        | Description                                                                                                                          |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **WITH(SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>)** | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided string interpolated *handler*. |
+| [WITH(String)][3]                                           | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *text*.                        |
+| [WITH(String, SqlBuilder)][4]                               | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.        |
+| [WITH(String, SqlSet)][5]                                   | Creates and returns a new [SqlBuilder][1] initialized by appending the WITH clause using the provided *subQuery* and *alias*.        |
 
 
 Syntax
@@ -49,5 +49,3 @@ See Also
 [6]: ../SqlClause_WITH/README.md
 [7]: ../SqlBuilder/WITH.md
 [8]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"
-[Static member]: ../../icons/Static.gif "Static member"

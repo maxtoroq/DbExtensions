@@ -8,10 +8,10 @@ Releases all resources used by the current instance of the [Database][1] class.
 Overloads
 ---------
 
-|                     | Name                  | Description                                                                     |
-| ------------------- | --------------------- | ------------------------------------------------------------------------------- |
-| ![Public method]    | **Dispose()**         | Releases all resources used by the current instance of the [Database][1] class. |
-| ![Protected method] | [Dispose(Boolean)][3] | Releases the resources used by this [Database][1] instance.                     |
+| Name                  | Description                                                                     |
+| --------------------- | ------------------------------------------------------------------------------- |
+| **Dispose()**         | Releases all resources used by the current instance of the [Database][1] class. |
+| [Dispose(Boolean)][3] | Releases the resources used by this [Database][1] instance.                     |
 
 
 Syntax
@@ -36,5 +36,3 @@ See Also
 [2]: ../README.md
 [3]: Dispose_1.md
 [4]: https://learn.microsoft.com/dotnet/api/system.idisposable.dispose
-[Public method]: ../../icons/pubmethod.svg "Public method"
-[Protected method]: ../../icons/protmethod.svg "Protected method"

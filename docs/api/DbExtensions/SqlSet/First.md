@@ -8,11 +8,11 @@ Returns the first element of the set.
 Overloads
 ---------
 
-|                  | Name                              | Description                                                                |
-| ---------------- | --------------------------------- | -------------------------------------------------------------------------- |
-| ![Public method] | **First()**                       | Returns the first element of the set.                                      |
-| ![Public method] | [First(OperatorStringHandler)][2] | Returns the first element in the set that satisfies a specified condition. |
-| ![Public method] | [First(String)][3]                | Returns the first element in the set that satisfies a specified condition. |
+| Name                              | Description                                                                |
+| --------------------------------- | -------------------------------------------------------------------------- |
+| **First()**                       | Returns the first element of the set.                                      |
+| [First(OperatorStringHandler)][2] | Returns the first element in the set that satisfies a specified condition. |
+| [First(String)][3]                | Returns the first element in the set that satisfies a specified condition. |
 
 
 Syntax
@@ -47,4 +47,3 @@ See Also
 [4]: https://learn.microsoft.com/dotnet/api/system.object
 [5]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
 [6]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

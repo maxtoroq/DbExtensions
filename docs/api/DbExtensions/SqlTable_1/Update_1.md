@@ -8,10 +8,10 @@ Executes an UPDATE command for the specified *entity*.
 Overloads
 ---------
 
-|                  | Name                        | Description                                            |
-| ---------------- | --------------------------- | ------------------------------------------------------ |
-| ![Public method] | [Update(TEntity)][2]        | Executes an UPDATE command for the specified *entity*. |
-| ![Public method] | **Update(TEntity, Object)** | Executes an UPDATE command for the specified *entity*. |
+| Name                        | Description                                            |
+| --------------------------- | ------------------------------------------------------ |
+| [Update(TEntity)][2]        | Executes an UPDATE command for the specified *entity*. |
+| **Update(TEntity, Object)** | Executes an UPDATE command for the specified *entity*. |
 
 
 Syntax
@@ -48,4 +48,3 @@ See Also
 [2]: Update.md
 [3]: README.md
 [4]: https://learn.microsoft.com/dotnet/api/system.object
-[Public method]: ../../icons/pubmethod.svg "Public method"

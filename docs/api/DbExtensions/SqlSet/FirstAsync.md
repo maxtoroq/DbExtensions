@@ -8,11 +8,11 @@ Returns the first element in the set that satisfies a specified condition.
 Overloads
 ---------
 
-|                  | Name                                                     | Description                                                                |
-| ---------------- | -------------------------------------------------------- | -------------------------------------------------------------------------- |
-| ![Public method] | [FirstAsync(CancellationToken)][2]                       | Returns the first element of the set.                                      |
-| ![Public method] | **FirstAsync(OperatorStringHandler, CancellationToken)** | Returns the first element in the set that satisfies a specified condition. |
-| ![Public method] | [FirstAsync(String, CancellationToken)][3]               | Returns the first element in the set that satisfies a specified condition. |
+| Name                                                     | Description                                                                |
+| -------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [FirstAsync(CancellationToken)][2]                       | Returns the first element of the set.                                      |
+| **FirstAsync(OperatorStringHandler, CancellationToken)** | Returns the first element in the set that satisfies a specified condition. |
+| [FirstAsync(String, CancellationToken)][3]               | Returns the first element in the set that satisfies a specified condition. |
 
 
 Syntax
@@ -61,4 +61,3 @@ See Also
 [7]: https://learn.microsoft.com/dotnet/api/system.object
 [8]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
 [9]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

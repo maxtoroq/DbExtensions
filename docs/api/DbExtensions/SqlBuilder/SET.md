@@ -8,10 +8,10 @@ Appends the SET clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-|                  | Name                                                      | Description                                                              |
-| ---------------- | --------------------------------------------------------- | ------------------------------------------------------------------------ |
-| ![Public method] | **SET(SqlBuilder.ClauseStringHandler&lt;SqlClause.SET>)** | Appends the SET clause using the provided interpolated string *handler*. |
-| ![Public method] | [SET(String)][2]                                          | Appends the SET clause using the provided *text*.                        |
+| Name                                                      | Description                                                              |
+| --------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **SET(SqlBuilder.ClauseStringHandler&lt;SqlClause.SET>)** | Appends the SET clause using the provided interpolated string *handler*. |
+| [SET(String)][2]                                          | Appends the SET clause using the provided *text*.                        |
 
 
 Syntax
@@ -43,4 +43,3 @@ See Also
 [2]: SET_1.md
 [3]: ../SqlClause_SET/README.md
 [4]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

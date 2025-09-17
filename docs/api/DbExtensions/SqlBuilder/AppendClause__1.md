@@ -8,13 +8,13 @@ Appends the SQL clause identified by TClause.
 Overloads
 ---------
 
-|                  | Name                                                                      | Description                                                                                 |
-| ---------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| ![Public method] | [AppendClause(SqlClause)][2]                                              | Appends the SQL *clause*.                                                                   |
-| ![Public method] | [AppendClause(SqlClause, String)][3]                                      | Appends the SQL *clause* and the provided *text*.                                           |
-| ![Public method] | **AppendClause&lt;TClause>()**                                            | Appends the SQL clause identified by TClause.                                               |
-| ![Public method] | [AppendClause&lt;TClause>(SqlBuilder.ClauseStringHandler&lt;TClause>)][4] | Appends the SQL clause identified by TClause and appends the interpolated string *handler*. |
-| ![Public method] | [AppendClause&lt;TClause>(String)][5]                                     | Appends the SQL clause identified by TClause and appends the *text*.                        |
+| Name                                                                      | Description                                                                                 |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| [AppendClause(SqlClause)][2]                                              | Appends the SQL *clause*.                                                                   |
+| [AppendClause(SqlClause, String)][3]                                      | Appends the SQL *clause* and the provided *text*.                                           |
+| **AppendClause&lt;TClause>()**                                            | Appends the SQL clause identified by TClause.                                               |
+| [AppendClause&lt;TClause>(SqlBuilder.ClauseStringHandler&lt;TClause>)][4] | Appends the SQL clause identified by TClause and appends the interpolated string *handler*. |
+| [AppendClause&lt;TClause>(String)][5]                                     | Appends the SQL clause identified by TClause and appends the *text*.                        |
 
 
 Syntax
@@ -48,4 +48,3 @@ See Also
 [4]: AppendClause__1_1.md
 [5]: AppendClause__1_2.md
 [6]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

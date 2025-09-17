@@ -8,10 +8,10 @@ Checks the existance of the *entity*, using the primary key value.
 Overloads
 ---------
 
-|                  | Name                                          | Description                                                        |
-| ---------------- | --------------------------------------------- | ------------------------------------------------------------------ |
-| ![Public method] | [ContainsAsync(Object, CancellationToken)][2] | Checks the existance of the *entity*, using the primary key value. |
-| ![Public method] | **ContainsAsync(TResult, CancellationToken)** | Checks the existance of the *entity*, using the primary key value. |
+| Name                                          | Description                                                        |
+| --------------------------------------------- | ------------------------------------------------------------------ |
+| [ContainsAsync(Object, CancellationToken)][2] | Checks the existance of the *entity*, using the primary key value. |
+| **ContainsAsync(TResult, CancellationToken)** | Checks the existance of the *entity*, using the primary key value. |
 
 
 Syntax
@@ -59,4 +59,3 @@ See Also
 [6]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1
 [7]: https://learn.microsoft.com/dotnet/api/system.boolean
 [8]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
-[Public method]: ../../icons/pubmethod.svg "Public method"

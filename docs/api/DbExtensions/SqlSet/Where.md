@@ -8,10 +8,10 @@ Filters the set based on a predicate.
 Overloads
 ---------
 
-|                  | Name                             | Description                           |
-| ---------------- | -------------------------------- | ------------------------------------- |
-| ![Public method] | **Where(OperatorStringHandler)** | Filters the set based on a predicate. |
-| ![Public method] | [Where(String)][2]               | Filters the set based on a predicate. |
+| Name                             | Description                           |
+| -------------------------------- | ------------------------------------- |
+| **Where(OperatorStringHandler)** | Filters the set based on a predicate. |
+| [Where(String)][2]               | Filters the set based on a predicate. |
 
 
 Syntax
@@ -42,4 +42,3 @@ See Also
 [1]: ../README.md
 [2]: Where_1.md
 [3]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

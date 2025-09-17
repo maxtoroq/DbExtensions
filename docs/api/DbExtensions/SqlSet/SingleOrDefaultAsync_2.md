@@ -8,11 +8,11 @@ Returns the only element of the set, or a default value if the set is empty; thi
 Overloads
 ---------
 
-|                  | Name                                                                | Description                                                                                                                                                                                              |
-| ---------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **SingleOrDefaultAsync(CancellationToken)**                         | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.                                               |
-| ![Public method] | [SingleOrDefaultAsync(OperatorStringHandler, CancellationToken)][2] | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
-| ![Public method] | [SingleOrDefaultAsync(String, CancellationToken)][3]                | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
+| Name                                                                | Description                                                                                                                                                                                              |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **SingleOrDefaultAsync(CancellationToken)**                         | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set.                                               |
+| [SingleOrDefaultAsync(OperatorStringHandler, CancellationToken)][2] | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
+| [SingleOrDefaultAsync(String, CancellationToken)][3]                | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. |
 
 
 Syntax
@@ -57,4 +57,3 @@ See Also
 [7]: https://learn.microsoft.com/dotnet/api/system.object
 [8]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
 [9]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

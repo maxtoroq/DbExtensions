@@ -8,11 +8,11 @@ Sets HAVING as the next clause, to be used by subsequent calls to clause continu
 Overloads
 ---------
 
-|                  | Name                                                             | Description                                                                                                                                         |
-| ---------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method] | **HAVING()**                                                     | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
-| ![Public method] | [HAVING(SqlBuilder.ClauseStringHandler&lt;SqlClause.HAVING>)][3] | Appends the HAVING clause using the provided interpolated string *handler*.                                                                         |
-| ![Public method] | [HAVING(String)][4]                                              | Appends the HAVING clause using the provided *text*.                                                                                                |
+| Name                                                             | Description                                                                                                                                         |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **HAVING()**                                                     | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| [HAVING(SqlBuilder.ClauseStringHandler&lt;SqlClause.HAVING>)][3] | Appends the HAVING clause using the provided interpolated string *handler*.                                                                         |
+| [HAVING(String)][4]                                              | Appends the HAVING clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -38,4 +38,3 @@ See Also
 [3]: HAVING_1.md
 [4]: HAVING_2.md
 [5]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

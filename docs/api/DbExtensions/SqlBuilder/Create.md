@@ -8,10 +8,10 @@ Initializes a new instance of the [SqlBuilder][1] class using the provided inter
 Overloads
 ---------
 
-|                                  | Name                            | Description                                                                                     |
-| -------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------- |
-| ![Public method]![Static member] | **Create(AppendStringHandler)** | Initializes a new instance of the [SqlBuilder][1] class using the provided interpolated string. |
-| ![Public method]![Static member] | [Create(String)][3]             | Initializes a new instance of the [SqlBuilder][1] class using the provided text.                |
+| Name                            | Description                                                                                     |
+| ------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Create(AppendStringHandler)** | Initializes a new instance of the [SqlBuilder][1] class using the provided interpolated string. |
+| [Create(String)][3]             | Initializes a new instance of the [SqlBuilder][1] class using the provided text.                |
 
 
 Syntax
@@ -41,5 +41,3 @@ See Also
 [1]: README.md
 [2]: ../README.md
 [3]: Create_1.md
-[Public method]: ../../icons/pubmethod.svg "Public method"
-[Static member]: ../../icons/Static.gif "Static member"

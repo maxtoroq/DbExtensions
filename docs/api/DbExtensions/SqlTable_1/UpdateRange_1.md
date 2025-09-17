@@ -8,10 +8,10 @@ Executes UPDATE commands for the specified *entities*.
 Overloads
 ---------
 
-|                  | Name                                      | Description                                            |
-| ---------------- | ----------------------------------------- | ------------------------------------------------------ |
-| ![Public method] | [UpdateRange(IEnumerable&lt;TEntity>)][2] | Executes UPDATE commands for the specified *entities*. |
-| ![Public method] | **UpdateRange(TEntity[])**                | Executes UPDATE commands for the specified *entities*. |
+| Name                                      | Description                                            |
+| ----------------------------------------- | ------------------------------------------------------ |
+| [UpdateRange(IEnumerable&lt;TEntity>)][2] | Executes UPDATE commands for the specified *entities*. |
+| **UpdateRange(TEntity[])**                | Executes UPDATE commands for the specified *entities*. |
 
 
 Syntax
@@ -39,4 +39,3 @@ See Also
 [1]: ../README.md
 [2]: UpdateRange.md
 [3]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

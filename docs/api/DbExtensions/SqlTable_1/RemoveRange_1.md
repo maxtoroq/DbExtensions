@@ -8,10 +8,10 @@ Executes DELETE commands for the specified *entities*.
 Overloads
 ---------
 
-|                  | Name                                      | Description                                            |
-| ---------------- | ----------------------------------------- | ------------------------------------------------------ |
-| ![Public method] | [RemoveRange(IEnumerable&lt;TEntity>)][2] | Executes DELETE commands for the specified *entities*. |
-| ![Public method] | **RemoveRange(TEntity[])**                | Executes DELETE commands for the specified *entities*. |
+| Name                                      | Description                                            |
+| ----------------------------------------- | ------------------------------------------------------ |
+| [RemoveRange(IEnumerable&lt;TEntity>)][2] | Executes DELETE commands for the specified *entities*. |
+| **RemoveRange(TEntity[])**                | Executes DELETE commands for the specified *entities*. |
 
 
 Syntax
@@ -39,4 +39,3 @@ See Also
 [1]: ../README.md
 [2]: RemoveRange.md
 [3]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -8,10 +8,10 @@ Sorts the elements of the set according to the *columnList*.
 Overloads
 ---------
 
-|                  | Name                               | Description                                                  |
-| ---------------- | ---------------------------------- | ------------------------------------------------------------ |
-| ![Public method] | **OrderBy(OperatorStringHandler)** | Sorts the elements of the set according to the *columnList*. |
-| ![Public method] | [OrderBy(String)][2]               | Sorts the elements of the set according to the *columnList*. |
+| Name                               | Description                                                  |
+| ---------------------------------- | ------------------------------------------------------------ |
+| **OrderBy(OperatorStringHandler)** | Sorts the elements of the set according to the *columnList*. |
+| [OrderBy(String)][2]               | Sorts the elements of the set according to the *columnList*. |
 
 
 Syntax
@@ -42,4 +42,3 @@ See Also
 [1]: ../README.md
 [2]: OrderBy_1.md
 [3]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

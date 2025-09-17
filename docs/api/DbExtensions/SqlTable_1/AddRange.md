@@ -8,10 +8,10 @@ Recursively executes INSERT commands for the specified *entities* and all their 
 Overloads
 ---------
 
-|                  | Name                                  | Description                                                                                                              |
-| ---------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method] | **AddRange(IEnumerable&lt;TEntity>)** | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
-| ![Public method] | [AddRange(TEntity[])][2]              | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| Name                                  | Description                                                                                                              |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **AddRange(IEnumerable&lt;TEntity>)** | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| [AddRange(TEntity[])][2]              | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
 
 
 Syntax
@@ -40,4 +40,3 @@ See Also
 [2]: AddRange_1.md
 [3]: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
 [4]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

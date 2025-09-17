@@ -8,11 +8,11 @@ Appends *text* to this instance.
 Overloads
 ---------
 
-|                  | Name                             | Description                                                 |
-| ---------------- | -------------------------------- | ----------------------------------------------------------- |
-| ![Public method] | [Append(AppendStringHandler)][2] | Appends the interpolated string *handler* to this instance. |
-| ![Public method] | [Append(SqlBuilder)][3]          | Appends *sql* to this instance.                             |
-| ![Public method] | **Append(String)**               | Appends *text* to this instance.                            |
+| Name                             | Description                                                 |
+| -------------------------------- | ----------------------------------------------------------- |
+| [Append(AppendStringHandler)][2] | Appends the interpolated string *handler* to this instance. |
+| [Append(SqlBuilder)][3]          | Appends *sql* to this instance.                             |
+| **Append(String)**               | Appends *text* to this instance.                            |
 
 
 Syntax
@@ -45,4 +45,3 @@ See Also
 [3]: Append.md
 [4]: https://learn.microsoft.com/dotnet/api/system.string
 [5]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -8,10 +8,10 @@ Returns a virtual transaction that you can use to ensure a code block is always 
 Overloads
 ---------
 
-|                                 | Name                                     | Description                                                                                                                 |
-| ------------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Code example] | **EnsureInTransaction()**                | Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing. |
-| ![Public method]![Code example] | [EnsureInTransaction(IsolationLevel)][2] | Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing. |
+| Name                                     | Description                                                                                                                 |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **EnsureInTransaction()**                | Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing. |
+| [EnsureInTransaction(IsolationLevel)][2] | Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing. |
 
 
 Syntax
@@ -71,5 +71,3 @@ See Also
 [3]: https://learn.microsoft.com/dotnet/api/system.data.common.dbtransaction
 [4]: https://learn.microsoft.com/dotnet/api/system.data.common.dbtransaction.commit
 [5]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"
-[Code example]: ../../icons/CodeExample.png "Code example"

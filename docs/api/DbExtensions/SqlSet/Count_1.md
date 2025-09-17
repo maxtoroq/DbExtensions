@@ -8,11 +8,11 @@ Returns a number that represents how many elements in the set satisfy a conditio
 Overloads
 ---------
 
-|                  | Name                             | Description                                                                        |
-| ---------------- | -------------------------------- | ---------------------------------------------------------------------------------- |
-| ![Public method] | [Count()][2]                     | Returns the number of elements in the set.                                         |
-| ![Public method] | **Count(OperatorStringHandler)** | Returns a number that represents how many elements in the set satisfy a condition. |
-| ![Public method] | [Count(String)][3]               | Returns a number that represents how many elements in the set satisfy a condition. |
+| Name                             | Description                                                                        |
+| -------------------------------- | ---------------------------------------------------------------------------------- |
+| [Count()][2]                     | Returns the number of elements in the set.                                         |
+| **Count(OperatorStringHandler)** | Returns a number that represents how many elements in the set satisfy a condition. |
+| [Count(String)][3]               | Returns a number that represents how many elements in the set satisfy a condition. |
 
 
 Syntax
@@ -55,4 +55,3 @@ See Also
 [5]: https://learn.microsoft.com/dotnet/api/system.overflowexception
 [6]: https://learn.microsoft.com/dotnet/api/system.int32.maxvalue
 [7]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

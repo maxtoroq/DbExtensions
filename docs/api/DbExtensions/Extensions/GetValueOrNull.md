@@ -8,10 +8,10 @@ Gets the value of the specified column as an [Object][1], or null (Nothing in Vi
 Overloads
 ---------
 
-|                            | Name                                      | Description                                                                                  |
-| -------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------- |
-| ![Public Extension Method] | **GetValueOrNull(DbDataReader, Int32)**   | Gets the value of the specified column as an [Object][1], or null (Nothing in Visual Basic). |
-| ![Public Extension Method] | [GetValueOrNull(DbDataReader, String)][3] | Gets the value of the specified column as an [Object][1], or null (Nothing in Visual Basic). |
+| Name                                      | Description                                                                                  |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **GetValueOrNull(DbDataReader, Int32)**   | Gets the value of the specified column as an [Object][1], or null (Nothing in Visual Basic). |
+| [GetValueOrNull(DbDataReader, String)][3] | Gets the value of the specified column as an [Object][1], or null (Nothing in Visual Basic). |
 
 
 Syntax
@@ -53,4 +53,3 @@ See Also
 [6]: https://docs.microsoft.com/dotnet/visual-basic/programming-guide/language-features/procedures/extension-methods
 [7]: https://docs.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
 [8]: README.md
-[Public Extension Method]: ../../icons/pubextension.svg "Public Extension Method"

@@ -8,10 +8,10 @@ Appends the VALUES clause using the provided parameters.
 Overloads
 ---------
 
-|                  | Name                                                             | Description                                                                 |
-| ---------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| ![Public method] | [VALUES(SqlBuilder.ClauseStringHandler&lt;SqlClause.VALUES>)][2] | Appends the VALUES clause using the provided interpolated string *handler*. |
-| ![Public method] | **VALUES(Object[])**                                             | Appends the VALUES clause using the provided parameters.                    |
+| Name                                                             | Description                                                                 |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [VALUES(SqlBuilder.ClauseStringHandler&lt;SqlClause.VALUES>)][2] | Appends the VALUES clause using the provided interpolated string *handler*. |
+| **VALUES(Object[])**                                             | Appends the VALUES clause using the provided parameters.                    |
 
 
 Syntax
@@ -43,4 +43,3 @@ See Also
 [2]: VALUES.md
 [3]: https://learn.microsoft.com/dotnet/api/system.object
 [4]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

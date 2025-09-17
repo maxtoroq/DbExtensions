@@ -8,10 +8,10 @@ Recursively executes INSERT commands for the specified *entities* and all their 
 Overloads
 ---------
 
-|                  | Name                                                         | Description                                                                                                              |
-| ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method] | [AddRangeAsync(Object[])][2]                                 | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
-| ![Public method] | **AddRangeAsync(IEnumerable&lt;Object>, CancellationToken)** | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| Name                                                         | Description                                                                                                              |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| [AddRangeAsync(Object[])][2]                                 | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| **AddRangeAsync(IEnumerable&lt;Object>, CancellationToken)** | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
 
 
 Syntax
@@ -50,4 +50,3 @@ See Also
 [6]: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none
 [7]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask
 [8]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

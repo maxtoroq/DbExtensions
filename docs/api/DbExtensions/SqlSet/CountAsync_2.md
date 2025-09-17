@@ -8,11 +8,11 @@ Returns the number of elements in the set.
 Overloads
 ---------
 
-|                  | Name                                                      | Description                                                                        |
-| ---------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| ![Public method] | **CountAsync(CancellationToken)**                         | Returns the number of elements in the set.                                         |
-| ![Public method] | [CountAsync(OperatorStringHandler, CancellationToken)][2] | Returns a number that represents how many elements in the set satisfy a condition. |
-| ![Public method] | [CountAsync(String, CancellationToken)][3]                | Returns a number that represents how many elements in the set satisfy a condition. |
+| Name                                                      | Description                                                                        |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **CountAsync(CancellationToken)**                         | Returns the number of elements in the set.                                         |
+| [CountAsync(OperatorStringHandler, CancellationToken)][2] | Returns a number that represents how many elements in the set satisfy a condition. |
+| [CountAsync(String, CancellationToken)][3]                | Returns a number that represents how many elements in the set satisfy a condition. |
 
 
 Syntax
@@ -58,4 +58,3 @@ See Also
 [8]: https://learn.microsoft.com/dotnet/api/system.overflowexception
 [9]: https://learn.microsoft.com/dotnet/api/system.int32.maxvalue
 [10]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

@@ -8,12 +8,12 @@ Appends the WITH clause using the provided *subQuery* as body named after *alias
 Overloads
 ---------
 
-|                  | Name                                                         | Description                                                                        |
-| ---------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
-| ![Public method] | [WITH(SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>)][2] | Appends the WITH clause using the provided interpolated string *handler*.          |
-| ![Public method] | [WITH(String)][3]                                            | Appends the WITH clause using the provided *text*.                                 |
-| ![Public method] | **WITH(String, SqlBuilder)**                                 | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
-| ![Public method] | [WITH(String, SqlSet)][4]                                    | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
+| Name                                                         | Description                                                                        |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| [WITH(SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>)][2] | Appends the WITH clause using the provided interpolated string *handler*.          |
+| [WITH(String)][3]                                            | Appends the WITH clause using the provided *text*.                                 |
+| **WITH(String, SqlBuilder)**                                 | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
+| [WITH(String, SqlSet)][4]                                    | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
 
 
 Syntax
@@ -51,4 +51,3 @@ See Also
 [4]: WITH_3.md
 [5]: https://learn.microsoft.com/dotnet/api/system.string
 [6]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

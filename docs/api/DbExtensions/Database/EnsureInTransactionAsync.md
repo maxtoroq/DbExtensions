@@ -8,10 +8,10 @@ Returns a virtual transaction that you can use to ensure a code block is always 
 Overloads
 ---------
 
-|                                 | Name                                                            | Description                                                                                                                 |
-| ------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| ![Public method]![Code example] | [EnsureInTransactionAsync(CancellationToken)][2]                | Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing. |
-| ![Public method]![Code example] | **EnsureInTransactionAsync(IsolationLevel, CancellationToken)** | Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing. |
+| Name                                                            | Description                                                                                                                 |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| [EnsureInTransactionAsync(CancellationToken)][2]                | Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing. |
+| **EnsureInTransactionAsync(IsolationLevel, CancellationToken)** | Returns a virtual transaction that you can use to ensure a code block is always executed in a transaction, new or existing. |
 
 
 Syntax
@@ -86,5 +86,3 @@ See Also
 [7]: https://learn.microsoft.com/dotnet/api/system.data.common.dbtransaction
 [8]: https://learn.microsoft.com/dotnet/api/system.data.common.dbtransaction.commit
 [9]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"
-[Code example]: ../../icons/CodeExample.png "Code example"

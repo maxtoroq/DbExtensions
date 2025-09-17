@@ -8,15 +8,15 @@ Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining qu
 Overloads
 ---------
 
-|                  | Name                                                             | Description                                                                                     |
-| ---------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| ![Public method] | [From(SqlBuilder)][3]                                            | Creates and returns a new [SqlSet][4] using the provided defining query.                        |
-| ![Public method] | [From(String)][5]                                                | Creates and returns a new [SqlSet][4] using the provided table name.                            |
-| ![Public method] | [From(SqlBuilder, Type)][6]                                      | Creates and returns a new [SqlSet][4] using the provided defining query.                        |
-| ![Public method] | [From(String, Type)][7]                                          | Creates and returns a new [SqlSet][4] using the provided table name.                            |
-| ![Public method] | [From&lt;TResult>(SqlBuilder)][8]                                | Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining query.            |
-| ![Public method] | [From&lt;TResult>(String)][9]                                    | Creates and returns a new [SqlSet&lt;TResult>][1] using the provided table name.                |
-| ![Public method] | **From&lt;TResult>(SqlBuilder, Func&lt;DbDataReader, TResult>)** | Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining query and mapper. |
+| Name                                                             | Description                                                                                     |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [From(SqlBuilder)][3]                                            | Creates and returns a new [SqlSet][4] using the provided defining query.                        |
+| [From(String)][5]                                                | Creates and returns a new [SqlSet][4] using the provided table name.                            |
+| [From(SqlBuilder, Type)][6]                                      | Creates and returns a new [SqlSet][4] using the provided defining query.                        |
+| [From(String, Type)][7]                                          | Creates and returns a new [SqlSet][4] using the provided table name.                            |
+| [From&lt;TResult>(SqlBuilder)][8]                                | Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining query.            |
+| [From&lt;TResult>(String)][9]                                    | Creates and returns a new [SqlSet&lt;TResult>][1] using the provided table name.                |
+| **From&lt;TResult>(SqlBuilder, Func&lt;DbDataReader, TResult>)** | Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining query and mapper. |
 
 
 Syntax
@@ -67,4 +67,3 @@ See Also
 [11]: https://learn.microsoft.com/dotnet/api/system.func-2
 [12]: https://learn.microsoft.com/dotnet/api/system.data.common.dbdatareader
 [13]: README.md
-[Public method]: ../../icons/pubmethod.svg "Public method"

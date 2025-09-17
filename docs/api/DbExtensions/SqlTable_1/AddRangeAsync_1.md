@@ -8,10 +8,10 @@ Recursively executes INSERT commands for the specified *entities* and all their 
 Overloads
 ---------
 
-|                  | Name                                                           | Description                                                                                                              |
-| ---------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| ![Public method] | **AddRangeAsync(TEntity[])**                                   | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
-| ![Public method] | [AddRangeAsync(IEnumerable&lt;TEntity>, CancellationToken)][2] | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| Name                                                           | Description                                                                                                              |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **AddRangeAsync(TEntity[])**                                   | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
+| [AddRangeAsync(IEnumerable&lt;TEntity>, CancellationToken)][2] | Recursively executes INSERT commands for the specified *entities* and all their one-to-one and one-to-many associations. |
 
 
 Syntax
@@ -42,4 +42,3 @@ See Also
 [2]: AddRangeAsync.md
 [3]: README.md
 [4]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask
-[Public method]: ../../icons/pubmethod.svg "Public method"
