@@ -304,6 +304,8 @@ public partial class Database : IDisposable {
       using (EnsureConnectionOpen()) {
          using (var tx = (affect > -1 ? EnsureInTransaction() : null)) {
 
+            command.Transaction = this.Transaction;
+
             int affectedRecords;
 
             try {
