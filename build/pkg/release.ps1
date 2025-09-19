@@ -97,8 +97,7 @@ function NuPack([string]$projName) {
 
 try {
 
-   $nuget = ..\ensure-nuget.ps1
-   ..\restore-packages.ps1
+   MSBuild $solutionPath\DbExtensions.sln -t:Restore
 
    if ($ProjectName -eq '*') {
       NuPack DbExtensions

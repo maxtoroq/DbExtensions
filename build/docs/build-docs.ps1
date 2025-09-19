@@ -16,15 +16,15 @@ try {
    }
 
    if (-not $NoBuildProj) {
-      MSBuild.exe ..\..\src\DbExtensions\DbExtensions.csproj /v:minimal /p:Configuration=Release
+      MSBuild ..\..\src\DbExtensions\DbExtensions.csproj /v:minimal /p:Configuration=Release
    }
 
-   MSBuild.exe DbExtensions.shfbproj /v:minimal
+   MSBuild DbExtensions.shfbproj /v:minimal
 
    if (-not $XmlOnly) {
 
-      &$nuget restore sandcastle-md\sandcastle-md.sln
-      MSBuild.exe sandcastle-md\sandcastle-md.sln /v:minimal
+      .\sandcastle-md\packages\restore.ps1
+      MSBuild sandcastle-md\sandcastle-md.sln /v:minimal
 
       if (Test-Path ..\..\docs\api -PathType Container) {
          rm ..\..\docs\api -Recurse
