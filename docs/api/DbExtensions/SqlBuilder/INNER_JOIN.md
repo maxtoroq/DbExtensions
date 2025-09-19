@@ -8,11 +8,11 @@ Sets INNER JOIN as the next clause, to be used by subsequent calls to clause con
 Overloads
 ---------
 
-| Name                                                                     | Description                                                                                                                                             |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **INNER_JOIN()**                                                         | Sets INNER JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
-| [INNER_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.INNER_JOIN>)][3] | Appends the INNER JOIN clause using the provided interpolated string *handler*.                                                                         |
-| [INNER_JOIN(String)][4]                                                  | Appends the INNER JOIN clause using the provided *text*.                                                                                                |
+| Name                                                           | Description                                                                                                                                             |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **INNER_JOIN()**                                               | Sets INNER JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| [INNER_JOIN(SqlBuilder.ClauseStringHandler&lt;INNER_JOIN>)][3] | Appends the INNER JOIN clause using the provided interpolated string *handler*.                                                                         |
+| [INNER_JOIN(String)][4]                                        | Appends the INNER JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax

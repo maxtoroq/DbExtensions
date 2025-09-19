@@ -8,11 +8,11 @@ Appends the JOIN clause using the provided *text*.
 Overloads
 ---------
 
-| Name                                                         | Description                                                                                                                                       |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [JOIN()][2]                                                  | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| [JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.JOIN>)][4] | Appends the JOIN clause using the provided interpolated string *handler*.                                                                         |
-| **JOIN(String)**                                             | Appends the JOIN clause using the provided *text*.                                                                                                |
+| Name                                               | Description                                                                                                                                       |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [JOIN()][2]                                        | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [JOIN(SqlBuilder.ClauseStringHandler&lt;JOIN>)][4] | Appends the JOIN clause using the provided interpolated string *handler*.                                                                         |
+| **JOIN(String)**                                   | Appends the JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax

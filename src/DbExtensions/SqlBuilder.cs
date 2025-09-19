@@ -1679,126 +1679,147 @@ public abstract record class SqlClause(string? Name, string? Separator) {
    /// <summary>
    /// The "current" clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class Current() : SqlClause(null, null);
 
    /// <summary>
    /// The WITH clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class WITH() : SqlClause("WITH", null);
 
    /// <summary>
    /// The SELECT clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class SELECT() : SqlClause("SELECT", ", ");
 
    /// <summary>
    /// The FROM clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class FROM() : SqlClause("FROM", ", ");
 
    /// <summary>
    /// The JOIN clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class JOIN() : SqlClause("JOIN", null);
 
    /// <summary>
    /// The LEFT JOIN clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class LEFT_JOIN() : SqlClause("LEFT JOIN", null);
 
    /// <summary>
    /// The RIGHT JOIN clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class RIGHT_JOIN() : SqlClause("RIGHT JOIN", null);
 
    /// <summary>
    /// The INNER JOIN clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class INNER_JOIN() : SqlClause("INNER JOIN", null);
 
    /// <summary>
    /// The CROSS JOIN clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class CROSS_JOIN() : SqlClause("CROSS JOIN", null);
 
    /// <summary>
    /// The WHERE clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class WHERE() : SqlClause("WHERE", " AND ");
 
    /// <summary>
    /// The GROUP BY clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class GROUP_BY() : SqlClause("GROUP BY", ", ");
 
    /// <summary>
    /// The HAVING clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class HAVING() : SqlClause("HAVING", " AND ");
 
    /// <summary>
    /// The ORDER BY clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class ORDER_BY() : SqlClause("ORDER BY", ", ");
 
    /// <summary>
    /// The LIMIT clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class LIMIT() : SqlClause("LIMIT", null);
 
    /// <summary>
    /// The OFFSET clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class OFFSET() : SqlClause("OFFSET", null);
 
    /// <summary>
    /// The UNION clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class UNION() : SqlClause("UNION", null);
 
    /// <summary>
    /// The INSERT INTO clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class INSERT_INTO() : SqlClause("INSERT INTO", null);
 
    /// <summary>
    /// The DELETE FROM clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class DELETE_FROM() : SqlClause("DELETE FROM", null);
 
    /// <summary>
    /// The UPDATE clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class UPDATE() : SqlClause("UPDATE", null);
 
    /// <summary>
    /// The SET clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class SET() : SqlClause("SET", ", ");
 
    /// <summary>
    /// The VALUES clause.
    /// </summary>
+   /// <exclude/>
 
    public sealed record class VALUES() : SqlClause("VALUES", null);
 

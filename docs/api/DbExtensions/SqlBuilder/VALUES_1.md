@@ -8,10 +8,10 @@ Appends the VALUES clause using the provided parameters.
 Overloads
 ---------
 
-| Name                                                             | Description                                                                 |
-| ---------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| [VALUES(SqlBuilder.ClauseStringHandler&lt;SqlClause.VALUES>)][2] | Appends the VALUES clause using the provided interpolated string *handler*. |
-| **VALUES(Object[])**                                             | Appends the VALUES clause using the provided parameters.                    |
+| Name                                                   | Description                                                                 |
+| ------------------------------------------------------ | --------------------------------------------------------------------------- |
+| [VALUES(SqlBuilder.ClauseStringHandler&lt;VALUES>)][2] | Appends the VALUES clause using the provided interpolated string *handler*. |
+| **VALUES(Object[])**                                   | Appends the VALUES clause using the provided parameters.                    |
 
 
 Syntax

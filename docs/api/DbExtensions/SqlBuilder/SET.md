@@ -8,10 +8,10 @@ Appends the SET clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-| Name                                                      | Description                                                              |
-| --------------------------------------------------------- | ------------------------------------------------------------------------ |
-| **SET(SqlBuilder.ClauseStringHandler&lt;SqlClause.SET>)** | Appends the SET clause using the provided interpolated string *handler*. |
-| [SET(String)][2]                                          | Appends the SET clause using the provided *text*.                        |
+| Name                                            | Description                                                              |
+| ----------------------------------------------- | ------------------------------------------------------------------------ |
+| **SET(SqlBuilder.ClauseStringHandler&lt;SET>)** | Appends the SET clause using the provided interpolated string *handler*. |
+| [SET(String)][2]                                | Appends the SET clause using the provided *text*.                        |
 
 
 Syntax
@@ -19,27 +19,26 @@ Syntax
 
 ```csharp
 public SqlBuilder SET(
-	ref ClauseStringHandler<SqlClause.SET> handler
+	ref ClauseStringHandler<SET> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  ClauseStringHandler&lt;[SqlClause.SET][3]>
+##### *handler*  ClauseStringHandler&lt;SET>
 The interpolated string that represents the body of the SET clause.
 
 #### Return Value
-[SqlBuilder][4]  
+[SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
+[SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: SET_1.md
-[3]: ../SqlClause_SET/README.md
-[4]: README.md
+[3]: README.md

@@ -8,10 +8,10 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FR
 Overloads
 ---------
 
-| Name                                                                       | Description                                                                                                                                 |
-| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| [DELETE_FROM(SqlBuilder.ClauseStringHandler&lt;SqlClause.DELETE_FROM>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided string interpolated *handler*. |
-| **DELETE_FROM(String)**                                                    | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *text*.                        |
+| Name                                                             | Description                                                                                                                                 |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| [DELETE_FROM(SqlBuilder.ClauseStringHandler&lt;DELETE_FROM>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided string interpolated *handler*. |
+| **DELETE_FROM(String)**                                          | Creates and returns a new [SqlBuilder][1] initialized by appending the DELETE FROM clause using the provided *text*.                        |
 
 
 Syntax

@@ -8,10 +8,10 @@ Appends the DELETE FROM clause using the provided *text*.
 Overloads
 ---------
 
-| Name                                                                       | Description                                                                      |
-| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| [DELETE_FROM(SqlBuilder.ClauseStringHandler&lt;SqlClause.DELETE_FROM>)][2] | Appends the DELETE FROM clause using the provided interpolated string *handler*. |
-| **DELETE_FROM(String)**                                                    | Appends the DELETE FROM clause using the provided *text*.                        |
+| Name                                                             | Description                                                                      |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| [DELETE_FROM(SqlBuilder.ClauseStringHandler&lt;DELETE_FROM>)][2] | Appends the DELETE FROM clause using the provided interpolated string *handler*. |
+| **DELETE_FROM(String)**                                          | Appends the DELETE FROM clause using the provided *text*.                        |
 
 
 Syntax

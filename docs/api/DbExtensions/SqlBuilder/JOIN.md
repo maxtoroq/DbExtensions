@@ -8,11 +8,11 @@ Sets JOIN as the next clause, to be used by subsequent calls to clause continuat
 Overloads
 ---------
 
-| Name                                                         | Description                                                                                                                                       |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **JOIN()**                                                   | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
-| [JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.JOIN>)][3] | Appends the JOIN clause using the provided interpolated string *handler*.                                                                         |
-| [JOIN(String)][4]                                            | Appends the JOIN clause using the provided *text*.                                                                                                |
+| Name                                               | Description                                                                                                                                       |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **JOIN()**                                         | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| [JOIN(SqlBuilder.ClauseStringHandler&lt;JOIN>)][3] | Appends the JOIN clause using the provided interpolated string *handler*.                                                                         |
+| [JOIN(String)][4]                                  | Appends the JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax

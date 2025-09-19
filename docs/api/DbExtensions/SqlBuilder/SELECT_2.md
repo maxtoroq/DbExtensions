@@ -8,11 +8,11 @@ Appends the SELECT clause using the provided *text*.
 Overloads
 ---------
 
-| Name                                                             | Description                                                                                                                                         |
-| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [SELECT()][2]                                                    | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| [SELECT(SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>)][4] | Appends the SELECT clause using the provided interpolated string *handler*.                                                                         |
-| **SELECT(String)**                                               | Appends the SELECT clause using the provided *text*.                                                                                                |
+| Name                                                   | Description                                                                                                                                         |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [SELECT()][2]                                          | Sets SELECT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [SELECT(SqlBuilder.ClauseStringHandler&lt;SELECT>)][4] | Appends the SELECT clause using the provided interpolated string *handler*.                                                                         |
+| **SELECT(String)**                                     | Appends the SELECT clause using the provided *text*.                                                                                                |
 
 
 Syntax

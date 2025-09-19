@@ -8,12 +8,12 @@ Appends the OFFSET clause using the provided *startIndex* parameter.
 Overloads
 ---------
 
-| Name                                                             | Description                                                                                                                                         |
-| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [OFFSET()][2]                                                    | Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| [OFFSET(SqlBuilder.ClauseStringHandler&lt;SqlClause.OFFSET>)][4] | Appends the OFFSET clause using the provided interpolated string *handler*.                                                                         |
-| **OFFSET(Int32)**                                                | Appends the OFFSET clause using the provided *startIndex* parameter.                                                                                |
-| [OFFSET(String)][5]                                              | Appends the OFFSET clause using the provided *text*.                                                                                                |
+| Name                                                   | Description                                                                                                                                         |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [OFFSET()][2]                                          | Sets OFFSET as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [OFFSET(SqlBuilder.ClauseStringHandler&lt;OFFSET>)][4] | Appends the OFFSET clause using the provided interpolated string *handler*.                                                                         |
+| **OFFSET(Int32)**                                      | Appends the OFFSET clause using the provided *startIndex* parameter.                                                                                |
+| [OFFSET(String)][5]                                    | Appends the OFFSET clause using the provided *text*.                                                                                                |
 
 
 Syntax

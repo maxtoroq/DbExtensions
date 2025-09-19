@@ -8,11 +8,11 @@ Sets CROSS JOIN as the next clause, to be used by subsequent calls to clause con
 Overloads
 ---------
 
-| Name                                                                     | Description                                                                                                                                             |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **CROSS_JOIN()**                                                         | Sets CROSS JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
-| [CROSS_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.CROSS_JOIN>)][3] | Appends the CROSS JOIN clause using the provided interpolated string *handler*.                                                                         |
-| [CROSS_JOIN(String)][4]                                                  | Appends the CROSS JOIN clause using the provided *text*.                                                                                                |
+| Name                                                           | Description                                                                                                                                             |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **CROSS_JOIN()**                                               | Sets CROSS JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| [CROSS_JOIN(SqlBuilder.ClauseStringHandler&lt;CROSS_JOIN>)][3] | Appends the CROSS JOIN clause using the provided interpolated string *handler*.                                                                         |
+| [CROSS_JOIN(String)][4]                                        | Appends the CROSS JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax

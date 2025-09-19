@@ -8,11 +8,11 @@ Appends the HAVING clause using the provided *text*.
 Overloads
 ---------
 
-| Name                                                             | Description                                                                                                                                         |
-| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [HAVING()][2]                                                    | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| [HAVING(SqlBuilder.ClauseStringHandler&lt;SqlClause.HAVING>)][4] | Appends the HAVING clause using the provided interpolated string *handler*.                                                                         |
-| **HAVING(String)**                                               | Appends the HAVING clause using the provided *text*.                                                                                                |
+| Name                                                   | Description                                                                                                                                         |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [HAVING()][2]                                          | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [HAVING(SqlBuilder.ClauseStringHandler&lt;HAVING>)][4] | Appends the HAVING clause using the provided interpolated string *handler*.                                                                         |
+| **HAVING(String)**                                     | Appends the HAVING clause using the provided *text*.                                                                                                |
 
 
 Syntax

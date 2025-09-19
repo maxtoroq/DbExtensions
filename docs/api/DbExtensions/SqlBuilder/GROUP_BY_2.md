@@ -8,11 +8,11 @@ Appends the GROUP BY clause using the provided *text*.
 Overloads
 ---------
 
-| Name                                                                 | Description                                                                                                                                           |
-| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [GROUP_BY()][2]                                                      | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| [GROUP_BY(SqlBuilder.ClauseStringHandler&lt;SqlClause.GROUP_BY>)][4] | Appends the GROUP BY clause using the provided interpolated string *handler*.                                                                         |
-| **GROUP_BY(String)**                                                 | Appends the GROUP BY clause using the provided *text*.                                                                                                |
+| Name                                                       | Description                                                                                                                                           |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [GROUP_BY()][2]                                            | Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [GROUP_BY(SqlBuilder.ClauseStringHandler&lt;GROUP_BY>)][4] | Appends the GROUP BY clause using the provided interpolated string *handler*.                                                                         |
+| **GROUP_BY(String)**                                       | Appends the GROUP BY clause using the provided *text*.                                                                                                |
 
 
 Syntax

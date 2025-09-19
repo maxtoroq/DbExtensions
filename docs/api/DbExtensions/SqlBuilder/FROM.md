@@ -8,13 +8,13 @@ Sets FROM as the next clause, to be used by subsequent calls to clause continuat
 Overloads
 ---------
 
-| Name                                                         | Description                                                                                                                                       |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **FROM()**                                                   | Sets FROM as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
-| [FROM(SqlBuilder.ClauseStringHandler&lt;SqlClause.FROM>)][3] | Appends the FROM clause using the provided interpolated string *handler*.                                                                         |
-| [FROM(String)][4]                                            | Appends the FROM clause using the provided *text*.                                                                                                |
-| [FROM(SqlBuilder, String)][5]                                | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                |
-| [FROM(SqlSet, String)][6]                                    | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                |
+| Name                                               | Description                                                                                                                                       |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **FROM()**                                         | Sets FROM as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| [FROM(SqlBuilder.ClauseStringHandler&lt;FROM>)][3] | Appends the FROM clause using the provided interpolated string *handler*.                                                                         |
+| [FROM(String)][4]                                  | Appends the FROM clause using the provided *text*.                                                                                                |
+| [FROM(SqlBuilder, String)][5]                      | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                |
+| [FROM(SqlSet, String)][6]                          | Appends the FROM clause using the provided *subQuery* as body named after *alias*.                                                                |
 
 
 Syntax

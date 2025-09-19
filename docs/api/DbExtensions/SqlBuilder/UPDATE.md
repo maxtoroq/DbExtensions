@@ -8,10 +8,10 @@ Appends the UPDATE clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-| Name                                                            | Description                                                                 |
-| --------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| **UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>)** | Appends the UPDATE clause using the provided interpolated string *handler*. |
-| [UPDATE(String)][2]                                             | Appends the UPDATE clause using the provided *text*.                        |
+| Name                                                  | Description                                                                 |
+| ----------------------------------------------------- | --------------------------------------------------------------------------- |
+| **UPDATE(SqlBuilder.ClauseStringHandler&lt;UPDATE>)** | Appends the UPDATE clause using the provided interpolated string *handler*. |
+| [UPDATE(String)][2]                                   | Appends the UPDATE clause using the provided *text*.                        |
 
 
 Syntax
@@ -19,27 +19,26 @@ Syntax
 
 ```csharp
 public SqlBuilder UPDATE(
-	ref ClauseStringHandler<SqlClause.UPDATE> handler
+	ref ClauseStringHandler<UPDATE> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  ClauseStringHandler&lt;[SqlClause.UPDATE][3]>
+##### *handler*  ClauseStringHandler&lt;UPDATE>
 The interpolated string that represents the body of the UPDATE clause.
 
 #### Return Value
-[SqlBuilder][4]  
+[SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
+[SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: UPDATE_1.md
-[3]: ../SqlClause_UPDATE/README.md
-[4]: README.md
+[3]: README.md

@@ -8,11 +8,11 @@ Appends the WHERE clause using the provided *text*.
 Overloads
 ---------
 
-| Name                                                           | Description                                                                                                                                        |
-| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [WHERE()][2]                                                   | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| [WHERE(SqlBuilder.ClauseStringHandler&lt;SqlClause.WHERE>)][4] | Appends the WHERE clause using the provided interpolated string *handler*.                                                                         |
-| **WHERE(String)**                                              | Appends the WHERE clause using the provided *text*.                                                                                                |
+| Name                                                 | Description                                                                                                                                        |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [WHERE()][2]                                         | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [WHERE(SqlBuilder.ClauseStringHandler&lt;WHERE>)][4] | Appends the WHERE clause using the provided interpolated string *handler*.                                                                         |
+| **WHERE(String)**                                    | Appends the WHERE clause using the provided *text*.                                                                                                |
 
 
 Syntax

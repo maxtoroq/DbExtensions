@@ -8,10 +8,10 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT cl
 Overloads
 ---------
 
-| Name                                                             | Description                                                                                                                            |
-| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| [SELECT(SqlBuilder.ClauseStringHandler&lt;SqlClause.SELECT>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided string interpolated *handler*. |
-| **SELECT(String)**                                               | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *text*.                        |
+| Name                                                   | Description                                                                                                                            |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| [SELECT(SqlBuilder.ClauseStringHandler&lt;SELECT>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided string interpolated *handler*. |
+| **SELECT(String)**                                     | Creates and returns a new [SqlBuilder][1] initialized by appending the SELECT clause using the provided *text*.                        |
 
 
 Syntax

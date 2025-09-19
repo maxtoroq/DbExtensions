@@ -8,11 +8,11 @@ Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause cont
 Overloads
 ---------
 
-| Name                                                                   | Description                                                                                                                                            |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **LEFT_JOIN()**                                                        | Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
-| [LEFT_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.LEFT_JOIN>)][3] | Appends the LEFT JOIN clause using the provided interpolated string *handler*.                                                                         |
-| [LEFT_JOIN(String)][4]                                                 | Appends the LEFT JOIN clause using the provided *text*.                                                                                                |
+| Name                                                         | Description                                                                                                                                            |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **LEFT_JOIN()**                                              | Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| [LEFT_JOIN(SqlBuilder.ClauseStringHandler&lt;LEFT_JOIN>)][3] | Appends the LEFT JOIN clause using the provided interpolated string *handler*.                                                                         |
+| [LEFT_JOIN(String)][4]                                       | Appends the LEFT JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax

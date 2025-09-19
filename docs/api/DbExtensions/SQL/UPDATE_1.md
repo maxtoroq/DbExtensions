@@ -8,10 +8,10 @@ Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE cl
 Overloads
 ---------
 
-| Name                                                             | Description                                                                                                                            |
-| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| [UPDATE(SqlBuilder.ClauseStringHandler&lt;SqlClause.UPDATE>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided string interpolated *handler*. |
-| **UPDATE(String)**                                               | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *text*.                        |
+| Name                                                   | Description                                                                                                                            |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| [UPDATE(SqlBuilder.ClauseStringHandler&lt;UPDATE>)][3] | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided string interpolated *handler*. |
+| **UPDATE(String)**                                     | Creates and returns a new [SqlBuilder][1] initialized by appending the UPDATE clause using the provided *text*.                        |
 
 
 Syntax

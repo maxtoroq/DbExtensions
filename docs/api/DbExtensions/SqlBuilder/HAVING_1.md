@@ -8,11 +8,11 @@ Appends the HAVING clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-| Name                                                            | Description                                                                                                                                         |
-| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [HAVING()][2]                                                   | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| **HAVING(SqlBuilder.ClauseStringHandler&lt;SqlClause.HAVING>)** | Appends the HAVING clause using the provided interpolated string *handler*.                                                                         |
-| [HAVING(String)][4]                                             | Appends the HAVING clause using the provided *text*.                                                                                                |
+| Name                                                  | Description                                                                                                                                         |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [HAVING()][2]                                         | Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| **HAVING(SqlBuilder.ClauseStringHandler&lt;HAVING>)** | Appends the HAVING clause using the provided interpolated string *handler*.                                                                         |
+| [HAVING(String)][4]                                   | Appends the HAVING clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -20,29 +20,28 @@ Syntax
 
 ```csharp
 public SqlBuilder HAVING(
-	ref ClauseStringHandler<SqlClause.HAVING> handler
+	ref ClauseStringHandler<HAVING> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  ClauseStringHandler&lt;[SqlClause.HAVING][5]>
+##### *handler*  ClauseStringHandler&lt;HAVING>
 The interpolated string that represents the body of the HAVING clause.
 
 #### Return Value
-[SqlBuilder][6]  
+[SqlBuilder][5]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][6]  
+[SqlBuilder Class][5]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: HAVING.md
 [3]: _If.md
 [4]: HAVING_2.md
-[5]: ../SqlClause_HAVING/README.md
-[6]: README.md
+[5]: README.md

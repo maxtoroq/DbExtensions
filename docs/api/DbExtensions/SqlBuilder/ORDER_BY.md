@@ -8,11 +8,11 @@ Sets ORDER BY as the next clause, to be used by subsequent calls to clause conti
 Overloads
 ---------
 
-| Name                                                                 | Description                                                                                                                                           |
-| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ORDER_BY()**                                                       | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
-| [ORDER_BY(SqlBuilder.ClauseStringHandler&lt;SqlClause.ORDER_BY>)][3] | Appends the ORDER BY clause using the provided interpolated string *handler*.                                                                         |
-| [ORDER_BY(String)][4]                                                | Appends the ORDER BY clause using the provided *text*.                                                                                                |
+| Name                                                       | Description                                                                                                                                           |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ORDER_BY()**                                             | Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| [ORDER_BY(SqlBuilder.ClauseStringHandler&lt;ORDER_BY>)][3] | Appends the ORDER BY clause using the provided interpolated string *handler*.                                                                         |
+| [ORDER_BY(String)][4]                                      | Appends the ORDER BY clause using the provided *text*.                                                                                                |
 
 
 Syntax

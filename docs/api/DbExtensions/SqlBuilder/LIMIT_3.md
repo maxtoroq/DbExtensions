@@ -8,12 +8,12 @@ Appends the LIMIT clause using the provided *text*.
 Overloads
 ---------
 
-| Name                                                           | Description                                                                                                                                        |
-| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [LIMIT()][2]                                                   | Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| [LIMIT(SqlBuilder.ClauseStringHandler&lt;SqlClause.LIMIT>)][4] | Appends the LIMIT clause using the provided interpolated string *handler*.                                                                         |
-| [LIMIT(Int32)][5]                                              | Appends the LIMIT clause using the provided *maxRecords* parameter.                                                                                |
-| **LIMIT(String)**                                              | Appends the LIMIT clause using the provided *text*.                                                                                                |
+| Name                                                 | Description                                                                                                                                        |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [LIMIT()][2]                                         | Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| [LIMIT(SqlBuilder.ClauseStringHandler&lt;LIMIT>)][4] | Appends the LIMIT clause using the provided interpolated string *handler*.                                                                         |
+| [LIMIT(Int32)][5]                                    | Appends the LIMIT clause using the provided *maxRecords* parameter.                                                                                |
+| **LIMIT(String)**                                    | Appends the LIMIT clause using the provided *text*.                                                                                                |
 
 
 Syntax

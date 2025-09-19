@@ -8,11 +8,11 @@ Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause con
 Overloads
 ---------
 
-| Name                                                                     | Description                                                                                                                                             |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **RIGHT_JOIN()**                                                         | Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
-| [RIGHT_JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.RIGHT_JOIN>)][3] | Appends the RIGHT JOIN clause using the provided interpolated string *handler*.                                                                         |
-| [RIGHT_JOIN(String)][4]                                                  | Appends the RIGHT JOIN clause using the provided *text*.                                                                                                |
+| Name                                                           | Description                                                                                                                                             |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **RIGHT_JOIN()**                                               | Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][1]. |
+| [RIGHT_JOIN(SqlBuilder.ClauseStringHandler&lt;RIGHT_JOIN>)][3] | Appends the RIGHT JOIN clause using the provided interpolated string *handler*.                                                                         |
+| [RIGHT_JOIN(String)][4]                                        | Appends the RIGHT JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax

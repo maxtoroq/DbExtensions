@@ -8,12 +8,12 @@ Appends the WITH clause using the provided *text*.
 Overloads
 ---------
 
-| Name                                                         | Description                                                                        |
-| ------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
-| [WITH(SqlBuilder.ClauseStringHandler&lt;SqlClause.WITH>)][2] | Appends the WITH clause using the provided interpolated string *handler*.          |
-| **WITH(String)**                                             | Appends the WITH clause using the provided *text*.                                 |
-| [WITH(String, SqlBuilder)][3]                                | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
-| [WITH(String, SqlSet)][4]                                    | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
+| Name                                               | Description                                                                        |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [WITH(SqlBuilder.ClauseStringHandler&lt;WITH>)][2] | Appends the WITH clause using the provided interpolated string *handler*.          |
+| **WITH(String)**                                   | Appends the WITH clause using the provided *text*.                                 |
+| [WITH(String, SqlBuilder)][3]                      | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
+| [WITH(String, SqlSet)][4]                          | Appends the WITH clause using the provided *subQuery* as body named after *alias*. |
 
 
 Syntax

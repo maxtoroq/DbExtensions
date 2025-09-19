@@ -8,11 +8,11 @@ Appends the WHERE clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-| Name                                                          | Description                                                                                                                                        |
-| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [WHERE()][2]                                                  | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| **WHERE(SqlBuilder.ClauseStringHandler&lt;SqlClause.WHERE>)** | Appends the WHERE clause using the provided interpolated string *handler*.                                                                         |
-| [WHERE(String)][4]                                            | Appends the WHERE clause using the provided *text*.                                                                                                |
+| Name                                                | Description                                                                                                                                        |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [WHERE()][2]                                        | Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| **WHERE(SqlBuilder.ClauseStringHandler&lt;WHERE>)** | Appends the WHERE clause using the provided interpolated string *handler*.                                                                         |
+| [WHERE(String)][4]                                  | Appends the WHERE clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -20,29 +20,28 @@ Syntax
 
 ```csharp
 public SqlBuilder WHERE(
-	ref ClauseStringHandler<SqlClause.WHERE> handler
+	ref ClauseStringHandler<WHERE> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  ClauseStringHandler&lt;[SqlClause.WHERE][5]>
+##### *handler*  ClauseStringHandler&lt;WHERE>
 The interpolated string that represents the body of the WHERE clause.
 
 #### Return Value
-[SqlBuilder][6]  
+[SqlBuilder][5]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][6]  
+[SqlBuilder Class][5]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: WHERE.md
 [3]: _If.md
 [4]: WHERE_2.md
-[5]: ../SqlClause_WHERE/README.md
-[6]: README.md
+[5]: README.md

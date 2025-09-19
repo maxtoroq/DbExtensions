@@ -8,11 +8,11 @@ Appends the JOIN clause using the provided interpolated string *handler*.
 Overloads
 ---------
 
-| Name                                                        | Description                                                                                                                                       |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [JOIN()][2]                                                 | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
-| **JOIN(SqlBuilder.ClauseStringHandler&lt;SqlClause.JOIN>)** | Appends the JOIN clause using the provided interpolated string *handler*.                                                                         |
-| [JOIN(String)][4]                                           | Appends the JOIN clause using the provided *text*.                                                                                                |
+| Name                                              | Description                                                                                                                                       |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [JOIN()][2]                                       | Sets JOIN as the next clause, to be used by subsequent calls to clause continuation methods, such as [_If(Boolean, ConditionalStringHandler)][3]. |
+| **JOIN(SqlBuilder.ClauseStringHandler&lt;JOIN>)** | Appends the JOIN clause using the provided interpolated string *handler*.                                                                         |
+| [JOIN(String)][4]                                 | Appends the JOIN clause using the provided *text*.                                                                                                |
 
 
 Syntax
@@ -20,29 +20,28 @@ Syntax
 
 ```csharp
 public SqlBuilder JOIN(
-	ref ClauseStringHandler<SqlClause.JOIN> handler
+	ref ClauseStringHandler<JOIN> handler
 )
 ```
 
 #### Parameters
 
-##### *handler*  ClauseStringHandler&lt;[SqlClause.JOIN][5]>
+##### *handler*  ClauseStringHandler&lt;JOIN>
 The interpolated string that represents the body of the JOIN clause.
 
 #### Return Value
-[SqlBuilder][6]  
+[SqlBuilder][5]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][6]  
+[SqlBuilder Class][5]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: JOIN.md
 [3]: _If.md
 [4]: JOIN_2.md
-[5]: ../SqlClause_JOIN/README.md
-[6]: README.md
+[5]: README.md
