@@ -41,7 +41,7 @@ interface ISqlFragment {
 /// <summary>
 /// Represents a mutable SQL string.
 /// </summary>
-/// <remarks>For information on how to use SqlBuilder see <see href="http://maxtoroq.github.io/DbExtensions/docs/SqlBuilder.html">SqlBuilder Tutorial</see>.</remarks>
+/// <remarks>For information on how to use SqlBuilder see <see href="https://maxtoroq.github.io/DbExtensions/docs/7/SqlBuilder.html">SqlBuilder Tutorial</see>.</remarks>
 
 [CLSCompliant(true)]
 [DebuggerDisplay($"{{{nameof(Buffer)}}}")]

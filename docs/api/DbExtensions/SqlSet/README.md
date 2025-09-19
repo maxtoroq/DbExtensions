@@ -214,4 +214,4 @@ See Also
 [85]: https://learn.microsoft.com/dotnet/api/system.object.tostring
 [86]: Where.md
 [87]: Where_1.md
-[88]: http://maxtoroq.github.io/DbExtensions/docs/SqlSet.html
+[88]: https://maxtoroq.github.io/DbExtensions/docs/7/SqlSet.html

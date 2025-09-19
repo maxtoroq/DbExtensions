@@ -187,7 +187,7 @@ partial class Database {
 /// This class cannot be instantiated, to get an instance use one of the
 /// <see cref="Database.From(String)" qualifyHint="true" autoUpgrade="true"/> overloads.
 /// </summary>
-/// <remarks>For information on how to use SqlSet see <see href="http://maxtoroq.github.io/DbExtensions/docs/SqlSet.html">SqlSet Tutorial</see>.</remarks>
+/// <remarks>For information on how to use SqlSet see <see href="https://maxtoroq.github.io/DbExtensions/docs/7/SqlSet.html">SqlSet Tutorial</see>.</remarks>
 
 public partial class SqlSet : ISqlSet<SqlSet, object> {
 

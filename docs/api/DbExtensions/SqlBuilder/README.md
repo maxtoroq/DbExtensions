@@ -227,4 +227,4 @@ See Also
 [92]: WITH_1.md
 [93]: WITH_2.md
 [94]: WITH_3.md
-[95]: http://maxtoroq.github.io/DbExtensions/docs/SqlBuilder.html
+[95]: https://maxtoroq.github.io/DbExtensions/docs/7/SqlBuilder.html

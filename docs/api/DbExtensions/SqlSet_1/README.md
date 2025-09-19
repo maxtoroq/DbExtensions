@@ -219,4 +219,4 @@ See Also
 [84]: ../SqlSet/ToString.md
 [85]: Where.md
 [86]: Where_1.md
-[87]: http://maxtoroq.github.io/DbExtensions/docs/SqlSet.html
+[87]: https://maxtoroq.github.io/DbExtensions/docs/7/SqlSet.html
