@@ -676,7 +676,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
       ArgumentNullException.ThrowIfNull(entities);
 
-      AddRange(entities.ToArray());
+      AddRange(entities as TEntity[] ?? entities.ToArray());
    }
 
    /// <inheritdoc cref="AddRange(IEnumerable&lt;TEntity>)"/>
@@ -779,7 +779,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
       ArgumentNullException.ThrowIfNull(entities);
 
-      UpdateRange(entities.ToArray());
+      UpdateRange(entities as TEntity[] ?? entities.ToArray());
    }
 
    /// <summary>
@@ -878,7 +878,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
       ArgumentNullException.ThrowIfNull(entities);
 
-      RemoveRange(entities.ToArray());
+      RemoveRange(entities as TEntity[] ?? entities.ToArray());
    }
 
    /// <summary>
@@ -1012,11 +1012,11 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
    void
    ISqlTable.AddRange(IEnumerable<object> entities) =>
-      AddRange((IEnumerable<TEntity>)entities);
+      AddRange(entities.Cast<TEntity>());
 
    void
    ISqlTable.AddRange(params object[] entities) =>
-      AddRange((TEntity[])entities);
+      AddRange(entities.Cast<TEntity>());
 
    void
    ISqlTable.Update(object entity) =>
@@ -1028,11 +1028,11 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
    void
    ISqlTable.UpdateRange(IEnumerable<object> entities) =>
-      UpdateRange((IEnumerable<TEntity>)entities);
+      UpdateRange(entities.Cast<TEntity>());
 
    void
    ISqlTable.UpdateRange(params object[] entities) =>
-      UpdateRange((TEntity[])entities);
+      UpdateRange(entities.Cast<TEntity>());
 
    void
    ISqlTable.Remove(object entity) =>
@@ -1044,11 +1044,11 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
    void
    ISqlTable.RemoveRange(IEnumerable<object> entities) =>
-      RemoveRange((IEnumerable<TEntity>)entities);
+      RemoveRange(entities.Cast<TEntity>());
 
    void
    ISqlTable.RemoveRange(params object[] entities) =>
-      RemoveRange((TEntity[])entities);
+      RemoveRange(entities.Cast<TEntity>());
 
    void
    ISqlTable.Refresh(object entity) =>

@@ -782,11 +782,11 @@ partial class SqlTable<TEntity> {
 
    ValueTask
    ISqlTable.AddRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken) =>
-      AddRangeAsync((IEnumerable<TEntity>)entities, cancellationToken);
+      AddRangeAsync(entities.Cast<TEntity>(), cancellationToken);
 
    ValueTask
    ISqlTable.AddRangeAsync(params object[] entities) =>
-      AddRangeAsync((TEntity[])entities);
+      AddRangeAsync(entities.Cast<TEntity>());
 
    ValueTask
    ISqlTable.RemoveAsync(object entity, CancellationToken cancellationToken) =>
@@ -798,11 +798,11 @@ partial class SqlTable<TEntity> {
 
    ValueTask
    ISqlTable.RemoveRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken) =>
-      RemoveRangeAsync((IEnumerable<TEntity>)entities, cancellationToken);
+      RemoveRangeAsync(entities.Cast<TEntity>(), cancellationToken);
 
    ValueTask
    ISqlTable.RemoveRangeAsync(params object[] entities) =>
-      RemoveRangeAsync((TEntity[])entities);
+      RemoveRangeAsync(entities.Cast<TEntity>());
 
    ValueTask
    ISqlTable.RefreshAsync(object entity, CancellationToken cancellationToken) =>
@@ -818,11 +818,11 @@ partial class SqlTable<TEntity> {
 
    ValueTask
    ISqlTable.UpdateRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken) =>
-      UpdateRangeAsync((IEnumerable<TEntity>)entities, cancellationToken);
+      UpdateRangeAsync(entities.Cast<TEntity>(), cancellationToken);
 
    ValueTask
    ISqlTable.UpdateRangeAsync(params object[] entities) =>
-      UpdateRangeAsync((TEntity[])entities);
+      UpdateRangeAsync(entities.Cast<TEntity>());
 }
 
 partial interface ISqlTable {

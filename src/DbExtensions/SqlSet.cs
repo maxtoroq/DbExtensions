@@ -637,13 +637,8 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       AsEnumerable(singleResult: false);
 
    IEnumerable<object>
-   AsEnumerable(bool singleResult) {
-
-      var enumerable = Map(singleResult);
-
-      return enumerable as IEnumerable<object>
-         ?? enumerable.Cast<object>();
-   }
+   AsEnumerable(bool singleResult) =>
+      Map(singleResult).Cast<object>();
 
    /// <summary>
    /// Casts the elements of the set to the specified type.
