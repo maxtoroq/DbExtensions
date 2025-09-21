@@ -23,13 +23,11 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DbExtensions;
 
 using Metadata;
-using InterpolatedString = InterpolatedStringHandlerArgumentAttribute;
 
 #nullable enable
 
@@ -44,7 +42,7 @@ partial class Database {
    /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
 
    public IEnumerable<TResult>
-   Map<TResult>([InterpolatedString] SqlBuilder query) {
+   Map<TResult>(SqlBuilder query) {
 
       ArgumentNullException.ThrowIfNull(query);
 
@@ -56,7 +54,7 @@ partial class Database {
    /// <inheritdoc cref="Map&lt;TResult>(SqlBuilder)"/>
 
    public IAsyncEnumerable<TResult>
-   AsyncMap<TResult>([InterpolatedString] SqlBuilder query) {
+   AsyncMap<TResult>(SqlBuilder query) {
 
       ArgumentNullException.ThrowIfNull(query);
 
@@ -75,7 +73,7 @@ partial class Database {
    /// <returns>The results of the query as objects of type specified by the <paramref name="resultType"/> parameter.</returns>
 
    public IEnumerable<object>
-   Map([InterpolatedString] SqlBuilder query, Type resultType) {
+   Map(SqlBuilder query, Type resultType) {
 
       ArgumentNullException.ThrowIfNull(query);
       ArgumentNullException.ThrowIfNull(resultType);
@@ -88,7 +86,7 @@ partial class Database {
    /// <inheritdoc cref="Map(SqlBuilder, Type)"/>
 
    public IAsyncEnumerable<object>
-   AsyncMap([InterpolatedString] SqlBuilder query, Type resultType) {
+   AsyncMap(SqlBuilder query, Type resultType) {
 
       ArgumentNullException.ThrowIfNull(query);
       ArgumentNullException.ThrowIfNull(resultType);

@@ -15,13 +15,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DbExtensions;
-
-using InterpolatedString = InterpolatedStringHandlerArgumentAttribute;
 
 #nullable enable
 
@@ -79,7 +76,7 @@ partial class SqlSet {
    /// <inheritdoc cref="AnyAsync(CancellationToken)" path="param"/>
 
    public async ValueTask<bool>
-   AllAsync([InterpolatedString] OperatorStringHandler predicate, CancellationToken cancellationToken = default) {
+   AllAsync(OperatorStringHandler predicate, CancellationToken cancellationToken = default) {
 
       var builder = predicate.Fragment;
       builder.Buffer.Insert(0, "NOT (");
@@ -117,7 +114,7 @@ partial class SqlSet {
    /// <inheritdoc cref="AnyAsync(CancellationToken)" path="param"/>
 
    public async ValueTask<bool>
-   AnyAsync([InterpolatedString] OperatorStringHandler predicate, CancellationToken cancellationToken = default) {
+   AnyAsync(OperatorStringHandler predicate, CancellationToken cancellationToken = default) {
 
       return await Where(ref predicate)
          .AnyAsync(cancellationToken)

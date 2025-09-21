@@ -17,11 +17,8 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Dynamic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace DbExtensions;
-
-using InterpolatedString = InterpolatedStringHandlerArgumentAttribute;
 
 #nullable enable
 
@@ -35,7 +32,7 @@ partial class Database {
    /// <returns>The results of the query as dynamic objects.</returns>
 
    public IEnumerable<dynamic>
-   Map([InterpolatedString] SqlBuilder query) {
+   Map(SqlBuilder query) {
 
       ArgumentNullException.ThrowIfNull(query);
 
@@ -47,7 +44,7 @@ partial class Database {
    /// <inheritdoc cref="Map(SqlBuilder)"/>
 
    public IAsyncEnumerable<dynamic>
-   AsyncMap([InterpolatedString] SqlBuilder query) {
+   AsyncMap(SqlBuilder query) {
 
       ArgumentNullException.ThrowIfNull(query);
 

@@ -192,7 +192,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <param name="handler">The interpolated string.</param>
 
    public static SqlBuilder
-   Create([InterpolatedString] ref AppendStringHandler handler) =>
+   Create(ref AppendStringHandler handler) =>
       handler.Builder;
 
    /// <summary>
@@ -1511,7 +1511,7 @@ public static partial class SQL {
    /// </returns>
 
    public static SqlBuilder
-   WITH([InterpolatedString] ref SqlBuilder.ClauseStringHandler<SqlClause.WITH> handler) =>
+   WITH(ref SqlBuilder.ClauseStringHandler<SqlClause.WITH> handler) =>
       handler.Builder;
 
    /// <summary>
@@ -1557,7 +1557,7 @@ public static partial class SQL {
    /// </returns>
 
    public static SqlBuilder
-   SELECT([InterpolatedString] ref SqlBuilder.ClauseStringHandler<SqlClause.SELECT> handler) =>
+   SELECT(ref SqlBuilder.ClauseStringHandler<SqlClause.SELECT> handler) =>
       handler.Builder;
 
    /// <summary>
@@ -1583,7 +1583,7 @@ public static partial class SQL {
    /// </returns>
 
    public static SqlBuilder
-   INSERT_INTO([InterpolatedString] ref SqlBuilder.ClauseStringHandler<SqlClause.INSERT_INTO> handler) =>
+   INSERT_INTO(ref SqlBuilder.ClauseStringHandler<SqlClause.INSERT_INTO> handler) =>
       handler.Builder;
 
    /// <summary>
@@ -1609,7 +1609,7 @@ public static partial class SQL {
    /// </returns>
 
    public static SqlBuilder
-   UPDATE([InterpolatedString] ref SqlBuilder.ClauseStringHandler<SqlClause.UPDATE> handler) =>
+   UPDATE(ref SqlBuilder.ClauseStringHandler<SqlClause.UPDATE> handler) =>
       handler.Builder;
 
    /// <summary>
@@ -1635,7 +1635,7 @@ public static partial class SQL {
    /// </returns>
 
    public static SqlBuilder
-   DELETE_FROM([InterpolatedString] ref SqlBuilder.ClauseStringHandler<SqlClause.DELETE_FROM> handler) =>
+   DELETE_FROM(ref SqlBuilder.ClauseStringHandler<SqlClause.DELETE_FROM> handler) =>
       handler.Builder;
 
    /// <summary>

@@ -21,14 +21,11 @@ using System.Data.Common;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DbExtensions;
-
-using InterpolatedString = InterpolatedStringHandlerArgumentAttribute;
 
 #nullable enable
 
@@ -364,7 +361,7 @@ public partial class Database : IDisposable {
    /// <exception cref="ChangeConflictException">The number of affected records is not equal to <paramref name="affect"/>.</exception>
 
    public int
-   Execute([InterpolatedString] SqlBuilder nonQuery, int affect = -1, bool exact = false) {
+   Execute(SqlBuilder nonQuery, int affect = -1, bool exact = false) {
 
       ArgumentNullException.ThrowIfNull(nonQuery);
 
@@ -397,7 +394,7 @@ public partial class Database : IDisposable {
    /// <inheritdoc cref="EnsureConnectionOpenAsync" path="param"/>
 
    public async ValueTask<int>
-   ExecuteAsync([InterpolatedString] SqlBuilder nonQuery, int affect = -1, bool exact = false, CancellationToken cancellationToken = default) {
+   ExecuteAsync(SqlBuilder nonQuery, int affect = -1, bool exact = false, CancellationToken cancellationToken = default) {
 
       ArgumentNullException.ThrowIfNull(nonQuery);
 
@@ -470,7 +467,7 @@ public partial class Database : IDisposable {
    /// <returns>The results of the query as <typeparamref name="TResult"/> objects.</returns>
 
    public IEnumerable<TResult>
-   Map<TResult>([InterpolatedString] SqlBuilder query, Func<DbDataReader, TResult> mapper) {
+   Map<TResult>(SqlBuilder query, Func<DbDataReader, TResult> mapper) {
 
       ArgumentNullException.ThrowIfNull(query);
       ArgumentNullException.ThrowIfNull(mapper);
@@ -481,7 +478,7 @@ public partial class Database : IDisposable {
    /// <inheritdoc cref="Map&lt;TResult>(SqlBuilder, Func&lt;DbDataReader, TResult>)"/>
 
    public IAsyncEnumerable<TResult>
-   AsyncMap<TResult>([InterpolatedString] SqlBuilder query, Func<DbDataReader, TResult> mapper) {
+   AsyncMap<TResult>(SqlBuilder query, Func<DbDataReader, TResult> mapper) {
 
       ArgumentNullException.ThrowIfNull(query);
       ArgumentNullException.ThrowIfNull(mapper);
@@ -547,7 +544,7 @@ public partial class Database : IDisposable {
    /// </returns>
 
    public virtual DbCommand
-   CreateCommand([InterpolatedString] SqlBuilder sqlBuilder) {
+   CreateCommand(SqlBuilder sqlBuilder) {
 
       ArgumentNullException.ThrowIfNull(sqlBuilder);
 
