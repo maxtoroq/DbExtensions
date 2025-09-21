@@ -124,7 +124,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
       var first = values[0];
 
       if (first is not null) {
-         sql.Append(first);
+         sql.AppendSql(first);
       }
 
       for (int i = 1; i < values.Length; i++) {
@@ -134,7 +134,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
          var val = values[i];
 
          if (val is not null) {
-            sql.Append(val);
+            sql.AppendSql(val);
          }
       }
 
@@ -169,7 +169,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
          }
 
          if (enumerator.Current is not null) {
-            sql.Append(enumerator.Current);
+            sql.AppendSql(enumerator.Current);
          }
 
          while (enumerator.MoveNext()) {
@@ -177,7 +177,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
             sql.Append(separator);
 
             if (enumerator.Current is not null) {
-               sql.Append(enumerator.Current);
+               sql.AppendSql(enumerator.Current);
             }
          }
       }
@@ -390,23 +390,23 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   Append(SqlBuilder sql) {
+   AppendSql(SqlBuilder sql) {
 
       ArgumentNullException.ThrowIfNull(sql);
 
-      AppendSql(sql, this.Buffer);
+      AppendFragment(sql, this.Buffer);
       return this;
    }
 
    internal SqlBuilder
-   Append(ISqlFragment sql) {
+   AppendFragment(ISqlFragment sql) {
 
-      AppendSql(sql, this.Buffer);
+      AppendFragment(sql, this.Buffer);
       return this;
    }
 
    void
-   AppendSql(ISqlFragment sql, StringBuilder sb) {
+   AppendFragment(ISqlFragment sql, StringBuilder sb) {
 
       if (sql.ParameterValues.Count == 0) {
 
@@ -512,7 +512,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    AppendPlaceholderSql(SqlBuilder value) {
 
       var frag = new StringBuilder();
-      AppendSql(value, frag);
+      AppendFragment(value, frag);
       frag.Replace(Environment.NewLine, $"{Environment.NewLine}\t");
 
       this.Buffer.AppendLine()

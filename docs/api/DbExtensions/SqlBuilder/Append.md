@@ -1,6 +1,6 @@
-SqlBuilder.Append(SqlBuilder) Method
-====================================
-Appends *sql* to this instance.
+SqlBuilder.Append(SqlBuilder.AppendStringHandler) Method
+========================================================
+Appends the interpolated string *handler* to this instance.
   
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
@@ -8,11 +8,10 @@ Appends *sql* to this instance.
 Overloads
 ---------
 
-| Name                             | Description                                                 |
-| -------------------------------- | ----------------------------------------------------------- |
-| [Append(AppendStringHandler)][2] | Appends the interpolated string *handler* to this instance. |
-| **Append(SqlBuilder)**           | Appends *sql* to this instance.                             |
-| [Append(String)][3]              | Appends *text* to this instance.                            |
+| Name                            | Description                                                 |
+| ------------------------------- | ----------------------------------------------------------- |
+| **Append(AppendStringHandler)** | Appends the interpolated string *handler* to this instance. |
+| [Append(String)][2]             | Appends *text* to this instance.                            |
 
 
 Syntax
@@ -20,27 +19,26 @@ Syntax
 
 ```csharp
 public SqlBuilder Append(
-	SqlBuilder sql
+	ref AppendStringHandler handler
 )
 ```
 
 #### Parameters
 
-##### *sql*  [SqlBuilder][4]
-A [SqlBuilder][4].
+##### *handler*  AppendStringHandler
+The interpolated string.
 
 #### Return Value
-[SqlBuilder][4]  
+[SqlBuilder][3]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][4]  
+[SqlBuilder Class][3]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: Append_1.md
-[3]: Append_2.md
-[4]: README.md
+[3]: README.md

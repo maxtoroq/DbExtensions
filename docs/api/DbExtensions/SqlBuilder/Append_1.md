@@ -1,6 +1,6 @@
-SqlBuilder.Append(SqlBuilder.AppendStringHandler) Method
-========================================================
-Appends the interpolated string *handler* to this instance.
+SqlBuilder.Append(String) Method
+================================
+Appends *text* to this instance.
   
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
@@ -8,11 +8,10 @@ Appends the interpolated string *handler* to this instance.
 Overloads
 ---------
 
-| Name                            | Description                                                 |
-| ------------------------------- | ----------------------------------------------------------- |
-| **Append(AppendStringHandler)** | Appends the interpolated string *handler* to this instance. |
-| [Append(SqlBuilder)][2]         | Appends *sql* to this instance.                             |
-| [Append(String)][3]             | Appends *text* to this instance.                            |
+| Name                             | Description                                                 |
+| -------------------------------- | ----------------------------------------------------------- |
+| [Append(AppendStringHandler)][2] | Appends the interpolated string *handler* to this instance. |
+| **Append(String)**               | Appends *text* to this instance.                            |
 
 
 Syntax
@@ -20,14 +19,14 @@ Syntax
 
 ```csharp
 public SqlBuilder Append(
-	ref AppendStringHandler handler
+	string? text
 )
 ```
 
 #### Parameters
 
-##### *handler*  AppendStringHandler
-The interpolated string.
+##### *text*  [String][3]
+The string.
 
 #### Return Value
 [SqlBuilder][4]  
@@ -42,5 +41,5 @@ See Also
 
 [1]: ../README.md
 [2]: Append.md
-[3]: Append_2.md
+[3]: https://learn.microsoft.com/dotnet/api/system.string
 [4]: README.md

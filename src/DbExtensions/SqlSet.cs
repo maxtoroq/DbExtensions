@@ -292,7 +292,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
             .SELECT(String.Empty);
 
          if (select is not null) {
-            query.Append(select);
+            query.AppendFragment(select);
          } else {
             query.Append(_fromSelect[1] ?? "*");
          }
@@ -343,12 +343,12 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       if (hasWhere) {
          query.WHERE(String.Empty)
-            .Append(whereBuffer!);
+            .AppendFragment(whereBuffer!);
       }
 
       if (hasOrderBy) {
          query.ORDER_BY(String.Empty)
-            .Append(orderByBuffer!);
+            .AppendFragment(orderByBuffer!);
       }
 
       if (hasTake) {
@@ -381,13 +381,13 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
          if (hasWhere) {
             query.WHERE(String.Empty)
-               .Append(whereBuffer!);
+               .AppendFragment(whereBuffer!);
          }
 
          if (hasOrderBy) {
 
             query.ORDER_BY(String.Empty)
-               .Append(orderByBuffer!);
+               .AppendFragment(orderByBuffer!);
 
          } else {
 
@@ -412,12 +412,12 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
          if (hasWhere) {
             query.WHERE(String.Empty)
-               .Append(whereBuffer!);
+               .AppendFragment(whereBuffer!);
          }
 
          if (hasOrderBy) {
             query.ORDER_BY(String.Empty)
-               .Append(orderByBuffer!);
+               .AppendFragment(orderByBuffer!);
          }
 
          if (select is not null) {
@@ -435,13 +435,13 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
          if (hasWhere) {
             query.WHERE(String.Empty)
-               .Append(whereBuffer!);
+               .AppendFragment(whereBuffer!);
          }
 
          if (hasOrderBy) {
 
             query.ORDER_BY(String.Empty)
-               .Append(orderByBuffer!);
+               .AppendFragment(orderByBuffer!);
 
             // The ORDER BY clause is invalid in subqueries, unless TOP, OFFSET or FOR XML is also specified.
 
@@ -459,7 +459,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
          .SELECT(String.Empty);
 
       if (select is not null) {
-         superQuery.Append(select);
+         superQuery.AppendFragment(select);
       } else {
          superQuery.Buffer.Append('*');
       }

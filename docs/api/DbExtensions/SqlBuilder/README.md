@@ -44,14 +44,14 @@ Methods
 | [_ElseIf][13]                                                              | Appends *handler* to the current clause if *condition* is true and an antecedent call to [_If(Boolean, ConditionalStringHandler)][9] or [_ElseIf(Boolean, ConditionalElseStringHandler)][13] used a false condition. |
 | [_If][9]                                                                   | Appends the interpolated string *handler* to the current clause if *condition* is true.                                                                                                                              |
 | [Append(AppendStringHandler)][14]                                          | Appends the interpolated string *handler* to this instance.                                                                                                                                                          |
-| [Append(SqlBuilder)][15]                                                   | Appends *sql* to this instance.                                                                                                                                                                                      |
-| [Append(String)][16]                                                       | Appends *text* to this instance.                                                                                                                                                                                     |
-| [AppendClause(SqlClause)][17]                                              | Appends the SQL *clause*.                                                                                                                                                                                            |
-| [AppendClause(SqlClause, String)][18]                                      | Appends the SQL *clause* and the provided *text*.                                                                                                                                                                    |
-| [AppendClause&lt;TClause>()][19]                                           | Appends the SQL clause identified by TClause.                                                                                                                                                                        |
-| [AppendClause&lt;TClause>(SqlBuilder.ClauseStringHandler&lt;TClause>)][20] | Appends the SQL clause identified by TClause and appends the interpolated string *handler*.                                                                                                                          |
-| [AppendClause&lt;TClause>(String)][21]                                     | Appends the SQL clause identified by TClause and appends the *text*.                                                                                                                                                 |
-| [AppendLine][22]                                                           | Appends the default line terminator to this instance.                                                                                                                                                                |
+| [Append(String)][15]                                                       | Appends *text* to this instance.                                                                                                                                                                                     |
+| [AppendClause(SqlClause)][16]                                              | Appends the SQL *clause*.                                                                                                                                                                                            |
+| [AppendClause(SqlClause, String)][17]                                      | Appends the SQL *clause* and the provided *text*.                                                                                                                                                                    |
+| [AppendClause&lt;TClause>()][18]                                           | Appends the SQL clause identified by TClause.                                                                                                                                                                        |
+| [AppendClause&lt;TClause>(SqlBuilder.ClauseStringHandler&lt;TClause>)][19] | Appends the SQL clause identified by TClause and appends the interpolated string *handler*.                                                                                                                          |
+| [AppendClause&lt;TClause>(String)][20]                                     | Appends the SQL clause identified by TClause and appends the *text*.                                                                                                                                                 |
+| [AppendLine][21]                                                           | Appends the default line terminator to this instance.                                                                                                                                                                |
+| [AppendSql][22]                                                            | Appends *sql* to this instance.                                                                                                                                                                                      |
 | [Clone][23]                                                                | Creates and returns a copy of this instance.                                                                                                                                                                         |
 | [Create(AppendStringHandler)][24]                                          | Initializes a new instance of the **SqlBuilder** class using the provided interpolated string.                                                                                                                       |
 | [Create(String)][25]                                                       | Initializes a new instance of the **SqlBuilder** class using the provided text.                                                                                                                                      |
@@ -146,15 +146,15 @@ See Also
 [11]: _.md
 [12]: _Else.md
 [13]: _ElseIf.md
-[14]: Append_1.md
-[15]: Append.md
-[16]: Append_2.md
-[17]: AppendClause.md
-[18]: AppendClause_1.md
-[19]: AppendClause__1.md
-[20]: AppendClause__1_1.md
-[21]: AppendClause__1_2.md
-[22]: AppendLine.md
+[14]: Append.md
+[15]: Append_1.md
+[16]: AppendClause.md
+[17]: AppendClause_1.md
+[18]: AppendClause__1.md
+[19]: AppendClause__1_1.md
+[20]: AppendClause__1_2.md
+[21]: AppendLine.md
+[22]: AppendSql.md
 [23]: Clone.md
 [24]: Create.md
 [25]: Create_1.md
