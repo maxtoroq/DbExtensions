@@ -1056,8 +1056,7 @@ enum SqlDialect {
 /// been modified since it was loaded into memory.
 /// </summary>
 
-[Serializable]
-public class ChangeConflictException : Exception {
+public sealed class ChangeConflictException : Exception {
 
    /// <summary>
    /// Initializes a new instance of the <see cref="ChangeConflictException"/> class
