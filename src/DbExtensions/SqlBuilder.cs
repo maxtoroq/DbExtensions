@@ -190,6 +190,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// using the provided interpolated string.
    /// </summary>
    /// <param name="handler">The interpolated string.</param>
+   /// <returns>A new instance of <see cref="SqlBuilder"/> initialized with <paramref name="handler"/>.</returns>
 
    public static SqlBuilder
    Create(ref AppendStringHandler handler) =>
@@ -200,6 +201,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// using the provided text.
    /// </summary>
    /// <param name="text">The SQL string.</param>
+   /// <returns>A new instance of <see cref="SqlBuilder"/> initialized with <paramref name="text"/>.</returns>
 
    public static SqlBuilder
    Create(string? text) {
@@ -208,7 +210,42 @@ public sealed partial class SqlBuilder : ISqlFragment {
          return new SqlBuilder();
       }
 
-      return new SqlBuilder(Math.Max(_defaultCapacity, text.Length))
+      return new SqlBuilder(false, text.Length, 0)
+         .Append(text);
+   }
+
+   /// <summary>
+   /// Initializes a new instance of the <see cref="SqlBuilder"/> class
+   /// using the provided interpolated string. Use this method if you don't expect to modify the returned
+   /// builder; otherwise, use <see cref="Create(ref AppendStringHandler)"/> instead.
+   /// </summary>
+   /// <param name="sql">The interpolated string.</param>
+   /// <returns>The provided <paramref name="sql"/> unmodified.</returns>
+
+   public static SqlBuilder
+   CreateStatic(SqlBuilder sql) {
+
+      ArgumentNullException.ThrowIfNull(sql);
+
+      return sql;
+   }
+
+   /// <summary>
+   /// Initializes a new instance of the <see cref="SqlBuilder"/> class
+   /// using the provided text. Use this method if you don't expect to modify the returned
+   /// builder; otherwise, use <see cref="Create(String)"/> instead.
+   /// </summary>
+   /// <param name="text">The SQL string.</param>
+   /// <returns>A new instance of <see cref="SqlBuilder"/> initialized with <paramref name="text"/>.</returns>
+
+   public static SqlBuilder
+   CreateStatic(string? text) {
+
+      if (String.IsNullOrEmpty(text)) {
+         return new SqlBuilder();
+      }
+
+      return new SqlBuilder(true, text.Length, 0)
          .Append(text);
    }
 
@@ -217,13 +254,9 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// </summary>
 
    public
-   SqlBuilder()
-      : this(_defaultCapacity) { }
+   SqlBuilder() {
 
-   private
-   SqlBuilder(int capacity) {
-
-      this.Buffer = new(capacity);
+      this.Buffer = new(_defaultCapacity);
       this.ParameterValues = new();
    }
 
@@ -247,16 +280,30 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    public
-   SqlBuilder(int literalLength, int formattedCount) {
+   SqlBuilder(int literalLength, int formattedCount)
+      : this(true, literalLength + PlaceholderLengthSum(formattedCount), formattedCount) {
 
       // This constructor is used by interpolated string arguments.
       // Since these are literal "string" arguments, the query is most likely not
       // modified. Therefore we use a "static" capacity and ignore the default
       // capacity (although the interpolated string could still use sub-queries and
-      // dynamic literals that make the query grow).
+      // dynamic literals that make the buffer grow).
+   }
 
-      this.Buffer = new(literalLength + PlaceholderLengthSum(formattedCount));
-      this.ParameterValues = new(new List<object?>(formattedCount));
+   private
+   SqlBuilder(bool staticQuery, int queryLength, int paramLength) {
+
+      var bufferCap = (staticQuery) ? queryLength
+         : Math.Max(_defaultCapacity, queryLength);
+
+      // The first time List<T> resizes it grows to 4,
+      // if param length is not greater just let it grow lazily
+
+      var paramCap = (staticQuery || paramLength > 4) ?
+         paramLength : 0;
+
+      this.Buffer = new(bufferCap);
+      this.ParameterValues = new(new List<object?>(paramCap));
    }
 
    static int
@@ -1337,12 +1384,12 @@ public sealed partial class SqlBuilder : ISqlFragment {
       public
       AppendStringHandler(int literalLength, int formattedCount) {
 
-         // This constructor is used for Create(ref AppendInterpolatedStringHandler).
+         // This constructor is used for Create(ref AppendStringHandler).
          // Capacity used is consistent with Create(String).
 
-         this.Builder = new(Math.Max(
-            _defaultCapacity,
-            literalLength + PlaceholderLengthSum(formattedCount)));
+         var queryLength = literalLength + PlaceholderLengthSum(formattedCount);
+
+         this.Builder = new(false, queryLength, formattedCount);
       }
 
       /// <exclude/>

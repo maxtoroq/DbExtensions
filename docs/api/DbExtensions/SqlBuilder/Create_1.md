@@ -29,7 +29,8 @@ public static SqlBuilder Create(
 The SQL string.
 
 #### Return Value
-[SqlBuilder][1]
+[SqlBuilder][1]  
+A new instance of [SqlBuilder][1] initialized with *text*.
 
 See Also
 --------

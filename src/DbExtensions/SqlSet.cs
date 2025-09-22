@@ -405,10 +405,9 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       } else if (hasTake) {
 
-         var selectBuilder = new SqlBuilder("TOP() *".Length, 1)
-            .Append($"TOP({takeBuffer!.Value}) *");
+         var topSelect = new SqlFragment("TOP({0}) *", (object[])[takeBuffer!.Value]);
 
-         var query = GetDefiningQuery(ignoreBuffer: true, super: true, select: selectBuilder);
+         var query = GetDefiningQuery(ignoreBuffer: true, super: true, select: topSelect);
 
          if (hasWhere) {
             query.WHERE(String.Empty)
