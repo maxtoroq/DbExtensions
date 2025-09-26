@@ -344,16 +344,6 @@ public sealed partial class SqlBuilder : ISqlFragment {
       AppendPlaceholder(value, format);
 
    /// <summary>
-   /// Appends the SQL clause identified by <typeparamref name="TClause"/>.
-   /// </summary>
-   /// <typeparam name="TClause">The type of the SQL clause.</typeparam>
-   /// <returns>A reference to this instance after the append operation has completed.</returns>
-
-   public SqlBuilder
-   AppendClause<TClause>() where TClause : SqlClause, new() =>
-      AppendClause(SqlClause.Instance<TClause>(), null);
-
-   /// <summary>
    /// Appends the SQL clause identified by <typeparamref name="TClause"/> and
    /// appends the interpolated string <paramref name="handler"/>.
    /// </summary>
@@ -376,16 +366,6 @@ public sealed partial class SqlBuilder : ISqlFragment {
    public SqlBuilder
    AppendClause<TClause>(string? text) where TClause : SqlClause, new() =>
       AppendClause(SqlClause.Instance<TClause>(), text);
-
-   /// <summary>
-   /// Appends the SQL <paramref name="clause"/>.
-   /// </summary>
-   /// <param name="clause">The clause to append.</param>
-   /// <returns>A reference to this instance after the append operation has completed.</returns>
-
-   public SqlBuilder
-   AppendClause(SqlClause clause) =>
-      AppendClause(clause, null);
 
    /// <summary>
    /// Appends the SQL <paramref name="clause"/> and the provided <paramref name="text"/>.
@@ -769,7 +749,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
       ArgumentNullException.ThrowIfNull(alias);
       ArgumentNullException.ThrowIfNull(subQuery);
 
-      AppendClause<SqlClause.WITH>();
+      AppendClause<SqlClause.WITH>(null);
 
       this.Buffer.Append(alias)
          .Append(" AS (");
@@ -853,7 +833,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
       ArgumentNullException.ThrowIfNull(subQuery);
       ArgumentNullException.ThrowIfNull(alias);
 
-      AppendClause<SqlClause.FROM>();
+      AppendClause<SqlClause.FROM>(null);
 
       this.Buffer.Append('(');
       AppendPlaceholderSql(subQuery);
@@ -1172,7 +1152,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    public SqlBuilder
    LIMIT(int maxRecords) {
 
-      AppendClause<SqlClause.LIMIT>();
+      AppendClause<SqlClause.LIMIT>(null);
 
       this.Buffer.Append('{')
          .Append(this.ParameterValues.Count)
@@ -1222,7 +1202,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    public SqlBuilder
    OFFSET(int startIndex) {
 
-      AppendClause<SqlClause.OFFSET>();
+      AppendClause<SqlClause.OFFSET>(null);
 
       this.Buffer.Append('{')
          .Append(this.ParameterValues.Count)
@@ -1240,7 +1220,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    UNION() =>
-      AppendClause<SqlClause.UNION>();
+      AppendClause<SqlClause.UNION>(null);
 
    /// <summary>
    /// Appends the INSERT INTO clause using the provided interpolated string <paramref name="handler"/>.
@@ -1347,7 +1327,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
          throw new ArgumentException($"{nameof(args)} cannot be empty", nameof(args));
       }
 
-      AppendClause<SqlClause.VALUES>();
+      AppendClause<SqlClause.VALUES>(null);
 
       this.Buffer.Append('(');
 
@@ -1439,7 +1419,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
          this.Builder = sqlBuilder;
 
-         sqlBuilder.AppendClause<TClause>();
+         sqlBuilder.AppendClause<TClause>(null);
       }
 
       /// <exclude/>
@@ -1476,7 +1456,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
          shouldAppend = condition;
 
          if (shouldAppend) {
-            sqlBuilder.AppendClause<SqlClause.Current>();
+            sqlBuilder.AppendClause<SqlClause.Current>(null);
          }
       }
 
@@ -1523,7 +1503,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
          shouldAppend = condition;
 
          if (shouldAppend) {
-            sqlBuilder.AppendClause<SqlClause.Current>();
+            sqlBuilder.AppendClause<SqlClause.Current>(null);
          }
       }
 

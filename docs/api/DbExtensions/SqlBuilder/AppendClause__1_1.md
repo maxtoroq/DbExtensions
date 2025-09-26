@@ -1,6 +1,6 @@
-SqlBuilder.AppendClause&lt;TClause>(SqlBuilder.ClauseStringHandler&lt;TClause>) Method
-======================================================================================
-Appends the SQL clause identified by TClause and appends the interpolated string *handler*.
+SqlBuilder.AppendClause&lt;TClause>(String) Method
+==================================================
+Appends the SQL clause identified by TClause and appends the *text*.
   
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
@@ -8,13 +8,11 @@ Appends the SQL clause identified by TClause and appends the interpolated string
 Overloads
 ---------
 
-| Name                                                                     | Description                                                                                 |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| [AppendClause(SqlClause)][2]                                             | Appends the SQL *clause*.                                                                   |
-| [AppendClause(SqlClause, String)][3]                                     | Appends the SQL *clause* and the provided *text*.                                           |
-| [AppendClause&lt;TClause>()][4]                                          | Appends the SQL clause identified by TClause.                                               |
-| **AppendClause&lt;TClause>(SqlBuilder.ClauseStringHandler&lt;TClause>)** | Appends the SQL clause identified by TClause and appends the interpolated string *handler*. |
-| [AppendClause&lt;TClause>(String)][5]                                    | Appends the SQL clause identified by TClause and appends the *text*.                        |
+| Name                                                                      | Description                                                                                 |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| [AppendClause(SqlClause, String)][2]                                      | Appends the SQL *clause* and the provided *text*.                                           |
+| [AppendClause&lt;TClause>(SqlBuilder.ClauseStringHandler&lt;TClause>)][3] | Appends the SQL clause identified by TClause and appends the interpolated string *handler*. |
+| **AppendClause&lt;TClause>(String)**                                      | Appends the SQL clause identified by TClause and appends the *text*.                        |
 
 
 Syntax
@@ -22,7 +20,7 @@ Syntax
 
 ```csharp
 public SqlBuilder AppendClause<TClause>(
-	ref ClauseStringHandler<TClause> handler
+	string? text
 )
 where TClause : new(), SqlClause
 
@@ -30,8 +28,8 @@ where TClause : new(), SqlClause
 
 #### Parameters
 
-##### *handler*  ClauseStringHandler&lt;**TClause**>
-The interpolated string to append.
+##### *text*  [String][4]
+The text to append.
 
 #### Type Parameters
 
@@ -39,19 +37,18 @@ The interpolated string to append.
 The type of the SQL clause.
 
 #### Return Value
-[SqlBuilder][6]  
+[SqlBuilder][5]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][6]  
+[SqlBuilder Class][5]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: AppendClause.md
-[3]: AppendClause_1.md
-[4]: AppendClause__1.md
-[5]: AppendClause__1_2.md
-[6]: README.md
+[3]: AppendClause__1.md
+[4]: https://learn.microsoft.com/dotnet/api/system.string
+[5]: README.md
