@@ -1713,7 +1713,7 @@ partial class SqlSet {
                throw new ArgumentException($"One-to-many associations can only be specified once in an include path ('{originalPath}').", nameof(path));
             }
 
-            manySource = db.From(manyQuery!, metaType.Type);
+            manySource = db.FromQuery(manyQuery!, metaType.Type);
          }
 
          set.ManyIncludes ??= new Dictionary<string[], CollectionLoader>();

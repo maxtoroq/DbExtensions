@@ -19,9 +19,7 @@ namespace DbExtensions.Tests.Querying {
 
          var db = MockQuery(data);
 
-         SqlSet<string> set = db.From(SQL
-            .SELECT("NULL")
-            , r => r.GetString(0));
+         SqlSet<string> set = db.FromQuery($"SELECT NULL", r => r.GetString(0));
 
          set.AsEnumerable();
 
@@ -39,9 +37,7 @@ namespace DbExtensions.Tests.Querying {
 
          var db = MockQuery(data);
 
-         SqlSet<int> set = db.From(SQL
-            .SELECT("NULL")
-            , r => r.GetInt32(0));
+         SqlSet<int> set = db.FromQuery($"SELECT NULL", r => r.GetInt32(0));
 
          set.AsEnumerable();
 
@@ -59,9 +55,7 @@ namespace DbExtensions.Tests.Querying {
 
          var db = MockQuery(data);
 
-         SqlSet<string> set = db.From(SQL
-            .SELECT("NULL")
-            , r => r.GetString(0));
+         SqlSet<string> set = db.FromQuery($"SELECT NULL", r => r.GetString(0));
 
          var results = new List<string>();
 
@@ -82,9 +76,7 @@ namespace DbExtensions.Tests.Querying {
 
          var db = MockQuery(data);
 
-         SqlSet<string> set = db.From(SQL
-            .SELECT("NULL")
-            , r => r.GetString(0));
+         SqlSet<string> set = db.FromQuery($"SELECT NULL", r => r.GetString(0));
 
          var results = new List<string>();
 
@@ -333,7 +325,7 @@ namespace DbExtensions.Tests.Querying {
 
          var db = MockQuery(data);
 
-         dynamic value = db.From(SQL.SELECT("NULL"))
+         dynamic value = db.FromQuery($"SELECT NULL")
             .Select("foo")
             .Single();
 
@@ -349,9 +341,7 @@ namespace DbExtensions.Tests.Querying {
 
          var db = MockQuery(data);
 
-         SqlSet<string> set = db.From(SQL
-            .SELECT("NULL")
-            , r => r.GetString(0))
+         SqlSet<string> set = db.FromQuery($"SELECT NULL", r => r.GetString(0))
             .OrderBy("c");
 
          string value = set.Single();

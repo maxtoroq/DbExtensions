@@ -117,8 +117,7 @@ namespace DbExtensions.Tests.Querying {
 
          var query = SQL
             .SELECT("*")
-            .FROM($"({db.From(SQL
-               .SELECT($"{5}"))}) AS t0");
+            .FROM($"({db.FromQuery($"SELECT {5}")}) AS t0");
 
          Assert.AreEqual(1, query.ParameterValues.Count);
          Assert.AreEqual(5, query.ParameterValues[0]);

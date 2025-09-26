@@ -1,6 +1,6 @@
-Database.From&lt;TResult>(SqlBuilder) Method
-============================================
-Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining query.
+Database.From&lt;TResult>(String) Method
+========================================
+Creates and returns a new [SqlSet&lt;TResult>][1] using the provided table name.
   
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
@@ -8,15 +8,11 @@ Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining qu
 Overloads
 ---------
 
-| Name                                                              | Description                                                                                     |
-| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [From(SqlBuilder)][3]                                             | Creates and returns a new [SqlSet][4] using the provided defining query.                        |
-| [From(String)][5]                                                 | Creates and returns a new [SqlSet][4] using the provided table name.                            |
-| [From(SqlBuilder, Type)][6]                                       | Creates and returns a new [SqlSet][4] using the provided defining query.                        |
-| [From(String, Type)][7]                                           | Creates and returns a new [SqlSet][4] using the provided table name.                            |
-| **From&lt;TResult>(SqlBuilder)**                                  | Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining query.            |
-| [From&lt;TResult>(String)][8]                                     | Creates and returns a new [SqlSet&lt;TResult>][1] using the provided table name.                |
-| [From&lt;TResult>(SqlBuilder, Func&lt;DbDataReader, TResult>)][9] | Creates and returns a new [SqlSet&lt;TResult>][1] using the provided defining query and mapper. |
+| Name                         | Description                                                                      |
+| ---------------------------- | -------------------------------------------------------------------------------- |
+| [From(String)][3]            | Creates and returns a new [SqlSet][4] using the provided table name.             |
+| [From(String, Type)][5]      | Creates and returns a new [SqlSet][4] using the provided table name.             |
+| **From&lt;TResult>(String)** | Creates and returns a new [SqlSet&lt;TResult>][1] using the provided table name. |
 
 
 Syntax
@@ -24,15 +20,15 @@ Syntax
 
 ```csharp
 public SqlSet<TResult> From<TResult>(
-	SqlBuilder definingQuery
+	string tableName
 )
 
 ```
 
 #### Parameters
 
-##### *definingQuery*  [SqlBuilder][10]
-The SQL query that will be the source of data for the set.
+##### *tableName*  [String][6]
+The name of the table that will be the source of data for the set.
 
 #### Type Parameters
 
@@ -47,17 +43,13 @@ See Also
 --------
 
 #### Reference
-[Database Class][11]  
+[Database Class][7]  
 [DbExtensions Namespace][2]  
 
 [1]: ../SqlSet_1/README.md
 [2]: ../README.md
 [3]: From.md
 [4]: ../SqlSet/README.md
-[5]: From_2.md
-[6]: From_1.md
-[7]: From_3.md
-[8]: From__1_2.md
-[9]: From__1_1.md
-[10]: ../SqlBuilder/README.md
-[11]: README.md
+[5]: From_1.md
+[6]: https://learn.microsoft.com/dotnet/api/system.string
+[7]: README.md

@@ -135,14 +135,14 @@ partial class Database {
    /// <returns>A new <see cref="SqlSet"/> object.</returns>
 
    public SqlSet
-   From(SqlBuilder definingQuery) =>
-      From(definingQuery, null);
+   FromQuery(SqlBuilder definingQuery) =>
+      FromQuery(definingQuery, null);
 
-   /// <inheritdoc cref="From(SqlBuilder)"/>
+   /// <inheritdoc cref="FromQuery(SqlBuilder)"/>
    /// <param name="resultType">The type of objects to map the results to.</param>
 
    public SqlSet
-   From(SqlBuilder definingQuery, Type? resultType) {
+   FromQuery(SqlBuilder definingQuery, Type? resultType) {
 
       ArgumentNullException.ThrowIfNull(definingQuery);
 
@@ -157,7 +157,7 @@ partial class Database {
    /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
 
    public SqlSet<TResult>
-   From<TResult>(SqlBuilder definingQuery) {
+   FromQuery<TResult>(SqlBuilder definingQuery) {
 
       ArgumentNullException.ThrowIfNull(definingQuery);
 
@@ -167,11 +167,11 @@ partial class Database {
    /// <summary>
    /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided defining query and mapper.
    /// </summary>
-   /// <inheritdoc cref="From&lt;TResult>(SqlBuilder)"/>
+   /// <inheritdoc cref="FromQuery&lt;TResult>(SqlBuilder)"/>
    /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
 
    public SqlSet<TResult>
-   From<TResult>(SqlBuilder definingQuery, Func<DbDataReader, TResult> mapper) {
+   FromQuery<TResult>(SqlBuilder definingQuery, Func<DbDataReader, TResult> mapper) {
 
       ArgumentNullException.ThrowIfNull(definingQuery);
       ArgumentNullException.ThrowIfNull(mapper);
@@ -183,7 +183,8 @@ partial class Database {
 /// <summary>
 /// Represents an immutable, connected SQL query.
 /// This class cannot be instantiated, to get an instance use one of the
-/// <see cref="Database.From(String)" qualifyHint="true" autoUpgrade="true"/> overloads.
+/// <see cref="Database.From(String)" qualifyHint="true" autoUpgrade="true"/> or
+/// <see cref="Database.FromQuery(SqlBuilder)" qualifyHint="true" autoUpgrade="true"/> overloads.
 /// </summary>
 /// <remarks>For information on how to use SqlSet see <see href="https://maxtoroq.github.io/DbExtensions/docs/7/SqlSet.html">SqlSet Tutorial</see>.</remarks>
 
@@ -1195,7 +1196,8 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 /// <summary>
 /// Represents an immutable, connected SQL query that maps to <typeparamref name="TResult"/> objects.
 /// This class cannot be instantiated, to get an instance use one of the
-/// <see cref="Database.From&lt;TResult>(String)" qualifyHint="true"/> overloads.
+/// <see cref="Database.From&lt;TResult>(String)" qualifyHint="true"/> or
+/// <see cref="Database.FromQuery&lt;TResult>(SqlBuilder)" qualifyHint="true"/> overloads.
 /// </summary>
 /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
 /// <inheritdoc path="remarks"/>

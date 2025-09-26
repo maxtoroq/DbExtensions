@@ -1,6 +1,6 @@
-Database.From(SqlBuilder, Type) Method
-======================================
-Creates and returns a new [SqlSet][1] using the provided defining query.
+Database.From(String, Type) Method
+==================================
+Creates and returns a new [SqlSet][1] using the provided table name.
   
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
@@ -8,15 +8,11 @@ Creates and returns a new [SqlSet][1] using the provided defining query.
 Overloads
 ---------
 
-| Name                                                              | Description                                                                                     |
-| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [From(SqlBuilder)][3]                                             | Creates and returns a new [SqlSet][1] using the provided defining query.                        |
-| [From(String)][4]                                                 | Creates and returns a new [SqlSet][1] using the provided table name.                            |
-| **From(SqlBuilder, Type)**                                        | Creates and returns a new [SqlSet][1] using the provided defining query.                        |
-| [From(String, Type)][5]                                           | Creates and returns a new [SqlSet][1] using the provided table name.                            |
-| [From&lt;TResult>(SqlBuilder)][6]                                 | Creates and returns a new [SqlSet&lt;TResult>][7] using the provided defining query.            |
-| [From&lt;TResult>(String)][8]                                     | Creates and returns a new [SqlSet&lt;TResult>][7] using the provided table name.                |
-| [From&lt;TResult>(SqlBuilder, Func&lt;DbDataReader, TResult>)][9] | Creates and returns a new [SqlSet&lt;TResult>][7] using the provided defining query and mapper. |
+| Name                          | Description                                                                      |
+| ----------------------------- | -------------------------------------------------------------------------------- |
+| [From(String)][3]             | Creates and returns a new [SqlSet][1] using the provided table name.             |
+| **From(String, Type)**        | Creates and returns a new [SqlSet][1] using the provided table name.             |
+| [From&lt;TResult>(String)][4] | Creates and returns a new [SqlSet&lt;TResult>][5] using the provided table name. |
 
 
 Syntax
@@ -24,17 +20,17 @@ Syntax
 
 ```csharp
 public SqlSet From(
-	SqlBuilder definingQuery,
+	string tableName,
 	Type? resultType
 )
 ```
 
 #### Parameters
 
-##### *definingQuery*  [SqlBuilder][10]
-The SQL query that will be the source of data for the set.
+##### *tableName*  [String][6]
+The name of the table that will be the source of data for the set.
 
-##### *resultType*  [Type][11]
+##### *resultType*  [Type][7]
 The type of objects to map the results to.
 
 #### Return Value
@@ -45,18 +41,14 @@ See Also
 --------
 
 #### Reference
-[Database Class][12]  
+[Database Class][8]  
 [DbExtensions Namespace][2]  
 
 [1]: ../SqlSet/README.md
 [2]: ../README.md
 [3]: From.md
-[4]: From_2.md
-[5]: From_3.md
-[6]: From__1.md
-[7]: ../SqlSet_1/README.md
-[8]: From__1_2.md
-[9]: From__1_1.md
-[10]: ../SqlBuilder/README.md
-[11]: https://learn.microsoft.com/dotnet/api/system.type
-[12]: README.md
+[4]: From__1.md
+[5]: ../SqlSet_1/README.md
+[6]: https://learn.microsoft.com/dotnet/api/system.string
+[7]: https://learn.microsoft.com/dotnet/api/system.type
+[8]: README.md
