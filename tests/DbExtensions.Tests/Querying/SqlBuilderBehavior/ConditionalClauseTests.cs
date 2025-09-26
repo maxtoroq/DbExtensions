@@ -22,6 +22,17 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
          Assert.AreEqual("SELECT A", queryFalse.ToString());
       }
 
+      [Test]
+      public void Next_Clause_Continuation() {
+
+         var query = SQL
+            .SELECT("A")
+            .WHERE()
+            ._If(true, $"B");
+
+         Assert.AreEqual("SELECT A\r\nWHERE B", query.ToString());
+      }
+
 
       // ## ElseIf_Continuation
 
@@ -117,6 +128,18 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
             ._Else($"D");
 
          Assert.AreEqual("SELECT A, D", queryFalseElseIf.ToString());
+      }
+
+      [Test]
+      public void Else_Continuation_Duplicate() {
+
+         var query = SQL
+            .SELECT("A")
+            ._If(false, $"B")
+            ._Else($"C")
+            ._Else($"D");
+
+         Assert.AreEqual("SELECT A, C", query.ToString());
       }
 
       [Test]
