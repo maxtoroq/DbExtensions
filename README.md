@@ -8,4 +8,4 @@ See the [project home][1] and the [documentation][2] for more information.
 ![Tests](https://img.shields.io/appveyor/tests/maxtoroq/DbExtensions/v7)
 
 [1]: https://maxtoroq.github.io/DbExtensions/
-[2]: https://maxtoroq.github.io/DbExtensions/docs/
+[2]: https://maxtoroq.github.io/DbExtensions/docs/7/
