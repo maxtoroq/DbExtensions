@@ -16,8 +16,7 @@ Syntax
 ------
 
 ```csharp
-[SerializableAttribute]
-public class ChangeConflictException : Exception
+public sealed class ChangeConflictException : Exception
 ```
 
 The **ChangeConflictException** type exposes the following members.
