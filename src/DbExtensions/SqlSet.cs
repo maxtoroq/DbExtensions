@@ -399,7 +399,8 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
          query.OFFSET($"{skipBuffer!.Value} ROWS");
 
          if (hasTake) {
-            query.AppendClause<FetchClause>($"NEXT {takeBuffer!.Value} ROWS ONLY");
+            query.AppendClause<FetchClause>()
+               .Append($"NEXT {takeBuffer!.Value} ROWS ONLY");
          }
 
          return query;
