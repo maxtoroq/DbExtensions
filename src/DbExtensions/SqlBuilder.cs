@@ -51,8 +51,14 @@ public sealed partial class SqlBuilder : ISqlFragment {
    const int
    _defaultCapacity = 48;
 
+   SqlClause?
+   _nextClause;
+
    bool?
    _ifCondition;
+
+   bool?
+   _appendIfCondition;
 
    /// <summary>
    /// The underlying <see cref="StringBuilder"/>.
@@ -85,7 +91,14 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// </summary>
 
    public SqlClause?
-   NextClause { get; set; }
+   NextClause {
+      get => _nextClause;
+      set {
+         _nextClause = value;
+         _ifCondition = null;
+         _appendIfCondition = null;
+      }
+   }
 
    /// <summary>
    /// Returns true if the buffer is empty.
@@ -96,6 +109,9 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    internal bool
    ElseOK => _ifCondition == false;
+
+   internal bool
+   AppendElseOK => _appendIfCondition == false;
 
    /// <summary>
    /// Concatenates a specified separator <see cref="String"/> between each element of a 
@@ -272,8 +288,10 @@ public sealed partial class SqlBuilder : ISqlFragment {
       this.Buffer.Append(other.Buffer);
       this.ParameterValues = new(new List<object?>(other.ParameterValues));
       this.CurrentClause = other.CurrentClause;
-      this.NextClause = other.NextClause;
+
+      _nextClause = other._nextClause;
       _ifCondition = other._ifCondition;
+      _appendIfCondition = other._appendIfCondition;
    }
 
    /// <exclude/>
@@ -413,7 +431,6 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
       this.CurrentClause = clause;
       this.NextClause = null;
-      _ifCondition = null;
 
       return this;
    }
@@ -558,6 +575,55 @@ public sealed partial class SqlBuilder : ISqlFragment {
    GetDefiningQueryFromObject(object? obj, ref SqlBuilder? definingQuery);
 
    /// <summary>
+   /// Appends the interpolated string <paramref name="handler"/> if <paramref name="condition"/> is true.
+   /// </summary>
+   /// <param name="condition">true to append <paramref name="handler"/>; otherwise, false.</param>
+   /// <param name="handler">The interpolated string to append.</param>
+   /// <returns>A reference to this instance after the append operation has completed.</returns>
+
+   public SqlBuilder
+   AppendIf(bool condition, [InterpolatedString("", nameof(condition))] ref AppendStringHandler handler) {
+
+      _appendIfCondition = condition;
+
+      return this;
+   }
+
+   /// <summary>
+   /// Appends the interpolated string <paramref name="handler"/> if <paramref name="condition"/> is true
+   /// and an antecedent call to <see cref="AppendIf(Boolean, ref AppendStringHandler)"/>
+   /// or <see cref="AppendElseIf(Boolean, ref AppendElseStringHandler)"/> used a false condition.
+   /// </summary>
+   /// <inheritdoc cref="AppendIf(Boolean, ref AppendStringHandler)"/>
+
+   public SqlBuilder
+   AppendElseIf(bool condition, [InterpolatedString("", nameof(condition))] ref AppendElseStringHandler handler) {
+
+      if (this.AppendElseOK) {
+         _appendIfCondition = condition;
+      }
+
+      return this;
+   }
+
+   /// <summary>
+   /// Appends the interpolated string <paramref name="handler"/> if an antecedent call to
+   /// <see cref="AppendIf(Boolean, ref AppendStringHandler)"/>
+   /// or <see cref="AppendElseIf(Boolean, ref AppendElseStringHandler)"/> used a false condition
+   /// </summary>
+   /// <inheritdoc cref="AppendIf(Boolean, ref AppendStringHandler)" path="*[self::param[@name='handler'] or self::returns]"/>
+
+   public SqlBuilder
+   AppendElse([InterpolatedString("")] ref AppendElseStringHandler handler) {
+
+      if (this.AppendElseOK) {
+         _appendIfCondition = null;
+      }
+
+      return this;
+   }
+
+   /// <summary>
    /// Appends the default line terminator to this instance.
    /// </summary>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
@@ -630,7 +696,6 @@ public sealed partial class SqlBuilder : ISqlFragment {
    SetNextClause(SqlClause? clause) {
 
       this.NextClause = clause;
-      _ifCondition = null;
 
       return this;
    }
@@ -695,7 +760,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// and an antecedent call to <see cref="_If(Boolean, ref ConditionalStringHandler)"/>
    /// or <see cref="_ElseIf(Boolean, ref ConditionalElseStringHandler)"/> used a false condition.
    /// </summary>
-   /// <inheritdoc cref="_If(Boolean, ref ConditionalStringHandler)" path="*[not(self::summary)]"/>
+   /// <inheritdoc cref="_If(Boolean, ref ConditionalStringHandler)"/>
 
    [CLSCompliant(false)]
    public SqlBuilder
@@ -1388,6 +1453,61 @@ public sealed partial class SqlBuilder : ISqlFragment {
          ArgumentNullException.ThrowIfNull(sqlBuilder);
 
          this.Builder = sqlBuilder;
+      }
+
+      /// <exclude/>
+
+      public
+      AppendStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder, bool condition, out bool shouldAppend) {
+
+         ArgumentNullException.ThrowIfNull(sqlBuilder);
+
+         this.Builder = sqlBuilder;
+
+         shouldAppend = condition;
+      }
+
+      /// <exclude/>
+
+      public void
+      AppendLiteral(string value) =>
+         this.Builder.Buffer.Append(value);
+
+      /// <exclude/>
+
+      public void
+      AppendFormatted(object? value, int alignment = 0, string? format = null) =>
+         this.Builder.AppendPlaceholder(value, format);
+   }
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   [InterpolatedStringHandler]
+   public struct AppendElseStringHandler {
+
+      internal SqlBuilder
+      Builder { get; }
+
+      /// <exclude/>
+
+      public
+      AppendElseStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder, out bool shouldAppend)
+         : this(literalLength, formattedCount, sqlBuilder, true, out shouldAppend) { }
+
+      /// <exclude/>
+
+      public
+      AppendElseStringHandler(int literalLength, int formattedCount, SqlBuilder sqlBuilder, bool condition, out bool shouldAppend) {
+
+         ArgumentNullException.ThrowIfNull(sqlBuilder);
+
+         this.Builder = sqlBuilder;
+
+         condition = condition
+            && sqlBuilder.AppendElseOK;
+
+         shouldAppend = condition;
       }
 
       /// <exclude/>
