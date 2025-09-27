@@ -504,7 +504,7 @@ public partial class Database : IDisposable {
          throw new InvalidOperationException("Configuration.LastInsertIdCommand cannot be null.");
       }
 
-      var command = CreateCommand(SqlBuilder.CreateStatic(sql));
+      var command = CreateCommand(new SqlBuilder(sql.Length, 0).Append(sql));
       var value = command.ExecuteScalar();
 
       Trace(command);
@@ -524,7 +524,7 @@ public partial class Database : IDisposable {
          throw new InvalidOperationException("Configuration.LastInsertIdCommand cannot be null.");
       }
 
-      var command = CreateCommand(SqlBuilder.CreateStatic(sql));
+      var command = CreateCommand(new SqlBuilder(sql.Length, 0).Append(sql));
       var value = await command.ExecuteScalarAsync(cancellationToken)
          .ConfigureAwait(false);
 

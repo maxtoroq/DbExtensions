@@ -43,14 +43,9 @@ namespace Samples.CSharp {
             .FROM("Orders o");
       }
 
-      /// <remarks>
-      /// If there's a large chunk of the query that is static you can pass it to the
-      /// Create() method and extend it from there.
-      /// </remarks>
-
       public SqlBuilder ExtendRawSql() {
 
-         return SqlBuilder.Create("""
+         return ((SqlBuilder)$"""
              SELECT ProductID, ProductName
              FROM Products
              """)

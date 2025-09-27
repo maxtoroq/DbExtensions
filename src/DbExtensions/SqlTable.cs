@@ -1221,8 +1221,12 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    /// <returns>The UPDATE command for the current table.</returns>
 
    public SqlBuilder
-   BuildUpdateClause() =>
-      SqlBuilder.Create("UPDATE " + QuoteIdentifier(_metaType.Table.TableName));
+   BuildUpdateClause() {
+
+      return new SqlBuilder()
+         .Append("UPDATE ")
+         .Append(QuoteIdentifier(_metaType.Table.TableName));
+   }
 
    /// <summary>
    /// Creates and returns an UPDATE command for the specified <paramref name="entity"/>.
@@ -1308,8 +1312,12 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
    /// <returns>The DELETE command for the current table.</returns>
 
    public SqlBuilder
-   BuildDeleteStatement() =>
-      SqlBuilder.Create("DELETE FROM " + QuoteIdentifier(_metaType.Table.TableName));
+   BuildDeleteStatement() {
+
+      return new SqlBuilder()
+         .Append("DELETE FROM ")
+         .Append(QuoteIdentifier(_metaType.Table.TableName));
+   }
 
    /// <summary>
    /// Creates and returns a DELETE command for the specified <paramref name="entity"/>.

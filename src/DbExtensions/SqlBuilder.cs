@@ -202,70 +202,6 @@ public sealed partial class SqlBuilder : ISqlFragment {
    }
 
    /// <summary>
-   /// Initializes a new instance of the <see cref="SqlBuilder"/> class
-   /// using the provided interpolated string.
-   /// </summary>
-   /// <param name="handler">The interpolated string.</param>
-   /// <returns>A new instance of <see cref="SqlBuilder"/> initialized with <paramref name="handler"/>.</returns>
-
-   public static SqlBuilder
-   Create(ref AppendStringHandler handler) =>
-      handler.Builder;
-
-   /// <summary>
-   /// Initializes a new instance of the <see cref="SqlBuilder"/> class
-   /// using the provided text.
-   /// </summary>
-   /// <param name="text">The SQL string.</param>
-   /// <returns>A new instance of <see cref="SqlBuilder"/> initialized with <paramref name="text"/>.</returns>
-
-   public static SqlBuilder
-   Create(string? text) {
-
-      if (String.IsNullOrEmpty(text)) {
-         return new SqlBuilder();
-      }
-
-      return new SqlBuilder(false, text.Length, 0)
-         .Append(text);
-   }
-
-   /// <summary>
-   /// Initializes a new instance of the <see cref="SqlBuilder"/> class
-   /// using the provided interpolated string. Use this method if you don't expect to modify the returned
-   /// builder; otherwise, use <see cref="Create(ref AppendStringHandler)"/> instead.
-   /// </summary>
-   /// <param name="sql">The interpolated string.</param>
-   /// <returns>The provided <paramref name="sql"/> unmodified.</returns>
-
-   public static SqlBuilder
-   CreateStatic(SqlBuilder sql) {
-
-      ArgumentNullException.ThrowIfNull(sql);
-
-      return sql;
-   }
-
-   /// <summary>
-   /// Initializes a new instance of the <see cref="SqlBuilder"/> class
-   /// using the provided text. Use this method if you don't expect to modify the returned
-   /// builder; otherwise, use <see cref="Create(String)"/> instead.
-   /// </summary>
-   /// <param name="text">The SQL string.</param>
-   /// <returns>A new instance of <see cref="SqlBuilder"/> initialized with <paramref name="text"/>.</returns>
-
-   public static SqlBuilder
-   CreateStatic(string? text) {
-
-      if (String.IsNullOrEmpty(text)) {
-         return new SqlBuilder();
-      }
-
-      return new SqlBuilder(true, text.Length, 0)
-         .Append(text);
-   }
-
-   /// <summary>
    /// Initializes a new instance of the <see cref="SqlBuilder"/> class.
    /// </summary>
 
@@ -298,30 +234,15 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    [EditorBrowsable(EditorBrowsableState.Never)]
    public
-   SqlBuilder(int literalLength, int formattedCount)
-      : this(true, literalLength + PlaceholderLengthSum(formattedCount), formattedCount) {
+   SqlBuilder(int literalLength, int formattedCount) {
 
-      // This constructor is used by interpolated string arguments.
-      // Since these are literal "string" arguments, the query is most likely not
-      // modified. Therefore we use a "static" capacity and ignore the default
-      // capacity (although the interpolated string could still use sub-queries and
-      // dynamic literals that make the buffer grow).
-   }
+      // This constructor is used by interpolated strings.
+      // Capacities are optimized for "static" queries.
 
-   private
-   SqlBuilder(bool staticQuery, int queryLength, int paramLength) {
+      var queryLength = literalLength + PlaceholderLengthSum(formattedCount);
 
-      var bufferCap = (staticQuery) ? queryLength
-         : Math.Max(_defaultCapacity, queryLength);
-
-      // The first time List<T> resizes it grows to 4,
-      // if param length is not greater just let it grow lazily
-
-      var paramCap = (staticQuery || paramLength > 4) ?
-         paramLength : 0;
-
-      this.Buffer = new(bufferCap);
-      this.ParameterValues = new(new List<object?>(paramCap));
+      this.Buffer = new(queryLength);
+      this.ParameterValues = new(new List<object?>(formattedCount));
    }
 
    static int
@@ -1431,19 +1352,6 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
       internal SqlBuilder
       Builder { get; }
-
-      /// <exclude/>
-
-      public
-      AppendStringHandler(int literalLength, int formattedCount) {
-
-         // This constructor is used for Create(ref AppendStringHandler).
-         // Capacity used is consistent with Create(String).
-
-         var queryLength = literalLength + PlaceholderLengthSum(formattedCount);
-
-         this.Builder = new(false, queryLength, formattedCount);
-      }
 
       /// <exclude/>
 

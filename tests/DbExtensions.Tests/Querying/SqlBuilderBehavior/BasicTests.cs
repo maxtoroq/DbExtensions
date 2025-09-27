@@ -9,11 +9,11 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       [Test]
       public void Create_Interpolated() {
 
-         var query = SqlBuilder.Create($"""
+         var query = (SqlBuilder)$"""
             SELECT ProductID, ProductName
             FROM Products
             WHERE CategoryID = {1}
-            """);
+            """;
 
          Assert.AreEqual("""
             SELECT ProductID, ProductName
