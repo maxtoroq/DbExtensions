@@ -18,7 +18,7 @@ Syntax
 ------
 
 ```csharp
-public DbTransaction EnsureInTransaction(
+public virtual DbTransaction EnsureInTransaction(
 	IsolationLevel isolationLevel
 )
 ```

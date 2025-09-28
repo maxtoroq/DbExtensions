@@ -18,7 +18,7 @@ Syntax
 ------
 
 ```csharp
-public ValueTask<DbTransaction> EnsureInTransactionAsync(
+public virtual ValueTask<DbTransaction> EnsureInTransactionAsync(
 	IsolationLevel isolationLevel,
 	CancellationToken cancellationToken = default
 )

@@ -255,7 +255,7 @@ public partial class Database : IDisposable {
    /// an existing transaction.
    /// </param>
 
-   public DbTransaction
+   public virtual DbTransaction
    EnsureInTransaction(IsolationLevel isolationLevel) {
 
       var connHolder = (WrappedConnection)EnsureConnectionOpen();
@@ -319,7 +319,7 @@ public partial class Database : IDisposable {
    /// <inheritdoc cref="EnsureInTransactionAsync(CancellationToken)"/>
    /// <inheritdoc cref="EnsureInTransaction(IsolationLevel)" path="param"/>
 
-   public async ValueTask<DbTransaction>
+   public virtual async ValueTask<DbTransaction>
    EnsureInTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default) {
 
       var connHolder = (WrappedConnection)EnsureConnectionOpen();
