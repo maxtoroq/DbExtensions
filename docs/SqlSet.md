@@ -1,1 +1,1 @@
-﻿This page has moved [here](http://maxtoroq.github.io/DbExtensions/docs/SqlSet.html).
+﻿This page has moved [here](https://maxtoroq.github.io/DbExtensions/docs/7/SqlSet.html).

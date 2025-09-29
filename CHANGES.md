@@ -1,1 +1,1 @@
-﻿This page has moved [here](http://maxtoroq.github.io/DbExtensions/docs/changes.html).
+﻿This page has moved [here](https://maxtoroq.github.io/DbExtensions/docs/7/changes.html).

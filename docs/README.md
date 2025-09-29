@@ -1,1 +1,1 @@
-﻿Documentation has moved [here](http://maxtoroq.github.io/DbExtensions/docs/).
+﻿Documentation has moved [here](https://maxtoroq.github.io/DbExtensions/docs/7/).
