@@ -31,7 +31,7 @@ A SQL expression to test each row for a condition.
 
 #### Return Value
 [Boolean][4]  
-true if any elements in the set pass the test in the specified *predicate*; otherwise, false.
+`true` if any elements in the set pass the test in the specified *predicate*; otherwise, `false`.
 
 See Also
 --------

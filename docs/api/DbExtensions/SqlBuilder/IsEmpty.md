@@ -1,6 +1,6 @@
 SqlBuilder.IsEmpty Property
 ===========================
-Returns true if the buffer is empty.
+Returns `true` if the buffer is empty.
   
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll

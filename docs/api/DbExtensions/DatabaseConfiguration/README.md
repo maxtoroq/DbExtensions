@@ -28,14 +28,14 @@ Properties
 | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [CommandTimeout][5]                  | Specifies a timeout to assign to commands. This setting is ignored if less or equal to -1. The default is -1.                                                                                 |
 | [DefaultComplexPropertySeparator][6] | The default separator to use when mapping complex properties. The default value is null, which means no separator is used, unless an explicit separator is specified on [Separator][7].       |
-| [EnableBatchCommands][8]             | true to execute batch commands when possible; otherwise, false. The default is true.                                                                                                          |
+| [EnableBatchCommands][8]             | `true` to execute batch commands when possible; otherwise, `false`. The default is `true`.                                                                                                    |
 | [LastInsertIdCommand][9]             | Gets or sets the SQL command that returns the last identity value generated on the database.                                                                                                  |
 | [Log][10]                            | Specifies the destination to write the SQL query or command.                                                                                                                                  |
 | [ParameterNameBuilder][11]           | Specifies a function that prepares a parameter name to be used on [ParameterName][12].                                                                                                        |
 | [ParameterPlaceholderBuilder][13]    | Specifies a function that builds a parameter placeholder to be used in SQL statements.                                                                                                        |
 | [QuotePrefix][14]                    | Gets or sets the beginning character or characters to use when specifying database objects (for example, tables or columns) whose names contain characters such as spaces or reserved tokens. |
 | [QuoteSuffix][15]                    | Gets or sets the ending character or characters to use when specifying database objects (for example, tables or columns) whose names contain characters such as spaces or reserved tokens.    |
-| [UseVersionMember][16]               | true to include version column check in SQL statements' predicates; otherwise, false. The default is true.                                                                                    |
+| [UseVersionMember][16]               | `true` to include version column check in SQL statements' predicates; otherwise, `false`. The default is `true`.                                                                              |
 
 
 See Also

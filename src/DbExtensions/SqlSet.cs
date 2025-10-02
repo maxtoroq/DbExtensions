@@ -564,7 +564,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// Determines whether all elements of the set satisfy a condition.
    /// </summary>
    /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-   /// <returns>true if every element of the set passes the test in the specified <paramref name="predicate"/>, or if the set is empty; otherwise, false.</returns>
+   /// <returns><c>true</c> if every element of the set passes the test in the specified <paramref name="predicate"/>, or if the set is empty; otherwise, <c>false</c>.</returns>
 
    public bool
    All(string predicate) {
@@ -589,7 +589,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// <summary>
    /// Determines whether the set contains any elements.
    /// </summary>
-   /// <returns>true if the sequence contains any elements; otherwise, false.</returns>
+   /// <returns><c>true</c> if the sequence contains any elements; otherwise, <c>false</c>.</returns>
 
    public bool
    Any() {
@@ -616,7 +616,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// Determines whether any element of the set satisfies a condition.
    /// </summary>
    /// <param name="predicate">A SQL expression to test each row for a condition.</param>
-   /// <returns>true if any elements in the set pass the test in the specified <paramref name="predicate"/>; otherwise, false.</returns>
+   /// <returns><c>true</c> if any elements in the set pass the test in the specified <paramref name="predicate"/>; otherwise, <c>false</c>.</returns>
 
    public bool
    Any(string predicate) =>

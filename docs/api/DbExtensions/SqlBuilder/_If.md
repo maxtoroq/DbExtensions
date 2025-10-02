@@ -1,6 +1,6 @@
 SqlBuilder._If Method
 =====================
-Appends the interpolated string *handler* to the current clause if *condition* is true.
+Appends the interpolated string *handler* to the current clause if *condition* is `true`.
   
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
@@ -18,7 +18,7 @@ public SqlBuilder _If(
 #### Parameters
 
 ##### *condition*  [Boolean][2]
-true to append *handler* to the current clause; otherwise, false.
+`true` to append *handler* to the current clause; otherwise, `false`.
 
 ##### *handler*  ConditionalStringHandler
 The interpolated string that represents the body of the current clause.

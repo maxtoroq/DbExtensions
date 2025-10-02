@@ -34,7 +34,7 @@ The [CancellationToken][3] to monitor for cancellation requests. The default is 
 
 #### Return Value
 [ValueTask][5]&lt;[Boolean][6]>  
-true if every element of the set passes the test in the specified *predicate*, or if the set is empty; otherwise, false.
+`true` if every element of the set passes the test in the specified *predicate*, or if the set is empty; otherwise, `false`.
 
 See Also
 --------

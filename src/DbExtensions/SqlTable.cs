@@ -292,14 +292,14 @@ partial class DatabaseConfiguration {
    Model => _model.Value;
 
    /// <summary>
-   /// true to include version column check in SQL statements' predicates; otherwise, false. The default is true.
+   /// <c>true</c> to include version column check in SQL statements' predicates; otherwise, <c>false</c>. The default is <c>true</c>.
    /// </summary>
 
    public bool
    UseVersionMember { get; set; } = true;
 
    /// <summary>
-   /// true to execute batch commands when possible; otherwise, false. The default is true.
+   /// <c>true</c> to execute batch commands when possible; otherwise, <c>false</c>. The default is <c>true</c>.
    /// </summary>
    /// <remarks>
    /// This setting affects the behavior of <see cref="SqlTable&lt;TEntity>.AddRange(TEntity[])"/>,
@@ -1433,7 +1433,7 @@ partial class SqlSet {
    /// Checks the existance of the <paramref name="entity"/>, using the primary key value.
    /// </summary>
    /// <param name="entity">The entity whose existance is to be checked.</param>
-   /// <returns>true if the primary key value exists in the database; otherwise false.</returns>
+   /// <returns><c>true</c> if the primary key value exists in the database; otherwise, <c>false</c>.</returns>
    /// <exception cref="System.InvalidOperationException">This method can only be used on sets where the result type is an annotated class.</exception>
 
    public bool
@@ -1468,7 +1468,7 @@ partial class SqlSet {
    /// Checks the existance of an entity whose primary matches the <paramref name="id"/> parameter.
    /// </summary>
    /// <param name="id">The primary key value.</param>
-   /// <returns>true if the primary key value exists in the database; otherwise false.</returns>
+   /// <returns><c>true</c> if the primary key value exists in the database; otherwise, <c>false</c>.</returns>
    /// <exception cref="System.InvalidOperationException">This method can only be used on sets where the result type is an annotated class.</exception>
 
    public bool

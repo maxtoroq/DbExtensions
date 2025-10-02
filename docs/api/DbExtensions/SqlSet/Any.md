@@ -24,7 +24,7 @@ public bool Any()
 
 #### Return Value
 [Boolean][4]  
-true if the sequence contains any elements; otherwise, false.
+`true` if the sequence contains any elements; otherwise, `false`.
 
 See Also
 --------

@@ -25,7 +25,7 @@ The non-query command to execute.
 The number of records the command should affect. This value is ignored if less or equal to -1.
 
 ##### *exact*  [Boolean][4]  (Optional)
-true if the number of affected records should exactly match *affect*; false if a lower number is acceptable.
+`true` if the number of affected records should exactly match *affect*; `false` if a lower number is acceptable.
 
 #### Return Value
 [Int32][3]  

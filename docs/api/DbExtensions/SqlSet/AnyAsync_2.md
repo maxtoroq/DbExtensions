@@ -31,7 +31,7 @@ The [CancellationToken][4] to monitor for cancellation requests. The default is 
 
 #### Return Value
 [ValueTask][6]&lt;[Boolean][7]>  
-true if the sequence contains any elements; otherwise, false.
+`true` if the sequence contains any elements; otherwise, `false`.
 
 See Also
 --------

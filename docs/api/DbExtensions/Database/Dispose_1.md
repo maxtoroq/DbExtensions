@@ -26,7 +26,7 @@ protected virtual void Dispose(
 #### Parameters
 
 ##### *disposing*  [Boolean][4]
-true if this method is being called due to a call to [Dispose()][3]; otherwise, false.
+`true` if this method is being called due to a call to [Dispose()][3]; otherwise, `false`.
 
 
 See Also

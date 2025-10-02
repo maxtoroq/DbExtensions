@@ -356,7 +356,7 @@ public partial class Database : IDisposable {
    /// </summary>
    /// <param name="nonQuery">The non-query command to execute.</param>
    /// <param name="affect">The number of records the command should affect. This value is ignored if less or equal to -1.</param>
-   /// <param name="exact">true if the number of affected records should exactly match <paramref name="affect"/>; false if a lower number is acceptable.</param>
+   /// <param name="exact"><c>true</c> if the number of affected records should exactly match <paramref name="affect"/>; <c>false</c> if a lower number is acceptable.</param>
    /// <returns>The number of affected records.</returns>
    /// <exception cref="ChangeConflictException">The number of affected records is not equal to <paramref name="affect"/>.</exception>
 
@@ -689,7 +689,7 @@ public partial class Database : IDisposable {
    /// Releases the resources used by this <see cref="Database"/> instance.
    /// </summary>
    /// <param name="disposing">
-   /// true if this method is being called due to a call to <see cref="Dispose()"/>; otherwise, false.
+   /// <c>true</c> if this method is being called due to a call to <see cref="Dispose()"/>; otherwise, <c>false</c>.
    /// </param>
 
    protected virtual void

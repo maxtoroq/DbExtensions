@@ -30,7 +30,7 @@ A SQL expression to test each row for a condition.
 
 #### Return Value
 [Boolean][3]  
-true if every element of the set passes the test in the specified *predicate*, or if the set is empty; otherwise, false.
+`true` if every element of the set passes the test in the specified *predicate*, or if the set is empty; otherwise, `false`.
 
 See Also
 --------

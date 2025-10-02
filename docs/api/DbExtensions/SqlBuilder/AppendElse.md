@@ -1,6 +1,6 @@
 SqlBuilder.AppendElse Method
 ============================
-Appends the interpolated string *handler* if an antecedent call to [AppendIf(Boolean, AppendStringHandler)][1] or [AppendElseIf(Boolean, AppendElseStringHandler)][2] used a false condition
+Appends the interpolated string *handler* if an antecedent call to [AppendIf(Boolean, AppendStringHandler)][1] or [AppendElseIf(Boolean, AppendElseStringHandler)][2] used a `false` condition
   
 **Namespace:** [DbExtensions][3]  
 **Assembly:** DbExtensions.dll

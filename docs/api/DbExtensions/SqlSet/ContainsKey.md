@@ -21,7 +21,7 @@ The primary key value.
 
 #### Return Value
 [Boolean][3]  
-true if the primary key value exists in the database; otherwise false.
+`true` if the primary key value exists in the database; otherwise, `false`.
 
 Exceptions
 ----------

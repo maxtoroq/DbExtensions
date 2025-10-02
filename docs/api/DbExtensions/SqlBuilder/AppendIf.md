@@ -1,6 +1,6 @@
 SqlBuilder.AppendIf Method
 ==========================
-Appends the interpolated string *handler* if *condition* is true.
+Appends the interpolated string *handler* if *condition* is `true`.
   
 **Namespace:** [DbExtensions][1]  
 **Assembly:** DbExtensions.dll
@@ -18,7 +18,7 @@ public SqlBuilder AppendIf(
 #### Parameters
 
 ##### *condition*  [Boolean][2]
-true to append *handler*; otherwise, false.
+`true` to append *handler*; otherwise, `false`.
 
 ##### *handler*  AppendStringHandler
 The interpolated string to append.

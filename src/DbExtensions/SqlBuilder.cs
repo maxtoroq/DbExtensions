@@ -101,7 +101,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    }
 
    /// <summary>
-   /// Returns true if the buffer is empty.
+   /// Returns <c>true</c> if the buffer is empty.
    /// </summary>
 
    public bool
@@ -496,9 +496,9 @@ public sealed partial class SqlBuilder : ISqlFragment {
    GetDefiningQueryFromObject(object? obj, ref SqlBuilder? definingQuery);
 
    /// <summary>
-   /// Appends the interpolated string <paramref name="handler"/> if <paramref name="condition"/> is true.
+   /// Appends the interpolated string <paramref name="handler"/> if <paramref name="condition"/> is <c>true</c>.
    /// </summary>
-   /// <param name="condition">true to append <paramref name="handler"/>; otherwise, false.</param>
+   /// <param name="condition"><c>true</c> to append <paramref name="handler"/>; otherwise, <c>false</c>.</param>
    /// <param name="handler">The interpolated string to append.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
@@ -511,9 +511,9 @@ public sealed partial class SqlBuilder : ISqlFragment {
    }
 
    /// <summary>
-   /// Appends the interpolated string <paramref name="handler"/> if <paramref name="condition"/> is true
+   /// Appends the interpolated string <paramref name="handler"/> if <paramref name="condition"/> is <c>true</c>
    /// and an antecedent call to <see cref="AppendIf(Boolean, ref AppendStringHandler)"/>
-   /// or <see cref="AppendElseIf(Boolean, ref AppendElseStringHandler)"/> used a false condition.
+   /// or <see cref="AppendElseIf(Boolean, ref AppendElseStringHandler)"/> used a <c>false</c> condition.
    /// </summary>
    /// <inheritdoc cref="AppendIf(Boolean, ref AppendStringHandler)"/>
 
@@ -530,7 +530,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// <summary>
    /// Appends the interpolated string <paramref name="handler"/> if an antecedent call to
    /// <see cref="AppendIf(Boolean, ref AppendStringHandler)"/>
-   /// or <see cref="AppendElseIf(Boolean, ref AppendElseStringHandler)"/> used a false condition
+   /// or <see cref="AppendElseIf(Boolean, ref AppendElseStringHandler)"/> used a <c>false</c> condition
    /// </summary>
    /// <inheritdoc cref="AppendIf(Boolean, ref AppendStringHandler)" path="*[self::param[@name='handler'] or self::returns]"/>
 
@@ -661,9 +661,9 @@ public sealed partial class SqlBuilder : ISqlFragment {
       AppendClause<SqlClause.Current>(text);
 
    /// <summary>
-   /// Appends the interpolated string <paramref name="handler"/> to the current clause if <paramref name="condition"/> is true.
+   /// Appends the interpolated string <paramref name="handler"/> to the current clause if <paramref name="condition"/> is <c>true</c>.
    /// </summary>
-   /// <param name="condition">true to append <paramref name="handler"/> to the current clause; otherwise, false.</param>
+   /// <param name="condition"><c>true</c> to append <paramref name="handler"/> to the current clause; otherwise, <c>false</c>.</param>
    /// <param name="handler">The interpolated string that represents the body of the current clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
@@ -677,9 +677,9 @@ public sealed partial class SqlBuilder : ISqlFragment {
    }
 
    /// <summary>
-   /// Appends <paramref name="handler"/> to the current clause if <paramref name="condition"/> is true
+   /// Appends <paramref name="handler"/> to the current clause if <paramref name="condition"/> is <c>true</c>
    /// and an antecedent call to <see cref="_If(Boolean, ref ConditionalStringHandler)"/>
-   /// or <see cref="_ElseIf(Boolean, ref ConditionalElseStringHandler)"/> used a false condition.
+   /// or <see cref="_ElseIf(Boolean, ref ConditionalElseStringHandler)"/> used a <c>false</c> condition.
    /// </summary>
    /// <inheritdoc cref="_If(Boolean, ref ConditionalStringHandler)"/>
 
@@ -698,7 +698,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    /// Appends <paramref name="handler"/> to the current clause if an antecedent call to
    /// <see cref="_If(Boolean, ref ConditionalStringHandler)"/>
    /// or <see cref="_ElseIf(Boolean, ref ConditionalElseStringHandler)"/> used a
-   /// false condition
+   /// <c>false</c> condition
    /// </summary>
    /// <param name="handler">The interpolated string that represents the body of the current clause.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>

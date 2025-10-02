@@ -1,6 +1,6 @@
 SqlBuilder._Else Method
 =======================
-Appends *handler* to the current clause if an antecedent call to [_If(Boolean, ConditionalStringHandler)][1] or [_ElseIf(Boolean, ConditionalElseStringHandler)][2] used a false condition
+Appends *handler* to the current clause if an antecedent call to [_If(Boolean, ConditionalStringHandler)][1] or [_ElseIf(Boolean, ConditionalElseStringHandler)][2] used a `false` condition
   
 **Namespace:** [DbExtensions][3]  
 **Assembly:** DbExtensions.dll

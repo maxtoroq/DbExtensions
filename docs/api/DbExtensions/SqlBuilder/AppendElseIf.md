@@ -1,6 +1,6 @@
 SqlBuilder.AppendElseIf Method
 ==============================
-Appends the interpolated string *handler* if *condition* is true and an antecedent call to [AppendIf(Boolean, AppendStringHandler)][1] or **AppendElseIf(Boolean, AppendElseStringHandler)** used a false condition.
+Appends the interpolated string *handler* if *condition* is `true` and an antecedent call to [AppendIf(Boolean, AppendStringHandler)][1] or **AppendElseIf(Boolean, AppendElseStringHandler)** used a `false` condition.
   
 **Namespace:** [DbExtensions][2]  
 **Assembly:** DbExtensions.dll
@@ -18,7 +18,7 @@ public SqlBuilder AppendElseIf(
 #### Parameters
 
 ##### *condition*  [Boolean][3]
-true to append *handler*; otherwise, false.
+`true` to append *handler*; otherwise, `false`.
 
 ##### *handler*  AppendElseStringHandler
 The interpolated string to append.

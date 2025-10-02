@@ -25,7 +25,7 @@ The [CancellationToken][3] to monitor for cancellation requests. The default is 
 
 #### Return Value
 [ValueTask][5]&lt;[Boolean][6]>  
-true if the primary key value exists in the database; otherwise false.
+`true` if the primary key value exists in the database; otherwise, `false`.
 
 Exceptions
 ----------
