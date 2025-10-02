@@ -201,7 +201,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    readonly SqlBuffer
    _buffer;
 
-   internal readonly Database
+   private protected readonly Database
    _db;
 
    readonly int
@@ -478,11 +478,11 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    CreateSet(string?[] fromSelect, Type? resultType = null, SqlBuffer? buffer = null) =>
       new SqlSet(this, fromSelect, resultType, buffer);
 
-   private protected SqlSet<TResult>
+   private SqlSet<TResult>
    CreateSet<TResult>(SqlBuilder superQuery, Func<DbDataReader, TResult>? mapper = null, SqlBuffer? buffer = null) =>
       new SqlSet<TResult>(this, superQuery, mapper, buffer);
 
-   private protected SqlSet<TResult>
+   private SqlSet<TResult>
    CreateSet<TResult>(string?[] fromSelect, SqlBuffer? buffer = null) =>
       new SqlSet<TResult>(this, fromSelect, buffer);
 
