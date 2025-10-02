@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public ValueTask RemoveAsync(
+public ValueTask<bool> RemoveAsync(
 	Object entity,
 	CancellationToken cancellationToken = default
 )
@@ -24,18 +24,20 @@ The entity whose DELETE command is to be executed.
 The [CancellationToken][3] to monitor for cancellation requests. The default is [None][4].
 
 #### Return Value
-[ValueTask][5]
+[ValueTask][5]&lt;[Boolean][6]>  
+`true` if *entity* is deleted; otherwise, `false`.
 
 See Also
 --------
 
 #### Reference
-[SqlTable Class][6]  
+[SqlTable Class][7]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: https://learn.microsoft.com/dotnet/api/system.object
 [3]: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
 [4]: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none
-[5]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask
-[6]: README.md
+[5]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1
+[6]: https://learn.microsoft.com/dotnet/api/system.boolean
+[7]: README.md

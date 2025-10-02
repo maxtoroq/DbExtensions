@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public ValueTask RemoveKeyAsync<TEntity>(
+public ValueTask<bool> RemoveKeyAsync<TEntity>(
 	Object id,
 	CancellationToken cancellationToken = default
 )
@@ -31,7 +31,8 @@ The [CancellationToken][3] to monitor for cancellation requests. The default is 
 
 
 #### Return Value
-[ValueTask][5]
+[ValueTask][5]&lt;[Boolean][6]>  
+`true` if a record that matches *id* was found and deleted; otherwise, `false`.
 
 Remarks
 -------
@@ -41,14 +42,15 @@ See Also
 --------
 
 #### Reference
-[Database Class][6]  
+[Database Class][7]  
 [DbExtensions Namespace][1]  
-[SqlTable&lt;TEntity>.RemoveKeyAsync(Object, CancellationToken)][7]  
+[SqlTable&lt;TEntity>.RemoveKeyAsync(Object, CancellationToken)][8]  
 
 [1]: ../README.md
 [2]: https://learn.microsoft.com/dotnet/api/system.object
 [3]: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken
 [4]: https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none
-[5]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask
-[6]: README.md
-[7]: ../SqlTable_1/RemoveKeyAsync.md
+[5]: https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1
+[6]: https://learn.microsoft.com/dotnet/api/system.boolean
+[7]: README.md
+[8]: ../SqlTable_1/RemoveKeyAsync.md

@@ -86,12 +86,12 @@ partial class Database {
    /// <remarks>This method is a shortcut for <c>await db.Table(entity.GetType()).RemoveAsync(entity, cancellationToken)</c>.</remarks>
    /// <seealso cref="SqlTable.RemoveAsync(Object, CancellationToken)" qualifyHint="true"/>
 
-   public async ValueTask
+   public async ValueTask<bool>
    RemoveAsync(object entity, CancellationToken cancellationToken = default) {
 
       ArgumentNullException.ThrowIfNull(entity);
 
-      await Table(entity.GetType())
+      return await Table(entity.GetType())
          .RemoveAsync(entity, cancellationToken)
          .ConfigureAwait(false);
    }
@@ -100,10 +100,10 @@ partial class Database {
    /// <remarks>This method is a shortcut for <c>await db.Table&lt;TEntity>().RemoveKeyAsync(id, cancellationToken)</c>.</remarks>
    /// <seealso cref="SqlTable&lt;TEntity>.RemoveKeyAsync(Object, CancellationToken)" qualifyHint="true"/>
 
-   public async ValueTask
+   public async ValueTask<bool>
    RemoveKeyAsync<TEntity>(object id, CancellationToken cancellationToken = default) where TEntity : class {
 
-      await Table<TEntity>()
+      return await Table<TEntity>()
          .RemoveKeyAsync(id, cancellationToken)
          .ConfigureAwait(false);
    }
@@ -207,13 +207,13 @@ partial class SqlTable {
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveAsync(TEntity, CancellationToken)"/>
 
-   public ValueTask
+   public ValueTask<bool>
    RemoveAsync(object entity, CancellationToken cancellationToken = default) =>
       _table.RemoveAsync(entity, cancellationToken);
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveKeyAsync(Object, CancellationToken)"/>
 
-   public ValueTask
+   public ValueTask<bool>
    RemoveKeyAsync(object id, CancellationToken cancellationToken = default) =>
       _table.RemoveKeyAsync(id, cancellationToken);
 
@@ -502,7 +502,7 @@ partial class SqlTable<TEntity> {
    /// <inheritdoc cref="Remove(TEntity)"/>
    /// <inheritdoc cref="SqlSet.AnyAsync(CancellationToken)" path="param"/>
 
-   public async ValueTask
+   public async ValueTask<bool>
    RemoveAsync(TEntity entity, CancellationToken cancellationToken = default) {
 
       ArgumentNullException.ThrowIfNull(entity);
@@ -512,22 +512,22 @@ partial class SqlTable<TEntity> {
       var usingVersion = _db.Configuration.UseVersionMember
          && _metaType.VersionMember is not null;
 
-      await _db.ExecuteAsync(deleteSql, affect: 1, exact: usingVersion, cancellationToken)
-         .ConfigureAwait(false);
+      return await _db.ExecuteAsync(deleteSql, affect: 1, exact: usingVersion, cancellationToken)
+         .ConfigureAwait(false) == 1;
    }
 
    /// <inheritdoc cref="RemoveKey(Object)"/>
    /// <inheritdoc cref="SqlSet.AnyAsync(CancellationToken)" path="param"/>
 
-   public async ValueTask
+   public async ValueTask<bool>
    RemoveKeyAsync(object id, CancellationToken cancellationToken = default) {
 
       ArgumentNullException.ThrowIfNull(id);
 
       var deleteSql = this.CommandBuilder.BuildDeleteStatementForKey(id);
 
-      await _db.ExecuteAsync(deleteSql, affect: 1, cancellationToken: cancellationToken)
-         .ConfigureAwait(false);
+      return await _db.ExecuteAsync(deleteSql, affect: 1, cancellationToken: cancellationToken)
+         .ConfigureAwait(false) == 1;
    }
 
    /// <inheritdoc cref="RemoveRange(IEnumerable&lt;TEntity>)"/>
@@ -788,11 +788,11 @@ partial class SqlTable<TEntity> {
    ISqlTable.AddRangeAsync(params object[] entities) =>
       AddRangeAsync(entities.Cast<TEntity>());
 
-   ValueTask
+   ValueTask<bool>
    ISqlTable.RemoveAsync(object entity, CancellationToken cancellationToken) =>
       RemoveAsync((TEntity)entity, cancellationToken);
 
-   ValueTask
+   ValueTask<bool>
    ISqlTable.RemoveKeyAsync(object id, CancellationToken cancellationToken) =>
       RemoveKeyAsync(id, cancellationToken);
 
@@ -839,10 +839,10 @@ partial interface ISqlTable {
    ValueTask
    AddRangeAsync(params object[] entities);
 
-   ValueTask
+   ValueTask<bool>
    RemoveAsync(object entity, CancellationToken cancellationToken);
 
-   ValueTask
+   ValueTask<bool>
    RemoveKeyAsync(object id, CancellationToken cancellationToken);
 
    ValueTask

@@ -160,12 +160,12 @@ partial class Database {
    /// <remarks>This method is a shortcut for <c>db.Table(entity.GetType()).Remove(entity)</c>.</remarks>
    /// <seealso cref="SqlTable.Remove(Object)" qualifyHint="true"/>
 
-   public void
+   public bool
    Remove(object entity) {
 
       ArgumentNullException.ThrowIfNull(entity);
 
-      Table(entity.GetType())
+      return Table(entity.GetType())
          .Remove(entity);
    }
 
@@ -173,7 +173,7 @@ partial class Database {
    /// <remarks>This method is a shortcut for <c>db.Table&lt;TEntity>().RemoveKey(id)</c>.</remarks>
    /// <seealso cref="SqlTable&lt;TEntity>.RemoveKey(Object)" qualifyHint="true"/>
 
-   public void
+   public bool
    RemoveKey<TEntity>(object id) where TEntity : class =>
       Table<TEntity>().RemoveKey(id);
 
@@ -456,13 +456,13 @@ public sealed partial class SqlTable : SqlSet, ISqlTable {
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.Remove(TEntity)"/>
 
-   public void
+   public bool
    Remove(object entity) =>
       _table.Remove(entity);
 
    /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveKey(Object)"/>
 
-   public void
+   public bool
    RemoveKey(object id) =>
       _table.RemoveKey(id);
 
@@ -838,8 +838,9 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
    /// Executes a DELETE command for the specified <paramref name="entity"/>.
    /// </summary>
    /// <param name="entity">The entity whose DELETE command is to be executed.</param>
+   /// <returns><c>true</c> if <paramref name="entity"/> is deleted; otherwise, <c>false</c>.</returns>
 
-   public void
+   public bool
    Remove(TEntity entity) {
 
       ArgumentNullException.ThrowIfNull(entity);
@@ -849,7 +850,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
       var usingVersion = _db.Configuration.UseVersionMember
          && _metaType.VersionMember is not null;
 
-      _db.Execute(deleteSql, affect: 1, exact: usingVersion);
+      return _db.Execute(deleteSql, affect: 1, exact: usingVersion) == 1;
    }
 
    /// <summary>
@@ -857,15 +858,16 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
    /// whose primary key matches the <paramref name="id"/> parameter.
    /// </summary>
    /// <param name="id">The primary key value.</param>
+   /// <returns><c>true</c> if a record that matches <paramref name="id"/> was found and deleted; otherwise, <c>false</c>.</returns>
 
-   public void
+   public bool
    RemoveKey(object id) {
 
       ArgumentNullException.ThrowIfNull(id);
 
       var deleteSql = this.CommandBuilder.BuildDeleteStatementForKey(id);
 
-      _db.Execute(deleteSql, affect: 1);
+      return _db.Execute(deleteSql, affect: 1) == 1;
    }
 
    /// <summary>
@@ -1034,11 +1036,11 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
    ISqlTable.UpdateRange(params object[] entities) =>
       UpdateRange(entities.Cast<TEntity>());
 
-   void
+   bool
    ISqlTable.Remove(object entity) =>
       Remove((TEntity)entity);
 
-   void
+   bool
    ISqlTable.RemoveKey(object id) =>
       RemoveKey(id);
 
@@ -1805,10 +1807,10 @@ partial interface ISqlTable {
    void
    AddRange(params object[] entities);
 
-   void
+   bool
    Remove(object entity);
 
-   void
+   bool
    RemoveKey(object id);
 
    void

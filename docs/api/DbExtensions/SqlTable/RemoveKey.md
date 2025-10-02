@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void RemoveKey(
+public bool RemoveKey(
 	Object id
 )
 ```
@@ -19,14 +19,18 @@ public void RemoveKey(
 ##### *id*  [Object][2]
 The primary key value.
 
+#### Return Value
+[Boolean][3]  
+`true` if a record that matches *id* was found and deleted; otherwise, `false`.
 
 See Also
 --------
 
 #### Reference
-[SqlTable Class][3]  
+[SqlTable Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: https://learn.microsoft.com/dotnet/api/system.object
-[3]: README.md
+[3]: https://learn.microsoft.com/dotnet/api/system.boolean
+[4]: README.md

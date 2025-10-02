@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void Remove(
+public bool Remove(
 	TEntity entity
 )
 ```
@@ -19,6 +19,9 @@ public void Remove(
 ##### *entity*  [TEntity][2]
 The entity whose DELETE command is to be executed.
 
+#### Return Value
+[Boolean][3]  
+`true` if *entity* is deleted; otherwise, `false`.
 
 See Also
 --------
@@ -29,3 +32,4 @@ See Also
 
 [1]: ../README.md
 [2]: README.md
+[3]: https://learn.microsoft.com/dotnet/api/system.boolean

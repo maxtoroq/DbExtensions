@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public void RemoveKey<TEntity>(
+public bool RemoveKey<TEntity>(
 	Object id
 )
 where TEntity : class
@@ -26,6 +26,9 @@ The primary key value.
 ##### *TEntity*
 
 
+#### Return Value
+[Boolean][3]  
+`true` if a record that matches *id* was found and deleted; otherwise, `false`.
 
 Remarks
 -------
@@ -35,11 +38,12 @@ See Also
 --------
 
 #### Reference
-[Database Class][3]  
+[Database Class][4]  
 [DbExtensions Namespace][1]  
-[SqlTable&lt;TEntity>.RemoveKey(Object)][4]  
+[SqlTable&lt;TEntity>.RemoveKey(Object)][5]  
 
 [1]: ../README.md
 [2]: https://learn.microsoft.com/dotnet/api/system.object
-[3]: README.md
-[4]: ../SqlTable_1/RemoveKey.md
+[3]: https://learn.microsoft.com/dotnet/api/system.boolean
+[4]: README.md
+[5]: ../SqlTable_1/RemoveKey.md
