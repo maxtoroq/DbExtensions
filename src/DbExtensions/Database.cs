@@ -501,7 +501,7 @@ public partial class Database : IDisposable {
       var sql = this.Configuration.LastInsertIdCommand;
 
       if (String.IsNullOrEmpty(sql)) {
-         throw new InvalidOperationException("Configuration.LastInsertIdCommand cannot be null.");
+         throw new InvalidOperationException("Configuration.LastInsertIdCommand cannot be null or empty.");
       }
 
       var command = CreateCommand(new SqlBuilder(sql.Length, 0).Append(sql));
@@ -521,7 +521,7 @@ public partial class Database : IDisposable {
       var sql = this.Configuration.LastInsertIdCommand;
 
       if (String.IsNullOrEmpty(sql)) {
-         throw new InvalidOperationException("Configuration.LastInsertIdCommand cannot be null.");
+         throw new InvalidOperationException("Configuration.LastInsertIdCommand cannot be null or empty.");
       }
 
       var command = CreateCommand(new SqlBuilder(sql.Length, 0).Append(sql));
@@ -922,6 +922,15 @@ public sealed partial class DatabaseConfiguration {
    string?
    _quoteSuffix;
 
+   Func<string, string>?
+   _parameterNameBuilder;
+
+   Func<string, string>?
+   _parameterPlaceholderBuilder;
+
+   string?
+   _lastInsertIdCommand;
+
    /// <summary>
    /// Gets or sets the beginning character or characters to use when specifying database objects (for example, tables or columns)
    /// whose names contain characters such as spaces or reserved tokens.
@@ -950,22 +959,34 @@ public sealed partial class DatabaseConfiguration {
    /// Specifies a function that prepares a parameter name to be used on <see cref="DbParameter.ParameterName"/>.
    /// </summary>
 
+   [AllowNull]
    public Func<string, string>
-   ParameterNameBuilder { get; set; } = (name) => "@" + name;
+   ParameterNameBuilder {
+      get => _parameterNameBuilder ?? DefaultParameterNameBuilder;
+      set => _parameterNameBuilder = value;
+   }
 
    /// <summary>
    /// Specifies a function that builds a parameter placeholder to be used in SQL statements.
    /// </summary>
 
+   [AllowNull]
    public Func<string, string>
-   ParameterPlaceholderBuilder { get; set; } = (paramName) => paramName;
+   ParameterPlaceholderBuilder {
+      get => _parameterPlaceholderBuilder ?? DefaultParameterPlaceholderBuilder;
+      set => _parameterPlaceholderBuilder = value;
+   }
 
    /// <summary>
    /// Gets or sets the SQL command that returns the last identity value generated on the database.
    /// </summary>
 
+   [AllowNull]
    public string
-   LastInsertIdCommand { get; set; } = "SELECT @@IDENTITY";
+   LastInsertIdCommand {
+      get => _lastInsertIdCommand ?? "SELECT @@IDENTITY";
+      set => _lastInsertIdCommand = value;
+   }
 
    /// <summary>
    /// Specifies the destination to write the SQL query or command. 
@@ -983,6 +1004,12 @@ public sealed partial class DatabaseConfiguration {
 
    internal SqlDialect
    SqlDialect { get; set; }
+
+   static string
+   DefaultParameterNameBuilder(string name) => "@" + name;
+
+   static string
+   DefaultParameterPlaceholderBuilder(string name) => name;
 
 #pragma warning disable CS8618
    internal
@@ -1027,8 +1054,8 @@ public sealed partial class DatabaseConfiguration {
       if (!String.IsNullOrEmpty(qp)
          || !String.IsNullOrEmpty(qs)) {
 
-         this.QuotePrefix = qp;
-         this.QuoteSuffix = qs;
+         this.QuotePrefix = qp ?? String.Empty;
+         this.QuoteSuffix = qs ?? String.Empty;
       }
 
       this.ParameterNameBuilder = (name) => _getParameterNameS.Invoke(cb, name);
