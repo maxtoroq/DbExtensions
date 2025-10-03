@@ -619,12 +619,7 @@ public partial class Database : IDisposable {
          return identifier;
       }
 
-      var idSpan = (Span<char>)stackalloc char[quotePrefix.Length + identifier.Length + quoteSuffix.Length];
-      quotePrefix.CopyTo(idSpan);
-      identifier.CopyTo(idSpan.Slice(quotePrefix.Length));
-      quoteSuffix.CopyTo(idSpan.Slice(quotePrefix.Length + identifier.Length));
-
-      return new String(idSpan);
+      return String.Concat(quotePrefix, identifier, quoteSuffix);
    }
 
    internal void
