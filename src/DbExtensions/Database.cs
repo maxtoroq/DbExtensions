@@ -18,10 +18,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -594,52 +594,37 @@ public partial class Database : IDisposable {
    }
 
    /// <summary>
-   /// Given an unquoted identifier in the correct catalog case, returns the correct quoted form of that identifier,
-   /// including properly escaping any embedded quotes in the identifier.
+   /// Given an unquoted identifier in the correct catalog case, returns the correct quoted form of that identifier.
    /// </summary>
-   /// <param name="unquotedIdentifier">The original unquoted identifier.</param>
-   /// <returns>The quoted version of the identifier. Embedded quotes within the identifier are properly escaped.</returns>
+   /// <param name="identifier">The original identifier.</param>
+   /// <returns>The quoted version of the identifier. If the indentifier is already quoted it's returned unchanged.</returns>
 
    public virtual string
-   QuoteIdentifier(string unquotedIdentifier) {
+   QuoteIdentifier(string identifier) {
 
-      ArgumentNullException.ThrowIfNull(unquotedIdentifier);
-
-      if (IsQuotedIdentifier(unquotedIdentifier)) {
-         return unquotedIdentifier;
-      }
+      ArgumentNullException.ThrowIfNull(identifier);
 
       var quotePrefix = this.Configuration.QuotePrefix;
       var quoteSuffix = this.Configuration.QuoteSuffix;
 
-      var sb = new StringBuilder();
+      if (quotePrefix.Length == 0
+         && quoteSuffix.Length == 0) {
 
-      if (!String.IsNullOrEmpty(quotePrefix)) {
-         sb.Append(quotePrefix);
+         return identifier;
       }
 
-      if (!String.IsNullOrEmpty(quoteSuffix)) {
-         sb.Append(unquotedIdentifier.Replace(quoteSuffix, quoteSuffix + quoteSuffix));
-         sb.Append(quoteSuffix);
-      } else {
-         sb.Append(unquotedIdentifier);
+      if (identifier.StartsWith(quotePrefix, StringComparison.Ordinal)
+         && identifier.EndsWith(quoteSuffix, StringComparison.Ordinal)) {
+
+         return identifier;
       }
 
-      return sb.ToString();
-   }
+      var idSpan = (Span<char>)stackalloc char[quotePrefix.Length + identifier.Length + quoteSuffix.Length];
+      quotePrefix.CopyTo(idSpan);
+      identifier.CopyTo(idSpan.Slice(quotePrefix.Length));
+      quoteSuffix.CopyTo(idSpan.Slice(quotePrefix.Length + identifier.Length));
 
-   bool
-   IsQuotedIdentifier(string identifier) {
-
-      var quotePrefix = this.Configuration.QuotePrefix;
-      var quoteSuffix = this.Configuration.QuoteSuffix;
-
-      if (identifier.Length < (quotePrefix?.Length + quoteSuffix?.Length)) {
-         return false;
-      }
-
-      return (!String.IsNullOrEmpty(quotePrefix) && identifier.StartsWith(quotePrefix, StringComparison.Ordinal))
-         && (!String.IsNullOrEmpty(quoteSuffix) && identifier.EndsWith(quoteSuffix, StringComparison.Ordinal));
+      return new String(idSpan);
    }
 
    internal void
@@ -931,21 +916,35 @@ public sealed partial class DatabaseConfiguration {
       Delegate.CreateDelegate(typeof(Func<DbCommandBuilder, int, string>), typeof(DbCommandBuilder)
          .GetMethod("GetParameterPlaceholder", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [typeof(int)], null)!);
 
+   string?
+   _quotePrefix;
+
+   string?
+   _quoteSuffix;
+
    /// <summary>
    /// Gets or sets the beginning character or characters to use when specifying database objects (for example, tables or columns)
    /// whose names contain characters such as spaces or reserved tokens.
    /// </summary>
 
+   [AllowNull]
    public string
-   QuotePrefix { get; set; } = "[";
+   QuotePrefix {
+      get => _quotePrefix ?? "[";
+      set => _quotePrefix = value;
+   }
 
    /// <summary>
    /// Gets or sets the ending character or characters to use when specifying database objects (for example, tables or columns)
    /// whose names contain characters such as spaces or reserved tokens.
    /// </summary>
 
+   [AllowNull]
    public string
-   QuoteSuffix { get; set; } = "]";
+   QuoteSuffix {
+      get => _quoteSuffix ?? "]";
+      set => _quoteSuffix = value;
+   }
 
    /// <summary>
    /// Specifies a function that prepares a parameter name to be used on <see cref="DbParameter.ParameterName"/>.
