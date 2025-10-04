@@ -227,23 +227,33 @@ partial class Database {
    internal string
    SelectBody(MetaType metaType, IEnumerable<MetaDataMember>? selectMembers, string? tableAlias) {
 
-      selectMembers ??= metaType.PersistentDataMembers.Where(m => !m.IsAssociation);
-
       var sb = new StringBuilder();
+
+      SelectBody(sb, metaType, selectMembers, tableAlias);
+
+      return sb.ToString();
+   }
+
+   internal void
+   SelectBody(StringBuilder sb, MetaType metaType, IEnumerable<MetaDataMember>? selectMembers, string? tableAlias) {
+
+      selectMembers ??= metaType.PersistentDataMembers.Where(m => !m.IsAssociation);
 
       var qualifier = (!String.IsNullOrEmpty(tableAlias)) ?
          QuoteIdentifier(tableAlias) + "." : null;
 
-      var enumerator = selectMembers.GetEnumerator();
+      var i = -1;
 
-      while (enumerator.MoveNext()) {
+      foreach (var member in selectMembers) {
 
-         var mappedName = enumerator.Current.MappedName;
-         var memberName = enumerator.Current.QueryPath;
+         i++;
+
+         var mappedName = member.MappedName;
+         var memberName = member.QueryPath;
          var columnAlias = !String.Equals(mappedName, memberName, StringComparison.Ordinal) ?
             memberName : null;
 
-         if (sb.Length > 0) {
+         if (i > 0) {
             sb.Append(", ");
          }
 
@@ -251,7 +261,7 @@ partial class Database {
             sb.Append(qualifier);
          }
 
-         sb.Append(QuoteIdentifier(enumerator.Current.MappedName));
+         sb.Append(QuoteIdentifier(member.MappedName));
 
          if (columnAlias is not null) {
 
@@ -259,8 +269,6 @@ partial class Database {
                .Append(QuoteIdentifier(memberName));
          }
       }
-
-      return sb.ToString();
    }
 
    internal string
@@ -348,7 +356,7 @@ public sealed partial class SqlTable : SqlSet, ISqlTable {
    readonly ISqlTable
    _table;
 
-   readonly MetaType
+   internal readonly MetaType
    _metaType;
 
    /// <summary>
@@ -358,20 +366,12 @@ public sealed partial class SqlTable : SqlSet, ISqlTable {
    public string
    Name => _metaType.Table.TableName;
 
-   /// <summary>
-   /// Gets a <see cref="SqlCommandBuilder&lt;Object>"/> object for the current table.
-   /// </summary>
-
-   public SqlCommandBuilder<object>
-   CommandBuilder { get; }
-
    internal
    SqlTable(Database db, MetaType metaType, ISqlTable table)
       : base([db.FromBody(metaType, null), db.SelectBody(metaType, null, null)], metaType.Type, db) {
 
       _table = table;
       _metaType = metaType;
-      this.CommandBuilder = new SqlCommandBuilder<object>(db, metaType);
    }
 
    /// <summary>
@@ -503,19 +503,11 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
    public string
    Name => _metaType.Table.TableName;
 
-   /// <summary>
-   /// Gets a <see cref="SqlCommandBuilder&lt;TEntity>"/> object for the current table.
-   /// </summary>
-
-   public SqlCommandBuilder<TEntity>
-   CommandBuilder { get; }
-
    internal
    SqlTable(Database db, MetaType metaType)
       : base([db.FromBody(metaType, null), db.SelectBody(metaType, null, null)], db) {
 
       _metaType = metaType;
-      this.CommandBuilder = new SqlCommandBuilder<TEntity>(db, metaType);
    }
 
    /// <summary>
@@ -543,7 +535,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
             && m != idMember)
          .ToArray();
 
-      var insertSql = this.CommandBuilder.BuildInsertStatementForEntity(entity, outputIdMember);
+      var insertSql = BuildInsertStatementForEntity(entity, outputIdMember);
       var id = default(object);
 
       using (var tx = _db.EnsureInTransaction()) {
@@ -709,7 +701,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
          var batchInsert = SqlBuilder.JoinSql(
             ";" + Environment.NewLine,
-            entities.Select(e => this.CommandBuilder.BuildInsertStatementForEntity(e)));
+            entities.Select(e => BuildInsertStatementForEntity(e)));
 
          using (var tx = _db.EnsureInTransaction()) {
 
@@ -753,7 +745,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
       ArgumentNullException.ThrowIfNull(entity);
 
-      var updateSql = this.CommandBuilder.BuildUpdateStatementForEntity(entity, originalId);
+      var updateSql = BuildUpdateStatementForEntity(entity, originalId);
 
       var syncMembers = _metaType.PersistentDataMembers
          .Where(m => m.AutoSync is AutoSync.Always or AutoSync.OnUpdate)
@@ -817,7 +809,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
          var batchUpdate = SqlBuilder.JoinSql(
             ";" + Environment.NewLine,
-            entities.Select(e => this.CommandBuilder.BuildUpdateStatementForEntity(e)));
+            entities.Select(e => BuildUpdateStatementForEntity(e)));
 
          _db.Execute(batchUpdate, affect: entities.Length, exact: true);
 
@@ -845,7 +837,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
       ArgumentNullException.ThrowIfNull(entity);
 
-      var deleteSql = this.CommandBuilder.BuildDeleteStatementForEntity(entity);
+      var deleteSql = BuildDeleteStatementForEntity(entity);
 
       var usingVersion = _db.Configuration.UseVersionMember
          && _metaType.VersionMember is not null;
@@ -865,7 +857,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
       ArgumentNullException.ThrowIfNull(id);
 
-      var deleteSql = this.CommandBuilder.BuildDeleteStatementForKey(id);
+      var deleteSql = BuildDeleteStatementForKey(id);
 
       return _db.Execute(deleteSql, affect: 1) == 1;
    }
@@ -922,8 +914,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
          var ids = entities.Select(e => idMember.GetValueForDatabase(e))
             .ToArray();
 
-         var sql = this.CommandBuilder
-            .BuildDeleteStatement()
+         var sql = BuildDeleteStatement()
             .WHERE(String.Empty);
 
          sql.Buffer.Append(_db.QuoteIdentifier(idMember.MappedName))
@@ -951,7 +942,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
          var batchDelete = SqlBuilder.JoinSql(
             ";" + Environment.NewLine,
-            entities.Select(e => this.CommandBuilder.BuildDeleteStatementForEntity(e)));
+            entities.Select(e => BuildDeleteStatementForEntity(e)));
 
          _db.Execute(batchDelete, affect: entities.Length, exact: usingVersion);
 
@@ -984,7 +975,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
       EnsureEntityType();
 
-      var query = this.CommandBuilder.BuildSelectStatement(refreshMembers);
+      var query = BuildSelectStatement(refreshMembers);
       query.WHERE(_db.BuildPredicateFragment(entity, _metaType.IdentityMembers, query.ParameterValues));
 
       var mapper = _db.CreatePocoMapper(_metaType.Type);
@@ -1057,105 +1048,26 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
       Refresh((TEntity)entity);
 }
 
-/// <summary>
-/// Generates SQL commands for annotated classes.
-/// This class cannot be instantiated, to get an instance use the <see cref="SqlTable&lt;TEntity>.CommandBuilder" qualifyHint="true"/>
-/// or <see cref="SqlTable.CommandBuilder" qualifyHint="true"/> properties.
-/// </summary>
-/// <typeparam name="TEntity">The type of the entity to generate commands for.</typeparam>
-
-public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
-
-   readonly Database
-   _db;
-
-   readonly MetaType
-   _metaType;
-
-   internal
-   SqlCommandBuilder(Database db, MetaType metaType) {
-      _db = db;
-      _metaType = metaType;
-   }
-
-   /// <summary>
-   /// Creates and returns a SELECT query for the current table
-   /// that includes the SELECT clause only.
-   /// </summary>
-   /// <returns>The SELECT query for the current table.</returns>
-
-   public SqlBuilder
-   BuildSelectClause() =>
-      BuildSelectClause(null);
-
-   /// <summary>
-   /// Creates and returns a SELECT query for the current table
-   /// that includes the SELECT clause only. All column names are qualified with the provided
-   /// <paramref name="tableAlias"/>.
-   /// </summary>
-   /// <param name="tableAlias">The table alias.</param>
-   /// <returns>The SELECT query for the current table.</returns>
-
-   public SqlBuilder
-   BuildSelectClause(string? tableAlias) =>
-      BuildSelectClause(null, tableAlias);
-
-   /// <summary>
-   /// Creates and returns a SELECT query using the specified <paramref name="selectMembers"/>
-   /// that includes the SELECT clause only. All column names are qualified with the provided
-   /// <paramref name="tableAlias"/>.
-   /// </summary>
-   /// <param name="selectMembers">The members to use in the SELECT clause.</param>
-   /// <param name="tableAlias">The table alias.</param>
-   /// <returns>The SELECT query.</returns>
+partial class SqlTable<TEntity> {
 
    SqlBuilder
-   BuildSelectClause(IEnumerable<MetaDataMember>? selectMembers, string? tableAlias) =>
-      new SqlBuilder()
-         .SELECT(_db.SelectBody(_metaType, selectMembers, tableAlias));
+   BuildSelectStatement(IEnumerable<MetaDataMember>? selectMembers, string? tableAlias = null) {
 
-   /// <summary>
-   /// Creates and returns a SELECT query for the current table
-   /// that includes the SELECT and FROM clauses.
-   /// </summary>
-   /// <returns>The SELECT query for the current table.</returns>
+      var sql = new SqlBuilder()
+         .SELECT(String.Empty);
 
-   public SqlBuilder
-   BuildSelectStatement() =>
-      BuildSelectStatement(default(string));
+      _db.SelectBody(sql.Buffer, _metaType, selectMembers, tableAlias);
 
-   /// <summary>
-   /// Creates and returns a SELECT query for the current table
-   /// that includes the SELECT and FROM clauses. All column names are qualified with the provided
-   /// <paramref name="tableAlias"/>.
-   /// </summary>
-   /// <param name="tableAlias">The table alias.</param>
-   /// <returns>The SELECT query for the current table.</returns>
+      sql.FROM(_db.FromBody(_metaType, tableAlias));
 
-   public SqlBuilder
-   BuildSelectStatement(string? tableAlias) =>
-      BuildSelectStatement(null, tableAlias);
+      return sql;
+   }
 
-   internal SqlBuilder
-   BuildSelectStatement(IEnumerable<MetaDataMember>? selectMembers, string? tableAlias = null) =>
-      BuildSelectClause(selectMembers, tableAlias)
-         .FROM(_db.FromBody(_metaType, tableAlias));
-
-   /// <summary>
-   /// Creates and returns an INSERT command for the specified <paramref name="entity"/>.
-   /// </summary>
-   /// <param name="entity">
-   /// The object whose INSERT command is to be created. This parameter is named entity for consistency
-   /// with the other CRUD methods, but in this case it doesn't need to be an actual entity, which means it doesn't
-   /// need to have a primary key.
-   /// </param>
-   /// <returns>The INSERT command for <paramref name="entity"/>.</returns>
-
-   public SqlBuilder
+   SqlBuilder
    BuildInsertStatementForEntity(TEntity entity) =>
       BuildInsertStatementForEntity(entity, false);
 
-   internal SqlBuilder
+   SqlBuilder
    BuildInsertStatementForEntity(TEntity entity, bool outputIdMember) {
 
       ArgumentNullException.ThrowIfNull(entity);
@@ -1172,7 +1084,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       var sb = sql.Buffer
          .Append("INSERT INTO ")
-         .Append(QuoteIdentifier(_metaType.Table.TableName))
+         .Append(_db.QuoteIdentifier(_metaType.Table.TableName))
          .Append(" (");
 
       for (int i = 0; i < insertingMembers.Length; i++) {
@@ -1181,7 +1093,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
             sb.Append(", ");
          }
 
-         sb.Append(QuoteIdentifier(insertingMembers[i].MappedName));
+         sb.Append(_db.QuoteIdentifier(insertingMembers[i].MappedName));
       }
 
       sb.Append(')');
@@ -1190,7 +1102,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
          && _metaType.DBGeneratedIdentityMember is { } idMember) {
 
          sb.AppendLine()
-            .Append("OUTPUT INSERTED." + QuoteIdentifier(idMember.MappedName));
+            .Append("OUTPUT INSERTED." + _db.QuoteIdentifier(idMember.MappedName));
       }
 
       sb.AppendLine()
@@ -1216,35 +1128,11 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
       return sql;
    }
 
-   /// <summary>
-   /// Creates and returns an UPDATE command for the current table
-   /// that includes the UPDATE clause.
-   /// </summary>
-   /// <returns>The UPDATE command for the current table.</returns>
-
-   public SqlBuilder
-   BuildUpdateClause() {
-
-      return new SqlBuilder()
-         .Append("UPDATE ")
-         .Append(QuoteIdentifier(_metaType.Table.TableName));
-   }
-
-   /// <summary>
-   /// Creates and returns an UPDATE command for the specified <paramref name="entity"/>.
-   /// </summary>
-   /// <param name="entity">The entity whose UPDATE command is to be created.</param>
-   /// <returns>The UPDATE command for <paramref name="entity"/>.</returns>
-
-   public SqlBuilder
+   SqlBuilder
    BuildUpdateStatementForEntity(TEntity entity) =>
       BuildUpdateStatementForEntity(entity, null);
 
-   /// <inheritdoc cref="BuildUpdateStatementForEntity(TEntity)"/>
-   /// <param name="originalId">The original primary key value.</param>
-   /// <remarks>This overload is helpful when the entity uses an assigned primary key.</remarks>
-
-   public SqlBuilder
+   SqlBuilder
    BuildUpdateStatementForEntity(TEntity entity, object? originalId) {
 
       ArgumentNullException.ThrowIfNull(entity);
@@ -1270,7 +1158,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
 
       var sb = sql.Buffer
          .Append("UPDATE ")
-         .Append(QuoteIdentifier(_metaType.Table.TableName))
+         .Append(_db.QuoteIdentifier(_metaType.Table.TableName))
          .AppendLine()
          .Append("SET ");
 
@@ -1283,7 +1171,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
          var member = updatingMembers[i];
          var value = member.GetValueForDatabase(entity);
 
-         sb.Append(QuoteIdentifier(member.MappedName))
+         sb.Append(_db.QuoteIdentifier(member.MappedName))
             .Append(" = {")
             .Append(parametersBuffer.Count)
             .Append('}');
@@ -1307,27 +1195,15 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
       return sql;
    }
 
-   /// <summary>
-   /// Creates and returns a DELETE command for the current table
-   /// that includes the DELETE and FROM clauses.
-   /// </summary>
-   /// <returns>The DELETE command for the current table.</returns>
-
-   public SqlBuilder
+   SqlBuilder
    BuildDeleteStatement() {
 
       return new SqlBuilder()
          .Append("DELETE FROM ")
-         .Append(QuoteIdentifier(_metaType.Table.TableName));
+         .Append(_db.QuoteIdentifier(_metaType.Table.TableName));
    }
 
-   /// <summary>
-   /// Creates and returns a DELETE command for the specified <paramref name="entity"/>.
-   /// </summary>
-   /// <param name="entity">The entity whose DELETE command is to be created.</param>
-   /// <returns>The DELETE command for <paramref name="entity"/>.</returns>
-
-   public SqlBuilder
+   SqlBuilder
    BuildDeleteStatementForEntity(TEntity entity) {
 
       ArgumentNullException.ThrowIfNull(entity);
@@ -1343,14 +1219,7 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
       return deleteSql;
    }
 
-   /// <summary>
-   /// Creates and returns a DELETE command for the entity
-   /// whose primary key matches the <paramref name="id"/> parameter.
-   /// </summary>
-   /// <param name="id">The primary key value.</param>
-   /// <returns>The DELETE command the entity whose primary key matches the <paramref name="id"/> parameter.</returns>
-
-   public SqlBuilder
+   SqlBuilder
    BuildDeleteStatementForKey(object id) {
 
       ArgumentNullException.ThrowIfNull(id);
@@ -1365,46 +1234,12 @@ public sealed class SqlCommandBuilder<TEntity> where TEntity : class {
          .WHERE(String.Empty);
 
       deleteSql.Buffer
-         .Append($"{QuoteIdentifier(_metaType.IdentityMembers[0].MappedName)} = {{{deleteSql.ParameterValues.Count}}}");
+         .Append($"{_db.QuoteIdentifier(_metaType.IdentityMembers[0].MappedName)} = {{{deleteSql.ParameterValues.Count}}}");
 
       deleteSql.ParameterValues.Add(id);
 
       return deleteSql;
    }
-
-   string
-   QuoteIdentifier(string unquotedIdentifier) =>
-      _db.QuoteIdentifier(unquotedIdentifier);
-
-   void
-   EnsureEntityType() =>
-      SqlTable.EnsureEntityType(_metaType);
-
-   // Object Members
-
-   /// <exclude/>
-
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public override bool
-   Equals(object? obj) => base.Equals(obj);
-
-   /// <exclude/>
-
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public override int
-   GetHashCode() => base.GetHashCode();
-
-   /// <exclude/>
-
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public new Type
-   GetType() => base.GetType();
-
-   /// <exclude/>
-
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public override string?
-   ToString() => base.ToString();
 }
 
 partial class SqlSet {
@@ -1708,8 +1543,15 @@ partial class SqlSet {
 
             Array.Copy(path, manyIndex + 1, manyInclude, 0, manyInclude.Length);
 
-            SqlBuilder selectBuild(string alias) =>
-               table.CommandBuilder.BuildSelectClause(alias);
+            SqlBuilder selectBuild(string alias) {
+
+               var sql = new SqlBuilder()
+                  .SELECT(String.Empty);
+
+               db.SelectBody(sql.Buffer, table._metaType, null, alias);
+
+               return sql;
+            }
 
             void fromAppend(SqlBuilder sql, string alias) =>
                sql.FROM(db.QuoteIdentifier(metaType.Table.TableName) + " " + alias);

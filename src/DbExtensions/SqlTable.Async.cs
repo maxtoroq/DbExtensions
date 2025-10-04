@@ -280,7 +280,7 @@ partial class SqlTable<TEntity> {
             && m != idMember)
          .ToArray();
 
-      var insertSql = this.CommandBuilder.BuildInsertStatementForEntity(entity, outputIdMember);
+      var insertSql = BuildInsertStatementForEntity(entity, outputIdMember);
       var id = default(object);
 
       var tx = await _db.EnsureInTransactionAsync(cancellationToken)
@@ -464,7 +464,7 @@ partial class SqlTable<TEntity> {
 
          var batchInsert = SqlBuilder.JoinSql(
             ";" + Environment.NewLine,
-            entities.Select(e => this.CommandBuilder.BuildInsertStatementForEntity(e)));
+            entities.Select(e => BuildInsertStatementForEntity(e)));
 
          var tx = await _db.EnsureInTransactionAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -507,7 +507,7 @@ partial class SqlTable<TEntity> {
 
       ArgumentNullException.ThrowIfNull(entity);
 
-      var deleteSql = this.CommandBuilder.BuildDeleteStatementForEntity(entity);
+      var deleteSql = BuildDeleteStatementForEntity(entity);
 
       var usingVersion = _db.Configuration.UseVersionMember
          && _metaType.VersionMember is not null;
@@ -524,7 +524,7 @@ partial class SqlTable<TEntity> {
 
       ArgumentNullException.ThrowIfNull(id);
 
-      var deleteSql = this.CommandBuilder.BuildDeleteStatementForKey(id);
+      var deleteSql = BuildDeleteStatementForKey(id);
 
       return await _db.ExecuteAsync(deleteSql, affect: 1, cancellationToken: cancellationToken)
          .ConfigureAwait(false) == 1;
@@ -583,8 +583,7 @@ partial class SqlTable<TEntity> {
          var ids = entities.Select(e => idMember.GetValueForDatabase(e))
             .ToArray();
 
-         var sql = this.CommandBuilder
-            .BuildDeleteStatement()
+         var sql = BuildDeleteStatement()
             .WHERE(String.Empty);
 
          sql.Buffer.Append(_db.QuoteIdentifier(idMember.MappedName))
@@ -613,7 +612,7 @@ partial class SqlTable<TEntity> {
 
          var batchDelete = SqlBuilder.JoinSql(
             ";" + Environment.NewLine,
-            entities.Select(e => this.CommandBuilder.BuildDeleteStatementForEntity(e)));
+            entities.Select(e => BuildDeleteStatementForEntity(e)));
 
          await _db.ExecuteAsync(batchDelete, affect: entities.Length, exact: usingVersion, cancellationToken)
             .ConfigureAwait(false);
@@ -649,7 +648,7 @@ partial class SqlTable<TEntity> {
 
       EnsureEntityType();
 
-      var query = this.CommandBuilder.BuildSelectStatement(refreshMembers);
+      var query = BuildSelectStatement(refreshMembers);
       query.WHERE(_db.BuildPredicateFragment(entity, _metaType.IdentityMembers, query.ParameterValues));
 
       var mapper = _db.CreatePocoMapper(_metaType.Type);
@@ -679,7 +678,7 @@ partial class SqlTable<TEntity> {
 
       ArgumentNullException.ThrowIfNull(entity);
 
-      var updateSql = this.CommandBuilder.BuildUpdateStatementForEntity(entity, originalId);
+      var updateSql = BuildUpdateStatementForEntity(entity, originalId);
 
       var syncMembers = _metaType.PersistentDataMembers
          .Where(m => m.AutoSync is AutoSync.Always or AutoSync.OnUpdate)
@@ -748,7 +747,7 @@ partial class SqlTable<TEntity> {
 
          var batchUpdate = SqlBuilder.JoinSql(
             ";" + Environment.NewLine,
-            entities.Select(e => this.CommandBuilder.BuildUpdateStatementForEntity(e)));
+            entities.Select(e => BuildUpdateStatementForEntity(e)));
 
          await _db.ExecuteAsync(batchUpdate, affect: entities.Length, exact: true, cancellationToken)
             .ConfigureAwait(false);
