@@ -22,6 +22,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -599,27 +600,44 @@ public partial class Database : IDisposable {
    /// <param name="identifier">The original identifier.</param>
    /// <returns>The quoted version of the identifier. If the indentifier is already quoted it's returned unchanged.</returns>
 
-   public virtual string
+   public string
    QuoteIdentifier(string identifier) {
+
+      QuoteIdentifierImpl(identifier, out var quotePrefix, out var quoteSuffix);
+
+      return String.Concat(quotePrefix, identifier, quoteSuffix);
+   }
+
+   internal void
+   QuoteIdentifier(StringBuilder sb, string identifier) {
+
+      QuoteIdentifierImpl(identifier, out var quotePrefix, out var quoteSuffix);
+
+      sb.Append(quotePrefix);
+      sb.Append(identifier);
+      sb.Append(quoteSuffix);
+   }
+
+   void
+   QuoteIdentifierImpl(string identifier, out string quotePrefix, out string quoteSuffix) {
 
       ArgumentNullException.ThrowIfNull(identifier);
 
-      var quotePrefix = this.Configuration.QuotePrefix;
-      var quoteSuffix = this.Configuration.QuoteSuffix;
+      quotePrefix = this.Configuration.QuotePrefix;
+      quoteSuffix = this.Configuration.QuoteSuffix;
 
       if (quotePrefix.Length == 0
          && quoteSuffix.Length == 0) {
 
-         return identifier;
+         return;
       }
 
       if (identifier.StartsWith(quotePrefix, StringComparison.Ordinal)
          && identifier.EndsWith(quoteSuffix, StringComparison.Ordinal)) {
 
-         return identifier;
+         quotePrefix = String.Empty;
+         quoteSuffix = String.Empty;
       }
-
-      return String.Concat(quotePrefix, identifier, quoteSuffix);
    }
 
    internal void

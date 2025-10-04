@@ -208,7 +208,7 @@ partial class Database {
             sb.Append(" AND ");
          }
 
-         sb.Append(QuoteIdentifier(item.Key));
+         QuoteIdentifier(sb, item.Key);
 
          if (item.Value is null) {
             sb.Append(" IS NULL");
@@ -225,11 +225,11 @@ partial class Database {
    }
 
    internal string
-   SelectBody(MetaType metaType, IEnumerable<MetaDataMember>? selectMembers, string? tableAlias) {
+   SelectBody(MetaType metaType, IEnumerable<MetaDataMember>? selectMembers) {
 
       var sb = new StringBuilder();
 
-      SelectBody(sb, metaType, selectMembers, tableAlias);
+      SelectBody(sb, metaType, selectMembers, null);
 
       return sb.ToString();
    }
@@ -239,9 +239,7 @@ partial class Database {
 
       selectMembers ??= metaType.PersistentDataMembers.Where(m => !m.IsAssociation);
 
-      var qualifier = (!String.IsNullOrEmpty(tableAlias)) ?
-         QuoteIdentifier(tableAlias) + "." : null;
-
+      var appendAlias = !String.IsNullOrEmpty(tableAlias);
       var i = -1;
 
       foreach (var member in selectMembers) {
@@ -254,33 +252,31 @@ partial class Database {
             memberName : null;
 
          if (i > 0) {
-            sb.Append(", ");
+            sb.Append(',')
+               .Append(' ');
          }
 
-         if (qualifier is not null) {
-            sb.Append(qualifier);
+         if (appendAlias) {
+            QuoteIdentifier(sb, tableAlias!);
+            sb.Append('.');
          }
 
-         sb.Append(QuoteIdentifier(member.MappedName));
+         QuoteIdentifier(sb, mappedName);
 
          if (columnAlias is not null) {
 
-            sb.Append(" AS ")
-               .Append(QuoteIdentifier(memberName));
+            sb.Append(" AS ");
+            QuoteIdentifier(sb, columnAlias);
          }
       }
    }
 
    internal string
-   FromBody(MetaType metaType, string? tableAlias) {
+   FromBody(MetaType metaType) {
 
       if (metaType.Table is null) throw new InvalidOperationException("metaType.Table cannot be null.");
 
-      var alias = (!String.IsNullOrEmpty(tableAlias)) ?
-         " " + QuoteIdentifier(tableAlias)
-         : null;
-
-      return QuoteIdentifier(metaType.Table.TableName) + alias;
+      return QuoteIdentifier(metaType.Table.TableName);
    }
 }
 
@@ -368,7 +364,7 @@ public sealed partial class SqlTable : SqlSet, ISqlTable {
 
    internal
    SqlTable(Database db, MetaType metaType, ISqlTable table)
-      : base([db.FromBody(metaType, null), db.SelectBody(metaType, null, null)], metaType.Type, db) {
+      : base([db.FromBody(metaType), db.SelectBody(metaType, null)], metaType.Type, db) {
 
       _table = table;
       _metaType = metaType;
@@ -505,7 +501,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
    internal
    SqlTable(Database db, MetaType metaType)
-      : base([db.FromBody(metaType, null), db.SelectBody(metaType, null, null)], db) {
+      : base([db.FromBody(metaType), db.SelectBody(metaType, null)], db) {
 
       _metaType = metaType;
    }
@@ -917,24 +913,26 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
          var sql = BuildDeleteStatement()
             .WHERE(String.Empty);
 
-         sql.Buffer.Append(_db.QuoteIdentifier(idMember.MappedName))
-            .Append(" IN (");
+         var sb = sql.Buffer;
+
+         _db.QuoteIdentifier(sb, idMember.MappedName);
+         sb.Append(" IN (");
 
          for (int i = 0; i < ids.Length; i++) {
 
             if (i > 0) {
-               sql.Buffer.Append(',')
+               sb.Append(',')
                   .Append(' ');
             }
 
-            sql.Buffer.Append('{')
+            sb.Append('{')
                .Append(sql.ParameterValues.Count)
                .Append('}');
 
             sql.ParameterValues.Add(ids[i]);
          }
 
-         sql.Buffer.Append(')');
+         sb.Append(')');
 
          _db.Execute(sql, affect: entities.Length);
 
@@ -1051,14 +1049,14 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 partial class SqlTable<TEntity> {
 
    SqlBuilder
-   BuildSelectStatement(IEnumerable<MetaDataMember>? selectMembers, string? tableAlias = null) {
+   BuildSelectStatement(IEnumerable<MetaDataMember>? selectMembers) {
 
       var sql = new SqlBuilder()
          .SELECT(String.Empty);
 
-      _db.SelectBody(sql.Buffer, _metaType, selectMembers, tableAlias);
+      _db.SelectBody(sql.Buffer, _metaType, selectMembers, null);
 
-      sql.FROM(_db.FromBody(_metaType, tableAlias));
+      sql.FROM(_db.FromBody(_metaType));
 
       return sql;
    }
@@ -1083,9 +1081,10 @@ partial class SqlTable<TEntity> {
       var sql = new SqlBuilder();
 
       var sb = sql.Buffer
-         .Append("INSERT INTO ")
-         .Append(_db.QuoteIdentifier(_metaType.Table.TableName))
-         .Append(" (");
+         .Append("INSERT INTO ");
+
+      _db.QuoteIdentifier(sb, _metaType.Table.TableName);
+      sb.Append(" (");
 
       for (int i = 0; i < insertingMembers.Length; i++) {
 
@@ -1093,7 +1092,7 @@ partial class SqlTable<TEntity> {
             sb.Append(", ");
          }
 
-         sb.Append(_db.QuoteIdentifier(insertingMembers[i].MappedName));
+         _db.QuoteIdentifier(sb, insertingMembers[i].MappedName);
       }
 
       sb.Append(')');
@@ -1102,7 +1101,8 @@ partial class SqlTable<TEntity> {
          && _metaType.DBGeneratedIdentityMember is { } idMember) {
 
          sb.AppendLine()
-            .Append("OUTPUT INSERTED." + _db.QuoteIdentifier(idMember.MappedName));
+            .Append("OUTPUT INSERTED.");
+         _db.QuoteIdentifier(sb, idMember.MappedName);
       }
 
       sb.AppendLine()
@@ -1157,9 +1157,11 @@ partial class SqlTable<TEntity> {
       var parametersBuffer = sql.ParameterValues;
 
       var sb = sql.Buffer
-         .Append("UPDATE ")
-         .Append(_db.QuoteIdentifier(_metaType.Table.TableName))
-         .AppendLine()
+         .Append("UPDATE ");
+
+      _db.QuoteIdentifier(sb, _metaType.Table.TableName);
+
+      sb.AppendLine()
          .Append("SET ");
 
       for (int i = 0; i < updatingMembers.Length; i++) {
@@ -1171,8 +1173,9 @@ partial class SqlTable<TEntity> {
          var member = updatingMembers[i];
          var value = member.GetValueForDatabase(entity);
 
-         sb.Append(_db.QuoteIdentifier(member.MappedName))
-            .Append(" = {")
+         _db.QuoteIdentifier(sb, member.MappedName);
+
+         sb.Append(" = {")
             .Append(parametersBuffer.Count)
             .Append('}');
 
@@ -1198,9 +1201,12 @@ partial class SqlTable<TEntity> {
    SqlBuilder
    BuildDeleteStatement() {
 
-      return new SqlBuilder()
-         .Append("DELETE FROM ")
-         .Append(_db.QuoteIdentifier(_metaType.Table.TableName));
+      var sql = new SqlBuilder()
+         .Append("DELETE FROM ");
+
+      _db.QuoteIdentifier(sql.Buffer, _metaType.Table.TableName);
+
+      return sql;
    }
 
    SqlBuilder
@@ -1233,8 +1239,13 @@ partial class SqlTable<TEntity> {
       var deleteSql = BuildDeleteStatement()
          .WHERE(String.Empty);
 
-      deleteSql.Buffer
-         .Append($"{_db.QuoteIdentifier(_metaType.IdentityMembers[0].MappedName)} = {{{deleteSql.ParameterValues.Count}}}");
+      var sb = deleteSql.Buffer;
+
+      _db.QuoteIdentifier(sb, _metaType.IdentityMembers[0].MappedName);
+
+      sb.Append(" = {")
+         .Append(deleteSql.ParameterValues.Count)
+         .Append('}');
 
       deleteSql.ParameterValues.Add(id);
 
@@ -1340,7 +1351,7 @@ partial class SqlSet {
       var predicateParams = new List<object?>(predicateMembers.Length);
 
       var fragment = new SqlFragment(_db.BuildPredicateFragment(predicateValues, predicateParams), predicateParams);
-      var columnList = _db.SelectBody(metaType, predicateMembers, null);
+      var columnList = _db.SelectBody(metaType, predicateMembers);
 
       return (fragment, columnList);
    }
@@ -1407,8 +1418,16 @@ partial class SqlSet {
 
          var parts = path.Split('.');
 
-         SqlBuilder selectBuild(string alias) =>
-            new SqlBuilder().SELECT(db.QuoteIdentifier(alias) + ".*");
+         SqlBuilder selectBuild(string alias) {
+
+            var sql = new SqlBuilder()
+               .SELECT(String.Empty);
+
+            db.QuoteIdentifier(sql.Buffer, alias);
+            sql.Append(".*");
+
+            return sql;
+         }
 
          void fromAppend(SqlBuilder sql, string alias) =>
             sql.FROM(source.GetDefiningQuery(), db.QuoteIdentifier(alias));
@@ -1444,6 +1463,7 @@ partial class SqlSet {
          static string rAliasFn(int i) => rightAlias + (i + 1);
 
          var query = selectBuild.Invoke(leftAlias);
+         var sb = query.Buffer;
          var currentType = metaType;
 
          var associations = new List<MetaAssociation>();
@@ -1476,7 +1496,17 @@ partial class SqlSet {
                   .Where(m => !m.IsAssociation)) {
 
                query.SELECT(String.Empty);
-               query.Buffer.Append($"{db.QuoteIdentifier(rAlias)}.{db.QuoteIdentifier(m.MappedName)} AS {String.Join('$', associations.Select(a => a.ThisMember.Name))}${m.Name}");
+               db.QuoteIdentifier(sb, rAlias);
+               sb.Append('.');
+               db.QuoteIdentifier(sb, m.MappedName);
+               sb.Append(" AS ");
+
+               foreach (var a in associations) {
+                  sb.Append(a.ThisMember.Name)
+                     .Append('$');
+               }
+
+               sb.Append(m.Name);
             }
 
             currentType = association.OtherType;
@@ -1494,22 +1524,31 @@ partial class SqlSet {
             var lAlias = (i == 0) ? leftAlias : rAliasFn(i - 1);
             var rAlias = rAliasFn(i);
 
-            var joinPredicate = new StringBuilder();
+            query.LEFT_JOIN(String.Empty);
+            db.QuoteIdentifier(sb, association.OtherType.Table.TableName);
+            sb.Append(' ');
+            db.QuoteIdentifier(sb, rAlias);
+            sb.Append(" ON (");
 
             for (int j = 0; j < association.ThisKey.Count; j++) {
 
                if (j > 0) {
-                  joinPredicate.Append(" AND ");
+                  sb.Append(" AND ");
                }
 
                var thisMember = association.ThisKey[j];
                var otherMember = association.OtherKey[j];
 
-               joinPredicate.Append($"{db.QuoteIdentifier(lAlias)}.{db.QuoteIdentifier(thisMember.Name)} = {db.QuoteIdentifier(rAlias)}.{db.QuoteIdentifier(otherMember.MappedName)}");
+               db.QuoteIdentifier(sb, lAlias);
+               sb.Append('.');
+               db.QuoteIdentifier(sb, thisMember.Name);
+               sb.Append(" = ");
+               db.QuoteIdentifier(sb, rAlias);
+               sb.Append('.');
+               db.QuoteIdentifier(sb, otherMember.MappedName);
             }
 
-            query.LEFT_JOIN(String.Empty);
-            query.Buffer.Append($"{db.QuoteIdentifier(association.OtherType.Table.TableName)} {db.QuoteIdentifier(rAlias)} ON ({joinPredicate})");
+            sb.Append(')');
          }
 
          return query;
@@ -1553,8 +1592,12 @@ partial class SqlSet {
                return sql;
             }
 
-            void fromAppend(SqlBuilder sql, string alias) =>
-               sql.FROM(db.QuoteIdentifier(metaType.Table.TableName) + " " + alias);
+            void fromAppend(SqlBuilder sql, string alias) {
+               sql.FROM(String.Empty);
+               db.QuoteIdentifier(sql.Buffer, metaType.Table.TableName);
+               sql.Buffer.Append(' ')
+                  .Append(alias);
+            }
 
             MetaAssociation? manyInManyAssoc;
             int manyInManyIndex;

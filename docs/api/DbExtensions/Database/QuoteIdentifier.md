@@ -9,7 +9,7 @@ Syntax
 ------
 
 ```csharp
-public virtual string QuoteIdentifier(
+public string QuoteIdentifier(
 	string identifier
 )
 ```

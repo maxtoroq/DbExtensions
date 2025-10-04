@@ -580,8 +580,8 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    All(ref OperatorStringHandler predicate) {
 
       var builder = predicate.Fragment;
-      builder.Buffer.Insert(0, "NOT (");
-      builder.Buffer.Append(')');
+      builder.Buffer.Insert(0, "NOT (")
+         .Append(')');
 
       return !Any(ref predicate);
    }

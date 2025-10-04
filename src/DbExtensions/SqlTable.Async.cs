@@ -586,24 +586,26 @@ partial class SqlTable<TEntity> {
          var sql = BuildDeleteStatement()
             .WHERE(String.Empty);
 
-         sql.Buffer.Append(_db.QuoteIdentifier(idMember.MappedName))
-            .Append(" IN (");
+         var sb = sql.Buffer;
+
+         _db.QuoteIdentifier(sb, idMember.MappedName);
+         sb.Append(" IN (");
 
          for (int i = 0; i < ids.Length; i++) {
 
             if (i > 0) {
-               sql.Buffer.Append(',')
+               sb.Append(',')
                   .Append(' ');
             }
 
-            sql.Buffer.Append('{')
+            sb.Append('{')
                .Append(sql.ParameterValues.Count)
                .Append('}');
 
             sql.ParameterValues.Add(ids[i]);
          }
 
-         sql.Buffer.Append(')');
+         sb.Append(')');
 
          await _db.ExecuteAsync(sql, affect: entities.Length, cancellationToken: cancellationToken)
             .ConfigureAwait(false);

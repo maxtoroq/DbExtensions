@@ -79,8 +79,8 @@ partial class SqlSet {
    AllAsync(OperatorStringHandler predicate, CancellationToken cancellationToken = default) {
 
       var builder = predicate.Fragment;
-      builder.Buffer.Insert(0, "NOT (");
-      builder.Buffer.Append(')');
+      builder.Buffer.Insert(0, "NOT (")
+         .Append(')');
 
       return !await AnyAsync(predicate, cancellationToken)
          .ConfigureAwait(false);
