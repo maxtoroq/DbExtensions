@@ -1,3 +1,0 @@
-[submodule "build/docs/sandcastle-md"]
-	path = build/sandcastle-md
-	url = https://github.com/maxtoroq/sandcastle-md.git
