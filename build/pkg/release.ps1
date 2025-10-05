@@ -24,55 +24,28 @@ function BuildProj([string]$projName, [string]$projFile, [string]$target) {
 
    $pack = $target -eq "Pack"
 
-   if ($pack) {
-
-      $projDoc = New-Object Xml.XmlDocument
-      $projDoc.PreserveWhitespace = $true
-      $projDoc.Load($projFile)
-
-      $itemXml = "<ItemGroup xmlns='$($projDoc.DocumentElement.NamespaceURI)'>
-         <None Include='$solutionPath\LICENSE.txt' Pack='true' PackagePath=''/>
-         <None Include='$solutionPath\NOTICE.xml' Pack='true' PackagePath=''/>
-         <None Include='$(Resolve-Path icon.png)' Pack='true' PackagePath=''/>
-      </ItemGroup>"
-
-      $itemReader = [Xml.XmlReader]::Create((New-Object IO.StringReader $itemXml))
-      $itemReader.MoveToContent() | Out-Null
-      $itemNode = $projDoc.ReadNode($itemReader)
-      $projDoc.DocumentElement.AppendChild($itemNode) | Out-Null
-      $itemNode.RemoveAttribute("xmlns")
-
-      $projDoc.Save($projFile)
-   }
-
    MSBuild $projFile /t:$target /v:minimal `
       /p:NoBuild=$pack `
       /p:Configuration=$configuration `
       /p:PackageOutputPath=$outputPath `
-      /p:GenerateDocumentationFile=$(-not $pack) `
-      /p:Product=$($notice.work) `
       /p:AssemblyVersion=$AssemblyVersion `
       /p:FileVersion=$PackageVersion `
       /p:VersionPrefix=$PackageVersion `
       /p:VersionSuffix=$PreRelease `
       /p:ContinuousIntegrationBuild=true `
+      /p:GenerateDocumentationFile=$(-not $pack) `
       /p:Authors=$($notice.authors) `
-      /p:PackageLicenseExpression=$($notice.license.name) `
-      /p:PackageProjectUrl=$($notice.website) `
+      /p:Product=$($notice.work) `
       /p:Copyright=$($notice.copyright) `
       /p:Company=$($notice.website) `
-      /p:PackageIcon=icon.png `
-      /p:PackageReleaseNotes="For a list of changes see $($notice.website)docs/7/changes.html"
-
-   if ($pack) {
-      $projDoc.DocumentElement.RemoveChild($itemNode) | Out-Null
-      $projDoc.Save($projFile)
-   }
+      /p:PackageLicenseExpression=$($notice.license.name) `
+      /p:PackageProjectUrl=$($notice.website) `
+      /p:PackageReleaseNotes="For a list of changes see $($notice.website)docs/7/changes.html" `
+      /p:RepositoryBranch=$(git branch --show-current)
 }
 
 function NuPack([string]$projName) {
 
-   $pkgVersion = "$PackageVersion$(if ($PreRelease) { ""-$PreRelease"" } else { $null })"
    $projPath = Resolve-Path $solutionPath\src\$projName
    $projFile = "$projPath\$projName.csproj"
 
