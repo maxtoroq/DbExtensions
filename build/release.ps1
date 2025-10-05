@@ -8,7 +8,7 @@ param(
 $ErrorActionPreference = "Stop"
 Push-Location (Split-Path $script:MyInvocation.MyCommand.Path)
 
-$solutionPath = Resolve-Path ..\..
+$solutionPath = Resolve-Path ..
 $configuration = "Release"
 
 function ProjectPath([string]$projName) {
@@ -62,7 +62,7 @@ function NuPack([string]$projName) {
    BuildProj $projName $projFile "Build"
 
    # build API docs (transforms assembly XML doc)
-   ..\docs\build-docs.ps1 -NoBuildProj -XmlOnly
+   .\build-docs.ps1 -NoBuildProj -XmlOnly
 
    # pack
    BuildProj $projName $projFile "Pack"
