@@ -23,9 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="" />
-    <None Include="..\..\NOTICE.xml" Pack="true" PackagePath="" />
-    <None Include="..\..\icon.png" Pack="true" PackagePath="" />
+    <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="" Visible="false" />
+    <None Include="..\..\NOTICE.xml" Pack="true" PackagePath="" Visible="false" />
+    <None Include="..\..\icon.png" Pack="true" PackagePath="" Visible="false" />
   </ItemGroup>
 
   <Target Name="IncludeXmlDoc">
