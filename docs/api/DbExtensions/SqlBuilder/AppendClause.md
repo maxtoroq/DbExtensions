@@ -8,12 +8,10 @@ Appends the SQL *clause*.
 Overloads
 ---------
 
-| Name                                  | Description                                                           |
-| ------------------------------------- | --------------------------------------------------------------------- |
-| **AppendClause(SqlClause)**           | Appends the SQL *clause*.                                             |
-| [AppendClause(SqlClause, String)][2]  | Appends the SQL *clause* and the provided *text*.                     |
-| [AppendClause&lt;TClause>()][3]       | Appends the SQL clause identified by TClause.                         |
-| [AppendClause&lt;TClause>(String)][4] | Appends the SQL clause identified by TClause and the provided *text*. |
+| Name                            | Description                                   |
+| ------------------------------- | --------------------------------------------- |
+| **AppendClause(SqlClause)**     | Appends the SQL *clause*.                     |
+| [AppendClause&lt;TClause>()][2] | Appends the SQL clause identified by TClause. |
 
 
 Syntax
@@ -27,23 +25,21 @@ public SqlBuilder AppendClause(
 
 #### Parameters
 
-##### *clause*  [SqlClause][5]
+##### *clause*  [SqlClause][3]
 The clause to append.
 
 #### Return Value
-[SqlBuilder][6]  
+[SqlBuilder][4]  
 A reference to this instance after the append operation has completed.
 
 See Also
 --------
 
 #### Reference
-[SqlBuilder Class][6]  
+[SqlBuilder Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
-[2]: AppendClause_1.md
-[3]: AppendClause__1.md
-[4]: AppendClause__1_1.md
-[5]: ../SqlClause/README.md
-[6]: README.md
+[2]: AppendClause__1.md
+[3]: ../SqlClause/README.md
+[4]: README.md

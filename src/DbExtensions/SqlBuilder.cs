@@ -293,36 +293,13 @@ public sealed partial class SqlBuilder : ISqlFragment {
       AppendClause(SqlClause.Instance<TClause>());
 
    /// <summary>
-   /// Appends the SQL clause identified by <typeparamref name="TClause"/>
-   /// and the provided <paramref name="text"/>.
-   /// </summary>
-   /// <typeparam name="TClause">The type of the SQL clause.</typeparam>
-   /// <param name="text">The text to append.</param>
-   /// <returns>A reference to this instance after the append operation has completed.</returns>
-
-   public SqlBuilder
-   AppendClause<TClause>(string? text) where TClause : SqlClause, new() =>
-      AppendClause(SqlClause.Instance<TClause>(), text);
-
-   /// <summary>
    /// Appends the SQL <paramref name="clause"/>.
    /// </summary>
    /// <param name="clause">The clause to append.</param>
    /// <returns>A reference to this instance after the append operation has completed.</returns>
 
    public SqlBuilder
-   AppendClause(SqlClause clause) =>
-      AppendClause(clause, null);
-
-   /// <summary>
-   /// Appends the SQL <paramref name="clause"/> and the provided <paramref name="text"/>.
-   /// </summary>
-   /// <param name="clause">The clause to append.</param>
-   /// <param name="text">The text to append.</param>
-   /// <returns>A reference to this instance after the append operation has completed.</returns>
-
-   public SqlBuilder
-   AppendClause(SqlClause clause, string? text) {
+   AppendClause(SqlClause clause) {
 
       ArgumentNullException.ThrowIfNull(clause);
 
@@ -347,8 +324,6 @@ public sealed partial class SqlBuilder : ISqlFragment {
       } else if (clause.Separator is { } sep) {
          this.Buffer.Append(sep);
       }
-
-      this.Buffer.Append(text);
 
       this.CurrentClause = clause;
       this.NextClause = null;
@@ -658,7 +633,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    [CLSCompliant(false)]
    public SqlBuilder
    _(string? text) =>
-      AppendClause<SqlClause.Current>(text);
+      AppendClause<SqlClause.Current>().Append(text);
 
    /// <summary>
    /// Appends the interpolated string <paramref name="handler"/> to the current clause if <paramref name="condition"/> is <c>true</c>.
@@ -727,7 +702,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    WITH(string? text) =>
-      AppendClause<SqlClause.WITH>(text);
+      AppendClause<SqlClause.WITH>().Append(text);
 
    /// <summary>
    /// Appends the WITH clause using the provided <paramref name="subQuery"/> as body named after
@@ -781,7 +756,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    SELECT(string? text) =>
-      AppendClause<SqlClause.SELECT>(text);
+      AppendClause<SqlClause.SELECT>().Append(text);
 
    /// <summary>
    /// Sets FROM as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -811,7 +786,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    FROM(string? text) =>
-      AppendClause<SqlClause.FROM>(text);
+      AppendClause<SqlClause.FROM>().Append(text);
 
    /// <summary>
    /// Appends the FROM clause using the provided <paramref name="subQuery"/> as body named after
@@ -865,7 +840,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    JOIN(string? text) =>
-      AppendClause<SqlClause.JOIN>(text);
+      AppendClause<SqlClause.JOIN>().Append(text);
 
    /// <summary>
    /// Sets LEFT JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -895,7 +870,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    LEFT_JOIN(string? text) =>
-      AppendClause<SqlClause.LEFT_JOIN>(text);
+      AppendClause<SqlClause.LEFT_JOIN>().Append(text);
 
    /// <summary>
    /// Sets RIGHT JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -925,7 +900,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    RIGHT_JOIN(string? text) =>
-      AppendClause<SqlClause.RIGHT_JOIN>(text);
+      AppendClause<SqlClause.RIGHT_JOIN>().Append(text);
 
    /// <summary>
    /// Sets INNER JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -955,7 +930,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    INNER_JOIN(string? text) =>
-      AppendClause<SqlClause.INNER_JOIN>(text);
+      AppendClause<SqlClause.INNER_JOIN>().Append(text);
 
    /// <summary>
    /// Sets CROSS JOIN as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -985,7 +960,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    CROSS_JOIN(string? text) =>
-      AppendClause<SqlClause.CROSS_JOIN>(text);
+      AppendClause<SqlClause.CROSS_JOIN>().Append(text);
 
    /// <summary>
    /// Sets WHERE as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -1015,7 +990,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    WHERE(string? text) =>
-      AppendClause<SqlClause.WHERE>(text);
+      AppendClause<SqlClause.WHERE>().Append(text);
 
    /// <summary>
    /// Sets GROUP BY as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -1045,7 +1020,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    GROUP_BY(string? text) =>
-      AppendClause<SqlClause.GROUP_BY>(text);
+      AppendClause<SqlClause.GROUP_BY>().Append(text);
 
    /// <summary>
    /// Sets HAVING as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -1075,7 +1050,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    HAVING(string? text) =>
-      AppendClause<SqlClause.HAVING>(text);
+      AppendClause<SqlClause.HAVING>().Append(text);
 
    /// <summary>
    /// Sets ORDER BY as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -1105,7 +1080,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    ORDER_BY(string? text) =>
-      AppendClause<SqlClause.ORDER_BY>(text);
+      AppendClause<SqlClause.ORDER_BY>().Append(text);
 
    /// <summary>
    /// Sets LIMIT as the next clause, to be used by subsequent calls to clause continuation methods,
@@ -1135,7 +1110,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    LIMIT(string? text) =>
-      AppendClause<SqlClause.LIMIT>(text);
+      AppendClause<SqlClause.LIMIT>().Append(text);
 
    /// <summary>
    /// Appends the LIMIT clause using the provided <paramref name="maxRecords"/> parameter.
@@ -1185,7 +1160,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    OFFSET(string? text) =>
-      AppendClause<SqlClause.OFFSET>(text);
+      AppendClause<SqlClause.OFFSET>().Append(text);
 
    /// <summary>
    /// Appends the OFFSET clause using the provided <paramref name="startIndex"/> parameter.
@@ -1234,7 +1209,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    INSERT_INTO(string? text) =>
-      AppendClause<SqlClause.INSERT_INTO>(text);
+      AppendClause<SqlClause.INSERT_INTO>().Append(text);
 
    /// <summary>
    /// Appends the DELETE FROM clause using the provided interpolated string <paramref name="handler"/>.
@@ -1254,7 +1229,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    DELETE_FROM(string? text) =>
-      AppendClause<SqlClause.DELETE_FROM>(text);
+      AppendClause<SqlClause.DELETE_FROM>().Append(text);
 
    /// <summary>
    /// Appends the UPDATE clause using the provided interpolated string <paramref name="handler"/>.
@@ -1274,7 +1249,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    UPDATE(string? text) =>
-      AppendClause<SqlClause.UPDATE>(text);
+      AppendClause<SqlClause.UPDATE>().Append(text);
 
    /// <summary>
    /// Appends the SET clause using the provided interpolated string <paramref name="handler"/>.
@@ -1294,7 +1269,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
 
    public SqlBuilder
    SET(string? text) =>
-      AppendClause<SqlClause.SET>(text);
+      AppendClause<SqlClause.SET>().Append(text);
 
    /// <summary>
    /// Appends the VALUES clause using the provided interpolated string <paramref name="handler"/>.
