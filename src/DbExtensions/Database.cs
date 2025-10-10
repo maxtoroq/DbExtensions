@@ -969,7 +969,7 @@ public sealed partial class DatabaseConfiguration {
    }
 
    /// <summary>
-   /// Specifies a function that prepares a parameter name to be used on <see cref="DbParameter.ParameterName"/>.
+   /// Specifies a function that prepares a parameter name to be used on <see cref="DbParameter.ParameterName" qualifyHint="true"/>.
    /// </summary>
 
    [AllowNull]

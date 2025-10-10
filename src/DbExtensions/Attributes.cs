@@ -308,7 +308,7 @@ public sealed class ComplexPropertyAttribute : Attribute {
 
    /// <summary>
    /// The separator to use between the base name and the complex property's columns.
-   /// The default is null, which means the separator is taken from <see cref="DatabaseConfiguration.DefaultComplexPropertySeparator"/>.
+   /// The default is null, which means the separator is taken from <see cref="DatabaseConfiguration.DefaultComplexPropertySeparator" qualifyHint="true"/>.
    /// To use no separator and override the default configuration, use an empty <see cref="String"/>.
    /// </summary>
 

@@ -33,10 +33,10 @@ Constructors
 Properties
 ----------
 
-| Name           | Description                                                                                                                                                                                                                                                             |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Name][5]      | The base name for the columns on the complex property. The default is the property name.                                                                                                                                                                                |
-| [Separator][6] | The separator to use between the base name and the complex property's columns. The default is null, which means the separator is taken from [DefaultComplexPropertySeparator][7]. To use no separator and override the default configuration, use an empty [String][8]. |
+| Name           | Description                                                                                                                                                                                                                                                                                   |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Name][5]      | The base name for the columns on the complex property. The default is the property name.                                                                                                                                                                                                      |
+| [Separator][6] | The separator to use between the base name and the complex property's columns. The default is null, which means the separator is taken from [DatabaseConfiguration.DefaultComplexPropertySeparator][7]. To use no separator and override the default configuration, use an empty [String][8]. |
 
 
 See Also
