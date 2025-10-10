@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Text;
 using NUnit.Framework;
 
 namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
@@ -16,12 +17,15 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
             """)
             .FETCH($"NEXT {5} ROWS ONLY");
 
-         Assert.AreEqual("""
+         Assert.AreEqual(new StringBuilder("""
             SELECT ProductID, ProductName
             FROM Products
             OFFSET {0} ROWS
-            FETCH NEXT {1} ROWS ONLY
-            """, query.ToString());
+            """)
+            .AppendLine()
+            .Append("FETCH NEXT {1} ROWS ONLY")
+            .ToString()
+            , query.ToString());
 
          Assert.IsTrue(query.CurrentClause is SqlBuilderExtensions.FetchClause);
       }
