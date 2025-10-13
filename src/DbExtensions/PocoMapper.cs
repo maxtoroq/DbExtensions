@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace DbExtensions;
@@ -278,14 +279,13 @@ sealed class PocoMapper : Mapper {
                PocoNode.RootNodeHash
                : String.Join('.', path, 0, path.Length - 1).GetHashCode();
 
-            List<PocoCollection>? containerCols;
+            ref var containerCols = ref CollectionsMarshal.GetValueRefOrAddDefault(collectionNodes, containerHash, out var exists);
 
-            if (!collectionNodes.TryGetValue(containerHash, out containerCols)) {
+            if (!exists) {
                containerCols = new();
-               collectionNodes.Add(containerHash, containerCols);
             }
 
-            containerCols.Add(col);
+            containerCols!.Add(col);
          }
       }
 

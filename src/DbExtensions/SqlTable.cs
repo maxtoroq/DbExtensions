@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace DbExtensions;
@@ -63,17 +64,14 @@ partial class Database {
    Table<TEntity>() where TEntity : class {
 
       var metaType = this.Configuration.GetMetaType(typeof(TEntity));
-      SqlTable<TEntity> table;
 
-      if (_genericTables.TryGetValue(metaType, out var set)) {
-         table = (SqlTable<TEntity>)set;
+      ref var table = ref CollectionsMarshal.GetValueRefOrAddDefault(_genericTables, metaType, out var exists);
 
-      } else {
+      if (!exists) {
          table = new SqlTable<TEntity>(this, metaType);
-         _genericTables.Add(metaType, table);
       }
 
-      return table;
+      return (SqlTable<TEntity>)table!;
    }
 
    /// <summary>
@@ -93,19 +91,18 @@ partial class Database {
    internal SqlTable
    Table(MetaType metaType) {
 
-      SqlTable? table;
+      ref var table = ref CollectionsMarshal.GetValueRefOrAddDefault(_tables, metaType, out var exists);
 
-      if (!_tables.TryGetValue(metaType, out table)) {
+      if (!exists) {
 
          var genericTable = (ISqlTable)_tableMethod
             .MakeGenericMethod(metaType.Type)
             .Invoke(this, null)!;
 
          table = new SqlTable(this, metaType, genericTable);
-         _tables.Add(metaType, table);
       }
 
-      return table;
+      return table!;
    }
 
    /// <inheritdoc cref="SqlTable.Add(Object)"/>
