@@ -5,7 +5,7 @@ using DbExtensions;
 namespace Samples.CSharp.Northwind {
 
    [Table(Name = "Products")]
-   public partial class Product {
+   public class Product {
 
       [Column(IsPrimaryKey = true, IsDbGenerated = true)]
       public int ProductID { get; set; }

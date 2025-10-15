@@ -56,7 +56,7 @@ namespace Samples.CSharp {
          });
       }
 
-      public IEnumerable<Product> MappingCalculatedColumn() {
+      public IEnumerable<ProductWithStockValue> MappingCalculatedColumn() {
 
          var query = SQL
             .SELECT("p.ProductID, (p.UnitPrice * p.UnitsInStock) AS ValueInStock")
@@ -64,7 +64,7 @@ namespace Samples.CSharp {
             .WHERE($"p.ProductID < {3}")
             .ORDER_BY("ValueInStock");
 
-         return db.Map<Product>(query);
+         return db.Map<ProductWithStockValue>(query);
       }
 
       public MappingToConstructorArgumentsSample MappingToConstructorArguments() {
@@ -104,6 +104,11 @@ namespace Samples.CSharp {
       }
    }
 
+   public class ProductWithStockValue : Product {
+
+      public decimal ValueInStock { get; set; }
+   }
+
    public class MappingToConstructorArgumentsSample {
 
       public int Id { get; private set; }
@@ -135,13 +140,5 @@ namespace Samples.CSharp {
       public override string ToString() {
          return this.Currency + this.Amount.ToString();
       }
-   }
-}
-
-namespace Samples.CSharp.Northwind {
-
-   partial class Product {
-
-      public decimal ValueInStock { get; set; }
    }
 }

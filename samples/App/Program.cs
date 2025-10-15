@@ -168,19 +168,19 @@ namespace Samples {
             select Activator.CreateInstance(t, args.ToArray());
       }
 
-      void
+      static void
       RunSamples(object samples, bool continueOnError) {
 
          var samplesType = samples.GetType();
          var isDisposable = samples is IDisposable;
 
-         List<MethodInfo> methods = samplesType
+         var methods = samplesType
             .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
             .ToList();
 
          for (int i = 0; i < methods.Count; i++) {
 
-            MethodInfo method = methods[i];
+            var method = methods[i];
 
             if (isDisposable
                && method.Name == "Dispose") {
@@ -190,7 +190,7 @@ namespace Samples {
 
             WriteLine();
             WriteLine(method.Name);
-            Array.ForEach<char>(method.Name.ToCharArray(), c => Write("="));
+            Write(new string('=', method.Name.Length));
             WriteLine();
 
             object returnValue = null;
@@ -270,7 +270,7 @@ namespace Samples {
          }
       }
 
-      int
+      static int
       GetArrayOption<T>(T[] options, string title, int defaultOption = 0) {
 
          var firstTry = true;
@@ -327,7 +327,7 @@ namespace Samples {
          return index;
       }
 
-      void
+      static void
       WriteError(Exception ex, bool fatal = false) {
 
          var prevColor = ForegroundColor;
