@@ -80,14 +80,12 @@ Methods
 | [QuoteIdentifier][47]                                                   | Given an unquoted identifier in the correct catalog case, returns the correct quoted form of that identifier.                      |
 | [Remove][48]                                                            | Executes a DELETE command for the specified *entity*.                                                                              |
 | [RemoveAsync][49]                                                       | Executes a DELETE command for the specified *entity*.                                                                              |
-| [RemoveKey&lt;TEntity>][50]                                             | Executes a DELETE command for the entity whose primary key matches the *id* parameter.                                             |
-| [RemoveKeyAsync&lt;TEntity>][51]                                        | Executes a DELETE command for the entity whose primary key matches the *id* parameter.                                             |
-| [Table(Type)][52]                                                       | Returns the [SqlTable][53] instance for the specified *entityType*.                                                                |
-| [Table&lt;TEntity>()][54]                                               | Returns the [SqlTable&lt;TEntity>][3] instance for the specified TEntity.                                                          |
-| [Update(Object)][55]                                                    | Executes an UPDATE command for the specified *entity*.                                                                             |
-| [Update(Object, Object)][56]                                            | Executes an UPDATE command for the specified *entity*.                                                                             |
-| [UpdateAsync(Object, CancellationToken)][57]                            | Executes an UPDATE command for the specified *entity*.                                                                             |
-| [UpdateAsync(Object, Object, CancellationToken)][58]                    | Executes an UPDATE command for the specified *entity*.                                                                             |
+| [Table(Type)][50]                                                       | Returns the [SqlTable][51] instance for the specified *entityType*.                                                                |
+| [Table&lt;TEntity>()][52]                                               | Returns the [SqlTable&lt;TEntity>][3] instance for the specified TEntity.                                                          |
+| [Update(Object)][53]                                                    | Executes an UPDATE command for the specified *entity*.                                                                             |
+| [Update(Object, Object)][54]                                            | Executes an UPDATE command for the specified *entity*.                                                                             |
+| [UpdateAsync(Object, CancellationToken)][55]                            | Executes an UPDATE command for the specified *entity*.                                                                             |
+| [UpdateAsync(Object, Object, CancellationToken)][56]                    | Executes an UPDATE command for the specified *entity*.                                                                             |
 
 
 See Also
@@ -145,12 +143,10 @@ See Also
 [47]: QuoteIdentifier.md
 [48]: Remove.md
 [49]: RemoveAsync.md
-[50]: RemoveKey__1.md
-[51]: RemoveKeyAsync__1.md
-[52]: Table.md
-[53]: ../SqlTable/README.md
-[54]: Table__1.md
-[55]: Update.md
-[56]: Update_1.md
-[57]: UpdateAsync_1.md
-[58]: UpdateAsync.md
+[50]: Table.md
+[51]: ../SqlTable/README.md
+[52]: Table__1.md
+[53]: Update.md
+[54]: Update_1.md
+[55]: UpdateAsync_1.md
+[56]: UpdateAsync.md

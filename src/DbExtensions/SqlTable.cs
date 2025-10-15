@@ -166,14 +166,6 @@ partial class Database {
          .Remove(entity);
    }
 
-   /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveKey(Object)"/>
-   /// <remarks>This method is a shortcut for <c>db.Table&lt;TEntity>().RemoveKey(id)</c>.</remarks>
-   /// <seealso cref="SqlTable&lt;TEntity>.RemoveKey(Object)" qualifyHint="true"/>
-
-   public bool
-   RemoveKey<TEntity>(object id) where TEntity : class =>
-      Table<TEntity>().RemoveKey(id);
-
    internal string
    BuildPredicateFragment(
          object entity,

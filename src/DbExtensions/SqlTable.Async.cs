@@ -95,18 +95,6 @@ partial class Database {
          .RemoveAsync(entity, cancellationToken)
          .ConfigureAwait(false);
    }
-
-   /// <inheritdoc cref="SqlTable&lt;TEntity>.RemoveKeyAsync(Object, CancellationToken)"/>
-   /// <remarks>This method is a shortcut for <c>await db.Table&lt;TEntity>().RemoveKeyAsync(id, cancellationToken)</c>.</remarks>
-   /// <seealso cref="SqlTable&lt;TEntity>.RemoveKeyAsync(Object, CancellationToken)" qualifyHint="true"/>
-
-   public async ValueTask<bool>
-   RemoveKeyAsync<TEntity>(object id, CancellationToken cancellationToken = default) where TEntity : class {
-
-      return await Table<TEntity>()
-         .RemoveKeyAsync(id, cancellationToken)
-         .ConfigureAwait(false);
-   }
 }
 
 partial class SqlSet {
