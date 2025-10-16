@@ -108,6 +108,7 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
 
          Assert.AreEqual(1, query.ParameterValues.Count);
          Assert.AreEqual(5, query.ParameterValues[0]);
+         Assert.AreEqual("SELECT *\r\nFROM (\r\n\tSELECT {0}) AS t0", query.ToString());
       }
 
       [Test]

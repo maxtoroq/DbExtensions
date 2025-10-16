@@ -459,12 +459,13 @@ public sealed partial class SqlBuilder : ISqlFragment {
    void
    AppendPlaceholderSql(SqlBuilder value) {
 
-      var frag = new StringBuilder();
+      var frag = new StringBuilder()
+         .AppendLine();
+
       AppendFragment(value, frag);
       frag.Replace(Environment.NewLine, $"{Environment.NewLine}\t");
 
-      this.Buffer.AppendLine()
-         .Append(frag);
+      this.Buffer.Append(frag);
    }
 
    static partial void
