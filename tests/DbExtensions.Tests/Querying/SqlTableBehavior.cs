@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.ObjectModel;
+using NUnit.Framework;
 
 namespace DbExtensions.Tests.Querying {
 
@@ -98,6 +99,44 @@ namespace DbExtensions.Tests.Querying {
             tx.Rollback();
          }
       }
+
+      [Test]
+      public void InsertOneToMany_Descendants() {
+
+         var db = RealDatabase();
+         var table = db.Table<SqlTable.InsertOneToManyDescendants.Region>();
+
+         using (var tx = db.EnsureInTransaction()) {
+
+            var lastTerritory = db.Table<SqlTable.InsertOneToManyDescendants.Territory>()
+               .OrderBy("TerritoryID DESC")
+               .First();
+
+            var entity = new SqlTable.InsertOneToManyDescendants.Region {
+               RegionID = 9999,
+               RegionDescription = "foo",
+               Territories = {
+                  new SqlTable.InsertOneToManyDescendants.Territory {
+                     TerritoryID = lastTerritory.TerritoryID + 1000,
+                     TerritoryDescription = "foo"
+                  },
+                  new SqlTable.InsertOneToManyDescendants.Territory {
+                     TerritoryID = lastTerritory.TerritoryID + 1001,
+                     TerritoryDescription = "foo",
+                     EmployeeTerritories = {
+                        new SqlTable.InsertOneToManyDescendants.EmployeeTerritory {
+                           EmployeeID = 1
+                        }
+                     }
+                  },
+               }
+            };
+
+            table.Add(entity);
+
+            tx.Rollback();
+         }
+      }
    }
 
    namespace SqlTable {
@@ -151,6 +190,48 @@ namespace DbExtensions.Tests.Querying {
 
             [Column]
             public bool Discontinued { get; set; }
+         }
+      }
+
+      namespace InsertOneToManyDescendants {
+
+         [Table(Name = "Region")]
+         public class Region {
+
+            [Column(IsPrimaryKey = true)]
+            public int RegionID { get; set; }
+
+            [Column]
+            public string RegionDescription { get; set; }
+
+            [Association(OtherKey = nameof(Territory.RegionID))]
+            public Collection<Territory> Territories { get; } = new();
+         }
+
+         [Table(Name = "Territories")]
+         public class Territory {
+
+            [Column(IsPrimaryKey = true)]
+            public string TerritoryID { get; set; }
+
+            [Column]
+            public string TerritoryDescription { get; set; }
+
+            [Column]
+            public int RegionID { get; set; }
+
+            [Association(OtherKey = nameof(EmployeeTerritory.TerritoryID))]
+            public Collection<EmployeeTerritory> EmployeeTerritories { get; } = new();
+         }
+
+         [Table(Name = "EmployeeTerritories")]
+         public class EmployeeTerritory {
+
+            [Column(IsPrimaryKey = true)]
+            public int EmployeeID { get; set; }
+
+            [Column(IsPrimaryKey = true)]
+            public string TerritoryID { get; set; }
          }
       }
    }

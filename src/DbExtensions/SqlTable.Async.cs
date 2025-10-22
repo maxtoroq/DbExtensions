@@ -177,10 +177,6 @@ partial class SqlTable {
    AddAsync(object entity, CancellationToken cancellationToken = default) =>
       _table.AddAsync(entity, cancellationToken);
 
-   ValueTask
-   ISqlTable.AddDescendantsAsync(object entity, CancellationToken cancellationToken) =>
-      _table.AddDescendantsAsync(entity, cancellationToken);
-
    /// <inheritdoc cref="SqlTable&lt;TEntity>.AddRangeAsync(IEnumerable&lt;TEntity>, CancellationToken)"/>
 
    public ValueTask
@@ -393,15 +389,10 @@ partial class SqlTable<TEntity> {
             }
          }
 
-         var otherTable = (ISqlTable)_db.Table(assoc.OtherType);
+         var otherTable = _db.Table(assoc.OtherType);
 
          await otherTable.AddRangeAsync(many, cancellationToken)
             .ConfigureAwait(false);
-
-         foreach (var child in many) {
-            await otherTable.AddDescendantsAsync(child, cancellationToken)
-               .ConfigureAwait(false);
-         }
       }
    }
 
@@ -766,10 +757,6 @@ partial class SqlTable<TEntity> {
       AddAsync((TEntity)entity, cancellationToken);
 
    ValueTask
-   ISqlTable.AddDescendantsAsync(object entity, CancellationToken cancellationToken) =>
-      InsertDescendantsAsync((TEntity)entity, cancellationToken);
-
-   ValueTask
    ISqlTable.AddRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken) =>
       AddRangeAsync(entities.Cast<TEntity>(), cancellationToken);
 
@@ -818,9 +805,6 @@ partial interface ISqlTable {
 
    ValueTask
    AddAsync(object entity, CancellationToken cancellationToken);
-
-   ValueTask // internal
-   AddDescendantsAsync(object entity, CancellationToken cancellationToken);
 
    ValueTask
    AddRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken);
