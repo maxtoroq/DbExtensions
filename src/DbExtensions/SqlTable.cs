@@ -475,10 +475,6 @@ public sealed class SqlTable : SqlSet, ISqlTable {
    Add(object entity) =>
       _table.Add(entity);
 
-   void
-   ISqlTable.AddDescendants(object entity) =>
-      _table.AddDescendants(entity);
-
    /// <inheritdoc cref="SqlTable&lt;TEntity>.AddRange(IEnumerable&lt;TEntity>)"/>
 
    public void
@@ -713,15 +709,7 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
          }
 
          var otherTable = _db.Table(assoc.OtherType);
-
          otherTable.AddRange(many);
-
-         for (int j = 0; j < many.Length; j++) {
-
-            var child = many[j];
-
-            ((ISqlTable)otherTable).AddDescendants(child);
-         }
       }
    }
 
@@ -1050,10 +1038,6 @@ public sealed class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where TEntity
    void
    ISqlTable.Add(object entity) =>
       Add((TEntity)entity);
-
-   void
-   ISqlTable.AddDescendants(object entity) =>
-      InsertDescendants((TEntity)entity);
 
    void
    ISqlTable.AddRange(IEnumerable<object> entities) =>
@@ -1797,9 +1781,6 @@ interface ISqlTable {
 
    void
    Add(object entity);
-
-   void
-   AddDescendants(object entity); // internal
 
    void
    AddRange(IEnumerable<object> entities);
