@@ -69,7 +69,7 @@ namespace DbExtensions.Tests.Querying {
       }
 
       [Test]
-      public void Refresh() {
+      public void Can_Refresh() {
 
          var db = RealDatabase();
          var table = db.Table<SqlTable.Refresh.Product>();

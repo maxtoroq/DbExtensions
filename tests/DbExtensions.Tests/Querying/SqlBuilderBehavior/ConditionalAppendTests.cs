@@ -4,10 +4,12 @@ using NUnit.Framework;
 namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
 
    [TestFixture]
-   public class AppendConditionalClauseTests {
+   public class ConditionalAppendTests {
+
+      // ## AppendIf
 
       [Test]
-      public void If_Continuation() {
+      public void AppendIf() {
 
          var queryTrue = SQL
             .SELECT("A")
@@ -23,7 +25,7 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
       [Test]
-      public void Next_Clause_Continuation() {
+      public void AppendIf_Different_Clause() {
 
          var query = SQL
             .SELECT("A")
@@ -34,10 +36,10 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
 
-      // ## ElseIf_Continuation
+      // ## AppendElseIf
 
       [Test]
-      public void ElseIf_Continuation() {
+      public void AppendElseIf() {
 
          var queryTrue = SQL
             .SELECT("A")
@@ -56,7 +58,7 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
       [Test]
-      public void ElseIf_Continuation_No_If() {
+      public void AppendElseIf_No_If() {
 
          var query = SQL
             .SELECT("A")
@@ -66,7 +68,7 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
       [Test]
-      public void ElseIf_Continuation_After_Else() {
+      public void AppendElseIf_After_Else() {
 
          var query = SQL
             .SELECT("A")
@@ -78,7 +80,7 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
       [Test]
-      public void ElseIf_Continuation_Different_Clause() {
+      public void AppendElseIf_Different_Clause() {
 
          var query = SQL
             .SELECT("A")
@@ -90,7 +92,7 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
       [Test]
-      public void ElseIf_Continuation_Different_Next_Clause() {
+      public void AppendElseIf_Different_Next_Clause() {
 
          var query = SQL
             .SELECT("A")
@@ -102,10 +104,10 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
 
-      // ## Else_Continuation
+      // ## AppendElse
 
       [Test]
-      public void Else_Continuation() {
+      public void AppendElse() {
 
          var queryTrue = SQL
             .SELECT("A")
@@ -131,7 +133,7 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
       [Test]
-      public void Else_Continuation_Duplicate() {
+      public void AppendElse_Duplicate() {
 
          var query = SQL
             .SELECT("A")
@@ -143,7 +145,7 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
       [Test]
-      public void Else_Continuation_No_If() {
+      public void AppendElse_No_If() {
 
          var query = SQL
             .SELECT("A")
@@ -153,7 +155,7 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
       [Test]
-      public void Else_Continuation_Not_Nested() {
+      public void AppendElse_Not_Nested() {
 
          var query = SQL
             .SELECT("A")
@@ -166,7 +168,7 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
       [Test]
-      public void Else_Continuation_Different_Clause() {
+      public void AppendElse_Different_Clause() {
 
          var query = SQL
             .SELECT("A")
@@ -178,7 +180,7 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
       [Test]
-      public void Else_Continuation_Different_Next_Clause() {
+      public void AppendElse_Different_Next_Clause() {
 
          var query = SQL
             .SELECT("A")
