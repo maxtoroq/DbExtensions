@@ -1860,7 +1860,7 @@ public abstract record class SqlClause(string? Name, string? Separator) {
    /// </summary>
    /// <exclude/>
 
-   public sealed record class VALUES() : SqlClause("VALUES", null);
+   public sealed record class VALUES() : SqlClause("VALUES", "," +  Environment.NewLine);
 
    /// <summary>
    /// Gets a singleton instance of the clause identified by <typeparamref name="TClause"/>.

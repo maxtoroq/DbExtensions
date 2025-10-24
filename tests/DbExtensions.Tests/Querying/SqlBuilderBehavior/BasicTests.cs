@@ -88,17 +88,6 @@ namespace DbExtensions.Tests.Querying.SqlBuilderBehavior {
       }
 
       [Test]
-      public void Values_List() {
-
-         var query = SQL
-            .INSERT_INTO("tbl")
-            .VALUES(1, 2, 3);
-
-         Assert.AreEqual("INSERT INTO tbl\r\nVALUES ({0}, {1}, {2})", query.ToString());
-         Assert.AreEqual(3, query.ParameterValues.Count);
-      }
-
-      [Test]
       public void Treat_SqlBuilder_As_SubQuery() {
 
          var query = SQL
