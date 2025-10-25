@@ -1853,7 +1853,7 @@ public abstract record class SqlClause(string? Name, string? Separator) {
    /// </summary>
    /// <exclude/>
 
-   public sealed record class SET() : SqlClause("SET", "," + Environment.NewLine);
+   public sealed record class SET() : SqlClause("SET", ", ");
 
    /// <summary>
    /// The VALUES clause.
