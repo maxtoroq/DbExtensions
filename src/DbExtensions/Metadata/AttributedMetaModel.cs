@@ -1046,10 +1046,21 @@ sealed class AttributedMetaDataMember : MetaDataMember {
    InitAccessors() {
 
       if (!_hasAccessors) {
+
+         var association = this.Association;
+
          lock (_locktarget) {
             if (!_hasAccessors) {
 
-               if (this.StorageMember is not null) {
+               if (association is { IsMany: true }) {
+
+                  var elementType = association.OtherType.Type;
+                  var pi = (PropertyInfo)this.Member;
+
+                  _accPublic = _accPrivate =
+                     PropertyAccessor.CreateCollection(this.Member.ReflectedType, elementType, pi);
+
+               } else if (this.StorageMember is not null) {
                   _accPrivate = MakeMemberAccessor(this.Member.ReflectedType, this.StorageMember, null);
                   _accPublic = MakeMemberAccessor(this.Member.ReflectedType, this.Member, _accPrivate);
                } else {

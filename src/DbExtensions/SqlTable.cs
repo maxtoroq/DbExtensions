@@ -1592,7 +1592,7 @@ partial class SqlSet {
 
          set.ManyIncludes.Add(manyPath, new CollectionLoader(
             c => GetMany(c, manyAssoc, manySource),
-            manyAssoc));
+            manyAssoc.ThisMember));
       }
 
       static IEnumerable

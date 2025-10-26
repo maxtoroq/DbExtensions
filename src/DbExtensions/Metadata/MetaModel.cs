@@ -706,3 +706,64 @@ abstract class MetaAccessor<TEntity, TMember> : MetaAccessor {
    public abstract void
    SetValue(ref TEntity instance, TMember value);
 }
+
+abstract class MetaCollectionAccessor : MetaAccessor {
+
+   public abstract Type
+   ElementType { get; }
+
+   public abstract void
+   AddBoxedElement(ref object collection, object element);
+}
+
+sealed class MetaCollectionAccessor<TContainer, TCollection, TElement> : MetaCollectionAccessor {
+
+   readonly MetaAccessor<TContainer, TCollection>
+   _propAccessor;
+
+   readonly Action<TCollection, TElement>
+   _addFn;
+
+   public override Type
+   Type => _propAccessor.Type;
+
+   public override Type
+   ElementType => typeof(TElement);
+
+   internal
+   MetaCollectionAccessor(
+         MetaAccessor<TContainer, TCollection> propAccessor,
+         Action<TCollection, TElement> addFn) {
+
+      _propAccessor = propAccessor;
+      _addFn = addFn;
+   }
+
+   public TCollection
+   GetValue(TContainer instance) =>
+      _propAccessor.GetValue(instance);
+
+   public void
+   SetValue(ref TContainer instance, TCollection value) =>
+      _propAccessor.SetValue(ref instance, value);
+
+   public void
+   AddElement(ref TCollection collection, TElement element) =>
+      _addFn.Invoke(collection, element);
+
+   public override void
+   SetBoxedValue(ref object instance, object value) =>
+      _propAccessor.SetBoxedValue(ref instance, value);
+
+   public override object
+   GetBoxedValue(object instance) =>
+      _propAccessor.GetBoxedValue(instance);
+
+   public override void
+   AddBoxedElement(ref object collection, object element) {
+
+      var TCol = (TCollection)collection;
+      AddElement(ref TCol, (TElement)element);
+      collection = TCol!;
+   }
+}

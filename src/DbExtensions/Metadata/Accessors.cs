@@ -161,6 +161,26 @@ static class PropertyAccessor {
          [pi, dget, dset, drset, storageAccessor], null);
    }
 
+   internal static MetaCollectionAccessor
+   CreateCollection(Type objectType, Type elementType, PropertyInfo pi) {
+
+      var propAccessor = Create(objectType, pi, null);
+      var colType = pi.PropertyType;
+
+      var addMethod = colType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, [elementType], null)
+         ?? throw new InvalidOperationException($"Couldn't find a public 'Add' method on '{colType.FullName}'.");
+
+      var addFn = Delegate.CreateDelegate(typeof(Action<,>)
+         .MakeGenericType(colType, elementType), addMethod);
+
+      return (MetaCollectionAccessor)Activator.CreateInstance(
+         typeof(MetaCollectionAccessor<,,>).MakeGenericType(objectType, colType, elementType),
+         BindingFlags.Instance | BindingFlags.NonPublic,
+         null,
+         [propAccessor, addFn],
+         null)!;
+   }
+
    sealed class Accessor<T, V, V2> : MetaAccessor<T, V> where V2 : V {
 
       readonly PropertyInfo

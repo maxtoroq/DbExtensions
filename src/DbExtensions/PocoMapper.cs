@@ -20,7 +20,6 @@ using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -142,9 +141,15 @@ partial class SqlSet {
 
       var mapper = _db.CreatePocoMapper(this.ResultType);
       mapper.SingleResult = singleResult;
-      mapper.ManyIncludes = this.ManyIncludes;
+
+      InitializePocoMapper(mapper);
 
       return mapper;
+   }
+
+   void
+   InitializePocoMapper(PocoMapper mapper) {
+      mapper.ManyIncludes = this.ManyIncludes;
    }
 }
 
@@ -259,34 +264,30 @@ sealed class PocoMapper : Mapper {
       return new CacheKey(type, names);
    }
 
-   internal Dictionary<int, List<PocoCollection>>?
+   internal Dictionary<int, List<CollectionLoader>>?
    GetManyLoaders() {
 
       if (this.ManyIncludes is null or { Count: 0 }) {
          return null;
       }
 
-      var collectionNodes = new Dictionary<int, List<PocoCollection>>();
+      var collectionNodes = new Dictionary<int, List<CollectionLoader>>();
 
       foreach (var pair in this.ManyIncludes) {
 
          var path = pair.Key;
-         var col = new PocoCollection(pair.Value);
 
-         if (col is not null) {
+         var containerHash = (path.Length == 1) ?
+            PocoNode.RootNodeHash
+            : String.Join('.', path, 0, path.Length - 1).GetHashCode();
 
-            var containerHash = (path.Length == 1) ?
-               PocoNode.RootNodeHash
-               : String.Join('.', path, 0, path.Length - 1).GetHashCode();
+         ref var containerCols = ref CollectionsMarshal.GetValueRefOrAddDefault(collectionNodes, containerHash, out var exists);
 
-            ref var containerCols = ref CollectionsMarshal.GetValueRefOrAddDefault(collectionNodes, containerHash, out var exists);
-
-            if (!exists) {
-               containerCols = new();
-            }
-
-            containerCols!.Add(col);
+         if (!exists) {
+            containerCols = new();
          }
+
+         containerCols!.Add(pair.Value);
       }
 
       return collectionNodes;
@@ -353,7 +354,7 @@ sealed class PocoMapper : Mapper {
 
 partial class MappingContext {
 
-   public Dictionary<int, List<PocoCollection>>?
+   public Dictionary<int, List<CollectionLoader>>?
    ManyLoaders;
 
    public void
@@ -371,25 +372,13 @@ partial class MappingContext {
          }
 
          foreach (var col in colLoaders) {
-            col.Load(instance, this);
+            col.Load(instance);
          }
       }
    }
 }
 
-sealed class CollectionLoader(Func<object, IEnumerable> load, MetaAssociation association) {
-
-   public readonly Func<object, IEnumerable>
-   Load = load;
-
-   public readonly MetaAssociation
-   Association = association;
-}
-
 sealed partial class PocoNode : Node {
-
-   static readonly ConcurrentDictionary<PropertyInfo, MetaAccessor>
-   _accessorCache = new(ReferenceEqualityComparer.Instance);
 
    int?
    _propertyHash;
@@ -459,10 +448,6 @@ sealed partial class PocoNode : Node {
       this.Parameter = parameter;
    }
 
-   internal static CollectionAccessor
-   GetCollectionAccessor(PropertyInfo property) =>
-      (CollectionAccessor)_accessorCache.GetOrAdd(property, static p => CollectionAccessor.Create(p.ReflectedType!, p));
-
    public override object
    Create(DbDataReader record, MappingContext context) =>
       throw new NotImplementedException();
@@ -518,191 +503,45 @@ sealed partial class PocoNode : Node {
    }
 }
 
-sealed class PocoCollection {
-
-   readonly CollectionLoader
-   _loader;
-
-   readonly PropertyInfo
-   _property;
-
-   CollectionAccessor?
-   _accessor;
-
-   Type?
-   _concreteType;
-
-   Func<object>?
-   _factory;
-
-   private CollectionAccessor
-   Accessor => _accessor
-      ??= PocoNode.GetCollectionAccessor(_property);
-
-   private Type
-   ConcreteType {
-      get {
-         if (_concreteType is null) {
-            var colType = _property.PropertyType;
-            _concreteType = (colType.IsAbstract || colType.IsInterface) ?
-               typeof(Collection<>).MakeGenericType(this.Accessor.ElementType)
-               : colType;
-         }
-         return _concreteType;
-      }
-   }
-
-   private Func<object>
-   Factory => _factory
-      ??= ObjectFactory.GetFactory(ConcreteType);
-
-   public
-   PocoCollection(CollectionLoader loader) {
-      _loader = loader;
-      _property = (PropertyInfo)loader.Association.ThisMember.Member;
-   }
-
-   public void
-   Load(object instance, MappingContext context) {
-
-      var collection = GetOrCreate(instance, context);
-      var elements = _loader.Load.Invoke(instance);
-
-      foreach (var element in elements) {
-         Add(collection, element, context);
-      }
-   }
-
-   IEnumerable
-   GetOrCreate(object instance, MappingContext context) {
-
-      var collection = this.Accessor.GetBoxedValue(instance);
-
-      if (collection is null) {
-         collection = this.Factory.Invoke();
-         this.Accessor.SetBoxedValue(ref instance, collection);
-      }
-
-      return (IEnumerable)collection;
-   }
-
-   void
-   Add(IEnumerable collection, object element, MappingContext context) {
-
-      var colObj = (object)collection;
-
-      this.Accessor.AddBoxedElement(ref colObj, element);
-   }
-}
-
-abstract class CollectionAccessor : MetaAccessor {
-
-   public abstract Type
-   ElementType { get; }
-
-   public static CollectionAccessor
-   Create(Type objectType, PropertyInfo pi) {
-
-      var propAccessor = PropertyAccessor.Create(objectType, pi, null);
-
-      var colType = pi.PropertyType;
-      var elementType = GetElementType(colType);
-
-      var addMethod = colType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, [elementType], null)
-         ?? throw new InvalidOperationException($"Couldn't find a public 'Add' method on '{colType.FullName}'.");
-
-      var addFn = Delegate.CreateDelegate(typeof(Action<,>)
-         .MakeGenericType(colType, elementType), addMethod);
-
-      return (CollectionAccessor)Activator.CreateInstance(
-         typeof(CollectionAccessor<,,>).MakeGenericType(objectType, colType, elementType),
-         BindingFlags.Instance | BindingFlags.NonPublic,
-         null,
-         [propAccessor, addFn],
-         null)!;
-   }
-
-   static Type
-   GetElementType(Type colType) {
-
-      var elementType = typeof(object);
-
-      for (var type = colType; type is not null; type = type.BaseType) {
-
-         var genericICol = type.GetInterfaces()
-            .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>));
-
-         if (genericICol is not null) {
-            elementType = genericICol.GetGenericArguments()[0];
-            break;
-         }
-      }
-
-      return elementType;
-   }
-
-   public abstract void
-   AddBoxedElement(ref object collection, object element);
-}
-
-sealed class CollectionAccessor<TContainer, TCollection, TElement> : CollectionAccessor {
-
-   readonly MetaAccessor<TContainer, TCollection>
-   _propAccessor;
-
-   readonly Action<TCollection, TElement>
-   _addFn;
-
-   public override Type
-   Type => _propAccessor.Type;
-
-   public override Type
-   ElementType => typeof(TElement);
-
-   internal
-   CollectionAccessor(
-         MetaAccessor<TContainer, TCollection> propAccessor,
-         Action<TCollection, TElement> addFn) {
-
-      _propAccessor = propAccessor;
-      _addFn = addFn;
-   }
-
-   public TCollection
-   GetValue(TContainer instance) =>
-      _propAccessor.GetValue(instance);
-
-   public void
-   SetValue(ref TContainer instance, TCollection value) =>
-      _propAccessor.SetValue(ref instance, value);
-
-   public void
-   AddElement(ref TCollection collection, TElement element) =>
-      _addFn.Invoke(collection, element);
-
-   public override void
-   SetBoxedValue(ref object instance, object value) =>
-      _propAccessor.SetBoxedValue(ref instance, value);
-
-   public override object
-   GetBoxedValue(object instance) =>
-      _propAccessor.GetBoxedValue(instance);
-
-   public override void
-   AddBoxedElement(ref object collection, object element) {
-
-      var TCol = (TCollection)collection;
-      AddElement(ref TCol, (TElement)element);
-      collection = TCol!;
-   }
-}
-
-static class ObjectFactory {
+sealed class CollectionLoader {
 
    static readonly ConcurrentDictionary<Type, Func<object>>
    _factoryCache = new(ReferenceEqualityComparer.Instance);
 
-   public static Func<object>
+   readonly Func<object, IEnumerable>
+   _loader;
+
+   readonly MetaDataMember
+   _metaMember;
+
+   readonly MetaCollectionAccessor
+   _collectionAccesor;
+
+   Func<object>?
+   _factory;
+
+   private Func<object>
+   Factory {
+      get {
+         if (_factory is null) {
+            var colType = _metaMember.Type;
+            var concreteType = (colType.IsAbstract || colType.IsInterface) ?
+               typeof(Collection<>).MakeGenericType(_collectionAccesor.ElementType)
+               : colType;
+            _factory = GetFactory(concreteType);
+         }
+         return _factory;
+      }
+   }
+
+   public
+   CollectionLoader(Func<object, IEnumerable> loader, MetaDataMember metaMember) {
+      _loader = loader;
+      _metaMember = metaMember;
+      _collectionAccesor = (MetaCollectionAccessor)_metaMember.MemberAccessor;
+   }
+
+   static Func<object>
    GetFactory(Type type) =>
       _factoryCache.GetOrAdd(type, static t => CreateFactory(t));
 
@@ -714,6 +553,38 @@ static class ObjectFactory {
       var lambdaExpr = Expression.Lambda<Func<object>>(castExpr);
 
       return lambdaExpr.Compile();
+   }
+
+   public void
+   Load(object instance) {
+
+      var collection = GetOrCreate(instance);
+      var elements = _loader.Invoke(instance);
+
+      foreach (var element in elements) {
+         Add(collection, element);
+      }
+   }
+
+   IEnumerable
+   GetOrCreate(object instance) {
+
+      var collection = _collectionAccesor.GetBoxedValue(instance);
+
+      if (collection is null) {
+         collection = this.Factory.Invoke();
+         _collectionAccesor.SetBoxedValue(ref instance, collection);
+      }
+
+      return (IEnumerable)collection;
+   }
+
+   void
+   Add(IEnumerable collection, object element) {
+
+      var colObj = (object)collection;
+
+      _collectionAccesor.AddBoxedElement(ref colObj, element);
    }
 }
 
