@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <LangVersion>12</LangVersion>
-    <DefineConstants>DBEX_NO_DYN;DBEX_NO_POCO</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\DbExtensions\Properties\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
     <Compile Include="..\DbExtensions\Database.cs" Link="Database.cs" />
     <Compile Include="..\DbExtensions\SqlBuilder.cs" Link="SqlBuilder.cs" />
     <Compile Include="..\DbExtensions\SqlSet.cs" Link="SqlSet.cs" />

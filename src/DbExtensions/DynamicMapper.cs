@@ -64,6 +64,22 @@ partial class Database {
 
 partial class SqlSet {
 
+   partial void
+   DynamicMap(bool singleResult, SqlBuilder query, ref IEnumerable<object>? results) {
+
+      var mapper = CreateDynamicMapper(singleResult);
+
+      results = _db.Map(query, mapper.Map);
+   }
+
+   partial void
+   DynamicAsyncMap(bool singleResult, SqlBuilder query, ref IAsyncEnumerable<object>? results) {
+
+      var mapper = CreateDynamicMapper(singleResult);
+
+      results = _db.AsyncMap(query, mapper.Map);
+   }
+
    DynamicMapper
    CreateDynamicMapper(bool singleResult) {
 

@@ -134,6 +134,22 @@ partial class SqlSet {
    partial void
    Initialize3(SqlSet set);
 
+   partial void
+   PocoMap(bool singleResult, SqlBuilder query, ref IEnumerable<object>? results) {
+
+      var mapper = CreatePocoMapper(singleResult);
+
+      results = _db.Map(query, mapper.PocoMap);
+   }
+
+   partial void
+   PocoAsyncMap(bool singleResult, SqlBuilder query, ref IAsyncEnumerable<object>? results) {
+
+      var mapper = CreatePocoMapper(singleResult);
+
+      results = _db.AsyncMap(query, mapper.PocoMap);
+   }
+
    private protected PocoMapper
    CreatePocoMapper(bool singleResult) {
 
@@ -150,6 +166,25 @@ partial class SqlSet {
    void
    InitializePocoMapper(PocoMapper mapper) {
       mapper.ManyIncludes = this.ManyIncludes;
+   }
+}
+
+partial class SqlSet<TResult> {
+
+   partial void
+   PocoMap(bool singleResult, SqlBuilder query, ref IEnumerable<TResult>? results) {
+
+      var mapper = CreatePocoMapper(singleResult);
+
+      results = _db.Map(query, r => (TResult)mapper.PocoMap(r));
+   }
+
+   partial void
+   PocoAsyncMap(bool singleResult, SqlBuilder query, ref IAsyncEnumerable<TResult>? results) {
+
+      var mapper = CreatePocoMapper(singleResult);
+
+      results = _db.AsyncMap(query, r => (TResult)mapper.PocoMap(r));
    }
 }
 

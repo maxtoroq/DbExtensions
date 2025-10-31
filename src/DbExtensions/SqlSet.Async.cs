@@ -28,25 +28,29 @@ partial class SqlSet {
    AsyncMap(bool singleResult) {
 
       var query = GetDefiningQuery(clone: false);
+      var results = default(IAsyncEnumerable<object>);
 
       if (this.ResultType is not null) {
-#if DBEX_NO_POCO
-         throw new InvalidOperationException("Cannot enumerate this set.");
-#else
-         var mapper = CreatePocoMapper(singleResult);
 
-         return _db.AsyncMap(query, mapper.PocoMap);
-#endif
+         PocoAsyncMap(singleResult, query, ref results);
+
+         return results
+            ?? throw new InvalidOperationException("Cannot enumerate this set.");
+
       } else {
-#if DBEX_NO_DYN
-         throw new InvalidOperationException("Cannot enumerate this set unless you specify a result type.");
-#else
-         var mapper = CreateDynamicMapper(singleResult);
 
-         return _db.AsyncMap(query, mapper.Map);
-#endif
+         DynamicAsyncMap(singleResult, query, ref results);
+
+         return results
+            ?? throw new InvalidOperationException("Cannot enumerate this set unless you specify a result type.");
       }
    }
+
+   partial void
+   PocoAsyncMap(bool singleResult, SqlBuilder query, ref IAsyncEnumerable<object>? results);
+
+   partial void
+   DynamicAsyncMap(bool singleResult, SqlBuilder query, ref IAsyncEnumerable<object>? results);
 
    // ISqlSet Members
 
@@ -381,15 +385,18 @@ partial class SqlSet<TResult> {
       if (_explicitMapper is not null) {
          return _db.AsyncMap(query, _explicitMapper);
       } else {
-#if DBEX_NO_POCO
-         throw new InvalidOperationException("Cannot enumerate this set.");
-#else
-         var mapper = CreatePocoMapper(singleResult);
 
-         return _db.AsyncMap(query, r => (TResult)mapper.PocoMap(r));
-#endif
+         var results = default(IAsyncEnumerable<TResult>);
+
+         PocoAsyncMap(singleResult, query, ref results);
+
+         return results
+            ?? throw new InvalidOperationException("Cannot enumerate this set.");
       }
    }
+
+   partial void
+   PocoAsyncMap(bool singleResult, SqlBuilder query, ref IAsyncEnumerable<TResult>? results);
 
    // ISqlSet Members
 

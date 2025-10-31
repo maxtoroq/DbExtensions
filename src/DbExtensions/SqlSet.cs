@@ -538,25 +538,29 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    Map(bool singleResult) {
 
       var query = GetDefiningQuery(clone: false);
+      var results = default(IEnumerable<object>);
 
       if (this.ResultType is not null) {
-#if DBEX_NO_POCO
-         throw new InvalidOperationException("Cannot enumerate this set.");
-#else
-         var mapper = CreatePocoMapper(singleResult);
 
-         return _db.Map(query, mapper.PocoMap);
-#endif
+         PocoMap(singleResult, query, ref results);
+
+         return results
+            ?? throw new InvalidOperationException("Cannot enumerate this set.");
+
       } else {
-#if DBEX_NO_DYN
-         throw new InvalidOperationException("Cannot enumerate this set unless you specify a result type.");
-#else
-         var mapper = CreateDynamicMapper(singleResult);
 
-         return _db.Map(query, mapper.Map);
-#endif
+         DynamicMap(singleResult, query, ref results);
+
+         return results
+            ?? throw new InvalidOperationException("Cannot enumerate this set unless you specify a result type.");
       }
    }
+
+   partial void
+   PocoMap(bool singleResult, SqlBuilder query, ref IEnumerable<object>? results);
+
+   partial void
+   DynamicMap(bool singleResult, SqlBuilder query, ref IEnumerable<object>? results);
 
    // ISqlSet Members
 
@@ -1283,15 +1287,18 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
       if (_explicitMapper is not null) {
          return _db.Map(query, _explicitMapper);
       } else {
-#if DBEX_NO_POCO
-         throw new InvalidOperationException("Cannot enumerate this set.");
-#else
-         var mapper = CreatePocoMapper(singleResult);
 
-         return _db.Map(query, r => (TResult)mapper.PocoMap(r));
-#endif
+         var results = default(IEnumerable<TResult>);
+
+         PocoMap(singleResult, query, ref results);
+
+         return results
+            ?? throw new InvalidOperationException("Cannot enumerate this set.");
       }
    }
+
+   partial void
+   PocoMap(bool singleResult, SqlBuilder query, ref IEnumerable<TResult>? results);
 
    // ISqlSet Members
 

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\DbExtensions\Properties\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
     <Compile Include="..\DbExtensions\SqlBuilder.cs" Link="SqlBuilder.cs" />
   </ItemGroup>
 
