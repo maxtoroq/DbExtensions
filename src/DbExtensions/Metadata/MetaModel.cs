@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Reflection;
 
 namespace DbExtensions.Metadata;
@@ -499,7 +500,7 @@ abstract class MetaDataMember {
          return value;
       }
 
-      return Convert.ChangeType(value, this.ConvertToType);
+      return Convert.ChangeType(value, this.ConvertToType, CultureInfo.InvariantCulture);
    }
 }
 
