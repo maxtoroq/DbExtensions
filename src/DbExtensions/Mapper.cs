@@ -281,25 +281,6 @@ abstract partial class Mapper {
       throw new InvalidOperationException(message.ToString());
    }
 
-   public object
-   Map(DbDataReader record) {
-
-      var node = GetRootNode(record);
-      var context = this.MappingContext;
-
-      var instance = node.Create(record, context);
-      node.Load(instance, record, context);
-
-      return instance;
-   }
-
-   public void
-   Load(object instance, DbDataReader record) {
-
-      var node = GetRootNode(record);
-      node.Load(instance, record, this.MappingContext);
-   }
-
    private protected Node
    GetRootNode(DbDataReader record) {
 
@@ -438,95 +419,6 @@ abstract class Node {
    public bool
    HasProperties =>
       _properties?.Count > 0;
-
-   public object?
-   Map(DbDataReader record, MappingContext context) {
-
-      if (this.IsComplex) {
-         return MapComplex(record, context);
-      }
-
-      return MapSimple(record, context);
-   }
-
-   protected object?
-   MapComplex(DbDataReader record, MappingContext context) {
-
-      if (AllColumnsNull(record)) {
-         return null;
-      }
-
-      var value = Create(record, context);
-      Load(value, record, context);
-
-      return value;
-   }
-
-   bool
-   AllColumnsNull(DbDataReader record) {
-
-      if (this.IsComplex) {
-
-         return (!this.HasConstructorParameters
-               || this.ConstructorParameters
-                  .OrderBy(n => n.Value.IsComplex)
-                  .All(n => n.Value.AllColumnsNull(record)))
-            && this.Properties
-               .OrderBy(n => n.IsComplex)
-               .All(n => n.AllColumnsNull(record));
-      }
-
-      return record.IsDBNull(this.ColumnOrdinal);
-   }
-
-   protected object?
-   MapSimple(DbDataReader record, MappingContext context) {
-
-      var isNull = record.IsDBNull(this.ColumnOrdinal);
-      var value = (isNull) ? null : record.GetValue(this.ColumnOrdinal);
-
-      return value;
-   }
-
-   public abstract object
-   Create(DbDataReader record, MappingContext context);
-
-   public void
-   Load(object instance, DbDataReader record, MappingContext context) {
-
-      for (int i = 0; i < this.Properties.Count; i++) {
-
-         var childNode = this.Properties[i];
-
-         if (!childNode.IsComplex
-            || childNode.HasConstructorParameters) {
-
-            childNode.Read(instance, record, context);
-            continue;
-         }
-
-         var currentValue = childNode.Get(instance);
-
-         if (currentValue is not null) {
-            childNode.Load(currentValue, record, context);
-         } else {
-            childNode.Read(instance, record, context);
-         }
-      }
-   }
-
-   void
-   Read(object instance, DbDataReader record, MappingContext context) {
-
-      var value = Map(record, context);
-      Set(instance, value, context);
-   }
-
-   protected abstract object?
-   Get(object instance);
-
-   protected abstract void
-   Set(object instance, object? value, MappingContext context);
 
    public abstract ConstructorInfo[]
    GetConstructors(BindingFlags bindingAttr);

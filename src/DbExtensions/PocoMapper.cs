@@ -483,18 +483,6 @@ sealed partial class PocoNode : Node {
       this.Parameter = parameter;
    }
 
-   public override object
-   Create(DbDataReader record, MappingContext context) =>
-      throw new NotImplementedException();
-
-   protected override object?
-   Get(object instance) =>
-      throw new NotImplementedException();
-
-   protected override void
-   Set(object instance, object? value, MappingContext context) =>
-      throw new NotImplementedException();
-
    public override ConstructorInfo[]
    GetConstructors(BindingFlags bindingAttr) =>
       this.UnderlyingType.GetConstructors(bindingAttr);

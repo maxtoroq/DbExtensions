@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Dynamic;
+using System.Linq;
 using System.Reflection;
 
 namespace DbExtensions;
@@ -38,7 +39,7 @@ partial class Database {
 
       var mapper = CreateDynamicMapper();
 
-      return Map(query, r => (dynamic)mapper.Map(r));
+      return Map(query, r => (dynamic)mapper.DynamicMap(r));
    }
 
    /// <inheritdoc cref="Map(SqlBuilder)"/>
@@ -50,7 +51,7 @@ partial class Database {
 
       var mapper = CreateDynamicMapper();
 
-      return AsyncMap(query, r => (dynamic)mapper.Map(r));
+      return AsyncMap(query, r => (dynamic)mapper.DynamicMap(r));
    }
 
    internal DynamicMapper
@@ -69,7 +70,7 @@ partial class SqlSet {
 
       var mapper = CreateDynamicMapper(singleResult);
 
-      results = _db.Map(query, mapper.Map);
+      results = _db.Map(query, mapper.DynamicMap);
    }
 
    partial void
@@ -77,7 +78,7 @@ partial class SqlSet {
 
       var mapper = CreateDynamicMapper(singleResult);
 
-      results = _db.AsyncMap(query, mapper.Map);
+      results = _db.AsyncMap(query, mapper.DynamicMap);
    }
 
    DynamicMapper
@@ -113,6 +114,18 @@ sealed class DynamicMapper : Mapper {
    protected override Node
    CreateParameterNode(int columnOrdinal, ParameterInfo paramInfo) =>
       throw new NotImplementedException();
+
+   public object
+   DynamicMap(DbDataReader record) {
+
+      var node = (DynamicNode)GetRootNode(record);
+      var context = this.MappingContext;
+
+      var instance = node.Create(record, context);
+      node.Load(instance, record, context);
+
+      return instance;
+   }
 }
 
 sealed class DynamicNode : Node {
@@ -155,11 +168,91 @@ sealed class DynamicNode : Node {
       this.IsComplex = isComplex;
    }
 
-   public override object
+   public object?
+   Map(DbDataReader record, MappingContext context) {
+
+      if (this.IsComplex) {
+         return MapComplex(record, context);
+      }
+
+      return MapSimple(record, context);
+   }
+
+   object?
+   MapComplex(DbDataReader record, MappingContext context) {
+
+      if (AllColumnsNull(record)) {
+         return null;
+      }
+
+      var value = Create(record, context);
+      Load(value, record, context);
+
+      return value;
+   }
+
+   bool
+   AllColumnsNull(DbDataReader record) {
+
+      if (this.IsComplex) {
+
+         return (!this.HasConstructorParameters
+               || this.ConstructorParameters
+                  .OrderBy(n => n.Value.IsComplex)
+                  .All(n => ((DynamicNode)n.Value).AllColumnsNull(record)))
+            && this.Properties
+               .OrderBy(n => n.IsComplex)
+               .All(n => ((DynamicNode)n).AllColumnsNull(record));
+      }
+
+      return record.IsDBNull(this.ColumnOrdinal);
+   }
+
+   object?
+   MapSimple(DbDataReader record, MappingContext context) {
+
+      var isNull = record.IsDBNull(this.ColumnOrdinal);
+      var value = (isNull) ? null : record.GetValue(this.ColumnOrdinal);
+
+      return value;
+   }
+
+   public object
    Create(DbDataReader record, MappingContext context) =>
       new ExpandoObject();
 
-   protected override object?
+   public void
+   Load(object instance, DbDataReader record, MappingContext context) {
+
+      for (int i = 0; i < this.Properties.Count; i++) {
+
+         var childNode = (DynamicNode)this.Properties[i];
+
+         if (!childNode.IsComplex
+            || childNode.HasConstructorParameters) {
+
+            childNode.Read(instance, record, context);
+            continue;
+         }
+
+         var currentValue = childNode.Get(instance);
+
+         if (currentValue is not null) {
+            childNode.Load(currentValue, record, context);
+         } else {
+            childNode.Read(instance, record, context);
+         }
+      }
+   }
+
+   void
+   Read(object instance, DbDataReader record, MappingContext context) {
+
+      var value = Map(record, context);
+      Set(instance, value, context);
+   }
+
+   object?
    Get(object instance) {
 
       var dictionary = (IDictionary<string, object?>)instance;
@@ -171,7 +264,7 @@ sealed class DynamicNode : Node {
       return null;
    }
 
-   protected override void
+   void
    Set(object instance, object? value, MappingContext context) {
       ((IDictionary<string, object?>)instance)[this.PropertyName!] = value;
    }
