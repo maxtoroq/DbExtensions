@@ -1588,26 +1588,27 @@ partial class SqlSet {
             manySource = db.FromQuery(manyQuery!, metaType.Type);
          }
 
-         set.ManyIncludes ??= new Dictionary<string[], CollectionLoader>();
+         set.ManyIncludes ??= new Dictionary<string[], Action<object>>();
 
-         set.ManyIncludes.Add(manyPath, new CollectionLoader(
-            c => GetMany(c, manyAssoc, manySource),
-            manyAssoc.ThisMember));
+         set.ManyIncludes.Add(manyPath,
+            container => ((MetaCollectionAccessor)manyAssoc.ThisMember.MemberAccessor)
+               .Load(container, GetMany(container, manyAssoc, manySource)));
       }
 
       static IEnumerable
-      GetMany(object container, MetaAssociation association, SqlSet set) {
+      GetMany(object container, MetaAssociation manyAssoc, SqlSet manySource) {
 
-         var predicateValues = association.OtherKey.Select((p, i) =>
-            new KeyValuePair<string, object>(p.MappedName, association.ThisKey[i].GetValueForDatabase(container)));
+         var predicateValues = manyAssoc.OtherKey.Select((p, i) =>
+            new KeyValuePair<string, object>(p.MappedName, manyAssoc.ThisKey[i].GetValueForDatabase(container)));
 
-         var parameters = new List<object?>(association.OtherKey.Count);
-         var whereFragment = new SqlFragment(set._db.BuildPredicateFragment(predicateValues, parameters), parameters);
+         var parameters = new List<object?>(manyAssoc.OtherKey.Count);
+         var whereFragment = new SqlFragment(manySource._db.BuildPredicateFragment(predicateValues, parameters), parameters);
 
-         var children = set.Where(whereFragment)
+         var children = manySource
+            .Where(whereFragment)
             .AsEnumerable();
 
-         var otherMember = association.OtherMember;
+         var otherMember = manyAssoc.OtherMember;
          var setOtherMember = otherMember is { Association.IsMany: false };
 
          foreach (var child in children) {
@@ -1692,4 +1693,19 @@ partial interface ISqlTable {
 
    void
    UpdateRange(params object[] entities);
+}
+
+partial class PocoNode {
+
+   ColumnAttribute?
+   _columnAttribute;
+
+   private ColumnAttribute?
+   ColumnAttribute => _columnAttribute
+      ??= this.Property?.GetCustomAttribute<ColumnAttribute>();
+
+   partial void
+   GetConvertToType(ref Type? convertToType) {
+      convertToType = this.ColumnAttribute?.ConvertTo;
+   }
 }

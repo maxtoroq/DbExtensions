@@ -16,9 +16,11 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace DbExtensions.Metadata;
@@ -713,8 +715,34 @@ abstract class MetaCollectionAccessor : MetaAccessor {
    public abstract Type
    ElementType { get; }
 
+   public abstract Func<object>
+   Factory { get; }
+
    public abstract void
    AddBoxedElement(ref object collection, object element);
+
+   public void
+   Load(object instance, IEnumerable elements) {
+
+      var collection = GetOrCreate(instance);
+
+      foreach (var element in elements) {
+         AddBoxedElement(ref collection, element);
+      }
+   }
+
+   object
+   GetOrCreate(object instance) {
+
+      var collection = GetBoxedValue(instance);
+
+      if (collection is null) {
+         collection = this.Factory.Invoke();
+         SetBoxedValue(ref instance, collection);
+      }
+
+      return collection;
+   }
 }
 
 sealed class MetaCollectionAccessor<TContainer, TCollection, TElement> : MetaCollectionAccessor {
@@ -731,6 +759,9 @@ sealed class MetaCollectionAccessor<TContainer, TCollection, TElement> : MetaCol
    public override Type
    ElementType => typeof(TElement);
 
+   public override Func<object>
+   Factory { get; }
+
    internal
    MetaCollectionAccessor(
          MetaAccessor<TContainer, TCollection> propAccessor,
@@ -738,6 +769,18 @@ sealed class MetaCollectionAccessor<TContainer, TCollection, TElement> : MetaCol
 
       _propAccessor = propAccessor;
       _addFn = addFn;
+
+      this.Factory = CreateFactory(this.Type);
+   }
+
+   static Func<object>
+   CreateFactory(Type type) {
+
+      var newExpr = Expression.New(type);
+      var castExpr = Expression.Convert(newExpr, typeof(object));
+      var lambdaExpr = Expression.Lambda<Func<object>>(castExpr);
+
+      return lambdaExpr.Compile();
    }
 
    public TCollection

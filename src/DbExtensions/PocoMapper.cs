@@ -13,10 +13,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Globalization;
@@ -26,8 +24,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 namespace DbExtensions;
-
-using Metadata;
 
 #nullable enable
 
@@ -107,10 +103,10 @@ partial class Database {
 
 partial class SqlSet {
 
-   Dictionary<string[], CollectionLoader>?
+   Dictionary<string[], Action<object>>?
    _manyIncludes;
 
-   private Dictionary<string[], CollectionLoader>?
+   private Dictionary<string[], Action<object>>?
    ManyIncludes {
       get => _manyIncludes;
       set {
@@ -125,7 +121,7 @@ partial class SqlSet {
    Initialize2(SqlSet set) {
 
       if (set.ManyIncludes is not null) {
-         this.ManyIncludes = new Dictionary<string[], CollectionLoader>(set.ManyIncludes);
+         this.ManyIncludes = new Dictionary<string[], Action<object>>(set.ManyIncludes);
       }
 
       Initialize3(set);
@@ -157,15 +153,9 @@ partial class SqlSet {
 
       var mapper = _db.CreatePocoMapper(this.ResultType);
       mapper.SingleResult = singleResult;
-
-      InitializePocoMapper(mapper);
+      mapper.ManyIncludes = this.ManyIncludes;
 
       return mapper;
-   }
-
-   void
-   InitializePocoMapper(PocoMapper mapper) {
-      mapper.ManyIncludes = this.ManyIncludes;
    }
 }
 
@@ -221,7 +211,7 @@ sealed class PocoMapper : Mapper {
    Action<DbDataReader, MappingContext, object>?
    _compiledLoadFn;
 
-   public Dictionary<string[], CollectionLoader>?
+   public Dictionary<string[], Action<object>>?
    ManyIncludes { get; set; }
 
    protected override bool
@@ -299,14 +289,14 @@ sealed class PocoMapper : Mapper {
       return new CacheKey(type, names);
    }
 
-   internal Dictionary<int, List<CollectionLoader>>?
+   internal Dictionary<int, List<Action<object>>>?
    GetManyLoaders() {
 
       if (this.ManyIncludes is null or { Count: 0 }) {
          return null;
       }
 
-      var collectionNodes = new Dictionary<int, List<CollectionLoader>>();
+      var collectionNodes = new Dictionary<int, List<Action<object>>>();
 
       foreach (var pair in this.ManyIncludes) {
 
@@ -389,7 +379,7 @@ sealed class PocoMapper : Mapper {
 
 partial class MappingContext {
 
-   public Dictionary<int, List<CollectionLoader>>?
+   public Dictionary<int, List<Action<object>>>?
    ManyLoaders;
 
    public void
@@ -406,8 +396,8 @@ partial class MappingContext {
             record.Close();
          }
 
-         foreach (var col in colLoaders) {
-            col.Load(instance);
+         foreach (var loader in colLoaders) {
+            loader.Invoke(instance);
          }
       }
    }
@@ -524,101 +514,6 @@ sealed partial class PocoNode : Node {
 
       return this.Type.Name;
    }
-}
-
-sealed class CollectionLoader {
-
-   static readonly ConcurrentDictionary<Type, Func<object>>
-   _factoryCache = new(ReferenceEqualityComparer.Instance);
-
-   readonly Func<object, IEnumerable>
-   _loader;
-
-   readonly MetaDataMember
-   _metaMember;
-
-   readonly MetaCollectionAccessor
-   _collectionAccesor;
-
-   Func<object>?
-   _factory;
-
-   private Func<object>
-   Factory {
-      get {
-         if (_factory is null) {
-            var colType = _metaMember.Type;
-            var concreteType = (colType.IsAbstract || colType.IsInterface) ?
-               typeof(Collection<>).MakeGenericType(_collectionAccesor.ElementType)
-               : colType;
-            _factory = GetFactory(concreteType);
-         }
-         return _factory;
-      }
-   }
-
-   public
-   CollectionLoader(Func<object, IEnumerable> loader, MetaDataMember metaMember) {
-      _loader = loader;
-      _metaMember = metaMember;
-      _collectionAccesor = (MetaCollectionAccessor)_metaMember.MemberAccessor;
-   }
-
-   static Func<object>
-   GetFactory(Type type) =>
-      _factoryCache.GetOrAdd(type, static t => CreateFactory(t));
-
-   static Func<object>
-   CreateFactory(Type type) {
-
-      var newExpr = Expression.New(type);
-      var castExpr = Expression.Convert(newExpr, typeof(object));
-      var lambdaExpr = Expression.Lambda<Func<object>>(castExpr);
-
-      return lambdaExpr.Compile();
-   }
-
-   public void
-   Load(object instance) {
-
-      var collection = GetOrCreate(instance);
-      var elements = _loader.Invoke(instance);
-
-      foreach (var element in elements) {
-         Add(collection, element);
-      }
-   }
-
-   IEnumerable
-   GetOrCreate(object instance) {
-
-      var collection = _collectionAccesor.GetBoxedValue(instance);
-
-      if (collection is null) {
-         collection = this.Factory.Invoke();
-         _collectionAccesor.SetBoxedValue(ref instance, collection);
-      }
-
-      return (IEnumerable)collection;
-   }
-
-   void
-   Add(IEnumerable collection, object element) {
-
-      var colObj = (object)collection;
-
-      _collectionAccesor.AddBoxedElement(ref colObj, element);
-   }
-}
-
-partial class PocoNode {
-
-   ColumnAttribute?
-   _columnAttribute;
-
-   private ColumnAttribute?
-   ColumnAttribute => _columnAttribute
-      ??= this.Property?.GetCustomAttribute<ColumnAttribute>();
 
    internal Func<DbDataReader, MappingContext, object>
    CompileMap() {
@@ -869,7 +764,10 @@ partial class PocoNode {
       var varExpr = Expression.Variable(this.UnderlyingType);
       var ordinalExpr = Expression.Constant(this.ColumnOrdinal);
 
-      var convertToType = this.ColumnAttribute?.ConvertTo;
+      var convertToType = default(Type);
+
+      GetConvertToType(ref convertToType);
+
       var columnType = convertToType ?? this.UnderlyingType;
       var typeCode = Type.GetTypeCode(columnType);
       var isEnum = this.UnderlyingType.IsEnum;
@@ -966,7 +864,10 @@ partial class PocoNode {
       yield return this.ColumnOrdinal;
    }
 
-   static class References {
+   partial void
+   GetConvertToType(ref Type? convertToType);
+
+   static partial class References {
 
       public static readonly MethodInfo
       ConvertChangeTypeMethod = typeof(Convert)
