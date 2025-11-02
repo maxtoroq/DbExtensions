@@ -341,7 +341,7 @@ public sealed partial class SqlTable : SqlSet, ISqlTable {
    readonly ISqlTable
    _table;
 
-   internal readonly MetaType
+   readonly MetaType
    _metaType;
 
    /// <summary>
@@ -1021,9 +1021,8 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
    void
    ISqlTable.Refresh(object entity) =>
       Refresh((TEntity)entity);
-}
 
-partial class SqlTable<TEntity> {
+   // Statement building
 
    SqlBuilder
    BuildSelectStatement(IEnumerable<MetaDataMember>? selectMembers) {
@@ -1392,7 +1391,6 @@ partial class SqlSet {
       Expand(SqlSet source, string path, MetaType metaType) {
 
          var db = source._db;
-
          var parts = path.Split('.');
 
          SqlBuilder selectBuild(string alias) {
@@ -1412,7 +1410,7 @@ partial class SqlSet {
          MetaAssociation? manyAssoc;
          int manyIndex;
 
-         var query = BuildJoinedQuery(parts, metaType, source._db, selectBuild, fromAppend, out manyAssoc, out manyIndex);
+         var query = BuildJoinedQuery(parts, metaType, db, selectBuild, fromAppend, out manyAssoc, out manyIndex);
 
          var newSet = (query is null) ?
             source.Clone()
@@ -1564,7 +1562,7 @@ partial class SqlSet {
                var sql = new SqlBuilder()
                   .SELECT(String.Empty);
 
-               db.SelectBody(sql.Buffer, table._metaType, null, alias);
+               db.SelectBody(sql.Buffer, metaType, null, alias);
 
                return sql;
             }
