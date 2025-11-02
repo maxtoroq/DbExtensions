@@ -225,6 +225,13 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    public Type?
    ResultType { get; }
 
+   /// <summary>
+   /// The <see cref="DbExtensions.Database"/> this set is connected to.
+   /// </summary>
+
+   public Database
+   Database => _db;
+
    internal
    SqlSet(SqlBuilder definingQuery, Type? resultType, Database db) {
 

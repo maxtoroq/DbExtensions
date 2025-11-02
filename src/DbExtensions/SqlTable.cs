@@ -1390,7 +1390,7 @@ partial class SqlSet {
       public static SqlSet
       Expand(SqlSet source, string path, MetaType metaType) {
 
-         var db = source._db;
+         var db = source.Database;
          var parts = path.Split('.');
 
          SqlBuilder selectBuild(string alias) {
@@ -1535,7 +1535,7 @@ partial class SqlSet {
          Debug.Assert(path.Length > 0);
          Debug.Assert(manyIndex >= 0);
 
-         var db = set._db;
+         var db = set.Database;
          var metaType = manyAssoc.OtherType;
          var table = db.Table(metaType);
 
@@ -1600,7 +1600,7 @@ partial class SqlSet {
             new KeyValuePair<string, object>(p.MappedName, manyAssoc.ThisKey[i].GetValueForDatabase(container)));
 
          var parameters = new List<object?>(manyAssoc.OtherKey.Count);
-         var whereFragment = new SqlFragment(manySource._db.BuildPredicateFragment(predicateValues, parameters), parameters);
+         var whereFragment = new SqlFragment(manySource.Database.BuildPredicateFragment(predicateValues, parameters), parameters);
 
          var children = manySource
             .Where(whereFragment)
