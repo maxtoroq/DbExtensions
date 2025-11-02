@@ -14,7 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -39,18 +38,6 @@ partial class Database {
 
       await Table(entity.GetType())
          .AddAsync(entity, cancellationToken)
-         .ConfigureAwait(false);
-   }
-
-   /// <inheritdoc cref="SqlSet&lt;TEntity>.FindAsync(Object, CancellationToken)" path="*[not(self::remarks or self::exception[@cref='T:System.InvalidOperationException'])]"/>
-   /// <typeparam name="TEntity">The type of the entity.</typeparam>
-   /// <remarks>This method is a shortcut for <c>await db.Table&lt;TEntity>().FindAsync(id, cancellationToken)</c>.</remarks>
-
-   public async ValueTask<TEntity?>
-   FindAsync<TEntity>(object id, CancellationToken cancellationToken = default) where TEntity : class {
-
-      return await Table<TEntity>()
-         .FindAsync(id, cancellationToken)
          .ConfigureAwait(false);
    }
 
@@ -93,78 +80,6 @@ partial class Database {
 
       return await Table(entity.GetType())
          .RemoveAsync(entity, cancellationToken)
-         .ConfigureAwait(false);
-   }
-}
-
-partial class SqlSet {
-
-   /// <inheritdoc cref="Contains(Object)"/>
-   /// <inheritdoc cref="AnyAsync(CancellationToken)" path="param"/>
-
-   public async ValueTask<bool>
-   ContainsAsync(object entity, CancellationToken cancellationToken = default) {
-
-      ArgumentNullException.ThrowIfNull(entity);
-
-      var (fragment, columnList) = ContainsEntityImplParams(entity);
-
-      return await Where(fragment)
-         .Select(columnList)
-         .AnyAsync(cancellationToken)
-         .ConfigureAwait(false);
-   }
-
-   /// <inheritdoc cref="ContainsKey(Object)"/>
-   /// <inheritdoc cref="AnyAsync(CancellationToken)" path="param"/>
-
-   public async ValueTask<bool>
-   ContainsKeyAsync(object id, CancellationToken cancellationToken = default) {
-
-      ArgumentNullException.ThrowIfNull(id);
-
-      var (fragment, columnList) = ContainsKeyImplParams(id);
-
-      return await Where(fragment)
-         .Select(columnList)
-         .AnyAsync(cancellationToken)
-         .ConfigureAwait(false);
-   }
-
-   /// <inheritdoc cref="Find(Object)"/>
-   /// <inheritdoc cref="AnyAsync(CancellationToken)" path="param"/>
-
-   public async ValueTask<object?>
-   FindAsync(object id, CancellationToken cancellationToken = default) {
-
-      return await FindImpl(id)
-         .SingleOrDefaultAsync(cancellationToken)
-         .ConfigureAwait(false);
-   }
-}
-
-partial class SqlSet<TResult> {
-
-   /// <inheritdoc cref="SqlSet.ContainsAsync(Object, CancellationToken)"/>
-
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public new ValueTask<bool>
-   ContainsAsync(object entity, CancellationToken cancellationToken = default) =>
-      ContainsAsync((TResult)entity, cancellationToken);
-
-   /// <inheritdoc cref="SqlSet.ContainsAsync(Object, CancellationToken)"/>
-
-   public ValueTask<bool>
-   ContainsAsync(TResult entity, CancellationToken cancellationToken = default) =>
-      base.ContainsAsync(entity!, cancellationToken);
-
-   /// <inheritdoc cref="SqlSet.FindAsync(Object, CancellationToken)"/>
-
-   public new async ValueTask<TResult?>
-   FindAsync(object id, CancellationToken cancellationToken = default) {
-
-      return await ((SqlSet<TResult>)FindImpl(id))
-         .SingleOrDefaultAsync(cancellationToken)
          .ConfigureAwait(false);
    }
 }
