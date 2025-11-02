@@ -128,6 +128,17 @@ partial class Database {
       return new SqlSet<TResult>([tableName, null], this);
    }
 
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public SqlSet<TResult>
+   From<TResult>(string tableName, string columnList) {
+
+      ArgumentNullException.ThrowIfNull(tableName);
+
+      return new SqlSet<TResult>([tableName, columnList], this);
+   }
+
    /// <summary>
    /// Creates and returns a new <see cref="SqlSet"/> using the provided defining query.
    /// </summary>
