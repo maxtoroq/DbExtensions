@@ -344,9 +344,7 @@ public sealed partial class SqlTable : SqlSet, ISqlTable {
    readonly MetaType
    _metaType;
 
-   /// <summary>
-   /// Gets the name of the table.
-   /// </summary>
+   /// <inheritdoc cref="SqlTable&lt;TEntity>.Name"/>
 
    public string
    Name => _metaType.Table.TableName;
@@ -479,7 +477,9 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
    readonly MetaType
    _metaType;
 
-   /// <inheritdoc cref="SqlTable.Name"/>
+   /// <summary>
+   /// Gets the name of the table.
+   /// </summary>
 
    public string
    Name => _metaType.Table.TableName;
