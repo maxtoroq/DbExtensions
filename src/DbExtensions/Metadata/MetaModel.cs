@@ -604,6 +604,25 @@ abstract class MetaAssociation {
 
    public abstract bool
    DeleteOnNull { get; }
+
+   public void
+   LoadCollection(object container, IEnumerable elements) {
+
+      var accessor = (MetaCollectionAccessor)this.ThisMember.MemberAccessor;
+      var collection = accessor.GetOrCreateBoxed(container);
+
+      var setOtherMember = this.OtherMember is { Association.IsMany: false };
+
+      foreach (var element in elements) {
+
+         if (setOtherMember) {
+            var elementObj = element;
+            this.OtherMember.MemberAccessor.SetBoxedValue(ref elementObj, container);
+         }
+
+         accessor.AddBoxedElement(ref collection, element);
+      }
+   }
 }
 
 /// <summary>
@@ -715,34 +734,11 @@ abstract class MetaCollectionAccessor : MetaAccessor {
    public abstract Type
    ElementType { get; }
 
-   public abstract Func<object>
-   Factory { get; }
-
    public abstract void
    AddBoxedElement(ref object collection, object element);
 
-   public void
-   Load(object instance, IEnumerable elements) {
-
-      var collection = GetOrCreate(instance);
-
-      foreach (var element in elements) {
-         AddBoxedElement(ref collection, element);
-      }
-   }
-
-   object
-   GetOrCreate(object instance) {
-
-      var collection = GetBoxedValue(instance);
-
-      if (collection is null) {
-         collection = this.Factory.Invoke();
-         SetBoxedValue(ref instance, collection);
-      }
-
-      return collection;
-   }
+   public abstract object
+   GetOrCreateBoxed(object instance);
 }
 
 sealed class MetaCollectionAccessor<TContainer, TCollection, TElement> : MetaCollectionAccessor {
@@ -753,14 +749,14 @@ sealed class MetaCollectionAccessor<TContainer, TCollection, TElement> : MetaCol
    readonly Action<TCollection, TElement>
    _addFn;
 
+   readonly Func<TCollection>
+   _factory;
+
    public override Type
    Type => _propAccessor.Type;
 
    public override Type
    ElementType => typeof(TElement);
-
-   public override Func<object>
-   Factory { get; }
 
    internal
    MetaCollectionAccessor(
@@ -769,18 +765,30 @@ sealed class MetaCollectionAccessor<TContainer, TCollection, TElement> : MetaCol
 
       _propAccessor = propAccessor;
       _addFn = addFn;
-
-      this.Factory = CreateFactory(this.Type);
+      _factory = CreateFactory();
    }
 
-   static Func<object>
-   CreateFactory(Type type) {
+   static Func<TCollection>
+   CreateFactory() {
 
-      var newExpr = Expression.New(type);
-      var castExpr = Expression.Convert(newExpr, typeof(object));
-      var lambdaExpr = Expression.Lambda<Func<object>>(castExpr);
+      var newExpr = Expression.New(typeof(TCollection));
+      var lambdaExpr = Expression.Lambda<Func<TCollection>>(newExpr);
 
       return lambdaExpr.Compile();
+   }
+
+   public override object
+   GetOrCreateBoxed(object instance) {
+
+      var container = (TContainer)instance;
+      var collection = GetValue(container);
+
+      if (collection is null) {
+         collection = _factory.Invoke();
+         SetValue(ref container, collection);
+      }
+
+      return collection;
    }
 
    public TCollection

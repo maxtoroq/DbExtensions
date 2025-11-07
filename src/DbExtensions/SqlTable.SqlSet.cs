@@ -399,8 +399,7 @@ partial class SqlSet {
          set.ManyIncludes ??= new Dictionary<string[], Action<object>>();
 
          set.ManyIncludes.Add(manyPath,
-            container => ((MetaCollectionAccessor)manyAssoc.ThisMember.MemberAccessor)
-               .Load(container, GetMany(container, manyAssoc, manySource)));
+            container => manyAssoc.LoadCollection(container, GetMany(container, manyAssoc, manySource)));
       }
 
       static IEnumerable
@@ -412,22 +411,9 @@ partial class SqlSet {
          var parameters = new List<object?>(manyAssoc.OtherKey.Count);
          var whereFragment = new SqlFragment(manySource.Database.BuildPredicateFragment(predicateValues, parameters), parameters);
 
-         var children = manySource
+         return manySource
             .Where(whereFragment)
             .AsEnumerable();
-
-         var otherMember = manyAssoc.OtherMember;
-         var setOtherMember = otherMember is { Association.IsMany: false };
-
-         foreach (var child in children) {
-
-            if (setOtherMember) {
-               var childObj = child;
-               otherMember.MemberAccessor.SetBoxedValue(ref childObj, container);
-            }
-
-            yield return child;
-         }
       }
    }
 }
