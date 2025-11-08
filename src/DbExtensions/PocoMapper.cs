@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Globalization;
@@ -106,22 +107,11 @@ partial class SqlSet {
    Dictionary<string[], Action<object>>?
    _manyIncludes;
 
-   private Dictionary<string[], Action<object>>?
-   ManyIncludes {
-      get => _manyIncludes;
-      set {
-         if (_manyIncludes is not null) {
-            throw new InvalidOperationException();
-         }
-         _manyIncludes = value;
-      }
-   }
-
    partial void
    Initialize2(SqlSet set) {
 
-      if (set.ManyIncludes is not null) {
-         this.ManyIncludes = new Dictionary<string[], Action<object>>(set.ManyIncludes);
+      if (set._manyIncludes is { } incl) {
+         _manyIncludes = new(incl);
       }
 
       Initialize3(set);
@@ -129,6 +119,12 @@ partial class SqlSet {
 
    partial void
    Initialize3(SqlSet set);
+
+   private protected void
+   AddManyInclude(string[] path, Action<object> loader) {
+      _manyIncludes ??= new();
+      _manyIncludes.Add(path, loader);
+   }
 
    partial void
    PocoMap(bool singleResult, SqlBuilder query, ref IEnumerable<object>? results) {
@@ -153,13 +149,26 @@ partial class SqlSet {
 
       var mapper = _db.CreatePocoMapper(this.ResultType);
       mapper.SingleResult = singleResult;
-      mapper.ManyIncludes = this.ManyIncludes;
+      mapper.ManyIncludes = _manyIncludes;
 
       return mapper;
    }
 }
 
 partial class SqlSet<TResult> {
+
+   /// <summary>This method is used by auto-generated Include methods.</summary>
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public SqlSet<TResult>
+   WithManyInclude(string[] path, Action<object> loader) {
+
+      var clone = (SqlSet<TResult>)Clone();
+      clone.AddManyInclude(path, loader);
+
+      return clone;
+   }
 
    partial void
    PocoMap(bool singleResult, SqlBuilder query, ref IEnumerable<TResult>? results) {

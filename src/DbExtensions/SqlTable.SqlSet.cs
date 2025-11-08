@@ -396,9 +396,7 @@ partial class SqlSet {
             manySource = db.FromQuery(manyQuery!, metaType.Type);
          }
 
-         set.ManyIncludes ??= new Dictionary<string[], Action<object>>();
-
-         set.ManyIncludes.Add(manyPath,
+         set.AddManyInclude(manyPath,
             container => manyAssoc.LoadCollection(container, GetMany(container, manyAssoc, manySource)));
       }
 
