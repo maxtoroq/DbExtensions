@@ -128,6 +128,7 @@ partial class Database {
       return new SqlSet<TResult>([tableName, null], this);
    }
 
+   /// <summary>This method is used by auto-generated "table" classes.</summary>
    /// <exclude/>
 
    [EditorBrowsable(EditorBrowsableState.Never)]
