@@ -326,7 +326,7 @@ partial class SqlSet {
 
                db.QuoteIdentifier(sb, lAlias);
                sb.Append('.');
-               db.QuoteIdentifier(sb, thisMember.Name);
+               db.QuoteIdentifier(sb, (i > 0) ? thisMember.MappedName : thisMember.Name);
                sb.Append(" = ");
                db.QuoteIdentifier(sb, rAlias);
                sb.Append('.');
