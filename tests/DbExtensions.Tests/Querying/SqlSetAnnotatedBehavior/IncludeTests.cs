@@ -3,24 +3,24 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using NUnit.Framework;
 
-namespace DbExtensions.Tests.Querying {
+namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
 
    using static TestUtil;
 
    [TestFixture]
-   public class SqlSetIncludeBehavior {
+   public class IncludeTests {
 
       readonly Database db = RealDatabase();
 
       [Test]
       public void Can_Include_One() {
 
-         SqlSet<SqlSetInclude.Product> set = db.Table<SqlSetInclude.Product>()
+         SqlSet<Include.Product> set = db.Table<Include.Product>()
             .Where("NOT CategoryID IS NULL AND NOT SupplierID IS NULL")
             .Include("Category")
             .Include("Supplier");
 
-         SqlSetInclude.Product item = set.First();
+         Include.Product item = set.First();
 
          Assert.IsNotNull(item.Category);
          Assert.IsNotNull(item.Supplier);
@@ -29,10 +29,10 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Include_One_Nested() {
 
-         SqlSet<SqlSetInclude.EmployeeTerritory> set = db.Table<SqlSetInclude.EmployeeTerritory>()
+         SqlSet<Include.EmployeeTerritory> set = db.Table<Include.EmployeeTerritory>()
             .Include("Territory.Region");
 
-         SqlSetInclude.EmployeeTerritory item = set.First();
+         Include.EmployeeTerritory item = set.First();
 
          Assert.IsNotNull(item.Territory);
          Assert.IsNotNull(item.Territory.Region);
@@ -41,10 +41,10 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Include_Many() {
 
-         SqlSet<SqlSetInclude.Category> set = db.Table<SqlSetInclude.Category>()
+         SqlSet<Include.Category> set = db.Table<Include.Category>()
             .Include("Products");
 
-         SqlSetInclude.Category item = set.First();
+         Include.Category item = set.First();
 
          Assert.IsNotNull(item.Products);
          Assert.AreNotEqual(0, item.Products.Count);
@@ -54,12 +54,12 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Include_Many_Multiple() {
 
-         SqlSet<SqlSetInclude.Employee> set1 = db.Table<SqlSetInclude.Employee>()
+         SqlSet<Include.Employee> set1 = db.Table<Include.Employee>()
             .Include("EmployeeTerritories");
 
-         SqlSet<SqlSetInclude.Employee> set2 = set1.Include("Orders");
+         SqlSet<Include.Employee> set2 = set1.Include("Orders");
 
-         SqlSetInclude.Employee item = set1.First();
+         Include.Employee item = set1.First();
 
          Assert.IsNotNull(item.EmployeeTerritories);
          Assert.AreNotEqual(0, item.EmployeeTerritories.Count);
@@ -82,10 +82,10 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Include_Many_In_One() {
 
-         SqlSet<SqlSetInclude.EmployeeTerritory> set = db.Table<SqlSetInclude.EmployeeTerritory>()
+         SqlSet<Include.EmployeeTerritory> set = db.Table<Include.EmployeeTerritory>()
             .Include("Employee.Orders");
 
-         SqlSetInclude.EmployeeTerritory item = set.First();
+         Include.EmployeeTerritory item = set.First();
 
          Assert.IsNotNull(item.Employee);
          Assert.AreNotEqual(0, item.Employee.Orders.Count);
@@ -95,10 +95,10 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Include_One_In_Many() {
 
-         SqlSet<SqlSetInclude.Employee> set = db.Table<SqlSetInclude.Employee>()
+         SqlSet<Include.Employee> set = db.Table<Include.Employee>()
             .Include("EmployeeTerritories.Territory");
 
-         SqlSetInclude.Employee item = set.First();
+         Include.Employee item = set.First();
 
          Assert.IsNotNull(item.EmployeeTerritories);
          Assert.AreNotEqual(0, item.EmployeeTerritories.Count);
@@ -108,12 +108,12 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Cannot_Include_Many_In_Many() {
 
-         Assert.Throws<ArgumentException>(() => db.Table<SqlSetInclude.Employee>()
+         Assert.Throws<ArgumentException>(() => db.Table<Include.Employee>()
             .Include("Orders.OrderDetails"));
       }
    }
 
-   namespace SqlSetInclude {
+   namespace Include {
 
       [Table(Name = "Products")]
       class Product {

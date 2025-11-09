@@ -1,18 +1,18 @@
 ﻿using NUnit.Framework;
 
-namespace DbExtensions.Tests.Querying {
+namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
 
    using static TestUtil;
 
    [TestFixture]
-   public class SqlSetAnnotatedBehavior {
+   public class BasicTests {
 
       readonly Database db = RealDatabase();
 
       [Test]
       public void Contains() {
 
-         SqlSet<SqlSetAnnotated.Model1.Product> table = db.Table<SqlSetAnnotated.Model1.Product>();
+         SqlSet<Basic.Model1.Product> table = db.Table<Basic.Model1.Product>();
 
          var prod1 = table.Single("ProductID = 1");
 
@@ -23,7 +23,7 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void ContainsKey() {
 
-         SqlSet<SqlSetAnnotated.Model1.Product> table = db.Table<SqlSetAnnotated.Model1.Product>();
+         SqlSet<Basic.Model1.Product> table = db.Table<Basic.Model1.Product>();
 
          Assert.IsTrue(table.ContainsKey(1));
          Assert.IsFalse(table.Where("ProductID = 2").ContainsKey(1));
@@ -32,14 +32,14 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Find() {
 
-         SqlSet<SqlSetAnnotated.Model1.Product> table = db.Table<SqlSetAnnotated.Model1.Product>();
+         SqlSet<Basic.Model1.Product> table = db.Table<Basic.Model1.Product>();
 
          Assert.IsNotNull(table.Find(1));
          Assert.IsNull(table.Where("ProductID = 2").Find(1));
       }
    }
 
-   namespace SqlSetAnnotated {
+   namespace Basic {
 
       namespace Model1 {
 
