@@ -6,10 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Linq.AsyncEnumerable" Version="10.0.0-rc.1.25451.107" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\DbExtensions\Properties\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
     <Compile Include="..\DbExtensions\Database.cs" Link="Database.cs" />
     <Compile Include="..\DbExtensions\SqlBuilder.cs" Link="SqlBuilder.cs" />
     <Compile Include="..\DbExtensions\SqlSet.cs" Link="SqlSet.cs" />
+    <Compile Include="..\DbExtensions\SqlSet.Async.cs" Link="SqlSet.Async.cs" />
   </ItemGroup>
 
 </Project>
