@@ -16,12 +16,12 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Include_One() {
 
-         SqlSet<SqlSetInclude.Product> set = db.Table<SqlSetInclude.Product>()
+         var set = db.Table<SqlSetInclude.Model1.Product>()
             .Where("NOT CategoryID IS NULL AND NOT SupplierID IS NULL")
             .Include("Category")
             .Include("Supplier");
 
-         SqlSetInclude.Product item = set.First();
+         var item = set.First();
 
          Assert.IsNotNull(item.Category);
          Assert.IsNotNull(item.Supplier);
@@ -30,10 +30,22 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Include_One_Nested() {
 
-         SqlSet<SqlSetInclude.EmployeeTerritory> set = db.Table<SqlSetInclude.EmployeeTerritory>()
+         var set = db.Table<SqlSetInclude.Model1.EmployeeTerritory>()
             .Include("Territory.Region");
 
-         SqlSetInclude.EmployeeTerritory item = set.First();
+         var item = set.First();
+
+         Assert.IsNotNull(item.Territory);
+         Assert.IsNotNull(item.Territory.Region);
+      }
+
+      [Test]
+      public void Can_Include_One_Nested_Key_Name_Member_Differs() {
+
+         var set = db.Table<SqlSetInclude.Model2.EmployeeTerritory>()
+            .Include("Territory.Region");
+
+         var item = set.First();
 
          Assert.IsNotNull(item.Territory);
          Assert.IsNotNull(item.Territory.Region);
@@ -42,10 +54,10 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Include_Many() {
 
-         SqlSet<SqlSetInclude.Category> set = db.Table<SqlSetInclude.Category>()
+         var set = db.Table<SqlSetInclude.Model1.Category>()
             .Include("Products");
 
-         SqlSetInclude.Category item = set.First();
+         var item = set.First();
 
          Assert.IsNotNull(item.Products);
          Assert.AreNotEqual(0, item.Products.Count);
@@ -55,12 +67,12 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Include_Many_Multiple() {
 
-         SqlSet<SqlSetInclude.Employee> set1 = db.Table<SqlSetInclude.Employee>()
+         var set1 = db.Table<SqlSetInclude.Model1.Employee>()
             .Include("EmployeeTerritories");
 
-         SqlSet<SqlSetInclude.Employee> set2 = set1.Include("Orders");
+         var set2 = set1.Include("Orders");
 
-         SqlSetInclude.Employee item = set1.First();
+         var item = set1.First();
 
          Assert.IsNotNull(item.EmployeeTerritories);
          Assert.AreNotEqual(0, item.EmployeeTerritories.Count);
@@ -83,10 +95,10 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Include_Many_In_One() {
 
-         SqlSet<SqlSetInclude.EmployeeTerritory> set = db.Table<SqlSetInclude.EmployeeTerritory>()
+         var set = db.Table<SqlSetInclude.Model1.EmployeeTerritory>()
             .Include("Employee.Orders");
 
-         SqlSetInclude.EmployeeTerritory item = set.First();
+         var item = set.First();
 
          Assert.IsNotNull(item.Employee);
          Assert.AreNotEqual(0, item.Employee.Orders.Count);
@@ -96,10 +108,10 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Can_Include_One_In_Many() {
 
-         SqlSet<SqlSetInclude.Employee> set = db.Table<SqlSetInclude.Employee>()
+         var set = db.Table<SqlSetInclude.Model1.Employee>()
             .Include("EmployeeTerritories.Territory");
 
-         SqlSetInclude.Employee item = set.First();
+         var item = set.First();
 
          Assert.IsNotNull(item.EmployeeTerritories);
          Assert.AreNotEqual(0, item.EmployeeTerritories.Count);
@@ -109,12 +121,12 @@ namespace DbExtensions.Tests.Querying {
       [Test]
       public void Cannot_Include_Many_In_Many() {
 
-         Assert.Throws<ArgumentException>(() => db.Table<SqlSetInclude.Employee>()
+         Assert.Throws<ArgumentException>(() => db.Table<SqlSetInclude.Model1.Employee>()
             .Include("Orders.OrderDetails"));
       }
    }
 
-   namespace SqlSetInclude {
+   namespace SqlSetInclude.Model1 {
 
       [Table(Name = "Products")]
       class Product {
@@ -249,6 +261,48 @@ namespace DbExtensions.Tests.Querying {
 
          [Association(ThisKey = nameof(ProductID))]
          public Product Product { get; set; }
+      }
+   }
+
+   namespace SqlSetInclude.Model2 {
+
+      [Table(Name = "EmployeeTerritories")]
+      class EmployeeTerritory {
+
+         [Column(IsPrimaryKey = true)]
+         public int EmployeeID { get; set; }
+
+         [Column(Name = "TerritoryID", IsPrimaryKey = true)]
+         public string Territory_ID { get; set; }
+
+         [Association(ThisKey = nameof(Territory_ID))]
+         public Territory Territory { get; set; }
+      }
+
+      [Table(Name = "Territories")]
+      class Territory {
+
+         [Column(IsPrimaryKey = true)]
+         public string TerritoryID { get; set; }
+
+         [Column]
+         public string TerritoryDescription { get; set; }
+
+         [Column(Name = "RegionID")]
+         public int Region_ID { get; set; }
+
+         [Association(ThisKey = nameof(Region_ID))]
+         public Region Region { get; set; }
+      }
+
+      [Table]
+      class Region {
+
+         [Column(IsPrimaryKey = true)]
+         public int RegionID { get; set; }
+
+         [Column]
+         public string RegionDescription { get; set; }
       }
    }
 }

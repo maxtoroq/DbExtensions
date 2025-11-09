@@ -1653,7 +1653,7 @@ partial class SqlSet {
                var thisMember = association.ThisKey[j];
                var otherMember = association.OtherKey[j];
 
-               joinPredicate.Append($"{db.QuoteIdentifier(lAlias)}.{db.QuoteIdentifier(thisMember.Name)} = {db.QuoteIdentifier(rAlias)}.{db.QuoteIdentifier(otherMember.MappedName)}");
+               joinPredicate.Append($"{db.QuoteIdentifier(lAlias)}.{db.QuoteIdentifier((i > 0) ? thisMember.MappedName : thisMember.Name)} = {db.QuoteIdentifier(rAlias)}.{db.QuoteIdentifier(otherMember.MappedName)}");
             }
 
             query.LEFT_JOIN($"{db.QuoteIdentifier(association.OtherType.Table.TableName)} {db.QuoteIdentifier(rAlias)} ON ({joinPredicate.ToString()})");
