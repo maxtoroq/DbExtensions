@@ -1,0 +1,29 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <AssemblyName>DbExtensions</AssemblyName>
+    <AssemblyTitle>$(AssemblyName) Query Edition</AssemblyTitle>
+    <PackageId>$(AssemblyName)-QE</PackageId>
+  </PropertyGroup>
+
+  <Import Project="..\DbExtensions\DbExtensions.csproj" />
+
+  <ItemGroup>
+    <Compile Include="..\DbExtensions\Database.cs" Link="Database.cs" />
+    <Compile Include="..\DbExtensions\DynamicMapper.cs" Link="DynamicMapper.cs" />
+    <Compile Include="..\DbExtensions\Extensions.cs" Link="Extensions.cs" />
+    <Compile Include="..\DbExtensions\Mapper.cs" Link="Mapper.cs" />
+    <Compile Include="..\DbExtensions\PocoMapper.cs" Link="PocoMapper.cs" />
+    <Compile Include="..\DbExtensions\Properties\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\DbExtensions\SqlBuilder.cs" Link="SqlBuilder.cs" />
+    <Compile Include="..\DbExtensions\SqlSet.Async.cs" Link="SqlSet.Async.cs" />
+    <Compile Include="..\DbExtensions\SqlSet.cs" Link="SqlSet.cs" />
+  </ItemGroup>
+
+  <Target Name="IncludeXmlDoc">
+    <ItemGroup>
+      <BuildOutputInPackage Include="$(OutputPath)$(AssemblyName).xml" />
+    </ItemGroup>
+  </Target>
+
+</Project>

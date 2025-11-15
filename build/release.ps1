@@ -1,5 +1,4 @@
 param(
-   [Parameter(Mandatory=$true, Position=0)][string]$ProjectName,
    [Parameter(Mandatory=$true)][Version]$AssemblyVersion,
    [Parameter(Mandatory=$true)][Version]$PackageVersion,
    [Parameter()][string]$PreRelease
@@ -20,11 +19,11 @@ function ProjectFile([string]$projName) {
    return "$projPath\$projName.csproj"
 }
 
-function BuildProj([string]$projName, [string]$projFile, [string]$target) {
+function BuildProj([string]$projName, [string]$target) {
 
    $pack = $target -eq "Pack"
 
-   MSBuild $projFile /t:$target /v:minimal `
+   MSBuild $(ProjectFile($projName)) /t:$target /v:minimal `
       /p:NoBuild=$pack `
       /p:Configuration=$configuration `
       /p:PackageOutputPath=$outputPath `
@@ -44,10 +43,7 @@ function BuildProj([string]$projName, [string]$projFile, [string]$target) {
       /p:RepositoryBranch=$(git branch --show-current)
 }
 
-function NuPack([string]$projName) {
-
-   $projPath = Resolve-Path $solutionPath\src\$projName
-   $projFile = "$projPath\$projName.csproj"
+try {
 
    [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
    $notice = $noticeDoc.DocumentElement
@@ -58,25 +54,22 @@ function NuPack([string]$projName) {
 
    $outputPath = Resolve-Path nupkg
 
+   MSBuild $solutionPath\DbExtensions.sln -t:Restore
+
    # build project
-   BuildProj $projName $projFile "Build"
+   BuildProj DbExtensions "Build"
 
    # build API docs (transforms assembly XML doc)
    .\build-docs.ps1 -NoBuildProj -XmlOnly
 
-   # pack
-   BuildProj $projName $projFile "Pack"
-}
+   # pack with modified XML doc
+   BuildProj DbExtensions "Pack"
 
-try {
+   # build QE
+   BuildProj DbExtensions-QE "Build"
 
-   MSBuild $solutionPath\DbExtensions.sln -t:Restore
-
-   if ($ProjectName -eq '*') {
-      NuPack DbExtensions
-   } else {
-      NuPack $ProjectName
-   }
+   # pack QE
+   BuildProj DbExtensions-QE "Pack"
 
 } finally {
    Pop-Location
