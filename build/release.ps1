@@ -43,6 +43,15 @@ function BuildProj([string]$projName, [string]$target) {
       /p:RepositoryBranch=$(git branch --show-current)
 }
 
+function NuPack([string]$projName) {
+
+   BuildProj $projName "Build"
+
+   .\build-docs.ps1 -ProjectName $projName -NoBuildProj -XmlOnly
+
+   BuildProj $projName "Pack"
+}
+
 try {
 
    [xml]$noticeDoc = Get-Content $solutionPath\NOTICE.xml
@@ -56,20 +65,8 @@ try {
 
    MSBuild $solutionPath\DbExtensions.sln -t:Restore
 
-   # build project
-   BuildProj DbExtensions "Build"
-
-   # build API docs (transforms assembly XML doc)
-   .\build-docs.ps1 -NoBuildProj -XmlOnly
-
-   # pack with modified XML doc
-   BuildProj DbExtensions "Pack"
-
-   # build QE
-   BuildProj DbExtensions-QE "Build"
-
-   # pack QE
-   BuildProj DbExtensions-QE "Pack"
+   NuPack DbExtensions
+   NuPack DbExtensions-QE
 
 } finally {
    Pop-Location

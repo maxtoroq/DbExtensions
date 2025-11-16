@@ -26,8 +26,9 @@
     <SdkLinkTarget>Top</SdkLinkTarget>
     <SyntaxFilters>C#</SyntaxFilters>
     <BinaryTOC>False</BinaryTOC>
+    <ProjectName>DbExtensions</ProjectName>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\src\DbExtensions\DbExtensions.csproj" />
+      <DocumentationSource sourceFile="..\src\$(ProjectName)\$(ProjectName).csproj" />
     </DocumentationSources>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="DbExtensions" isDocumented="True">DbExtensions is a data-access framework with a strong focus on query composition, granularity and code aesthetics. &lt;see cref="T:DbExtensions.Database"/&gt; is the entry point of the &lt;see cref="N:DbExtensions"/&gt; API.</NamespaceSummaryItem>
@@ -55,7 +56,7 @@
     Include namespaces (false by default)
     Namespaces comments filename ("Namespaces" if not specified or empty)
     Output folder (current folder if not specified or empty) -->
-          <output includeNamespaces="false" namespacesFile="Namespaces" folder="{@OutputFolder}\..\xml\" />
+          <output includeNamespaces="false" namespacesFile="Namespaces" folder="{@OutputFolder}\..\xml\{@ProjectName}\" />
         </component>
       </ComponentConfig>
     </ComponentConfigurations>

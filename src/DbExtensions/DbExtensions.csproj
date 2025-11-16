@@ -30,7 +30,7 @@
 
   <Target Name="IncludeXmlDoc">
     <ItemGroup>
-      <BuildOutputInPackage Include="..\..\build\api-docs\xml\$(AssemblyName).xml" />
+      <BuildOutputInPackage Include="..\..\build\api-docs\xml\$(MSBuildProjectName)\$(AssemblyName).xml" />
     </ItemGroup>
   </Target>
 

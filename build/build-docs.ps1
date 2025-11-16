@@ -1,4 +1,4 @@
-param([switch]$NoBuildProj, [switch]$XmlOnly)
+param([string]$ProjectName, [switch]$NoBuildProj, [switch]$XmlOnly)
 
 $ErrorActionPreference = "Stop"
 Push-Location (Split-Path $script:MyInvocation.MyCommand.Path)
@@ -16,10 +16,10 @@ try {
    }
 
    if (-not $NoBuildProj) {
-      MSBuild ..\src\DbExtensions\DbExtensions.csproj /v:minimal /p:Configuration=Release
+      MSBuild ..\src\$ProjectName\$ProjectName.csproj /v:minimal /p:Configuration=Release
    }
 
-   MSBuild DbExtensions.shfbproj /v:minimal
+   MSBuild DbExtensions.shfbproj /v:minimal /p:ProjectName=$ProjectName
 
    if (-not $XmlOnly) {
 

@@ -20,10 +20,4 @@
     <Compile Include="..\DbExtensions\SqlSet.cs" Link="SqlSet.cs" />
   </ItemGroup>
 
-  <Target Name="IncludeXmlDoc">
-    <ItemGroup>
-      <BuildOutputInPackage Include="$(OutputPath)$(AssemblyName).xml" />
-    </ItemGroup>
-  </Target>
-
 </Project>
