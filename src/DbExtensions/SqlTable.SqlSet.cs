@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -42,13 +43,21 @@ partial class Database {
 partial class SqlSet {
 
    MetaType
-   EnsureEntityType(int maxIdMembers = -1) {
+   EnsureAnnotatedType() {
 
       var resultType = this.ResultType
          ?? throw new InvalidOperationException("The operation is not supported on untyped sets.");
 
       var metaType = _db.Configuration.GetMetaType(resultType)
          ?? throw new InvalidOperationException($"Mapping information was not found for '{resultType.FullName}'.");
+
+      return metaType;
+   }
+
+   MetaType
+   EnsureEntityType(int maxIdMembers = -1) {
+
+      var metaType = EnsureAnnotatedType();
 
       SqlTable.EnsureEntityType(metaType);
 
@@ -186,233 +195,202 @@ partial class SqlSet {
 
       ArgumentNullException.ThrowIfNull(path);
 
-      var resultType = this.ResultType
-         ?? throw new InvalidOperationException("Include operation is not supported on untyped sets.");
+      var metaType = EnsureAnnotatedType();
+      var parts = IncludePathSplit(path);
 
-      var metaType = _db.Configuration.GetMetaType(resultType)
-         ?? throw new InvalidOperationException($"Mapping information was not found for '{resultType.FullName}'.");
+      const string leftAlias = "dbex_l";
+      const string rightAlias = "dbex_r";
 
-      return IncludeImpl.Expand(this, path, metaType);
-   }
+      static string rAliasFn(int i) => rightAlias + (i + 1);
 
-   static class IncludeImpl {
+      var query = new SqlBuilder()
+         .SELECT(String.Empty);
 
-      public static SqlSet
-      Expand(SqlSet source, string path, MetaType metaType) {
+      var sb = query.Buffer;
 
-         var db = source.Database;
-         var parts = path.Split('.');
+      _db.QuoteIdentifier(sb, leftAlias);
+      sb.Append(".*");
 
-         SqlBuilder selectBuild(string alias) {
+      var currentType = metaType;
 
-            var sql = new SqlBuilder()
-               .SELECT(String.Empty);
+      var associations = new List<MetaAssociation>(parts.Length);
 
-            db.QuoteIdentifier(sql.Buffer, alias);
-            sql.Append(".*");
+      for (int i = 0; i < parts.Length; i++) {
 
-            return sql;
+         var p = parts[i];
+         var rAlias = rAliasFn(i);
+
+         var member = currentType.PersistentDataMembers
+            .SingleOrDefault(m => m.Name == p)
+            ?? throw new ArgumentException($"Couldn't find '{p}' on '{currentType.Type.FullName}'.", nameof(path));
+
+         if (!member.IsAssociation) {
+            throw new ArgumentException($"'{p}' is not an association property.", nameof(path));
          }
 
-         void fromAppend(SqlBuilder sql, string alias) =>
-            sql.FROM(source.GetDefiningQuery(), db.QuoteIdentifier(alias));
+         var association = member.Association;
 
-         MetaAssociation? manyAssoc;
-         int manyIndex;
-
-         var query = BuildJoinedQuery(parts, metaType, db, selectBuild, fromAppend, out manyAssoc, out manyIndex);
-
-         var newSet = (query is null) ?
-            source.Clone()
-            : source.CreateSet(query);
-
-         if (manyAssoc is not null) {
-            AddManyInclude(newSet, parts, path, manyAssoc, manyIndex);
+         if (association.IsMany) {
+            throw new ArgumentException($"Use the IncludeMany method to load collections ('{path}').", nameof(path));
          }
 
-         return newSet;
-      }
+         associations.Add(association);
 
-      static SqlBuilder?
-      BuildJoinedQuery(
-            string[] path, MetaType metaType, Database db,
-            Func<string, SqlBuilder> selectBuild, Action<SqlBuilder, string> fromAppend,
-            out MetaAssociation? manyAssoc, out int manyIndex) {
+         foreach (var m in association.OtherType.PersistentDataMembers
+               .Where(m => !m.IsAssociation)) {
 
-         manyAssoc = null;
-         manyIndex = -1;
+            query.SELECT(String.Empty);
+            _db.QuoteIdentifier(sb, rAlias);
+            sb.Append('.');
+            _db.QuoteIdentifier(sb, m.MappedName);
+            sb.Append(" AS ");
 
-         const string leftAlias = "dbex_l";
-         const string rightAlias = "dbex_r";
-
-         static string rAliasFn(int i) => rightAlias + (i + 1);
-
-         var query = selectBuild.Invoke(leftAlias);
-         var sb = query.Buffer;
-         var currentType = metaType;
-
-         var associations = new List<MetaAssociation>();
-
-         for (int i = 0; i < path.Length; i++) {
-
-            var p = path[i];
-            var rAlias = rAliasFn(i);
-
-            var member = currentType.PersistentDataMembers
-               .SingleOrDefault(m => m.Name == p)
-               ?? throw new ArgumentException($"Couldn't find '{p}' on '{currentType.Type.FullName}'.", nameof(path));
-
-            if (!member.IsAssociation) {
-               throw new ArgumentException($"'{p}' is not an association property.", nameof(path));
+            foreach (var a in associations) {
+               sb.Append(a.ThisMember.Name)
+                  .Append('$');
             }
 
-            var association = member.Association;
+            sb.Append(m.Name);
+         }
+
+         currentType = association.OtherType;
+      }
+
+      query.FROM(GetDefiningQuery(clone: false), _db.QuoteIdentifier(leftAlias));
+
+      for (int i = 0; i < associations.Count; i++) {
+
+         var association = associations[i];
+         var lAlias = (i == 0) ? leftAlias : rAliasFn(i - 1);
+         var rAlias = rAliasFn(i);
+
+         query.LEFT_JOIN(String.Empty);
+         _db.QuoteIdentifier(sb, association.OtherType.Table.TableName);
+         sb.Append(' ');
+         _db.QuoteIdentifier(sb, rAlias);
+         sb.Append(" ON (");
+
+         for (int j = 0; j < association.ThisKey.Count; j++) {
+
+            if (j > 0) {
+               sb.Append(" AND ");
+            }
+
+            var thisMember = association.ThisKey[j];
+            var otherMember = association.OtherKey[j];
+
+            _db.QuoteIdentifier(sb, lAlias);
+            sb.Append('.');
+            _db.QuoteIdentifier(sb, (i > 0) ? thisMember.MappedName : thisMember.Name);
+            sb.Append(" = ");
+            _db.QuoteIdentifier(sb, rAlias);
+            sb.Append('.');
+            _db.QuoteIdentifier(sb, otherMember.MappedName);
+         }
+
+         sb.Append(')');
+      }
+
+      var newSet = CreateSet(query);
+
+      return newSet;
+   }
+
+   /// <summary>
+   /// Specifies which collections to include in the query results.
+   /// </summary>
+   /// <param name="path">Dot-separated list of one or more related objects that ends with the collection to load.</param>
+   /// <param name="elementPath">Dot-separated list of related objects to include in each element of the collection.</param>
+   /// <returns>A new <see cref="SqlSet"/>.</returns>
+   /// <exception cref="System.InvalidOperationException">This method can only be used on sets where the result type is an annotated class.</exception>
+
+   public SqlSet
+   IncludeMany(string path, string? elementPath = null) {
+
+      ArgumentNullException.ThrowIfNull(path);
+
+      var metaType = EnsureAnnotatedType();
+
+      var parts = IncludePathSplit(path);
+      var currentType = metaType;
+      var manyAssoc = default(MetaAssociation);
+
+      for (int i = 0; i < parts.Length; i++) {
+
+         var p = parts[i];
+
+         var member = currentType.PersistentDataMembers
+            .SingleOrDefault(m => m.Name == p)
+            ?? throw new ArgumentException($"Couldn't find '{p}' on '{currentType.Type.FullName}'.", nameof(path));
+
+         if (!member.IsAssociation) {
+            throw new ArgumentException($"'{p}' is not an association property.", nameof(path));
+         }
+
+         var association = member.Association;
+
+         if (i == parts.Length - 1) {
 
             if (association.IsMany) {
-
                manyAssoc = association;
-               manyIndex = i;
                break;
             }
 
-            associations.Add(association);
+            throw new ArgumentException(
+               $"The last segment of the path must refer to a collection ('{path}').",
+               nameof(path));
 
-            foreach (var m in association.OtherType.PersistentDataMembers
-                  .Where(m => !m.IsAssociation)) {
+         } else if (association.IsMany) {
 
-               query.SELECT(String.Empty);
-               db.QuoteIdentifier(sb, rAlias);
-               sb.Append('.');
-               db.QuoteIdentifier(sb, m.MappedName);
-               sb.Append(" AS ");
-
-               foreach (var a in associations) {
-                  sb.Append(a.ThisMember.Name)
-                     .Append('$');
-               }
-
-               sb.Append(m.Name);
-            }
-
-            currentType = association.OtherType;
+            throw new ArgumentException(
+               $"Only the last segment of the path can refer to a collection ('{path}'). "
+               + "Use the elementPath parameter to include a path in the collection.",
+               nameof(path));
          }
 
-         if (associations.Count == 0) {
-            return null;
-         }
-
-         fromAppend.Invoke(query, leftAlias);
-
-         for (int i = 0; i < associations.Count; i++) {
-
-            var association = associations[i];
-            var lAlias = (i == 0) ? leftAlias : rAliasFn(i - 1);
-            var rAlias = rAliasFn(i);
-
-            query.LEFT_JOIN(String.Empty);
-            db.QuoteIdentifier(sb, association.OtherType.Table.TableName);
-            sb.Append(' ');
-            db.QuoteIdentifier(sb, rAlias);
-            sb.Append(" ON (");
-
-            for (int j = 0; j < association.ThisKey.Count; j++) {
-
-               if (j > 0) {
-                  sb.Append(" AND ");
-               }
-
-               var thisMember = association.ThisKey[j];
-               var otherMember = association.OtherKey[j];
-
-               db.QuoteIdentifier(sb, lAlias);
-               sb.Append('.');
-               db.QuoteIdentifier(sb, (i > 0) ? thisMember.MappedName : thisMember.Name);
-               sb.Append(" = ");
-               db.QuoteIdentifier(sb, rAlias);
-               sb.Append('.');
-               db.QuoteIdentifier(sb, otherMember.MappedName);
-            }
-
-            sb.Append(')');
-         }
-
-         return query;
+         currentType = association.OtherType;
       }
 
-      static void
-      AddManyInclude(SqlSet set, string[] path, string originalPath, MetaAssociation manyAssoc, int manyIndex) {
+      Debug.Assert(manyAssoc is not null);
 
-         Debug.Assert(path.Length > 0);
-         Debug.Assert(manyIndex >= 0);
+      var manySource = (SqlSet)_db.Table(manyAssoc.OtherType);
 
-         var db = set.Database;
-         var metaType = manyAssoc.OtherType;
-         var table = db.Table(metaType);
-
-         string[] manyPath;
-         SqlSet manySource;
-
-         if (manyIndex == path.Length - 1) {
-
-            manyPath = path;
-            manySource = table;
-
-         } else {
-
-            manyPath = new string[manyIndex + 1];
-
-            Array.Copy(path, manyPath, manyPath.Length);
-
-            var manyInclude = new string[path.Length - manyIndex - 1];
-
-            Array.Copy(path, manyIndex + 1, manyInclude, 0, manyInclude.Length);
-
-            SqlBuilder selectBuild(string alias) {
-
-               var sql = new SqlBuilder()
-                  .SELECT(String.Empty);
-
-               db.SelectBody(sql.Buffer, metaType, null, alias);
-
-               return sql;
-            }
-
-            void fromAppend(SqlBuilder sql, string alias) {
-               sql.FROM(String.Empty);
-               db.QuoteIdentifier(sql.Buffer, metaType.Table.TableName);
-               sql.Buffer.Append(' ')
-                  .Append(alias);
-            }
-
-            MetaAssociation? manyInManyAssoc;
-            int manyInManyIndex;
-
-            var manyQuery = BuildJoinedQuery(manyInclude, metaType, db, selectBuild, fromAppend, out manyInManyAssoc, out manyInManyIndex);
-
-            if (manyInManyAssoc is not null) {
-               throw new ArgumentException($"One-to-many associations can only be specified once in an include path ('{originalPath}').", nameof(path));
-            }
-
-            manySource = db.FromQuery(manyQuery!, metaType.Type);
-         }
-
-         set.AddManyInclude(manyPath,
-            container => manyAssoc.LoadCollection(container, GetMany(container, manyAssoc, manySource)));
+      if (elementPath is not null) {
+         manySource = manySource.Include(elementPath);
       }
 
-      static IEnumerable
-      GetMany(object container, MetaAssociation manyAssoc, SqlSet manySource) {
+      var newSet = Clone();
 
-         var predicateValues = manyAssoc.OtherKey.Select((p, i) =>
-            new KeyValuePair<string, object>(p.MappedName, manyAssoc.ThisKey[i].GetValueForDatabase(container)));
+      newSet.AddManyInclude(parts,
+         container => manyAssoc.LoadCollection(container, IncludeManyGet(container, manyAssoc, manySource)));
 
-         var parameters = new List<object?>(manyAssoc.OtherKey.Count);
-         var whereFragment = new SqlFragment(manySource.Database.BuildPredicateFragment(predicateValues, parameters), parameters);
+      return newSet;
+   }
 
-         return manySource
-            .Where(whereFragment)
-            .AsEnumerable();
+   static IEnumerable
+   IncludeManyGet(object container, MetaAssociation manyAssoc, SqlSet manySource) {
+
+      var predicateValues = manyAssoc.OtherKey.Select((p, i) =>
+         new KeyValuePair<string, object>(p.MappedName, manyAssoc.ThisKey[i].GetValueForDatabase(container)));
+
+      var parameters = new List<object?>(manyAssoc.OtherKey.Count);
+      var whereFragment = new SqlFragment(manySource.Database.BuildPredicateFragment(predicateValues, parameters), parameters);
+
+      return manySource
+         .Where(whereFragment)
+         .AsEnumerable();
+   }
+
+   static string[]
+   IncludePathSplit(string path) {
+
+      var pathParts = path.Split('.', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+      if (pathParts.Length == 0) {
+         throw new ArgumentException("Path is empty.", nameof(path));
       }
+
+      return pathParts;
    }
 }
 
@@ -443,6 +421,72 @@ partial class SqlSet<TResult> {
    public new SqlSet<TResult>
    Include(string path) =>
       (SqlSet<TResult>)base.Include(path);
+
+   /// <inheritdoc cref="Include(String)"/>
+   /// <param name="path">Lambda expression that returns the deepest related object to return in the query results.</param>
+   /// <param name="pathExpr">This argument is compiler generated.</param>
+
+   public SqlSet<TResult>
+   Include(Func<TResult, object?> path, [CallerArgumentExpression(nameof(path))] string pathExpr = "") {
+
+      ArgumentNullException.ThrowIfNull(path);
+      ArgumentException.ThrowIfNullOrEmpty(pathExpr);
+
+      var pathStr = IncludeLambdaPath(pathExpr);
+
+      return Include(pathStr);
+   }
+
+   /// <inheritdoc cref="SqlSet.IncludeMany(String, String?)"/>
+   /// <returns>A new <see cref="SqlSet&lt;TResult>"/>.</returns>
+
+   public new SqlSet<TResult>
+   IncludeMany(string path, string? elementPath = null) =>
+      (SqlSet<TResult>)base.IncludeMany(path, elementPath);
+
+   /// <inheritdoc cref="IncludeMany(String, String?)"/>
+   /// <typeparam name="TElement">The type of objects the collection holds.</typeparam>
+   /// <param name="path">Lambda expression that returns the collection to load.</param>
+   /// <param name="elementPath">Lambda expression that returns the deepest related object to include in each element of the collection.</param>
+   /// <param name="pathExpr">This argument is compiler generated.</param>
+   /// <param name="elementPathExpr">This argument is compiler generated.</param>
+
+   public SqlSet<TResult>
+   IncludeMany<TElement>(
+         Func<TResult, ICollection<TElement>?> path,
+         Func<TElement, object?>? elementPath = null,
+         [CallerArgumentExpression(nameof(path))] string pathExpr = "",
+         [CallerArgumentExpression(nameof(elementPath))] string elementPathExpr = "") {
+
+      ArgumentNullException.ThrowIfNull(path);
+      ArgumentException.ThrowIfNullOrEmpty(pathExpr);
+
+      var pathStr = IncludeLambdaPath(pathExpr);
+      var elementPathStr = (elementPath is not null) ?
+         IncludeLambdaPath(elementPathExpr)
+         : null;
+
+      return IncludeMany(pathStr, elementPathStr);
+   }
+
+   static string
+   IncludeLambdaPath(string pathExpr) {
+
+      var arrowIndex = pathExpr.IndexOf("=>");
+
+      if (arrowIndex == -1) {
+         throw new ArgumentException("A lambda expression is expected.", nameof(pathExpr));
+      }
+
+      var firstDot = pathExpr.IndexOf('.', arrowIndex);
+
+      if (firstDot == -1) {
+         throw new ArgumentException("Path is empty.", nameof(pathExpr));
+      }
+
+      return pathExpr
+         .Substring(firstDot + 1);
+   }
 }
 
 // Async

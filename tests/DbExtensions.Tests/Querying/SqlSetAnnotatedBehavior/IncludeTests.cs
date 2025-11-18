@@ -17,8 +17,8 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
 
          var set = db.Table<Include.Model1.Product>()
             .Where("NOT CategoryID IS NULL AND NOT SupplierID IS NULL")
-            .Include("Category")
-            .Include("Supplier");
+            .Include(p => p.Category)
+            .Include(p => p.Supplier);
 
          var item = set.First();
 
@@ -30,7 +30,7 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
       public void Can_Include_One_Nested() {
 
          var set = db.Table<Include.Model1.EmployeeTerritory>()
-            .Include("Territory.Region");
+            .Include(p => p.Territory.Region);
 
          var item = set.First();
 
@@ -42,7 +42,7 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
       public void Can_Include_One_Nested_Key_Name_Member_Differs() {
 
          var set = db.Table<Include.Model2.EmployeeTerritory>()
-            .Include("Territory.Region");
+            .Include(p => p.Territory.Region);
 
          var item = set.First();
 
@@ -54,7 +54,7 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
       public void Can_Include_Many() {
 
          var set = db.Table<Include.Model1.Category>()
-            .Include("Products");
+            .IncludeMany(p => p.Products);
 
          var item = set.First();
 
@@ -67,9 +67,9 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
       public void Can_Include_Many_Multiple() {
 
          var set1 = db.Table<Include.Model1.Employee>()
-            .Include("EmployeeTerritories");
+            .IncludeMany(p => p.EmployeeTerritories);
 
-         var set2 = set1.Include("Orders");
+         var set2 = set1.IncludeMany(p => p.Orders);
 
          var item = set1.First();
 
@@ -78,7 +78,7 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
          Assert.IsTrue(item.EmployeeTerritories.All(p => Object.ReferenceEquals(p.Employee, item)));
 
          // test immutability
-         Assert.IsTrue(item.Orders == null || item.Orders.Count == 0);
+         Assert.IsTrue(item.Orders is null or { Count: 0 });
 
          item = set2.First();
 
@@ -95,7 +95,8 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
       public void Can_Include_Many_In_One() {
 
          var set = db.Table<Include.Model1.EmployeeTerritory>()
-            .Include("Employee.Orders");
+            .Include(p => p.Employee)
+            .IncludeMany(p => p.Employee.Orders);
 
          var item = set.First();
 
@@ -105,10 +106,28 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
       }
 
       [Test]
+      public void Can_Include_Many_In_One_Multiple() {
+
+         var set = db.Table<Include.Model1.EmployeeTerritory>()
+            .Include(p => p.Employee)
+            .IncludeMany(p => p.Employee.Orders)
+            .IncludeMany(p => p.Employee.EmployeeTerritories);
+
+         var item = set.First();
+
+         Assert.IsNotNull(item.Employee);
+         Assert.AreNotEqual(0, item.Employee.Orders.Count);
+         Assert.IsTrue(item.Employee.Orders.All(p => Object.ReferenceEquals(p.Employee, item.Employee)));
+
+         Assert.AreNotEqual(0, item.Employee.EmployeeTerritories.Count);
+         Assert.IsTrue(item.Employee.EmployeeTerritories.All(p => Object.ReferenceEquals(p.Employee, item.Employee)));
+      }
+
+      [Test]
       public void Can_Include_One_In_Many() {
 
          var set = db.Table<Include.Model1.Employee>()
-            .Include("EmployeeTerritories.Territory");
+            .IncludeMany(p => p.EmployeeTerritories, q => q.Territory);
 
          var item = set.First();
 
@@ -121,7 +140,7 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
       public void Cannot_Include_Many_In_Many() {
 
          Assert.Throws<ArgumentException>(() => db.Table<Include.Model1.Employee>()
-            .Include("Orders.OrderDetails"));
+            .IncludeMany("Orders.OrderDetails"));
       }
    }
 

@@ -15,8 +15,8 @@ namespace Samples.CSharp {
       public IEnumerable<Product> IncludeManyToOne() {
 
          return db.Products
-            .Include("Category")
-            .Include("Supplier")
+            .Include(p => p.Category)
+            .Include(p => p.Supplier)
             .Take(3)
             .AsEnumerable();
       }
@@ -24,7 +24,7 @@ namespace Samples.CSharp {
       public IEnumerable<EmployeeTerritory> IncludeManyToOneNested() {
 
          return db.EmployeeTerritories
-            .Include("Territory.Region")
+            .Include(p => p.Territory.Region)
             .Take(3)
             .AsEnumerable();
       }
@@ -32,7 +32,7 @@ namespace Samples.CSharp {
       public Region IncludeOneToMany() {
 
          return db.Regions
-            .Include("Territories")
+            .IncludeMany(p => p.Territories)
             .First();
       }
 

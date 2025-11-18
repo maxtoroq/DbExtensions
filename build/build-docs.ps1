@@ -1,4 +1,4 @@
-param([string]$ProjectName, [switch]$NoBuildProj, [switch]$XmlOnly)
+param([string]$ProjectName = "DbExtensions", [switch]$NoBuildProj, [switch]$XmlOnly)
 
 $ErrorActionPreference = "Stop"
 Push-Location (Split-Path $script:MyInvocation.MyCommand.Path)

@@ -85,59 +85,60 @@ Methods
 | [GetDefiningQuery][55]                                                          | Returns the SQL query that is the source of data for the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                            |
 | [GetEnumerator][56]                                                             | Returns an enumerator that iterates through the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                     |
 | [Include][57]                                                                   | Specifies the related objects to include in the query results. <br/>(Inherited from [SqlSet][4])                                                                                                                                           |
-| [LongCount()][58]                                                               | Returns an [Int64][59] that represents the total number of elements in the set. <br/>(Inherited from [SqlSet][4])                                                                                                                          |
-| [LongCount(OperatorStringHandler)][60]                                          | Returns an [Int64][59] that represents how many elements in the set satisfy a condition. <br/>(Inherited from [SqlSet][4])                                                                                                                 |
-| [LongCount(String)][61]                                                         | Returns an [Int64][59] that represents how many elements in the set satisfy a condition. <br/>(Inherited from [SqlSet][4])                                                                                                                 |
-| [LongCountAsync(CancellationToken)][62]                                         | Returns an [Int64][59] that represents the total number of elements in the set. <br/>(Inherited from [SqlSet][4])                                                                                                                          |
-| [LongCountAsync(OperatorStringHandler, CancellationToken)][63]                  | Returns an [Int64][59] that represents how many elements in the set satisfy a condition. <br/>(Inherited from [SqlSet][4])                                                                                                                 |
-| [LongCountAsync(String, CancellationToken)][64]                                 | Returns an [Int64][59] that represents how many elements in the set satisfy a condition. <br/>(Inherited from [SqlSet][4])                                                                                                                 |
-| [OrderBy(OperatorStringHandler)][65]                                            | Sorts the elements of the set according to the *columnList*. <br/>(Inherited from [SqlSet][4])                                                                                                                                             |
-| [OrderBy(String)][66]                                                           | Sorts the elements of the set according to the *columnList*. <br/>(Inherited from [SqlSet][4])                                                                                                                                             |
-| [Refresh][67]                                                                   | Sets all column members of *entity* to their most current persisted value.                                                                                                                                                                 |
-| [RefreshAsync][68]                                                              | Sets all column members of *entity* to their most current persisted value.                                                                                                                                                                 |
-| [Remove][69]                                                                    | Executes a DELETE command for the specified *entity*.                                                                                                                                                                                      |
-| [RemoveAsync][70]                                                               | Executes a DELETE command for the specified *entity*.                                                                                                                                                                                      |
-| [RemoveKey][71]                                                                 | Executes a DELETE command for the entity whose primary key matches the *id* parameter.                                                                                                                                                     |
-| [RemoveKeyAsync][72]                                                            | Executes a DELETE command for the entity whose primary key matches the *id* parameter.                                                                                                                                                     |
-| [RemoveRange(IEnumerable&lt;Object>)][73]                                       | Executes DELETE commands for the specified *entities*.                                                                                                                                                                                     |
-| [RemoveRange(Object[])][74]                                                     | Executes DELETE commands for the specified *entities*.                                                                                                                                                                                     |
-| [RemoveRangeAsync(Object[])][75]                                                | Executes DELETE commands for the specified *entities*.                                                                                                                                                                                     |
-| [RemoveRangeAsync(IEnumerable&lt;Object>, CancellationToken)][76]               | Executes DELETE commands for the specified *entities*.                                                                                                                                                                                     |
-| [Select(OperatorStringHandler, Type)][77]                                       | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][4])                                                                                                                                                        |
-| [Select(String, Type)][78]                                                      | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][4])                                                                                                                                                        |
-| [Select&lt;TResult>(OperatorStringHandler)][79]                                 | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][4])                                                                                                                                                        |
-| [Select&lt;TResult>(String)][80]                                                | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][4])                                                                                                                                                        |
-| [Select&lt;TResult>(OperatorStringHandler, Func&lt;DbDataReader, TResult>)][81] | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][4])                                                                                                                                                        |
-| [Select&lt;TResult>(String, Func&lt;DbDataReader, TResult>)][82]                | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][4])                                                                                                                                                        |
-| [Single()][83]                                                                  | The single element of the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                           |
-| [Single(OperatorStringHandler)][84]                                             | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. <br/>(Inherited from [SqlSet][4])                                                                  |
-| [Single(String)][85]                                                            | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. <br/>(Inherited from [SqlSet][4])                                                                  |
-| [SingleAsync(CancellationToken)][86]                                            | The single element of the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                           |
-| [SingleAsync(OperatorStringHandler, CancellationToken)][87]                     | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. <br/>(Inherited from [SqlSet][4])                                                                  |
-| [SingleAsync(String, CancellationToken)][88]                                    | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. <br/>(Inherited from [SqlSet][4])                                                                  |
-| [SingleOrDefault()][89]                                                         | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set. <br/>(Inherited from [SqlSet][4])                                               |
-| [SingleOrDefault(OperatorStringHandler)][90]                                    | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. <br/>(Inherited from [SqlSet][4]) |
-| [SingleOrDefault(String)][91]                                                   | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. <br/>(Inherited from [SqlSet][4]) |
-| [SingleOrDefaultAsync(CancellationToken)][92]                                   | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set. <br/>(Inherited from [SqlSet][4])                                               |
-| [SingleOrDefaultAsync(OperatorStringHandler, CancellationToken)][93]            | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. <br/>(Inherited from [SqlSet][4]) |
-| [SingleOrDefaultAsync(String, CancellationToken)][94]                           | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. <br/>(Inherited from [SqlSet][4]) |
-| [Skip][95]                                                                      | Bypasses a specified number of elements in the set and then returns the remaining elements. <br/>(Inherited from [SqlSet][4])                                                                                                              |
-| [Take][96]                                                                      | Returns a specified number of contiguous elements from the start of the set. <br/>(Inherited from [SqlSet][4])                                                                                                                             |
-| [ToArray][97]                                                                   | Creates an array from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                           |
-| [ToArrayAsync][98]                                                              | Creates an array from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                           |
-| [ToList][99]                                                                    | Creates a List&lt;object> from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                  |
-| [ToListAsync][100]                                                              | Creates a List&lt;object> from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                  |
-| [ToString][101]                                                                 | Returns the SQL query of the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                        |
-| [Update(Object)][102]                                                           | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
-| [Update(Object, Object)][103]                                                   | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
-| [UpdateAsync(Object, CancellationToken)][104]                                   | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
-| [UpdateAsync(Object, Object, CancellationToken)][105]                           | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
-| [UpdateRange(IEnumerable&lt;Object>)][106]                                      | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
-| [UpdateRange(Object[])][107]                                                    | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
-| [UpdateRangeAsync(Object[])][108]                                               | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
-| [UpdateRangeAsync(IEnumerable&lt;Object>, CancellationToken)][109]              | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
-| [Where(OperatorStringHandler)][110]                                             | Filters the set based on a predicate. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                    |
-| [Where(String)][111]                                                            | Filters the set based on a predicate. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                    |
+| [IncludeMany][58]                                                               | Specifies which collections to include in the query results. <br/>(Inherited from [SqlSet][4])                                                                                                                                             |
+| [LongCount()][59]                                                               | Returns an [Int64][60] that represents the total number of elements in the set. <br/>(Inherited from [SqlSet][4])                                                                                                                          |
+| [LongCount(OperatorStringHandler)][61]                                          | Returns an [Int64][60] that represents how many elements in the set satisfy a condition. <br/>(Inherited from [SqlSet][4])                                                                                                                 |
+| [LongCount(String)][62]                                                         | Returns an [Int64][60] that represents how many elements in the set satisfy a condition. <br/>(Inherited from [SqlSet][4])                                                                                                                 |
+| [LongCountAsync(CancellationToken)][63]                                         | Returns an [Int64][60] that represents the total number of elements in the set. <br/>(Inherited from [SqlSet][4])                                                                                                                          |
+| [LongCountAsync(OperatorStringHandler, CancellationToken)][64]                  | Returns an [Int64][60] that represents how many elements in the set satisfy a condition. <br/>(Inherited from [SqlSet][4])                                                                                                                 |
+| [LongCountAsync(String, CancellationToken)][65]                                 | Returns an [Int64][60] that represents how many elements in the set satisfy a condition. <br/>(Inherited from [SqlSet][4])                                                                                                                 |
+| [OrderBy(OperatorStringHandler)][66]                                            | Sorts the elements of the set according to the *columnList*. <br/>(Inherited from [SqlSet][4])                                                                                                                                             |
+| [OrderBy(String)][67]                                                           | Sorts the elements of the set according to the *columnList*. <br/>(Inherited from [SqlSet][4])                                                                                                                                             |
+| [Refresh][68]                                                                   | Sets all column members of *entity* to their most current persisted value.                                                                                                                                                                 |
+| [RefreshAsync][69]                                                              | Sets all column members of *entity* to their most current persisted value.                                                                                                                                                                 |
+| [Remove][70]                                                                    | Executes a DELETE command for the specified *entity*.                                                                                                                                                                                      |
+| [RemoveAsync][71]                                                               | Executes a DELETE command for the specified *entity*.                                                                                                                                                                                      |
+| [RemoveKey][72]                                                                 | Executes a DELETE command for the entity whose primary key matches the *id* parameter.                                                                                                                                                     |
+| [RemoveKeyAsync][73]                                                            | Executes a DELETE command for the entity whose primary key matches the *id* parameter.                                                                                                                                                     |
+| [RemoveRange(IEnumerable&lt;Object>)][74]                                       | Executes DELETE commands for the specified *entities*.                                                                                                                                                                                     |
+| [RemoveRange(Object[])][75]                                                     | Executes DELETE commands for the specified *entities*.                                                                                                                                                                                     |
+| [RemoveRangeAsync(Object[])][76]                                                | Executes DELETE commands for the specified *entities*.                                                                                                                                                                                     |
+| [RemoveRangeAsync(IEnumerable&lt;Object>, CancellationToken)][77]               | Executes DELETE commands for the specified *entities*.                                                                                                                                                                                     |
+| [Select(OperatorStringHandler, Type)][78]                                       | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][4])                                                                                                                                                        |
+| [Select(String, Type)][79]                                                      | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][4])                                                                                                                                                        |
+| [Select&lt;TResult>(OperatorStringHandler)][80]                                 | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][4])                                                                                                                                                        |
+| [Select&lt;TResult>(String)][81]                                                | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][4])                                                                                                                                                        |
+| [Select&lt;TResult>(OperatorStringHandler, Func&lt;DbDataReader, TResult>)][82] | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][4])                                                                                                                                                        |
+| [Select&lt;TResult>(String, Func&lt;DbDataReader, TResult>)][83]                | Projects each element of the set into a new form. <br/>(Inherited from [SqlSet][4])                                                                                                                                                        |
+| [Single()][84]                                                                  | The single element of the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                           |
+| [Single(OperatorStringHandler)][85]                                             | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. <br/>(Inherited from [SqlSet][4])                                                                  |
+| [Single(String)][86]                                                            | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. <br/>(Inherited from [SqlSet][4])                                                                  |
+| [SingleAsync(CancellationToken)][87]                                            | The single element of the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                           |
+| [SingleAsync(OperatorStringHandler, CancellationToken)][88]                     | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. <br/>(Inherited from [SqlSet][4])                                                                  |
+| [SingleAsync(String, CancellationToken)][89]                                    | Returns the only element of the set that satisfies a specified condition, and throws an exception if more than one such element exists. <br/>(Inherited from [SqlSet][4])                                                                  |
+| [SingleOrDefault()][90]                                                         | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set. <br/>(Inherited from [SqlSet][4])                                               |
+| [SingleOrDefault(OperatorStringHandler)][91]                                    | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. <br/>(Inherited from [SqlSet][4]) |
+| [SingleOrDefault(String)][92]                                                   | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. <br/>(Inherited from [SqlSet][4]) |
+| [SingleOrDefaultAsync(CancellationToken)][93]                                   | Returns the only element of the set, or a default value if the set is empty; this method throws an exception if there is more than one element in the set. <br/>(Inherited from [SqlSet][4])                                               |
+| [SingleOrDefaultAsync(OperatorStringHandler, CancellationToken)][94]            | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. <br/>(Inherited from [SqlSet][4]) |
+| [SingleOrDefaultAsync(String, CancellationToken)][95]                           | Returns the only element of the set that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition. <br/>(Inherited from [SqlSet][4]) |
+| [Skip][96]                                                                      | Bypasses a specified number of elements in the set and then returns the remaining elements. <br/>(Inherited from [SqlSet][4])                                                                                                              |
+| [Take][97]                                                                      | Returns a specified number of contiguous elements from the start of the set. <br/>(Inherited from [SqlSet][4])                                                                                                                             |
+| [ToArray][98]                                                                   | Creates an array from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                           |
+| [ToArrayAsync][99]                                                              | Creates an array from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                           |
+| [ToList][100]                                                                   | Creates a List&lt;object> from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                  |
+| [ToListAsync][101]                                                              | Creates a List&lt;object> from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                  |
+| [ToString][102]                                                                 | Returns the SQL query of the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                        |
+| [Update(Object)][103]                                                           | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
+| [Update(Object, Object)][104]                                                   | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
+| [UpdateAsync(Object, CancellationToken)][105]                                   | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
+| [UpdateAsync(Object, Object, CancellationToken)][106]                           | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
+| [UpdateRange(IEnumerable&lt;Object>)][107]                                      | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
+| [UpdateRange(Object[])][108]                                                    | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
+| [UpdateRangeAsync(Object[])][109]                                               | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
+| [UpdateRangeAsync(IEnumerable&lt;Object>, CancellationToken)][110]              | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
+| [Where(OperatorStringHandler)][111]                                             | Filters the set based on a predicate. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                    |
+| [Where(String)][112]                                                            | Filters the set based on a predicate. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                    |
 
 
 See Also
@@ -203,57 +204,58 @@ See Also
 [55]: ../SqlSet/GetDefiningQuery.md
 [56]: ../SqlSet/GetEnumerator.md
 [57]: ../SqlSet/Include.md
-[58]: ../SqlSet/LongCount.md
-[59]: https://learn.microsoft.com/dotnet/api/system.int64
-[60]: ../SqlSet/LongCount_1.md
-[61]: ../SqlSet/LongCount_2.md
-[62]: ../SqlSet/LongCountAsync_2.md
-[63]: ../SqlSet/LongCountAsync.md
-[64]: ../SqlSet/LongCountAsync_1.md
-[65]: ../SqlSet/OrderBy.md
-[66]: ../SqlSet/OrderBy_1.md
-[67]: Refresh.md
-[68]: RefreshAsync.md
-[69]: Remove.md
-[70]: RemoveAsync.md
-[71]: RemoveKey.md
-[72]: RemoveKeyAsync.md
-[73]: RemoveRange.md
-[74]: RemoveRange_1.md
-[75]: RemoveRangeAsync_1.md
-[76]: RemoveRangeAsync.md
-[77]: ../SqlSet/Select_1.md
-[78]: ../SqlSet/Select_3.md
-[79]: ../SqlSet/Select__1.md
-[80]: ../SqlSet/Select__1_2.md
-[81]: ../SqlSet/Select__1_1.md
-[82]: ../SqlSet/Select__1_3.md
-[83]: ../SqlSet/Single.md
-[84]: ../SqlSet/Single_1.md
-[85]: ../SqlSet/Single_2.md
-[86]: ../SqlSet/SingleAsync_2.md
-[87]: ../SqlSet/SingleAsync.md
-[88]: ../SqlSet/SingleAsync_1.md
-[89]: ../SqlSet/SingleOrDefault.md
-[90]: ../SqlSet/SingleOrDefault_1.md
-[91]: ../SqlSet/SingleOrDefault_2.md
-[92]: ../SqlSet/SingleOrDefaultAsync_2.md
-[93]: ../SqlSet/SingleOrDefaultAsync.md
-[94]: ../SqlSet/SingleOrDefaultAsync_1.md
-[95]: ../SqlSet/Skip.md
-[96]: ../SqlSet/Take.md
-[97]: ../SqlSet/ToArray.md
-[98]: ../SqlSet/ToArrayAsync.md
-[99]: ../SqlSet/ToList.md
-[100]: ../SqlSet/ToListAsync.md
-[101]: ../SqlSet/ToString.md
-[102]: Update.md
-[103]: Update_1.md
-[104]: UpdateAsync_1.md
-[105]: UpdateAsync.md
-[106]: UpdateRange.md
-[107]: UpdateRange_1.md
-[108]: UpdateRangeAsync_1.md
-[109]: UpdateRangeAsync.md
-[110]: ../SqlSet/Where.md
-[111]: ../SqlSet/Where_1.md
+[58]: ../SqlSet/IncludeMany.md
+[59]: ../SqlSet/LongCount.md
+[60]: https://learn.microsoft.com/dotnet/api/system.int64
+[61]: ../SqlSet/LongCount_1.md
+[62]: ../SqlSet/LongCount_2.md
+[63]: ../SqlSet/LongCountAsync_2.md
+[64]: ../SqlSet/LongCountAsync.md
+[65]: ../SqlSet/LongCountAsync_1.md
+[66]: ../SqlSet/OrderBy.md
+[67]: ../SqlSet/OrderBy_1.md
+[68]: Refresh.md
+[69]: RefreshAsync.md
+[70]: Remove.md
+[71]: RemoveAsync.md
+[72]: RemoveKey.md
+[73]: RemoveKeyAsync.md
+[74]: RemoveRange.md
+[75]: RemoveRange_1.md
+[76]: RemoveRangeAsync_1.md
+[77]: RemoveRangeAsync.md
+[78]: ../SqlSet/Select_1.md
+[79]: ../SqlSet/Select_3.md
+[80]: ../SqlSet/Select__1.md
+[81]: ../SqlSet/Select__1_2.md
+[82]: ../SqlSet/Select__1_1.md
+[83]: ../SqlSet/Select__1_3.md
+[84]: ../SqlSet/Single.md
+[85]: ../SqlSet/Single_1.md
+[86]: ../SqlSet/Single_2.md
+[87]: ../SqlSet/SingleAsync_2.md
+[88]: ../SqlSet/SingleAsync.md
+[89]: ../SqlSet/SingleAsync_1.md
+[90]: ../SqlSet/SingleOrDefault.md
+[91]: ../SqlSet/SingleOrDefault_1.md
+[92]: ../SqlSet/SingleOrDefault_2.md
+[93]: ../SqlSet/SingleOrDefaultAsync_2.md
+[94]: ../SqlSet/SingleOrDefaultAsync.md
+[95]: ../SqlSet/SingleOrDefaultAsync_1.md
+[96]: ../SqlSet/Skip.md
+[97]: ../SqlSet/Take.md
+[98]: ../SqlSet/ToArray.md
+[99]: ../SqlSet/ToArrayAsync.md
+[100]: ../SqlSet/ToList.md
+[101]: ../SqlSet/ToListAsync.md
+[102]: ../SqlSet/ToString.md
+[103]: Update.md
+[104]: Update_1.md
+[105]: UpdateAsync_1.md
+[106]: UpdateAsync.md
+[107]: UpdateRange.md
+[108]: UpdateRange_1.md
+[109]: UpdateRangeAsync_1.md
+[110]: UpdateRangeAsync.md
+[111]: ../SqlSet/Where.md
+[112]: ../SqlSet/Where_1.md

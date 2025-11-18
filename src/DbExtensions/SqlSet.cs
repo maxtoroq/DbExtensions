@@ -497,15 +497,15 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    CreateSet(string?[] fromSelect, Type? resultType = null, SqlBuffer? buffer = null) =>
       new SqlSet(this, fromSelect, resultType, buffer);
 
-   private SqlSet<TResult>
+   SqlSet<TResult>
    CreateSet<TResult>(SqlBuilder superQuery, Func<DbDataReader, TResult>? mapper = null, SqlBuffer? buffer = null) =>
       new SqlSet<TResult>(this, superQuery, mapper, buffer);
 
-   private SqlSet<TResult>
+   SqlSet<TResult>
    CreateSet<TResult>(string?[] fromSelect, SqlBuffer? buffer = null) =>
       new SqlSet<TResult>(this, fromSelect, buffer);
 
-   internal SqlSet
+   private protected SqlSet
    Clone() =>
       CreateBufferedSet(ignoreBuffer: true, buffer: _buffer);
 
