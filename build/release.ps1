@@ -45,11 +45,21 @@ function BuildProj([string]$projName, [string]$target) {
 
 function NuPack([string]$projName) {
 
-   BuildProj $projName "Build"
+   BuildProj $projName "Build" | Out-Host
 
-   .\build-docs.ps1 -ProjectName $projName -NoBuildProj -XmlOnly
+   .\build-docs.ps1 -ProjectName $projName -NoBuildProj -XmlOnly | Out-Host
 
-   BuildProj $projName "Pack"
+   BuildProj $projName "Pack" | Out-Host
+
+   return Join-Path $outputPath "$projName.$pkgVer.nupkg"
+}
+
+function Prompt-Choices($Choices=("&Yes", "&No"), [string]$Title="Confirm", [string]$Message="Are you sure?", [int]$Default=0) {
+
+   $choicesArr = [Management.Automation.Host.ChoiceDescription[]] `
+      ($Choices | % {New-Object Management.Automation.Host.ChoiceDescription $_})
+
+   return $host.ui.PromptForChoice($Title, $Message, $choicesArr, $Default)
 }
 
 try {
@@ -63,10 +73,33 @@ try {
 
    $outputPath = Resolve-Path nupkg
 
+   $pkgVer = $PackageVersion.ToString(3)
+
+   if ($PreRelease) {
+      $pkgVer = $pkgVer + "-" + $PreRelease
+   }
+
+   $newTag = "v$pkgVer"
+
    MSBuild $solutionPath\DbExtensions.sln -t:Restore
 
-   NuPack DbExtensions
-   NuPack DbExtensions-QE
+   $newPackages = (NuPack DbExtensions), (NuPack DbExtensions-QE)
+
+   if ((Prompt-Choices -Message "Create tag $newTag ?" -Default 1) -eq 0) {
+
+      git tag -a $newTag -m $newTag
+      Write-Warning "Created tag: $newTag"
+
+      if ((Prompt-Choices -Message "Push package(s) to gallery?" -Default 1) -eq 0) {
+         foreach ($pkgPath in $newPackages) {
+            dotnet nuget push $pkgPath --source nuget.org
+         }
+      }
+
+      if ((Prompt-Choices -Message "Push new tag $newTag to origin?" -Default 1) -eq 0) {
+         git push origin $newTag
+      }
+   }
 
 } finally {
    Pop-Location
