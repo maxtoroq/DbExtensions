@@ -300,12 +300,12 @@ partial class SqlSet {
    /// Specifies which collections to include in the query results.
    /// </summary>
    /// <param name="path">Dot-separated list of one or more related objects that ends with the collection to load.</param>
-   /// <param name="elementPath">Dot-separated list of related objects to include in each element of the collection.</param>
+   /// <param name="manySetup">A function to customize how the collection is loaded.</param>
    /// <returns>A new <see cref="SqlSet"/>.</returns>
    /// <exception cref="System.InvalidOperationException">This method can only be used on sets where the result type is an annotated class.</exception>
 
    public SqlSet
-   IncludeMany(string path, string? elementPath = null) {
+   IncludeMany(string path, Func<SqlSet, SqlSet>? manySetup = null) {
 
       ArgumentNullException.ThrowIfNull(path);
 
@@ -355,20 +355,16 @@ partial class SqlSet {
 
       var manySource = (SqlSet)_db.Table(manyAssoc.OtherType);
 
-      if (elementPath is not null) {
-         manySource = manySource.Include(elementPath);
-      }
-
       var newSet = Clone();
 
       newSet.AddManyInclude(parts,
-         container => manyAssoc.LoadCollection(container, IncludeManyGet(container, manyAssoc, manySource)));
+         container => manyAssoc.LoadCollection(container, IncludeManyGet(container, manyAssoc, manySource, manySetup)));
 
       return newSet;
    }
 
    static IEnumerable
-   IncludeManyGet(object container, MetaAssociation manyAssoc, SqlSet manySource) {
+   IncludeManyGet(object container, MetaAssociation manyAssoc, SqlSet manySource, Func<SqlSet, SqlSet>? manySetup) {
 
       var predicateValues = manyAssoc.OtherKey.Select((p, i) =>
          new KeyValuePair<string, object>(p.MappedName, manyAssoc.ThisKey[i].GetValueForDatabase(container)));
@@ -376,9 +372,14 @@ partial class SqlSet {
       var parameters = new List<object?>(manyAssoc.OtherKey.Count);
       var whereFragment = new SqlFragment(manySource.Database.BuildPredicateFragment(predicateValues, parameters), parameters);
 
-      return manySource
-         .Where(whereFragment)
-         .AsEnumerable();
+      manySource = manySource
+         .Where(whereFragment);
+
+      if (manySetup is not null) {
+         manySource = manySetup.Invoke(manySource);
+      }
+
+      return manySource.AsEnumerable();
    }
 
    static string[]
@@ -437,36 +438,31 @@ partial class SqlSet<TResult> {
       return Include(pathStr);
    }
 
-   /// <inheritdoc cref="SqlSet.IncludeMany(String, String?)"/>
+   /// <inheritdoc cref="SqlSet.IncludeMany(String, Func&lt;SqlSet, SqlSet>?)"/>
    /// <returns>A new <see cref="SqlSet&lt;TResult>"/>.</returns>
 
    public new SqlSet<TResult>
-   IncludeMany(string path, string? elementPath = null) =>
-      (SqlSet<TResult>)base.IncludeMany(path, elementPath);
+   IncludeMany(string path, Func<SqlSet, SqlSet>? manySetup = null) =>
+      (SqlSet<TResult>)base.IncludeMany(path, manySetup);
 
-   /// <inheritdoc cref="IncludeMany(String, String?)"/>
+   /// <inheritdoc cref="IncludeMany(String, Func&lt;SqlSet, SqlSet>?)"/>
    /// <typeparam name="TElement">The type of objects the collection holds.</typeparam>
    /// <param name="path">Lambda expression that returns the collection to load.</param>
-   /// <param name="elementPath">Lambda expression that returns the deepest related object to include in each element of the collection.</param>
    /// <param name="pathExpr">This argument is compiler generated.</param>
-   /// <param name="elementPathExpr">This argument is compiler generated.</param>
 
    public SqlSet<TResult>
    IncludeMany<TElement>(
          Func<TResult, ICollection<TElement>?> path,
-         Func<TElement, object?>? elementPath = null,
-         [CallerArgumentExpression(nameof(path))] string pathExpr = "",
-         [CallerArgumentExpression(nameof(elementPath))] string elementPathExpr = "") {
+         Func<SqlSet<TElement>, SqlSet<TElement>>? manySetup = null,
+         [CallerArgumentExpression(nameof(path))] string pathExpr = "") {
 
       ArgumentNullException.ThrowIfNull(path);
       ArgumentException.ThrowIfNullOrEmpty(pathExpr);
 
       var pathStr = IncludeLambdaPath(pathExpr);
-      var elementPathStr = (elementPath is not null) ?
-         IncludeLambdaPath(elementPathExpr)
-         : null;
 
-      return IncludeMany(pathStr, elementPathStr);
+      return IncludeMany(pathStr,
+         (manySetup != null) ? p => manySetup.Invoke(p.Cast<TElement>()) : null);
    }
 
    static string

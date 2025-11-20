@@ -11,7 +11,7 @@ Syntax
 ```csharp
 public SqlSet IncludeMany(
 	string path,
-	string? elementPath = null
+	Func<SqlSet, SqlSet>? manySetup = null
 )
 ```
 
@@ -20,29 +20,30 @@ public SqlSet IncludeMany(
 ##### *path*  [String][2]
 Dot-separated list of one or more related objects that ends with the collection to load.
 
-##### *elementPath*  [String][2]  (Optional)
-Dot-separated list of related objects to include in each element of the collection.
+##### *manySetup*  [Func][3]&lt;[SqlSet][4], [SqlSet][4]>  (Optional)
+A function to customize how the collection is loaded.
 
 #### Return Value
-[SqlSet][3]  
-A new [SqlSet][3].
+[SqlSet][4]  
+A new [SqlSet][4].
 
 Exceptions
 ----------
 
 | Exception                      | Condition                                                                         |
 | ------------------------------ | --------------------------------------------------------------------------------- |
-| [InvalidOperationException][4] | This method can only be used on sets where the result type is an annotated class. |
+| [InvalidOperationException][5] | This method can only be used on sets where the result type is an annotated class. |
 
 
 See Also
 --------
 
 #### Reference
-[SqlSet Class][3]  
+[SqlSet Class][4]  
 [DbExtensions Namespace][1]  
 
 [1]: ../README.md
 [2]: https://learn.microsoft.com/dotnet/api/system.string
-[3]: README.md
-[4]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
+[3]: https://learn.microsoft.com/dotnet/api/system.func-2
+[4]: README.md
+[5]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception

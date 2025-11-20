@@ -127,7 +127,7 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
       public void Can_Include_One_In_Many() {
 
          var set = db.Table<Include.Model1.Employee>()
-            .IncludeMany(p => p.EmployeeTerritories, q => q.Territory);
+            .IncludeMany(p => p.EmployeeTerritories, set => set.Include(p => p.Territory));
 
          var item = set.First();
 
@@ -137,10 +137,26 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
       }
 
       [Test]
-      public void Cannot_Include_Many_In_Many() {
+      public void Can_Include_Many_In_Many() {
 
-         Assert.Throws<ArgumentException>(() => db.Table<Include.Model1.Employee>()
-            .IncludeMany("Orders.OrderDetails"));
+         var set = db.Table<Include.Model1.Employee>()
+            .IncludeMany(p => p.Orders, set => set
+               .IncludeMany(p => p.OrderDetails, set => set
+                  .Include(p => p.Product))
+               .OrderBy("OrderID DESC")
+               .Take(5));
+
+         var item = set.First();
+
+         Assert.IsNotNull(item.Orders);
+         Assert.IsTrue(item.Orders.Count <= 5);
+
+         foreach (var order in item.Orders) {
+            Assert.IsNotNull(order.OrderDetails);
+            foreach (var det in order.OrderDetails) {
+               Assert.IsNotNull(det.Product);
+            }
+         }
       }
    }
 

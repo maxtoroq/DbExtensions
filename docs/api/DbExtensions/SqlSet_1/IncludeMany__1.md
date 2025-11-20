@@ -1,5 +1,5 @@
-SqlSet&lt;TResult>.IncludeMany&lt;TElement>(Func&lt;TResult, ICollection&lt;TElement>>, Func&lt;TElement, Object>, String, String) Method
-=========================================================================================================================================
+SqlSet&lt;TResult>.IncludeMany&lt;TElement>(Func&lt;TResult, ICollection&lt;TElement>>, Func&lt;SqlSet&lt;TElement>, SqlSet&lt;TElement>>, String) Method
+=========================================================================================================================================================
 Specifies which collections to include in the query results.
   
 **Namespace:** [DbExtensions][1]  
@@ -8,10 +8,10 @@ Specifies which collections to include in the query results.
 Overloads
 ---------
 
-| Name                                                                                                                | Description                                                  |
-| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [IncludeMany(String, String)][2]                                                                                    | Specifies which collections to include in the query results. |
-| **IncludeMany&lt;TElement>(Func&lt;TResult, ICollection&lt;TElement>>, Func&lt;TElement, Object>, String, String)** | Specifies which collections to include in the query results. |
+| Name                                                                                                                                | Description                                                  |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| [IncludeMany(String, Func&lt;SqlSet, SqlSet>)][2]                                                                                   | Specifies which collections to include in the query results. |
+| **IncludeMany&lt;TElement>(Func&lt;TResult, ICollection&lt;TElement>>, Func&lt;SqlSet&lt;TElement>, SqlSet&lt;TElement>>, String)** | Specifies which collections to include in the query results. |
 
 
 Syntax
@@ -20,9 +20,8 @@ Syntax
 ```csharp
 public SqlSet<TResult> IncludeMany<TElement>(
 	Func<TResult, ICollection<TElement>?> path,
-	Func<TElement, Object?>? elementPath = null,
-	string pathExpr = "",
-	string elementPathExpr = ""
+	Func<SqlSet<TElement>, SqlSet<TElement>>? manySetup = null,
+	string pathExpr = ""
 )
 
 ```
@@ -32,13 +31,10 @@ public SqlSet<TResult> IncludeMany<TElement>(
 ##### *path*  [Func][3]&lt;[TResult][4], [ICollection][5]&lt;**TElement**>>
 Lambda expression that returns the collection to load.
 
-##### *elementPath*  [Func][3]&lt;**TElement**, [Object][6]>  (Optional)
-Lambda expression that returns the deepest related object to include in each element of the collection.
+##### *manySetup*  [Func][3]&lt;[SqlSet][4]&lt;**TElement**>, [SqlSet][4]&lt;**TElement**>>  (Optional)
+A function to customize how the collection is loaded.
 
-##### *pathExpr*  [String][7]  (Optional)
-This argument is compiler generated.
-
-##### *elementPathExpr*  [String][7]  (Optional)
+##### *pathExpr*  [String][6]  (Optional)
 This argument is compiler generated.
 
 #### Type Parameters
@@ -55,7 +51,7 @@ Exceptions
 
 | Exception                      | Condition                                                                         |
 | ------------------------------ | --------------------------------------------------------------------------------- |
-| [InvalidOperationException][8] | This method can only be used on sets where the result type is an annotated class. |
+| [InvalidOperationException][7] | This method can only be used on sets where the result type is an annotated class. |
 
 
 See Also
@@ -70,6 +66,5 @@ See Also
 [3]: https://learn.microsoft.com/dotnet/api/system.func-2
 [4]: README.md
 [5]: https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1
-[6]: https://learn.microsoft.com/dotnet/api/system.object
-[7]: https://learn.microsoft.com/dotnet/api/system.string
-[8]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
+[6]: https://learn.microsoft.com/dotnet/api/system.string
+[7]: https://learn.microsoft.com/dotnet/api/system.invalidoperationexception
