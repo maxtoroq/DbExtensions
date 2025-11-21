@@ -1,4 +1,4 @@
-﻿DbExtensions-QE (Query Edition) is version of DbExtensions that excludes:
+﻿DbExtensions-QE (Query Edition) is a version of DbExtensions that excludes:
 
 - SqlTable, SqlTable&lt;T>
 - Annotations (TableAttribute, ColumnAttribute, etc.)

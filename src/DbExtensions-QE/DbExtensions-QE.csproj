@@ -4,6 +4,7 @@
     <AssemblyName>DbExtensions</AssemblyName>
     <AssemblyTitle>$(AssemblyName) Query Edition</AssemblyTitle>
     <PackageId>$(AssemblyName)-QE</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <Import Project="..\DbExtensions\DbExtensions.csproj" />
@@ -18,6 +19,10 @@
     <Compile Include="..\DbExtensions\SqlBuilder.cs" Link="SqlBuilder.cs" />
     <Compile Include="..\DbExtensions\SqlSet.Async.cs" Link="SqlSet.Async.cs" />
     <Compile Include="..\DbExtensions\SqlSet.cs" Link="SqlSet.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
