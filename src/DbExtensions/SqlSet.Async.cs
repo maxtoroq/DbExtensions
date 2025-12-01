@@ -36,14 +36,12 @@ partial class SqlSet {
 
          return results
             ?? throw new InvalidOperationException("Cannot enumerate this set.");
-
-      } else {
-
-         DynamicAsyncMap(singleResult, query, ref results);
-
-         return results
-            ?? throw new InvalidOperationException("Cannot enumerate this set unless you specify a result type.");
       }
+
+      DynamicAsyncMap(singleResult, query, ref results);
+
+      return results
+         ?? throw new InvalidOperationException("Cannot enumerate this set unless you specify a result type.");
    }
 
    partial void
@@ -384,15 +382,14 @@ partial class SqlSet<TResult> {
 
       if (_explicitMapper is not null) {
          return _db.AsyncMap(query, _explicitMapper);
-      } else {
-
-         var results = default(IAsyncEnumerable<TResult>);
-
-         PocoAsyncMap(singleResult, query, ref results);
-
-         return results
-            ?? throw new InvalidOperationException("Cannot enumerate this set.");
       }
+
+      var results = default(IAsyncEnumerable<TResult>);
+
+      PocoAsyncMap(singleResult, query, ref results);
+
+      return results
+         ?? throw new InvalidOperationException("Cannot enumerate this set.");
    }
 
    partial void

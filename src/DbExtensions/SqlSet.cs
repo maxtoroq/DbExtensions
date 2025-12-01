@@ -515,45 +515,33 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    SqlSet
    CreateBufferedSet(bool ignoreBuffer, SqlBuffer buffer, Type? resultType = null) {
 
-      SqlSet set;
-
       if (ignoreBuffer
          && _definingQuery is null) {
 
          Debug.Assert(_fromSelect is not null);
 
-         set = CreateSet(_fromSelect, resultType, buffer);
-
-      } else {
-
-         var query = GetDefiningQuery(ignoreBuffer: ignoreBuffer);
-
-         set = CreateSet(query, resultType, buffer);
+         return CreateSet(_fromSelect, resultType, buffer);
       }
 
-      return set;
+      var query = GetDefiningQuery(ignoreBuffer: ignoreBuffer);
+
+      return CreateSet(query, resultType, buffer);
    }
 
    SqlSet<TResult>
    CreateBufferedSet<TResult>(bool ignoreBuffer, SqlBuffer buffer) {
 
-      SqlSet<TResult> set;
-
       if (ignoreBuffer
          && _definingQuery is null) {
 
          Debug.Assert(_fromSelect is not null);
 
-         set = CreateSet<TResult>(_fromSelect, buffer);
-
-      } else {
-
-         var query = GetDefiningQuery(ignoreBuffer: ignoreBuffer);
-
-         set = CreateSet<TResult>(query, default(Func<DbDataReader, TResult>), buffer);
+         return CreateSet<TResult>(_fromSelect, buffer);
       }
 
-      return set;
+      var query = GetDefiningQuery(ignoreBuffer: ignoreBuffer);
+
+      return CreateSet<TResult>(query, default(Func<DbDataReader, TResult>), buffer);
    }
 
    private protected virtual IEnumerable
@@ -568,14 +556,12 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
          return results
             ?? throw new InvalidOperationException("Cannot enumerate this set.");
-
-      } else {
-
-         DynamicMap(singleResult, query, ref results);
-
-         return results
-            ?? throw new InvalidOperationException("Cannot enumerate this set unless you specify a result type.");
       }
+
+      DynamicMap(singleResult, query, ref results);
+
+      return results
+         ?? throw new InvalidOperationException("Cannot enumerate this set unless you specify a result type.");
    }
 
    partial void
@@ -1308,15 +1294,14 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
 
       if (_explicitMapper is not null) {
          return _db.Map(query, _explicitMapper);
-      } else {
-
-         var results = default(IEnumerable<TResult>);
-
-         PocoMap(singleResult, query, ref results);
-
-         return results
-            ?? throw new InvalidOperationException("Cannot enumerate this set.");
       }
+
+      var results = default(IEnumerable<TResult>);
+
+      PocoMap(singleResult, query, ref results);
+
+      return results
+         ?? throw new InvalidOperationException("Cannot enumerate this set.");
    }
 
    partial void
