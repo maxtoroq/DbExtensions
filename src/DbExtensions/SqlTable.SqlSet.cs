@@ -45,11 +45,12 @@ partial class SqlSet {
    MetaType
    EnsureAnnotatedType() {
 
-      var resultType = this.ResultType
-         ?? throw new InvalidOperationException("The operation is not supported on untyped sets.");
+      if (_resultType is null) {
+         throw new InvalidOperationException("The operation is not supported on untyped sets.");
+      }
 
-      var metaType = _db.Configuration.GetMetaType(resultType)
-         ?? throw new InvalidOperationException($"Mapping information was not found for '{resultType.FullName}'.");
+      var metaType = _db.Configuration.GetMetaType(_resultType)
+         ?? throw new InvalidOperationException($"Mapping information was not found for '{_resultType.FullName}'.");
 
       return metaType;
    }

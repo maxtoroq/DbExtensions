@@ -145,9 +145,9 @@ partial class SqlSet {
    private protected PocoMapper
    CreatePocoMapper(bool singleResult) {
 
-      Debug.Assert(this.ResultType is not null);
+      Debug.Assert(_resultType is not null);
 
-      var mapper = _db.CreatePocoMapper(this.ResultType);
+      var mapper = _db.CreatePocoMapper(_resultType);
       mapper.SingleResult = singleResult;
       mapper.ManyIncludes = _manyIncludes;
 

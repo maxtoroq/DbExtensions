@@ -210,6 +210,9 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    readonly string?[]?
    _fromSelect;
 
+   readonly Type?
+   _resultType;
+
    readonly SqlBuffer
    _buffer;
 
@@ -224,7 +227,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    /// </summary>
 
    public Type?
-   ResultType { get; }
+   ResultType => _resultType;
 
    /// <summary>
    /// The <see cref="DbExtensions.Database"/> this set is connected to.
@@ -237,7 +240,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    SqlSet(SqlBuilder definingQuery, Type? resultType, Database db) {
 
       _definingQuery = definingQuery.Clone();
-      this.ResultType = resultType;
+      _resultType = resultType;
       _db = db;
    }
 
@@ -247,7 +250,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       Debug.Assert(fromSelect.Length == 2);
 
       _fromSelect = fromSelect;
-      this.ResultType = resultType;
+      _resultType = resultType;
       _db = db;
    }
 
@@ -270,7 +273,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    private
    SqlSet(SqlSet set, Type? resultType, SqlBuffer? buffer) {
 
-      this.ResultType = resultType ?? set.ResultType;
+      _resultType = resultType ?? set._resultType;
       _setIndex += set._setIndex;
       _db = set._db;
 
@@ -559,7 +562,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       var query = GetDefiningQuery(clone: false);
       var results = default(IEnumerable<object>);
 
-      if (this.ResultType is not null) {
+      if (_resultType is not null) {
 
          PocoMap(singleResult, query, ref results);
 
@@ -673,8 +676,8 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    public SqlSet<TResult>
    Cast<TResult>() {
 
-      if (this.ResultType is not null
-         && this.ResultType != typeof(TResult)) {
+      if (_resultType is not null
+         && _resultType != typeof(TResult)) {
 
          throw new InvalidOperationException("The specified type parameter is not valid for this instance.");
       }
@@ -693,8 +696,8 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       ArgumentNullException.ThrowIfNull(resultType);
 
-      if (this.ResultType is not null
-         && this.ResultType != resultType) {
+      if (_resultType is not null
+         && _resultType != resultType) {
 
          throw new InvalidOperationException("The specified resultType is not valid for this instance.");
       }

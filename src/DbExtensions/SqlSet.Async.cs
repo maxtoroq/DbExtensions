@@ -30,7 +30,7 @@ partial class SqlSet {
       var query = GetDefiningQuery(clone: false);
       var results = default(IAsyncEnumerable<object>);
 
-      if (this.ResultType is not null) {
+      if (_resultType is not null) {
 
          PocoAsyncMap(singleResult, query, ref results);
 
