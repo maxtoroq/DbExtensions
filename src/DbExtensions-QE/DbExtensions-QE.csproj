@@ -9,6 +9,10 @@
 
   <Import Project="..\DbExtensions\DbExtensions.csproj" />
 
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);DBEX_QE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\DbExtensions\Database.cs" Link="Database.cs" />
     <Compile Include="..\DbExtensions\DynamicMapper.cs" Link="DynamicMapper.cs" />

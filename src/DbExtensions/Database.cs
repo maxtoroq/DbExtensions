@@ -30,9 +30,15 @@ namespace DbExtensions;
 
 #nullable enable
 
+#if DBEX_QE
+/// <summary>
+/// Provides simple data access using <see cref="SqlSet"/> and <see cref="SqlBuilder"/>.
+/// </summary>
+#else
 /// <summary>
 /// Provides simple data access using <see cref="SqlSet"/>, <see cref="SqlBuilder"/> and <see cref="SqlTable&lt;TEntity>"/>.
 /// </summary>
+#endif
 
 public partial class Database : IDisposable {
 
