@@ -62,7 +62,8 @@ function BuildProj([string]$projName, [string]$projFile, [string]$target) {
       /p:Copyright=$($notice.copyright) `
       /p:Company=$($notice.website) `
       /p:PackageIcon=icon.png `
-      /p:PackageReleaseNotes="For a list of changes see $($notice.website)docs/changes.html"
+      /p:PackageReleaseNotes="For a list of changes see $($notice.website)docs/changes.html" `
+      /p:RepositoryBranch=$(git branch --show-current)
 
    if ($pack) {
       $projDoc.DocumentElement.RemoveChild($itemNode) | Out-Null
