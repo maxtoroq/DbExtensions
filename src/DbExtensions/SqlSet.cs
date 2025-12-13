@@ -1081,9 +1081,9 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    ToArray() => AsEnumerable().ToArray();
 
    /// <summary>
-   /// Creates a List&lt;object> from the set.
+   /// Creates a <see cref="List&lt;Object>"/> from the set.
    /// </summary>
-   /// <returns>A List&lt;object> that contains elements from the set.</returns>
+   /// <returns>A <see cref="List&lt;Object>"/> that contains elements from the set.</returns>
 
    public List<object>
    ToList() => AsEnumerable().ToList();

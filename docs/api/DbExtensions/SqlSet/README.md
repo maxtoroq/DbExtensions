@@ -112,16 +112,16 @@ Methods
 | [Take][83]                                                                      | Returns a specified number of contiguous elements from the start of the set.                                                                                                                             |
 | [ToArray][84]                                                                   | Creates an array from the set.                                                                                                                                                                           |
 | [ToArrayAsync][85]                                                              | Creates an array from the set.                                                                                                                                                                           |
-| [ToList][86]                                                                    | Creates a List&lt;object> from the set.                                                                                                                                                                  |
-| [ToListAsync][87]                                                               | Creates a List&lt;object> from the set.                                                                                                                                                                  |
-| [ToString][88]                                                                  | Returns the SQL query of the set. <br/>(Overrides [Object.ToString()][89])                                                                                                                               |
-| [Where(OperatorStringHandler)][90]                                              | Filters the set based on a predicate.                                                                                                                                                                    |
-| [Where(String)][91]                                                             | Filters the set based on a predicate.                                                                                                                                                                    |
+| [ToList][86]                                                                    | Creates a [List&lt;T>][87] from the set.                                                                                                                                                                 |
+| [ToListAsync][88]                                                               | Creates a [List&lt;T>][87] from the set.                                                                                                                                                                 |
+| [ToString][89]                                                                  | Returns the SQL query of the set. <br/>(Overrides [Object.ToString()][90])                                                                                                                               |
+| [Where(OperatorStringHandler)][91]                                              | Filters the set based on a predicate.                                                                                                                                                                    |
+| [Where(String)][92]                                                             | Filters the set based on a predicate.                                                                                                                                                                    |
 
 
 Remarks
 -------
-For information on how to use SqlSet see [SqlSet Tutorial][92].
+For information on how to use SqlSet see [SqlSet Tutorial][93].
 
 See Also
 --------
@@ -215,9 +215,10 @@ See Also
 [84]: ToArray.md
 [85]: ToArrayAsync.md
 [86]: ToList.md
-[87]: ToListAsync.md
-[88]: ToString.md
-[89]: https://learn.microsoft.com/dotnet/api/system.object.tostring
-[90]: Where.md
-[91]: Where_1.md
-[92]: https://maxtoroq.github.io/DbExtensions/docs/7/SqlSet.html
+[87]: https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1
+[88]: ToListAsync.md
+[89]: ToString.md
+[90]: https://learn.microsoft.com/dotnet/api/system.object.tostring
+[91]: Where.md
+[92]: Where_1.md
+[93]: https://maxtoroq.github.io/DbExtensions/docs/7/SqlSet.html

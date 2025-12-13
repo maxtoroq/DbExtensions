@@ -126,19 +126,19 @@ Methods
 | [Take][97]                                                                      | Returns a specified number of contiguous elements from the start of the set. <br/>(Inherited from [SqlSet][4])                                                                                                                             |
 | [ToArray][98]                                                                   | Creates an array from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                           |
 | [ToArrayAsync][99]                                                              | Creates an array from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                           |
-| [ToList][100]                                                                   | Creates a List&lt;object> from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                  |
-| [ToListAsync][101]                                                              | Creates a List&lt;object> from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                  |
-| [ToString][102]                                                                 | Returns the SQL query of the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                        |
-| [Update(Object)][103]                                                           | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
-| [Update(Object, Object)][104]                                                   | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
-| [UpdateAsync(Object, CancellationToken)][105]                                   | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
-| [UpdateAsync(Object, Object, CancellationToken)][106]                           | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
-| [UpdateRange(IEnumerable&lt;Object>)][107]                                      | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
-| [UpdateRange(Object[])][108]                                                    | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
-| [UpdateRangeAsync(Object[])][109]                                               | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
-| [UpdateRangeAsync(IEnumerable&lt;Object>, CancellationToken)][110]              | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
-| [Where(OperatorStringHandler)][111]                                             | Filters the set based on a predicate. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                    |
-| [Where(String)][112]                                                            | Filters the set based on a predicate. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                    |
+| [ToList][100]                                                                   | Creates a [List&lt;T>][101] from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                |
+| [ToListAsync][102]                                                              | Creates a [List&lt;T>][101] from the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                |
+| [ToString][103]                                                                 | Returns the SQL query of the set. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                        |
+| [Update(Object)][104]                                                           | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
+| [Update(Object, Object)][105]                                                   | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
+| [UpdateAsync(Object, CancellationToken)][106]                                   | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
+| [UpdateAsync(Object, Object, CancellationToken)][107]                           | Executes an UPDATE command for the specified *entity*.                                                                                                                                                                                     |
+| [UpdateRange(IEnumerable&lt;Object>)][108]                                      | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
+| [UpdateRange(Object[])][109]                                                    | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
+| [UpdateRangeAsync(Object[])][110]                                               | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
+| [UpdateRangeAsync(IEnumerable&lt;Object>, CancellationToken)][111]              | Executes UPDATE commands for the specified *entities*.                                                                                                                                                                                     |
+| [Where(OperatorStringHandler)][112]                                             | Filters the set based on a predicate. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                    |
+| [Where(String)][113]                                                            | Filters the set based on a predicate. <br/>(Inherited from [SqlSet][4])                                                                                                                                                                    |
 
 
 See Also
@@ -247,15 +247,16 @@ See Also
 [98]: ../SqlSet/ToArray.md
 [99]: ../SqlSet/ToArrayAsync.md
 [100]: ../SqlSet/ToList.md
-[101]: ../SqlSet/ToListAsync.md
-[102]: ../SqlSet/ToString.md
-[103]: Update.md
-[104]: Update_1.md
-[105]: UpdateAsync_1.md
-[106]: UpdateAsync.md
-[107]: UpdateRange.md
-[108]: UpdateRange_1.md
-[109]: UpdateRangeAsync_1.md
-[110]: UpdateRangeAsync.md
-[111]: ../SqlSet/Where.md
-[112]: ../SqlSet/Where_1.md
+[101]: https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1
+[102]: ../SqlSet/ToListAsync.md
+[103]: ../SqlSet/ToString.md
+[104]: Update.md
+[105]: Update_1.md
+[106]: UpdateAsync_1.md
+[107]: UpdateAsync.md
+[108]: UpdateRange.md
+[109]: UpdateRange_1.md
+[110]: UpdateRangeAsync_1.md
+[111]: UpdateRangeAsync.md
+[112]: ../SqlSet/Where.md
+[113]: ../SqlSet/Where_1.md
