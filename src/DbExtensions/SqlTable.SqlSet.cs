@@ -363,23 +363,23 @@ partial class SqlSet {
 
       return newSet;
 
-   IEnumerable manyFetch(object container) {
+      IEnumerable manyFetch(object container) {
 
-      var predicateValues = manyAssoc.OtherKey.Select((p, i) =>
-         new KeyValuePair<string, object>(p.MappedName, manyAssoc.ThisKey[i].GetValueForDatabase(container)));
+         var predicateValues = manyAssoc.OtherKey.Select((p, i) =>
+            new KeyValuePair<string, object>(p.MappedName, manyAssoc.ThisKey[i].GetValueForDatabase(container)));
 
-      var parameters = new List<object?>(manyAssoc.OtherKey.Count);
-      var whereFragment = new SqlFragment(manySource.Database.BuildPredicateFragment(predicateValues, parameters), parameters);
+         var parameters = new List<object?>(manyAssoc.OtherKey.Count);
+         var whereFragment = new SqlFragment(manySource.Database.BuildPredicateFragment(predicateValues, parameters), parameters);
 
-      manySource = manySource
-         .Where(whereFragment);
+         manySource = manySource
+            .Where(whereFragment);
 
-      if (manySetup is not null) {
-         manySource = manySetup.Invoke(manySource);
+         if (manySetup is not null) {
+            manySource = manySetup.Invoke(manySource);
+         }
+
+         return manySource.AsEnumerable();
       }
-
-      return manySource.AsEnumerable();
-   }
    }
 
    static string[]
