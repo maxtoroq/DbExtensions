@@ -359,13 +359,11 @@ partial class SqlSet {
       var newSet = Clone();
 
       newSet.AddManyInclude(parts,
-         container => manyAssoc.LoadCollection(container, IncludeManyGet(container, manyAssoc, manySource, manySetup)));
+         container => manyAssoc.LoadCollection(container, manyFetch(container)));
 
       return newSet;
-   }
 
-   static IEnumerable
-   IncludeManyGet(object container, MetaAssociation manyAssoc, SqlSet manySource, Func<SqlSet, SqlSet>? manySetup) {
+   IEnumerable manyFetch(object container) {
 
       var predicateValues = manyAssoc.OtherKey.Select((p, i) =>
          new KeyValuePair<string, object>(p.MappedName, manyAssoc.ThisKey[i].GetValueForDatabase(container)));
@@ -381,6 +379,7 @@ partial class SqlSet {
       }
 
       return manySource.AsEnumerable();
+   }
    }
 
    static string[]
