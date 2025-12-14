@@ -127,7 +127,8 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
       public void Can_Include_One_In_Many() {
 
          var set = db.Table<Include.Model1.Employee>()
-            .IncludeMany(p => p.EmployeeTerritories, set => set.Include(p => p.Territory));
+            .IncludeMany(p => p.EmployeeTerritories, set => set
+               .Include(p => p.Territory));
 
          var item = set.First();
 
