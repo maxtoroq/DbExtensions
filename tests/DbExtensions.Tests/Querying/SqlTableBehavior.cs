@@ -15,6 +15,7 @@ namespace DbExtensions.Tests.Querying {
 
          SqlSet set = db.Table<SqlTable.Model1.Product>()
             .Where("UnitsInStock > 0")
+            .OrderBy("Id")
             .Skip(0)
             .Take(5);
 
@@ -22,8 +23,34 @@ namespace DbExtensions.Tests.Querying {
             .SELECT(db.QuoteIdentifier("Id"))
             .FROM(db.QuoteIdentifier("Product"))
             .WHERE("UnitsInStock > 0")
+            .ORDER_BY("Id")
             .LIMIT(5)
             .OFFSET(0);
+
+         Assert.IsTrue(SqlEquals(set, expected));
+      }
+
+      [Test]
+      public void Do_Use_Subquery_To_Honor_Original_Column_List() {
+
+         var db = MockDatabase();
+
+         SqlSet set = db.Table<SqlTable.Model1.Product>()
+            .Where("UnitsInStock > 0")
+            .OrderBy("Id")
+            .Skip(0)
+            .Take(5)
+            .Select("Id + 1");
+
+         SqlBuilder expected = SQL
+            .SELECT("Id + 1")
+            .FROM(SQL
+               .SELECT(db.QuoteIdentifier("Id"))
+               .FROM(db.QuoteIdentifier("Product"))
+               .WHERE("UnitsInStock > 0")
+               .ORDER_BY("Id")
+               .LIMIT(5)
+               .OFFSET(0), "_");
 
          Assert.IsTrue(SqlEquals(set, expected));
       }

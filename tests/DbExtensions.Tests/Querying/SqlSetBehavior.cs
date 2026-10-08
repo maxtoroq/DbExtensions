@@ -93,6 +93,7 @@ namespace DbExtensions.Tests.Querying {
 
          SqlSet set = db.From("products")
             .Where("UnitsInStock > 0")
+            .OrderBy("Id")
             .Skip(0)
             .Take(5);
 
@@ -100,6 +101,28 @@ namespace DbExtensions.Tests.Querying {
             .SELECT("*")
             .FROM("products")
             .WHERE("UnitsInStock > 0")
+            .ORDER_BY("Id")
+            .LIMIT(5)
+            .OFFSET(0);
+
+         Assert.IsTrue(SqlEquals(set, expected));
+      }
+
+      [Test]
+      public void Dont_Use_Subqueries_When_Methods_Are_Called_In_Order_With_Select() {
+
+         SqlSet set = db.From("products")
+            .Where("UnitsInStock > 0")
+            .OrderBy("Id")
+            .Skip(0)
+            .Take(5)
+            .Select("Id + 1");
+
+         SqlBuilder expected = SQL
+            .SELECT("Id + 1")
+            .FROM("products")
+            .WHERE("UnitsInStock > 0")
+            .ORDER_BY("Id")
             .LIMIT(5)
             .OFFSET(0);
 
