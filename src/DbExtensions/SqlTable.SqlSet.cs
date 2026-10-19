@@ -371,14 +371,14 @@ partial class SqlSet {
          var parameters = new List<object?>(manyAssoc.OtherKey.Count);
          var whereFragment = new SqlFragment(manySource.Database.BuildPredicateFragment(predicateValues, parameters), parameters);
 
-         manySource = manySource
+         var manySet = manySource
             .Where(whereFragment);
 
          if (manySetup is not null) {
-            manySource = manySetup.Invoke(manySource);
+            manySet = manySetup.Invoke(manySet);
          }
 
-         return manySource.AsEnumerable();
+         return manySet.AsEnumerable();
       }
    }
 

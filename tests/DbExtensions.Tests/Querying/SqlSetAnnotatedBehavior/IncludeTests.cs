@@ -80,7 +80,7 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
          // test immutability
          Assert.IsTrue(item.Orders is null or { Count: 0 });
 
-         item = set2.First();
+         item = set2.Skip(1).First();
 
          Assert.IsNotNull(item.EmployeeTerritories);
          Assert.AreNotEqual(0, item.EmployeeTerritories.Count);
@@ -154,6 +154,7 @@ namespace DbExtensions.Tests.Querying.SqlSetAnnotatedBehavior {
 
          foreach (var order in item.Orders) {
             Assert.IsNotNull(order.OrderDetails);
+            Assert.AreNotEqual(0, order.OrderDetails.Count);
             foreach (var det in order.OrderDetails) {
                Assert.IsNotNull(det.Product);
             }
