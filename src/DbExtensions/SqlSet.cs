@@ -110,7 +110,7 @@ partial class Database {
 
       ArgumentNullException.ThrowIfNull(tableName);
 
-      return new SqlSet([tableName, null], resultType, this);
+      return new SqlSet(this, [tableName, null], resultType);
    }
 
    /// <summary>
@@ -125,19 +125,36 @@ partial class Database {
 
       ArgumentNullException.ThrowIfNull(tableName);
 
-      return new SqlSet<TResult>([tableName, null], this);
+      return new SqlSet<TResult>(this, [tableName, null]);
    }
 
-   /// <summary>This method is used by auto-generated "table" classes.</summary>
-   /// <exclude/>
+   /// <summary>
+   /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided table name
+   /// and column list.
+   /// </summary>
+   /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
+   /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
+   /// <param name="columnList">The columns to select from the table.</param>
+   /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
 
-   [EditorBrowsable(EditorBrowsableState.Never)]
    public SqlSet<TResult>
-   From<TResult>(string tableName, string columnList) {
+   From<TResult>(string tableName, string? columnList) {
 
       ArgumentNullException.ThrowIfNull(tableName);
 
-      return new SqlSet<TResult>([tableName, columnList], this);
+      return new SqlSet<TResult>(this, [tableName, columnList]);
+   }
+
+   /// <inheritdoc cref="From&lt;TResult>(String, String?)"/>
+   /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
+
+   public SqlSet<TResult>
+   From<TResult>(string tableName, string? columnList, Func<DbDataReader, TResult> mapper) {
+
+      ArgumentNullException.ThrowIfNull(tableName);
+      ArgumentNullException.ThrowIfNull(mapper);
+
+      return new SqlSet<TResult>(this, [tableName, columnList], mapper);
    }
 
    /// <summary>
@@ -158,7 +175,7 @@ partial class Database {
 
       ArgumentNullException.ThrowIfNull(definingQuery);
 
-      return new SqlSet(definingQuery, resultType, this);
+      return new SqlSet(this, definingQuery, resultType);
    }
 
    /// <summary>
@@ -173,7 +190,7 @@ partial class Database {
 
       ArgumentNullException.ThrowIfNull(definingQuery);
 
-      return new SqlSet<TResult>(definingQuery, this);
+      return new SqlSet<TResult>(this, definingQuery);
    }
 
    /// <summary>
@@ -188,7 +205,7 @@ partial class Database {
       ArgumentNullException.ThrowIfNull(definingQuery);
       ArgumentNullException.ThrowIfNull(mapper);
 
-      return new SqlSet<TResult>(definingQuery, mapper, this);
+      return new SqlSet<TResult>(this, definingQuery, mapper);
    }
 }
 
@@ -237,21 +254,21 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    Database => _db;
 
    internal
-   SqlSet(SqlBuilder definingQuery, Type? resultType, Database db) {
+   SqlSet(Database db, SqlBuilder definingQuery, Type? resultType) {
 
+      _db = db;
       _definingQuery = definingQuery.Clone();
       _resultType = resultType;
-      _db = db;
    }
 
    internal
-   SqlSet(string?[] fromSelect, Type? resultType, Database db) {
+   SqlSet(Database db, string?[] fromSelect, Type? resultType) {
 
       Debug.Assert(fromSelect.Length == 2);
 
+      _db = db;
       _fromSelect = fromSelect;
       _resultType = resultType;
-      _db = db;
    }
 
    private protected
@@ -534,7 +551,10 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    CreateSet<TResult>(string?[] fromSelect, SqlBuffer? buffer = null) =>
       new SqlSet<TResult>(this, fromSelect, buffer);
 
-   private protected SqlSet
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public SqlSet
    Clone() =>
       CreateBufferedSet(ignoreBuffer: true, buffer: _buffer);
 
@@ -1243,39 +1263,70 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
 public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult> {
 
-   readonly Func<DbDataReader, TResult>?
+#if !DBEX_QE
+   readonly
+#endif
+   Func<DbDataReader, TResult>?
    _explicitMapper;
 
-   internal
-   SqlSet(SqlBuilder definingQuery, Database db)
-      : base(definingQuery, typeof(TResult), db) { }
+#if DBEX_QE
+   int
+   _fieldCount;
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public Func<DbDataReader, TResult>?
+   ExplicitMapper {
+      get => _explicitMapper;
+      set => _explicitMapper = value;
+   }
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public int
+   FieldCount {
+      get => _fieldCount;
+      set => _fieldCount = value;
+   }
+#endif
 
    internal
-   SqlSet(SqlBuilder definingQuery, Func<DbDataReader, TResult> mapper, Database db)
-      : base(definingQuery, typeof(TResult), db) {
+   SqlSet(Database db, SqlBuilder definingQuery, Func<DbDataReader, TResult>? mapper = null)
+      : base(db, definingQuery, typeof(TResult)) {
 
       _explicitMapper = mapper;
    }
 
    internal
-   SqlSet(string?[] fromSelect, Database db)
-      : base(fromSelect, typeof(TResult), db) { }
+   SqlSet(Database db, string?[] fromSelect, Func<DbDataReader, TResult>? mapper = null)
+      : base(db, fromSelect, typeof(TResult)) {
+
+      _explicitMapper = mapper;
+   }
 
    // These two SHOULD NOT pass TResult to base ctor
    // result type is copied from set
 
    private
    SqlSet(SqlSet<TResult> set, SqlBuilder superQuery, SqlBuffer? buffer)
-      : base((SqlSet)set, superQuery, default(Type), buffer) {
+      : base(set, superQuery, default(Type), buffer) {
 
       _explicitMapper = set._explicitMapper;
+#if DBEX_QE
+      _fieldCount = set._fieldCount;
+#endif
    }
 
    private
    SqlSet(SqlSet<TResult> set, string?[] fromSelect, SqlBuffer? buffer)
-      : base((SqlSet)set, fromSelect, default(Type), buffer) {
+      : base(set, fromSelect, default(Type), buffer) {
 
       _explicitMapper = set._explicitMapper;
+#if DBEX_QE
+      _fieldCount = set._fieldCount;
+#endif
    }
 
    // These two SHOULD pass TResult to base ctor
@@ -1312,6 +1363,12 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
 
       return new SqlSet<TResult>(this, fromSelect, buffer);
    }
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public new SqlSet<TResult>
+   Clone() => (SqlSet<TResult>)base.Clone();
 
    private protected override IEnumerable<TResult>
    Map(bool singleResult) {

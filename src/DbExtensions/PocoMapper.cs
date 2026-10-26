@@ -120,7 +120,15 @@ partial class SqlSet {
    partial void
    Initialize3(SqlSet set);
 
-   private protected void
+#if DBEX_QE
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public
+#else
+   private protected
+#endif
+   void
    AddManyInclude(string[] path, Action<object> loader) {
       _manyIncludes ??= new();
       _manyIncludes.Add(path, loader);
@@ -156,19 +164,6 @@ partial class SqlSet {
 }
 
 partial class SqlSet<TResult> {
-
-   /// <summary>This method is used by auto-generated Include methods.</summary>
-   /// <exclude/>
-
-   [EditorBrowsable(EditorBrowsableState.Never)]
-   public SqlSet<TResult>
-   WithManyInclude(string[] path, Action<object> loader) {
-
-      var clone = (SqlSet<TResult>)Clone();
-      clone.AddManyInclude(path, loader);
-
-      return clone;
-   }
 
    partial void
    PocoMap(bool singleResult, SqlBuilder query, ref IEnumerable<TResult>? results) {

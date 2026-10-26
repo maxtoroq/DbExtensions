@@ -341,7 +341,7 @@ public sealed partial class SqlTable : SqlSet, ISqlTable {
 
    internal
    SqlTable(Database db, MetaType metaType, ISqlTable table)
-      : base([db.FromBody(metaType), db.SelectBody(metaType, null)], metaType.Type, db) {
+      : base(db, [db.FromBody(metaType), db.SelectBody(metaType, null)], metaType.Type) {
 
       _table = table;
       _metaType = metaType;
@@ -476,7 +476,7 @@ public sealed partial class SqlTable<TEntity> : SqlSet<TEntity>, ISqlTable where
 
    internal
    SqlTable(Database db, MetaType metaType)
-      : base([db.FromBody(metaType), db.SelectBody(metaType, null)], db) {
+      : base(db, [db.FromBody(metaType), db.SelectBody(metaType, null)]) {
 
       _metaType = metaType;
    }
