@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace DbExtensions;
 
@@ -42,7 +43,7 @@ partial class SqlBuilder {
       ArgumentNullException.ThrowIfNull(alias);
       ArgumentNullException.ThrowIfNull(subQuery);
 
-      return WITH(alias, subQuery.GetDefiningQuery());
+      return WITH(alias, subQuery.GetDefiningQuery(clone: false));
    }
 
    /// <summary>
@@ -59,12 +60,12 @@ partial class SqlBuilder {
       ArgumentNullException.ThrowIfNull(subQuery);
       ArgumentNullException.ThrowIfNull(alias);
 
-      return FROM(subQuery.GetDefiningQuery(), alias);
+      return FROM(subQuery.GetDefiningQuery(clone: false), alias);
    }
 
    static partial void
    GetDefiningQueryFromObject(object? obj, ref SqlBuilder? definingQuery) =>
-      definingQuery = (obj as SqlSet)?.GetDefiningQuery();
+      definingQuery = (obj as SqlSet)?.GetDefiningQuery(clone: false);
 }
 
 static partial class SQL {
@@ -313,7 +314,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    GetDefiningQuery() =>
       GetDefiningQuery(clone: true);
 
-   private protected SqlBuilder
+   internal SqlBuilder
    GetDefiningQuery(bool clone = true, bool ignoreBuffer = false) {
 
       if (!ignoreBuffer
@@ -662,7 +663,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    AnyImplParams() {
 
       var query = new SqlBuilder()
-         .SELECT($"(CASE WHEN EXISTS ({GetDefiningQuery(clone: false)}) THEN 1 ELSE 0 END)");
+         .SELECT($"(CASE WHEN EXISTS ({this}) THEN 1 ELSE 0 END)");
 
       return (query, mapFn);
 
@@ -774,7 +775,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       var query = new SqlBuilder()
          .SELECT("COUNT(*)")
-         .FROM(GetDefiningQuery(clone: false), "dbex_count");
+         .FROM(this, "dbex_count");
 
       return (query, mapFn);
 
@@ -883,7 +884,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       var query = new SqlBuilder()
          .SELECT("COUNT(*)")
-         .FROM(GetDefiningQuery(clone: false), "dbex_count");
+         .FROM(this, "dbex_count");
 
       return (query, mapFn);
 
@@ -1212,6 +1213,10 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       public IList<object?>
       ParameterValues { get; } = parameters ?? Array.Empty<object?>();
+
+      public void
+      AppendTo(StringBuilder sb) =>
+         sb.Append(text);
 
       public override string
       ToString() => text;

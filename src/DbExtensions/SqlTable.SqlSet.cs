@@ -257,7 +257,7 @@ partial class SqlSet {
          currentType = association.OtherType;
       }
 
-      query.FROM(GetDefiningQuery(clone: false), _db.QuoteIdentifier(leftAlias));
+      query.FROM(this, _db.QuoteIdentifier(leftAlias));
 
       for (int i = 0; i < associations.Count; i++) {
 
