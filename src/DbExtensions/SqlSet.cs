@@ -218,7 +218,11 @@ partial class Database {
 /// </summary>
 /// <remarks>For information on how to use SqlSet see <see href="https://maxtoroq.github.io/DbExtensions/docs/7/SqlSet.html">SqlSet Tutorial</see>.</remarks>
 
-public partial class SqlSet : ISqlSet<SqlSet, object> {
+public partial class SqlSet
+#if DEBUG
+   : ISqlSet<SqlSet, object>
+#endif
+   {
 
    // definingQuery should NEVER be modified
 
@@ -1266,7 +1270,11 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
 /// <inheritdoc path="remarks"/>
 
-public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult> {
+public partial class SqlSet<TResult> : SqlSet
+#if DEBUG
+   , ISqlSet<SqlSet<TResult>, TResult>
+#endif
+   {
 
 #if !DBEX_QE
    readonly
@@ -1564,6 +1572,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
       (SqlSet<TResult>)base.Where(ref predicate);
 }
 
+#if DEBUG
 partial interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
 
    bool
@@ -1695,3 +1704,4 @@ partial interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    TSqlSet
    Where(ref SqlSet.OperatorStringHandler predicate);
 }
+#endif

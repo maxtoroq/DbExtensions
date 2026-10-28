@@ -561,6 +561,7 @@ partial class SqlSet<TResult> {
    }
 }
 
+#if DEBUG
 partial interface ISqlSet<TSqlSet, TSource> {
 
    ValueTask<bool>
@@ -641,3 +642,4 @@ partial interface ISqlSet<TSqlSet, TSource> {
    ValueTask<List<TSource>>
    ToListAsync(CancellationToken cancellationToken);
 }
+#endif
