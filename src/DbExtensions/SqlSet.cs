@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace DbExtensions;
 
@@ -42,7 +43,7 @@ partial class SqlBuilder {
       ArgumentNullException.ThrowIfNull(alias);
       ArgumentNullException.ThrowIfNull(subQuery);
 
-      return WITH(alias, subQuery.GetDefiningQuery());
+      return WITH(alias, subQuery.GetDefiningQuery(clone: false));
    }
 
    /// <summary>
@@ -59,12 +60,12 @@ partial class SqlBuilder {
       ArgumentNullException.ThrowIfNull(subQuery);
       ArgumentNullException.ThrowIfNull(alias);
 
-      return FROM(subQuery.GetDefiningQuery(), alias);
+      return FROM(subQuery.GetDefiningQuery(clone: false), alias);
    }
 
    static partial void
    GetDefiningQueryFromObject(object? obj, ref SqlBuilder? definingQuery) =>
-      definingQuery = (obj as SqlSet)?.GetDefiningQuery();
+      definingQuery = (obj as SqlSet)?.GetDefiningQuery(clone: false);
 }
 
 static partial class SQL {
@@ -110,7 +111,7 @@ partial class Database {
 
       ArgumentNullException.ThrowIfNull(tableName);
 
-      return new SqlSet([tableName, null], resultType, this);
+      return new SqlSet(this, [tableName, null], resultType);
    }
 
    /// <summary>
@@ -125,19 +126,36 @@ partial class Database {
 
       ArgumentNullException.ThrowIfNull(tableName);
 
-      return new SqlSet<TResult>([tableName, null], this);
+      return new SqlSet<TResult>(this, [tableName, null]);
    }
 
-   /// <summary>This method is used by auto-generated "table" classes.</summary>
-   /// <exclude/>
+   /// <summary>
+   /// Creates and returns a new <see cref="SqlSet&lt;TResult>"/> using the provided table name
+   /// and column list.
+   /// </summary>
+   /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
+   /// <param name="tableName">The name of the table that will be the source of data for the set.</param>
+   /// <param name="columnList">The columns to select from the table.</param>
+   /// <returns>A new <see cref="SqlSet&lt;TResult>"/> object.</returns>
 
-   [EditorBrowsable(EditorBrowsableState.Never)]
    public SqlSet<TResult>
-   From<TResult>(string tableName, string columnList) {
+   From<TResult>(string tableName, string? columnList) {
 
       ArgumentNullException.ThrowIfNull(tableName);
 
-      return new SqlSet<TResult>([tableName, columnList], this);
+      return new SqlSet<TResult>(this, [tableName, columnList]);
+   }
+
+   /// <inheritdoc cref="From&lt;TResult>(String, String?)"/>
+   /// <param name="mapper">A custom mapper function that creates <typeparamref name="TResult"/> instances from the rows in the set.</param>
+
+   public SqlSet<TResult>
+   From<TResult>(string tableName, string? columnList, Func<DbDataReader, TResult> mapper) {
+
+      ArgumentNullException.ThrowIfNull(tableName);
+      ArgumentNullException.ThrowIfNull(mapper);
+
+      return new SqlSet<TResult>(this, [tableName, columnList], mapper);
    }
 
    /// <summary>
@@ -158,7 +176,7 @@ partial class Database {
 
       ArgumentNullException.ThrowIfNull(definingQuery);
 
-      return new SqlSet(definingQuery, resultType, this);
+      return new SqlSet(this, definingQuery, resultType);
    }
 
    /// <summary>
@@ -173,7 +191,7 @@ partial class Database {
 
       ArgumentNullException.ThrowIfNull(definingQuery);
 
-      return new SqlSet<TResult>(definingQuery, this);
+      return new SqlSet<TResult>(this, definingQuery);
    }
 
    /// <summary>
@@ -188,7 +206,7 @@ partial class Database {
       ArgumentNullException.ThrowIfNull(definingQuery);
       ArgumentNullException.ThrowIfNull(mapper);
 
-      return new SqlSet<TResult>(definingQuery, mapper, this);
+      return new SqlSet<TResult>(this, definingQuery, mapper);
    }
 }
 
@@ -200,7 +218,11 @@ partial class Database {
 /// </summary>
 /// <remarks>For information on how to use SqlSet see <see href="https://maxtoroq.github.io/DbExtensions/docs/7/SqlSet.html">SqlSet Tutorial</see>.</remarks>
 
-public partial class SqlSet : ISqlSet<SqlSet, object> {
+public partial class SqlSet
+#if DEBUG
+   : ISqlSet<SqlSet, object>
+#endif
+   {
 
    // definingQuery should NEVER be modified
 
@@ -237,21 +259,21 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    Database => _db;
 
    internal
-   SqlSet(SqlBuilder definingQuery, Type? resultType, Database db) {
+   SqlSet(Database db, SqlBuilder definingQuery, Type? resultType) {
 
+      _db = db;
       _definingQuery = definingQuery.Clone();
       _resultType = resultType;
-      _db = db;
    }
 
    internal
-   SqlSet(string?[] fromSelect, Type? resultType, Database db) {
+   SqlSet(Database db, string?[] fromSelect, Type? resultType) {
 
       Debug.Assert(fromSelect.Length == 2);
 
+      _db = db;
       _fromSelect = fromSelect;
       _resultType = resultType;
-      _db = db;
    }
 
    private protected
@@ -296,61 +318,63 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    GetDefiningQuery() =>
       GetDefiningQuery(clone: true);
 
-   private protected SqlBuilder
-   GetDefiningQuery(bool clone = true, bool ignoreBuffer = false, bool super = false, ISqlFragment? select = null) {
+   internal SqlBuilder
+   GetDefiningQuery(bool clone = true, bool ignoreBuffer = false) {
 
       if (!ignoreBuffer
          && _buffer.HasValue) {
 
-         return BuildQuery(select);
+         return BuildQuery(null);
       }
 
-      var query = _definingQuery;
-
-      if (query is null) {
-
-         Debug.Assert(_fromSelect is not null);
-
-         query = new SqlBuilder()
-            .SELECT(String.Empty);
-
-         if (select is not null) {
-            query.AppendFragment(select);
-         } else {
-            query.Append(_fromSelect[1] ?? "*");
-         }
-
-         query.FROM(_fromSelect[0]);
-
-      } else if (super || select is not null) {
-
-         query = CreateSuperQuery(query, select);
-
-      } else if (clone) {
-
-         query = query.Clone();
+      if (_definingQuery is { } dq) {
+         return (clone) ? dq.Clone() : dq;
       }
+
+      return BuildDefiningQuery();
+   }
+
+   SqlBuilder
+   BuildDefiningQuery() =>
+      BuildDefiningQuery(null, out _);
+
+   SqlBuilder
+   BuildDefiningQuery(ISqlFragment? select, out bool usedSelect) {
+
+      Debug.Assert(_fromSelect is not null);
+
+      usedSelect = false;
+
+      var query = new SqlBuilder()
+         .SELECT(String.Empty);
+
+      if (_fromSelect[1] is { } columnList) {
+         query.Append(columnList);
+
+      } else if (select is not null) {
+         query.AppendFragment(select);
+         usedSelect = true;
+
+      } else {
+         query.Buffer.Append('*');
+      }
+
+      query.FROM(_fromSelect[0]);
 
       return query;
    }
 
    SqlBuilder
    BuildQuery(ISqlFragment? select) {
-
-      switch (_db.Configuration.SqlDialect) {
-         case SqlDialect.Default:
-            return BuildQuery_Default(select);
-
-         case SqlDialect.TSql:
-            return BuildQuery_TSql(select);
-
-         default:
-            throw new NotImplementedException();
-      }
+      return _db.Configuration.SqlDialect switch {
+         SqlDialect.Default => BuildQueryDefault(select),
+         SqlDialect.TSql => BuildQueryTSql(select),
+         _ => throw new InvalidOperationException()
+      };
    }
 
    SqlBuilder
-   BuildQuery_Default(ISqlFragment? select) {
+   BuildQueryDefault(ISqlFragment? select) {
 
       var whereBuffer = _buffer.Where;
       var orderByBuffer = _buffer.OrderBy;
@@ -362,7 +386,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       var hasSkip = skipBuffer.HasValue;
       var hasTake = takeBuffer.HasValue;
 
-      var query = GetDefiningQuery(ignoreBuffer: true, super: true, select: select);
+      var query = CreateBaseQuery(select, out var usedSelect);
 
       if (hasWhere) {
          query.WHERE(String.Empty)
@@ -382,11 +406,17 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
          query.OFFSET(skipBuffer!.Value);
       }
 
+      if (select is not null
+         && !usedSelect) {
+
+         query = CreateSuperQuery(query, select);
+      }
+
       return query;
    }
 
    SqlBuilder
-   BuildQuery_TSql(ISqlFragment? select) {
+   BuildQueryTSql(ISqlFragment? select) {
 
       var whereBuffer = _buffer.Where;
       var orderByBuffer = _buffer.OrderBy;
@@ -398,9 +428,12 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       var hasSkip = skipBuffer.HasValue;
       var hasTake = takeBuffer.HasValue;
 
+      SqlBuilder query;
+      bool usedSelect;
+
       if (hasSkip) {
 
-         var query = GetDefiningQuery(ignoreBuffer: true, super: true, select: select);
+         query = CreateBaseQuery(select, out usedSelect);
 
          if (hasWhere) {
             query.WHERE(String.Empty)
@@ -415,6 +448,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
          } else {
 
             // Cannot have OFFSET without ORDER BY
+
             query.ORDER_BY("1");
          }
 
@@ -425,13 +459,19 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
                .Append($"NEXT {takeBuffer!.Value} ROWS ONLY");
          }
 
-         return query;
-
       } else if (hasTake) {
 
-         var topSelect = new SqlFragment("TOP({0}) *", (object[])[takeBuffer!.Value]);
+         var takeValue = takeBuffer!.Value;
 
-         var query = GetDefiningQuery(ignoreBuffer: true, super: true, select: topSelect);
+         if (select is not null) {
+            select = new SqlFragment(
+               String.Create(CultureInfo.InvariantCulture, $"TOP({{{select.ParameterValues.Count}}}) {select}"),
+               (object?[])[.. select.ParameterValues, takeValue]);
+         } else {
+            select = new SqlFragment("TOP({0}) *", (object[])[takeValue]);
+         }
+
+         query = CreateBaseQuery(select, out usedSelect);
 
          if (hasWhere) {
             query.WHERE(String.Empty)
@@ -443,18 +483,9 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
                .AppendFragment(orderByBuffer!);
          }
 
-         if (select is not null) {
-
-            // SELECT must be done in super query, it could remove columns used by WHERE/ORDER BY
-
-            query = CreateSuperQuery(query, select);
-         }
-
-         return query;
-
       } else {
 
-         var query = GetDefiningQuery(ignoreBuffer: true, super: true, select: select);
+         query = CreateBaseQuery(select, out usedSelect);
 
          if (hasWhere) {
             query.WHERE(String.Empty)
@@ -470,9 +501,26 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
             query.OFFSET("0 ROWS");
          }
-
-         return query;
       }
+
+      if (select is not null
+         && !usedSelect) {
+
+         query = CreateSuperQuery(query, select);
+      }
+
+      return query;
+   }
+
+   SqlBuilder
+   CreateBaseQuery(ISqlFragment? select, out bool usedSelect) {
+
+      if (_definingQuery is { } dq) {
+         usedSelect = true;
+         return CreateSuperQuery(dq, select);
+      }
+
+      return BuildDefiningQuery(select, out usedSelect);
    }
 
    SqlBuilder
@@ -508,7 +556,10 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    CreateSet<TResult>(string?[] fromSelect, SqlBuffer? buffer = null) =>
       new SqlSet<TResult>(this, fromSelect, buffer);
 
-   private protected SqlSet
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public SqlSet
    Clone() =>
       CreateBufferedSet(ignoreBuffer: true, buffer: _buffer);
 
@@ -616,7 +667,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
    AnyImplParams() {
 
       var query = new SqlBuilder()
-         .SELECT($"(CASE WHEN EXISTS ({GetDefiningQuery(clone: false)}) THEN 1 ELSE 0 END)");
+         .SELECT($"(CASE WHEN EXISTS ({this}) THEN 1 ELSE 0 END)");
 
       return (query, mapFn);
 
@@ -728,7 +779,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       var query = new SqlBuilder()
          .SELECT("COUNT(*)")
-         .FROM(GetDefiningQuery(clone: false), "dbex_count");
+         .FROM(this, "dbex_count");
 
       return (query, mapFn);
 
@@ -837,7 +888,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       var query = new SqlBuilder()
          .SELECT("COUNT(*)")
-         .FROM(GetDefiningQuery(clone: false), "dbex_count");
+         .FROM(this, "dbex_count");
 
       return (query, mapFn);
 
@@ -893,14 +944,14 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       ArgumentNullException.ThrowIfNull(columnList);
 
-      return CreateSet<TResult>(GetDefiningQuery(select: new SqlFragment(columnList)));
+      return CreateSet<TResult>(BuildQuery(new SqlFragment(columnList)));
    }
 
    /// <inheritdoc cref="Select&lt;TResult>(String)"/>
 
    public SqlSet<TResult>
    Select<TResult>(ref OperatorStringHandler columnList) =>
-      CreateSet<TResult>(GetDefiningQuery(select: columnList.Fragment));
+      CreateSet<TResult>(BuildQuery(columnList.Fragment));
 
    /// <summary>
    /// Projects each element of the set into a new form.
@@ -916,7 +967,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       ArgumentNullException.ThrowIfNull(mapper);
       ArgumentNullException.ThrowIfNull(columnList);
 
-      return CreateSet<TResult>(GetDefiningQuery(select: new SqlFragment(columnList)), mapper);
+      return CreateSet(BuildQuery(new SqlFragment(columnList)), mapper);
    }
 
    /// <inheritdoc cref="Select&lt;TResult>(String, Func&lt;DbDataReader, TResult>)"/>
@@ -926,7 +977,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       ArgumentNullException.ThrowIfNull(mapper);
 
-      return CreateSet<TResult>(GetDefiningQuery(select: columnList.Fragment), mapper);
+      return CreateSet(BuildQuery(columnList.Fragment), mapper);
    }
 
    /// <summary>
@@ -942,7 +993,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       ArgumentNullException.ThrowIfNull(resultType);
       ArgumentNullException.ThrowIfNull(columnList);
 
-      return CreateSet(GetDefiningQuery(select: new SqlFragment(columnList)), resultType);
+      return CreateSet(BuildQuery(new SqlFragment(columnList)), resultType);
    }
 
    /// <inheritdoc cref="Select(String, Type)"/>
@@ -952,7 +1003,7 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       ArgumentNullException.ThrowIfNull(resultType);
 
-      return CreateSet(GetDefiningQuery(select: columnList.Fragment), resultType);
+      return CreateSet(BuildQuery(columnList.Fragment), resultType);
    }
 
    /// <summary>
@@ -966,14 +1017,14 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 
       ArgumentNullException.ThrowIfNull(columnList);
 
-      return CreateSet(GetDefiningQuery(select: new SqlFragment(columnList)));
+      return CreateSet(BuildQuery(new SqlFragment(columnList)));
    }
 
    /// <inheritdoc cref="Select(String)"/>
 
    public SqlSet
    Select(ref OperatorStringHandler columnList) =>
-      CreateSet(GetDefiningQuery(select: columnList.Fragment));
+      CreateSet(BuildQuery(columnList.Fragment));
 
    /// <summary>
    /// The single element of the set.
@@ -1167,6 +1218,10 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
       public IList<object?>
       ParameterValues { get; } = parameters ?? Array.Empty<object?>();
 
+      public void
+      AppendTo(StringBuilder sb) =>
+         sb.Append(text);
+
       public override string
       ToString() => text;
    }
@@ -1215,41 +1270,76 @@ public partial class SqlSet : ISqlSet<SqlSet, object> {
 /// <typeparam name="TResult">The type of objects to map the results to.</typeparam>
 /// <inheritdoc path="remarks"/>
 
-public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult> {
+public partial class SqlSet<TResult> : SqlSet
+#if DEBUG
+   , ISqlSet<SqlSet<TResult>, TResult>
+#endif
+   {
 
-   readonly Func<DbDataReader, TResult>?
+#if !DBEX_QE
+   readonly
+#endif
+   Func<DbDataReader, TResult>?
    _explicitMapper;
 
-   internal
-   SqlSet(SqlBuilder definingQuery, Database db)
-      : base(definingQuery, typeof(TResult), db) { }
+#if DBEX_QE
+   int
+   _fieldCount;
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public Func<DbDataReader, TResult>?
+   ExplicitMapper {
+      get => _explicitMapper;
+      set => _explicitMapper = value;
+   }
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public int
+   FieldCount {
+      get => _fieldCount;
+      set => _fieldCount = value;
+   }
+#endif
 
    internal
-   SqlSet(SqlBuilder definingQuery, Func<DbDataReader, TResult> mapper, Database db)
-      : base(definingQuery, typeof(TResult), db) {
+   SqlSet(Database db, SqlBuilder definingQuery, Func<DbDataReader, TResult>? mapper = null)
+      : base(db, definingQuery, typeof(TResult)) {
 
       _explicitMapper = mapper;
    }
 
    internal
-   SqlSet(string?[] fromSelect, Database db)
-      : base(fromSelect, typeof(TResult), db) { }
+   SqlSet(Database db, string?[] fromSelect, Func<DbDataReader, TResult>? mapper = null)
+      : base(db, fromSelect, typeof(TResult)) {
+
+      _explicitMapper = mapper;
+   }
 
    // These two SHOULD NOT pass TResult to base ctor
    // result type is copied from set
 
    private
    SqlSet(SqlSet<TResult> set, SqlBuilder superQuery, SqlBuffer? buffer)
-      : base((SqlSet)set, superQuery, default(Type), buffer) {
+      : base(set, superQuery, default(Type), buffer) {
 
       _explicitMapper = set._explicitMapper;
+#if DBEX_QE
+      _fieldCount = set._fieldCount;
+#endif
    }
 
    private
    SqlSet(SqlSet<TResult> set, string?[] fromSelect, SqlBuffer? buffer)
-      : base((SqlSet)set, fromSelect, default(Type), buffer) {
+      : base(set, fromSelect, default(Type), buffer) {
 
       _explicitMapper = set._explicitMapper;
+#if DBEX_QE
+      _fieldCount = set._fieldCount;
+#endif
    }
 
    // These two SHOULD pass TResult to base ctor
@@ -1286,6 +1376,12 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
 
       return new SqlSet<TResult>(this, fromSelect, buffer);
    }
+
+   /// <exclude/>
+
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public new SqlSet<TResult>
+   Clone() => (SqlSet<TResult>)base.Clone();
 
    private protected override IEnumerable<TResult>
    Map(bool singleResult) {
@@ -1476,6 +1572,7 @@ public partial class SqlSet<TResult> : SqlSet, ISqlSet<SqlSet<TResult>, TResult>
       (SqlSet<TResult>)base.Where(ref predicate);
 }
 
+#if DEBUG
 partial interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
 
    bool
@@ -1607,3 +1704,4 @@ partial interface ISqlSet<TSqlSet, TSource> where TSqlSet : SqlSet {
    TSqlSet
    Where(ref SqlSet.OperatorStringHandler predicate);
 }
+#endif

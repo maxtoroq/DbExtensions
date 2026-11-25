@@ -257,7 +257,7 @@ partial class SqlSet {
          currentType = association.OtherType;
       }
 
-      query.FROM(GetDefiningQuery(clone: false), _db.QuoteIdentifier(leftAlias));
+      query.FROM(this, _db.QuoteIdentifier(leftAlias));
 
       for (int i = 0; i < associations.Count; i++) {
 
@@ -371,14 +371,14 @@ partial class SqlSet {
          var parameters = new List<object?>(manyAssoc.OtherKey.Count);
          var whereFragment = new SqlFragment(manySource.Database.BuildPredicateFragment(predicateValues, parameters), parameters);
 
-         manySource = manySource
+         var manySet = manySource
             .Where(whereFragment);
 
          if (manySetup is not null) {
-            manySource = manySetup.Invoke(manySource);
+            manySet = manySetup.Invoke(manySet);
          }
 
-         return manySource.AsEnumerable();
+         return manySet.AsEnumerable();
       }
    }
 

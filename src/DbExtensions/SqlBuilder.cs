@@ -34,6 +34,9 @@ interface ISqlFragment {
    IList<object?>
    ParameterValues { get; }
 
+   void
+   AppendTo(StringBuilder sb);
+
    string
    ToString();
 }
@@ -357,13 +360,7 @@ public sealed partial class SqlBuilder : ISqlFragment {
    AppendFragment(ISqlFragment sql, StringBuilder sb) {
 
       if (sql.ParameterValues.Count == 0) {
-
-         if (sql is SqlBuilder sqlB) {
-            sb.Append(sqlB.Buffer);
-         } else {
-            sb.Append(sql.ToString());
-         }
-
+         sql.AppendTo(sb);
          return;
       }
 
@@ -378,6 +375,10 @@ public sealed partial class SqlBuilder : ISqlFragment {
          this.ParameterValues.Add(param);
       }
    }
+
+   void
+   ISqlFragment.AppendTo(StringBuilder sb) =>
+      sb.Append(this.Buffer);
 
    /// <summary>
    /// Appends the interpolated string <paramref name="handler"/> to this instance.
@@ -1860,7 +1861,7 @@ public abstract record class SqlClause(string? Name, string? Separator) {
    /// </summary>
    /// <exclude/>
 
-   public sealed record class VALUES() : SqlClause("VALUES", "," +  Environment.NewLine);
+   public sealed record class VALUES() : SqlClause("VALUES", "," + Environment.NewLine);
 
    /// <summary>
    /// Gets a singleton instance of the clause identified by <typeparamref name="TClause"/>.

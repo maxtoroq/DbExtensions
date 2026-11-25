@@ -67,25 +67,27 @@ Methods
 | [From(String)][33]                                                      | Creates and returns a new [SqlSet][1] using the provided table name.                                                               |
 | [From(String, Type)][34]                                                | Creates and returns a new [SqlSet][1] using the provided table name.                                                               |
 | [From&lt;TResult>(String)][35]                                          | Creates and returns a new [SqlSet&lt;TResult>][36] using the provided table name.                                                  |
-| [FromQuery(SqlBuilder)][37]                                             | Creates and returns a new [SqlSet][1] using the provided defining query.                                                           |
-| [FromQuery(SqlBuilder, Type)][38]                                       | Creates and returns a new [SqlSet][1] using the provided defining query.                                                           |
-| [FromQuery&lt;TResult>(SqlBuilder)][39]                                 | Creates and returns a new [SqlSet&lt;TResult>][36] using the provided defining query.                                              |
-| [FromQuery&lt;TResult>(SqlBuilder, Func&lt;DbDataReader, TResult>)][40] | Creates and returns a new [SqlSet&lt;TResult>][36] using the provided defining query and mapper.                                   |
-| [LastInsertId][41]                                                      | Gets the identity value of the last inserted record.                                                                               |
-| [LastInsertIdAsync][42]                                                 | Gets the identity value of the last inserted record.                                                                               |
-| [Map(SqlBuilder)][43]                                                   | Maps the results of the *query* to dynamic objects. The query is deferred-executed.                                                |
-| [Map(SqlBuilder, Type)][44]                                             | Maps the results of the *query* to objects of type specified by the *resultType* parameter. The query is deferred-executed.        |
-| [Map&lt;TResult>(SqlBuilder)][45]                                       | Maps the results of the *query* to TResult objects. The query is deferred-executed.                                                |
-| [Map&lt;TResult>(SqlBuilder, Func&lt;DbDataReader, TResult>)][46]       | Maps the results of the *query* to TResult objects, using the provided *mapper* delegate.                                          |
-| [QuoteIdentifier][47]                                                   | Given an unquoted identifier in the correct catalog case, returns the correct quoted form of that identifier.                      |
-| [Remove][48]                                                            | Executes a DELETE command for the specified *entity*.                                                                              |
-| [RemoveAsync][49]                                                       | Executes a DELETE command for the specified *entity*.                                                                              |
-| [Table(Type)][50]                                                       | Returns the [SqlTable][51] instance for the specified *entityType*.                                                                |
-| [Table&lt;TEntity>()][52]                                               | Returns the [SqlTable&lt;TEntity>][3] instance for the specified TEntity.                                                          |
-| [Update(Object)][53]                                                    | Executes an UPDATE command for the specified *entity*.                                                                             |
-| [Update(Object, Object)][54]                                            | Executes an UPDATE command for the specified *entity*.                                                                             |
-| [UpdateAsync(Object, CancellationToken)][55]                            | Executes an UPDATE command for the specified *entity*.                                                                             |
-| [UpdateAsync(Object, Object, CancellationToken)][56]                    | Executes an UPDATE command for the specified *entity*.                                                                             |
+| [From&lt;TResult>(String, String)][37]                                  | Creates and returns a new [SqlSet&lt;TResult>][36] using the provided table name and column list.                                  |
+| [From&lt;TResult>(String, String, Func&lt;DbDataReader, TResult>)][38]  | Creates and returns a new [SqlSet&lt;TResult>][36] using the provided table name and column list.                                  |
+| [FromQuery(SqlBuilder)][39]                                             | Creates and returns a new [SqlSet][1] using the provided defining query.                                                           |
+| [FromQuery(SqlBuilder, Type)][40]                                       | Creates and returns a new [SqlSet][1] using the provided defining query.                                                           |
+| [FromQuery&lt;TResult>(SqlBuilder)][41]                                 | Creates and returns a new [SqlSet&lt;TResult>][36] using the provided defining query.                                              |
+| [FromQuery&lt;TResult>(SqlBuilder, Func&lt;DbDataReader, TResult>)][42] | Creates and returns a new [SqlSet&lt;TResult>][36] using the provided defining query and mapper.                                   |
+| [LastInsertId][43]                                                      | Gets the identity value of the last inserted record.                                                                               |
+| [LastInsertIdAsync][44]                                                 | Gets the identity value of the last inserted record.                                                                               |
+| [Map(SqlBuilder)][45]                                                   | Maps the results of the *query* to dynamic objects. The query is deferred-executed.                                                |
+| [Map(SqlBuilder, Type)][46]                                             | Maps the results of the *query* to objects of type specified by the *resultType* parameter. The query is deferred-executed.        |
+| [Map&lt;TResult>(SqlBuilder)][47]                                       | Maps the results of the *query* to TResult objects. The query is deferred-executed.                                                |
+| [Map&lt;TResult>(SqlBuilder, Func&lt;DbDataReader, TResult>)][48]       | Maps the results of the *query* to TResult objects, using the provided *mapper* delegate.                                          |
+| [QuoteIdentifier][49]                                                   | Given an unquoted identifier in the correct catalog case, returns the correct quoted form of that identifier.                      |
+| [Remove][50]                                                            | Executes a DELETE command for the specified *entity*.                                                                              |
+| [RemoveAsync][51]                                                       | Executes a DELETE command for the specified *entity*.                                                                              |
+| [Table(Type)][52]                                                       | Returns the [SqlTable][53] instance for the specified *entityType*.                                                                |
+| [Table&lt;TEntity>()][54]                                               | Returns the [SqlTable&lt;TEntity>][3] instance for the specified TEntity.                                                          |
+| [Update(Object)][55]                                                    | Executes an UPDATE command for the specified *entity*.                                                                             |
+| [Update(Object, Object)][56]                                            | Executes an UPDATE command for the specified *entity*.                                                                             |
+| [UpdateAsync(Object, CancellationToken)][57]                            | Executes an UPDATE command for the specified *entity*.                                                                             |
+| [UpdateAsync(Object, Object, CancellationToken)][58]                    | Executes an UPDATE command for the specified *entity*.                                                                             |
 
 
 See Also
@@ -130,23 +132,25 @@ See Also
 [34]: From_1.md
 [35]: From__1.md
 [36]: ../SqlSet_1/README.md
-[37]: FromQuery.md
-[38]: FromQuery_1.md
-[39]: FromQuery__1.md
-[40]: FromQuery__1_1.md
-[41]: LastInsertId.md
-[42]: LastInsertIdAsync.md
-[43]: Map.md
-[44]: Map_1.md
-[45]: Map__1.md
-[46]: Map__1_1.md
-[47]: QuoteIdentifier.md
-[48]: Remove.md
-[49]: RemoveAsync.md
-[50]: Table.md
-[51]: ../SqlTable/README.md
-[52]: Table__1.md
-[53]: Update.md
-[54]: Update_1.md
-[55]: UpdateAsync_1.md
-[56]: UpdateAsync.md
+[37]: From__1_1.md
+[38]: From__1_2.md
+[39]: FromQuery.md
+[40]: FromQuery_1.md
+[41]: FromQuery__1.md
+[42]: FromQuery__1_1.md
+[43]: LastInsertId.md
+[44]: LastInsertIdAsync.md
+[45]: Map.md
+[46]: Map_1.md
+[47]: Map__1.md
+[48]: Map__1_1.md
+[49]: QuoteIdentifier.md
+[50]: Remove.md
+[51]: RemoveAsync.md
+[52]: Table.md
+[53]: ../SqlTable/README.md
+[54]: Table__1.md
+[55]: Update.md
+[56]: Update_1.md
+[57]: UpdateAsync_1.md
+[58]: UpdateAsync.md
